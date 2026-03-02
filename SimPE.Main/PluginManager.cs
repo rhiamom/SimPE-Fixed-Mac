@@ -355,29 +355,40 @@ namespace SimPe
 			
 			return tools;
 		}
-		#endregion
+        #endregion
 
-		#region dockable Tools
-		void LoadDocks(Ambertation.Windows.Forms.DockContainer dc, LoadedPackage lp)
-		{
-			foreach (SimPe.Interfaces.IDockableTool idt in FileTable.ToolRegistry.Docks)
-			{
-				Ambertation.Windows.Forms.DockPanel dctrl = idt.GetDockableControl();
+        #region dockable Tools
+        void LoadDocks(Ambertation.Windows.Forms.DockContainer dc, LoadedPackage lp)
+        {
+            foreach (SimPe.Interfaces.IDockableTool idt in FileTable.ToolRegistry.Docks)
+            {
+                Ambertation.Windows.Forms.DockPanel dctrl = idt.GetDockableControl();
+                System.Diagnostics.Debug.WriteLine("DOCK: " + idt.GetType().Name + " dctrl=" + (dctrl == null ? "NULL" : "OK"));
 
-                
-				if (dctrl!=null) 
-				{
-                    dctrl.Name = "dc."+idt.GetType().Namespace + "." + idt.GetType().Name;
-					dctrl.Manager = dc.Manager;
-                    dc.Controls.Add(dctrl);
-					//dctrl.DockNextTo(dc);
+                if (dctrl != null)
+                {
+                    try
+                    {
+                        dctrl.Name = "dc." + idt.GetType().Namespace + "." + idt.GetType().Name;
+                        dctrl.Manager = dc.Manager;
+                        dc.Controls.Add(dctrl);
+                        dctrl.Visible = true;
+                        System.Diagnostics.Debug.WriteLine("DOCK: after Visible=true: " + idt.GetType().Name + " Visible=" + dctrl.Visible + " dc.Visible=" + dc.Visible + " dc.Parent=" + (dc.Parent == null ? "NULL" : dc.Parent.GetType().Name));
+                        dctrl.Show();
+                        System.Diagnostics.Debug.WriteLine("DOCK: shown " + idt.GetType().Name + " IsDocked=" + dctrl.IsDocked + " Visible=" + dctrl.Visible);
 
-					ChangedGuiResourceEvent += new SimPe.Events.ChangedResourceEvent(idt.RefreshDock);
-					dctrl.Tag = idt.Shortcut;
-					idt.RefreshDock(this, new SimPe.Events.ResourceEventArgs(lp));
-				}
-			}
-		}
-		#endregion
+                        ChangedGuiResourceEvent += new SimPe.Events.ChangedResourceEvent(idt.RefreshDock);
+                        dctrl.Tag = idt.Shortcut;
+                        idt.RefreshDock(this, new SimPe.Events.ResourceEventArgs(lp));
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine("DOCK ERROR on " + idt.GetType().Name + ": " + ex.Message);
+                        System.Diagnostics.Debug.WriteLine("DOCK STACK: " + ex.StackTrace);
+                    }
+                }
+            }
+        }
+        #endregion
     }
 }

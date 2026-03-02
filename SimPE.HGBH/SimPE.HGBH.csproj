@@ -98,7 +98,6 @@
     <Compile Include="ExtNgbhUI.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="FixUidTool.cs" />
     <Compile Include="TempForm.cs">
       <SubType>Form</SubType>
     </Compile>

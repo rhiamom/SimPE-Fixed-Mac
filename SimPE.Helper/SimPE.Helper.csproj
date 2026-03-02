@@ -139,7 +139,6 @@
     <Compile Include="PropertyObjectBuilderExt.cs" />
     <Compile Include="PropertyUserTypes.cs" />
     <Compile Include="Registry.cs" />
-    <Compile Include="RuntimeCompiler.cs" />
     <Compile Include="SelectSimFolder.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -158,7 +157,6 @@
     <Compile Include="WaitingScreen.cs" />
     <Compile Include="WarningException.cs" />
     <Compile Include="XmlRegistry.cs" />
-    <Compile Include="zRuntimePathSettings.cs" />
     <EmbeddedResource Include="ExceptionForm.de.resx" />
     <EmbeddedResource Include="ExceptionForm.fr.resx" />
     <EmbeddedResource Include="ExceptionForm.it.resx" />

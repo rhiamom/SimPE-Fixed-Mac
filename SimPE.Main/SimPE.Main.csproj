@@ -153,7 +153,9 @@
     <Compile Include="OptionForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="OptionForm.Designer.cs" />
+    <Compile Include="OptionForm.Designer.cs">
+      <DependentUpon>OptionForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="PluginManager.cs" />
     <Compile Include="ProfileChooser.cs">
       <SubType>Form</SubType>
@@ -181,13 +183,27 @@
     <EmbeddedResource Include="Main.pl.resx" />
     <EmbeddedResource Include="MainForm.resx" />
     <EmbeddedResource Include="Main.ru.resx" />
-    <EmbeddedResource Include="OptionForm.de.resx" />
-    <EmbeddedResource Include="OptionForm.es.resx" />
-    <EmbeddedResource Include="OptionForm.fr.resx" />
-    <EmbeddedResource Include="OptionForm.it.resx" />
-    <EmbeddedResource Include="OptionForm.pl.resx" />
-    <EmbeddedResource Include="OptionForm.resx" />
-    <EmbeddedResource Include="OptionForm.ru.resx" />
+    <EmbeddedResource Include="OptionForm.de.resx">
+      <DependentUpon>OptionForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OptionForm.es.resx">
+      <DependentUpon>OptionForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OptionForm.fr.resx">
+      <DependentUpon>OptionForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OptionForm.it.resx">
+      <DependentUpon>OptionForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OptionForm.pl.resx">
+      <DependentUpon>OptionForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OptionForm.resx">
+      <DependentUpon>OptionForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OptionForm.ru.resx">
+      <DependentUpon>OptionForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ProfileChooser.resx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

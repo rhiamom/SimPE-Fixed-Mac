@@ -176,42 +176,58 @@ namespace SimPe.Plugin
 			}
 		}
 
-		/// <summary>
-		/// Add a ChildNode (and all it's subChilds) to a TreeNode
-		/// </summary>
-		/// <param name="parent">The parent TreeNode</param>
-		/// <param name="index">The Index of the Child Block in the Parent</param>
-		/// <param name="child">The ChildBlock (can be null)</param>
-		protected void AddChildNode(System.Windows.Forms.TreeNodeCollection parent, int index, SimPe.Interfaces.Scenegraph.ICresChildren child) 
-		{
-			//Make the user aware, that a Node was left out!
-			if (child==null) 
-			{
-				System.Windows.Forms.TreeNode unode = new System.Windows.Forms.TreeNode("[Error: Unsupported Child on Index "+index.ToString()+"]");
-				unode.Tag = index;
-				unode.ImageIndex = 4;
-				unode.SelectedImageIndex = 4;
-				parent.Add(unode);
-				return;
-			}
+        /// <summary>
+        /// Add a ChildNode (and all it's subChilds) to a TreeNode
+        /// </summary>
+        /// <param name="parent">The parent TreeNode</param>
+        /// <param name="index">The Index of the Child Block in the Parent</param>
+        /// <param name="child">The ChildBlock (can be null)</param>
+        protected void AddChildNode(System.Windows.Forms.TreeNodeCollection parent, int index, SimPe.Interfaces.Scenegraph.ICresChildren child)
+        {
+            AddChildNode(parent, index, child, new System.Collections.Generic.HashSet<int>());
+        }
 
-			System.Windows.Forms.TreeNode node = new System.Windows.Forms.TreeNode("0x"+index.ToString("X")+": "+child.ToString());
-			node.Tag = index;
-			node.ImageIndex = child.ImageIndex;
-			node.SelectedImageIndex = node.ImageIndex;
-			parent.Add(node);
+        protected void AddChildNode(System.Windows.Forms.TreeNodeCollection parent, int index, SimPe.Interfaces.Scenegraph.ICresChildren child, System.Collections.Generic.HashSet<int> visited)
+        {
+            if (child == null)
+            {
+                System.Windows.Forms.TreeNode unode = new System.Windows.Forms.TreeNode("[Error: Unsupported Child on Index " + index.ToString() + "]");
+                unode.Tag = index;
+                unode.ImageIndex = 4;
+                unode.SelectedImageIndex = 4;
+                parent.Add(unode);
+                return;
+            }
 
-			foreach (int i in child.ChildBlocks) AddChildNode(node.Nodes, i, child.GetBlock(i));
-		}
-		#endregion
-		
-		#region IRcolBlock Member
+            if (visited.Contains(index))
+            {
+                System.Windows.Forms.TreeNode cnode = new System.Windows.Forms.TreeNode("[Circular Reference on Index " + index.ToString() + "]");
+                cnode.Tag = index;
+                cnode.ImageIndex = 4;
+                cnode.SelectedImageIndex = 4;
+                parent.Add(cnode);
+                return;
+            }
 
-		/// <summary>
-		/// Unserializes a BinaryStream into the Attributes of this Instance
-		/// </summary>
-		/// <param name="reader">The Stream that contains the FileData</param>
-		public override void Unserialize(System.IO.BinaryReader reader)
+            visited.Add(index);
+
+            System.Windows.Forms.TreeNode node = new System.Windows.Forms.TreeNode("0x" + index.ToString("X") + ": " + child.ToString());
+            node.Tag = index;
+            node.ImageIndex = child.ImageIndex;
+            node.SelectedImageIndex = node.ImageIndex;
+            parent.Add(node);
+
+            foreach (int i in child.ChildBlocks) AddChildNode(node.Nodes, i, child.GetBlock(i), visited);
+        }
+        #endregion
+
+        #region IRcolBlock Member
+
+        /// <summary>
+        /// Unserializes a BinaryStream into the Attributes of this Instance
+        /// </summary>
+        /// <param name="reader">The Stream that contains the FileData</param>
+        public override void Unserialize(System.IO.BinaryReader reader)
 		{
 			version = reader.ReadUInt32();
 			typecode = reader.ReadByte();

@@ -2,6 +2,9 @@
  *   Copyright (C) 2005 by Ambertation                                     *
  *   quaxi@ambertation.de                                                  *
  *                                                                         *
+ *   Copyright (C) 2025 by GramzeSweatshop                                 *
+ *   rhiamom@mac.com                                                       *
+ *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
  *   the Free Software Foundation; either version 2 of the License, or     *
@@ -17,6 +20,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 using System;
 using System.Windows.Forms;
 using System.Threading;
@@ -150,54 +154,54 @@ namespace SimPe.Plugin.Tool.Dockable
 		}
 
 		protected override void Produce()
-		{			
-			LoadCachIndex();	
+		{
+			LoadCachIndex();
 			changedcache = false;
-			
+
 			ArrayList pitems = new ArrayList();
 			ArrayList groups = new ArrayList();
-			int ct = 0;		
+			int ct = 0;
 			//this is the first part loading by objd Resources
 			Interfaces.Scenegraph.IScenegraphFileIndexItem[] nrefitems = FileTable.FileIndex.Sort(FileTable.FileIndex.FindFile(Data.MetaData.OBJD_FILE, true));
-		
+
 			string len = " / " + nrefitems.Length.ToString();
 
 			SimPe.Data.MetaData.Languages deflang = Helper.WindowsRegistry.LanguageCode;
 			Wait.Message = "Loading Objects";
 			Wait.MaxProgress = nrefitems.Length;
 			foreach (Interfaces.Scenegraph.IScenegraphFileIndexItem lnrefitem in nrefitems)
-			{                
+			{
 				ct++;
 				Interfaces.Scenegraph.IScenegraphFileIndexItem nrefitem = lnrefitem;
-				if (ct%134==1) Wait.Progress = ct;				
+				if (ct%134==1) Wait.Progress = ct;
 
 				//if (nrefitem.FileDescriptor.Instance != 0x41A7) continue;
 				if (nrefitem.LocalGroup == Data.MetaData.LOCAL_GROUP) continue;
 				if (pitems.Contains(nrefitem)) continue;
-				if (groups.Contains(nrefitem.LocalGroup)) continue;	
+				if (groups.Contains(nrefitem.LocalGroup)) continue;
 
 				//try to find the best objd				
 				Interfaces.Scenegraph.IScenegraphFileIndexItem[] oitems = FileTable.FileIndex.FindFile(nrefitem.FileDescriptor.Type, nrefitem.LocalGroup);
-				if (oitems.Length>1) 
+				if (oitems.Length>1)
 				{
-					for (int i=0; i<oitems.Length; i++)
-						if (oitems[i].FileDescriptor.Instance == 0x41A7 || oitems[i].FileDescriptor.Instance == 0x41AF) 
+					for (int i = 0; i<oitems.Length; i++)
+						if (oitems[i].FileDescriptor.Instance == 0x41A7 || oitems[i].FileDescriptor.Instance == 0x41AF)
 						{
 							nrefitem = oitems[i];
 							break;
 						}
-				}							
+				}
 
 				Interfaces.Scenegraph.IScenegraphFileIndexItem[] cacheitems = cachefile.FileIndex.FindFile(nrefitem.FileDescriptor, nrefitem.Package);
 
 				//find the correct File
 				int cindex = -1;
 				string pname = nrefitem.Package.FileName.Trim().ToLower();
-				for (int i=0; i<cacheitems.Length; i++)
+				for (int i = 0; i<cacheitems.Length; i++)
 				{
 					Interfaces.Scenegraph.IScenegraphFileIndexItem citem = cacheitems[i];
-						
-					if (citem.FileDescriptor.Filename == pname) 
+
+					if (citem.FileDescriptor.Filename == pname)
 					{
 						cindex=i;
 						break;
@@ -206,15 +210,15 @@ namespace SimPe.Plugin.Tool.Dockable
 
 				if (cindex!=-1) //found in the cache
 				{
-					SimPe.Cache.ObjectCacheItem oci = (SimPe.Cache.ObjectCacheItem)cacheitems[cindex].FileDescriptor.Tag;			
+					SimPe.Cache.ObjectCacheItem oci = (SimPe.Cache.ObjectCacheItem)cacheitems[cindex].FileDescriptor.Tag;
 					if (!oci.Useable) continue;
 					pitems.Add(nrefitem);
 					groups.Add(nrefitem.LocalGroup);
 
 					oci.Tag = nrefitem;
 					this.AddToBuffer(oci);
-				} 
-				else 
+				}
+				else
 				{
 					pitems.Add(nrefitem);
 					groups.Add(nrefitem.LocalGroup);
@@ -224,20 +228,16 @@ namespace SimPe.Plugin.Tool.Dockable
 					oci.Useable = false;
 					cachechg = true;
 					cachefile.AddItem(oci, nrefitem.Package.FileName);
-					
+
 					this.AddToBuffer(oci);
 				}
 			}
-
-            if (Helper.WindowsRegistry.OWincludewalls) 
-			{
-                //In the second pass we use ObjectXml Resources to load Objects like Walls. What For?? who cares??
-				ProduceByXObj(Data.MetaData.XOBJ);
-				ProduceByXObj(Data.MetaData.XROF);
-				ProduceByXObj(Data.MetaData.XFLR);
-				ProduceByXObj(Data.MetaData.XFNC);
-				ProduceByXObj(Data.MetaData.XNGB);
-			}
+			//In the second pass we use ObjectXml Resources to load Objects like Walls. What For?? who cares??
+			ProduceByXObj(Data.MetaData.XOBJ);
+			ProduceByXObj(Data.MetaData.XROF);
+			ProduceByXObj(Data.MetaData.XFLR);
+			ProduceByXObj(Data.MetaData.XFNC);
+			ProduceByXObj(Data.MetaData.XNGB);
 		}
 
 		protected override void OnFinish()

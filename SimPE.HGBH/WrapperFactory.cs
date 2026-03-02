@@ -104,7 +104,7 @@ namespace SimPe.Plugin
                 {
                     System.Collections.ArrayList tools = new System.Collections.ArrayList();
                     
-                    tools.Add(new Plugin.FixUidTool());
+                    //tools.Add(new Plugin.FixUidTool());
                     
                     tools.Add(new ActionIntriguedNeighborhood());
                     

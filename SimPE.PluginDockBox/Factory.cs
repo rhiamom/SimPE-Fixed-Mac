@@ -36,7 +36,7 @@ namespace SimPe.Plugin.Tool.Dockable
         ResourceDock rd;
 
         public DockboxFactory()
-            : base()
+    : base()
         {
             rd = new ResourceDock();
         }

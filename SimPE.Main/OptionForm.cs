@@ -2,6 +2,9 @@
  *   Copyright (C) 2005 by Ambertation                                     *
  *   quaxi@ambertation.de                                                  *
  *                                                                         *
+ *   Copyright (C) 2026 by GramzeSweatshop                                 *
+ *   rhiamom@mac.com                                                       *
+ *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
  *   the Free Software Foundation; either version 2 of the License, or     *
@@ -17,6 +20,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 using System;
 using System.Drawing;
 using System.Collections.Generic;
@@ -51,7 +55,7 @@ namespace SimPe
                 this.cbRLExt.Enum = typeof(SimPe.Registry.ResourceListExtensionFormats);
                 this.cbRLNames.Enum = typeof(SimPe.Registry.ResourceListFormats);
                 this.cbRLTGI.Enum = typeof(SimPe.Registry.ResourceListUnnamedFormats);
-                this.pgPaths.SelectedObject = SimPe.PathSettings.Global;
+                //this.pgPaths.SelectedObject = SimPe.PathSettings.Global;
 
 
                 for (byte i = 1; i < 0x44; i++) this.cblang.Items.Add(new SimPe.PackedFiles.Wrapper.StrLanguage(i));
@@ -116,9 +120,9 @@ namespace SimPe
 
             this.cbLock_CheckedChanged(cbLock, null);
 
-            this.tbUserId.Text = "0x" + Helper.HexString(Helper.WindowsRegistry.CachedUserId);
+            /*this.tbUserId.Text = "0x" + Helper.HexString(Helper.WindowsRegistry.CachedUserId);
             this.tbUsername.Text = Helper.WindowsRegistry.Username;
-            this.tbPassword.Text = Helper.WindowsRegistry.Password;
+            this.tbPassword.Text = Helper.WindowsRegistry.Password;*/
 
             this.tbep1.ReadOnly = (PathProvider.Global.EPInstalled < 1);
             this.tbep2.ReadOnly = (PathProvider.Global.EPInstalled < 2);
@@ -202,9 +206,9 @@ namespace SimPe
             Helper.WindowsRegistry.ResourceListFormat = (Registry.ResourceListFormats)cbRLNames.SelectedValue;
             Helper.WindowsRegistry.ResourceListUnknownDescriptionFormat = (Registry.ResourceListUnnamedFormats)cbRLTGI.SelectedValue;
 
-            Helper.WindowsRegistry.Username = tbUsername.Text;
-            Helper.WindowsRegistry.Password = tbPassword.Text;
-            Helper.WindowsRegistry.CachedUserId = Helper.StringToUInt32(tbUserId.Text, 0, 16);
+            //Helper.WindowsRegistry.Username = tbUsername.Text;
+            //Helper.WindowsRegistry.Password = tbPassword.Text;
+            //Helper.WindowsRegistry.CachedUserId = Helper.StringToUInt32(tbUserId.Text, 0, 16);
 
             System.Collections.Generic.List<FileTableItem> lfti = new System.Collections.Generic.List<FileTableItem>();
             foreach (FileTableItem fti in lbfolder.Items) lfti.Add(fti);
@@ -307,14 +311,11 @@ namespace SimPe
 
         void EnablePanel(Divelements.Navisight.NavigationButton panel)
         {
-            hcFolders.Visible = (panel == nbFolders);
             hcSettings.Visible = (panel == nbSettings);
             hcTools.Visible = (panel == nbTools);
-            hcFileTable.Visible = (panel == nbFileTable);
             hcSceneGraph.Visible = (panel == nbSceneGraph);
             hcPlugins.Visible = (panel == nbPlugins);
-            hcIdent.Visible = (panel == nbIdent);
-            hcCheck.Visible = (panel == nbCheck);
+            //hcIdent.Visible = (panel == nbIdent);
             hcCustom.Visible = (panel == nbCustom);
         }
 
@@ -326,14 +327,11 @@ namespace SimPe
 
                 if (nb.Checked)
                 {
-                    if (nb == nbFolders) EnablePanel(nbFolders);
-                    else if (nb == nbSettings) EnablePanel(nbSettings);
+                    if (nb == nbSettings) EnablePanel(nbSettings);
                     else if (nb == nbTools) EnablePanel(nbTools);
-                    else if (nb == nbFileTable) EnablePanel(nbFileTable);
                     else if (nb == nbSceneGraph) EnablePanel(nbSceneGraph);
                     else if (nb == nbPlugins) EnablePanel(nbPlugins);
-                    else if (nb == nbIdent) EnablePanel(nbIdent);
-                    else if (nb == nbCheck) EnablePanel(nbCheck);
+                    //else if (nb == nbIdent) EnablePanel(nbIdent);
                     else if (nb == nbCustom) EnablePanel(nbCustom);
                 }
             }
@@ -370,12 +368,12 @@ namespace SimPe
         public Image GetImage(SimPe.Interfaces.IWrapper wrapper)
         {
             if (uids.Contains(wrapper.WrapperDescription.UID))
-                return System.Drawing.Image.FromStream(this.GetType().Assembly.GetManifestResourceStream("SimPe.error.png"));
+                return System.Drawing.Image.FromStream(typeof(SimPe.Helper).Assembly.GetManifestResourceStream("SimPe.IconXmlResources.error.png"));
 
             if (wrapper.Priority >= 0)
-                return System.Drawing.Image.FromStream(this.GetType().Assembly.GetManifestResourceStream("SimPe.enabled.png"));
+                return System.Drawing.Image.FromStream(typeof(SimPe.Helper).Assembly.GetManifestResourceStream("SimPe.IconXmlResources.enabled.png"));
 
-            return System.Drawing.Image.FromStream(this.GetType().Assembly.GetManifestResourceStream("SimPe.disabled.png"));
+            return System.Drawing.Image.FromStream(typeof(SimPe.Helper).Assembly.GetManifestResourceStream("SimPe.IconXmlResources.disabled.png"));
         }
 
         public void SetPanel(SimPe.Interfaces.IWrapper wrapper, TD.Eyefinder.HeaderControl pn)
@@ -400,11 +398,11 @@ namespace SimPe
         {
             if (pn.Height == pn.DisplayRectangle.Top + 1)
             {
-                return System.Drawing.Image.FromStream(this.GetType().Assembly.GetManifestResourceStream("SimPe.expand.png"));
+                return System.Drawing.Image.FromStream(typeof(SimPe.Helper).Assembly.GetManifestResourceStream("SimPe.IconXmlResources.expand.png"));
             }
             else
             {
-                return System.Drawing.Image.FromStream(this.GetType().Assembly.GetManifestResourceStream("SimPe.shrink.png"));
+                return System.Drawing.Image.FromStream(typeof(SimPe.Helper).Assembly.GetManifestResourceStream("SimPe.IconXmlResources.shrink.png"));
             }
 
         }
@@ -602,7 +600,9 @@ namespace SimPe
                 pb.Left = pn.Width - 2 * pb.Width - 16;
                 pb.Top = pn.DisplayRectangle.Top + 4; //pn.DisplayRectangle.Top + 4 + pb.Height + 4; //pn.Height - 2*pb.Height -16;
                 pb.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-                pb.Image = System.Drawing.Image.FromStream(this.GetType().Assembly.GetManifestResourceStream("SimPe.multienabled.png"));
+                var stream = typeof(SimPe.Helper).Assembly.GetManifestResourceStream("SimPe.IconXmlResources.multienabled.png");
+                if (stream != null)
+                    pb.Image = System.Drawing.Image.FromStream(stream);
                 pb.Click += new EventHandler(pn_Click);
                 this.toolTip1.SetToolTip(pb, "Allows Multiple instance");
 
@@ -615,7 +615,10 @@ namespace SimPe
                 pb.Top = (pn.DisplayRectangle.Top + 1 - pb.Height) / 2;
                 pb.Left = pn.Width - 3 * pb.Width - pb.Top;
                 pb.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-                pb.Image = System.Drawing.Image.FromStream(this.GetType().Assembly.GetManifestResourceStream("SimPe.smallmultienabled.png"));
+                var asm = System.Reflection.Assembly.Load("simpe.helper");
+                asm.GetManifestResourceStream("SimPe.IconXml.multienabled.png");
+                if (stream != null)
+                    pb.Image = System.Drawing.Image.FromStream(stream);
                 pb.BackColor = Color.Transparent;
 
                 this.toolTip1.SetToolTip(pb, "Allows Multiple instance.");
@@ -632,7 +635,7 @@ namespace SimPe
                 if (wrapper.AllowMultipleInstances) pb.Left = pn.Width - 4 * pb.Width - pb.Top;
                 else pb.Left = pn.Width - 3 * pb.Width - pb.Top;
                 pb.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-                pb.Image = System.Drawing.Image.FromStream(this.GetType().Assembly.GetManifestResourceStream("SimPe.error.png")).GetThumbnailImage(16, 16, new Image.GetThumbnailImageAbort(ThumbnailCallback), IntPtr.Zero); ;
+                pb.Image = System.Drawing.Image.FromStream(this.GetType().Assembly.GetManifestResourceStream("SimPe.IconXml.error.png")).GetThumbnailImage(16, 16, new Image.GetThumbnailImageAbort(ThumbnailCallback), IntPtr.Zero); ;
                 pb.BackColor = Color.Transparent;
                 this.toolTip1.SetToolTip(pb, "This wrapper caused an Error while loading.");
             }
@@ -1005,8 +1008,6 @@ namespace SimPe
 
                 top += cbIncCep.Height + 2;
                 groupBox8.Height = top;
-                groupBox9.Top = groupBox8.Bottom + 8;
-                groupBox9.Height = hcFileTable.Height - groupBox9.Top - 8;
             }
             finally { Application.DoEvents(); this.Enabled = true; }
         }

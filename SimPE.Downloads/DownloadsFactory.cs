@@ -88,8 +88,6 @@ namespace SimPe.Plugin
             new SimPe.Plugin.Tool.Window.InstallerTool(),
             new SimPe.Plugin.Tool.SaveSims2PackTool(),
             new SimPe.Plugin.Tool.LoadSims2PackTool(),
-            new SimPe.Plugin.Tool.Saves2cpTool(),
-            new SimPe.Plugin.Tool.Loads2cpTool()
         };
                 return tools;
             }

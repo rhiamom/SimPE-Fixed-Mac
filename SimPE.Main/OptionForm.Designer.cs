@@ -2,6 +2,9 @@
  *   Copyright (C) 2005 by Ambertation                                     *
  *   quaxi@ambertation.de                                                  *
  *                                                                         *
+ *   Copyright (C) 2026 by GramzeSweatshop                                 *
+ *   rhiamom@mac.com                                                       *
+ *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
  *   the Free Software Foundation; either version 2 of the License, or     *
@@ -17,6 +20,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 using System;
 using System.Drawing;
 using System.Collections;
@@ -255,7 +259,6 @@ namespace SimPe
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.cbThemes = new System.Windows.Forms.ComboBox();
             this.hcTools = new TD.Eyefinder.HeaderControl();
-            this.hcFileTable = new TD.Eyefinder.HeaderControl();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
             this.cbIncCep = new System.Windows.Forms.CheckBox();
             this.btReload = new System.Windows.Forms.Button();
@@ -278,15 +281,11 @@ namespace SimPe
             this.cbSimTemp = new System.Windows.Forms.CheckBox();
             this.cbDeep = new System.Windows.Forms.CheckBox();
             this.bb = new Divelements.Navisight.ButtonBar();
-            this.nbFolders = new Divelements.Navisight.NavigationButton();
-            this.nbCheck = new Divelements.Navisight.NavigationButton();
             this.nbSettings = new Divelements.Navisight.NavigationButton();
             this.nbSceneGraph = new Divelements.Navisight.NavigationButton();
             this.nbCustom = new Divelements.Navisight.NavigationButton();
-            this.nbFileTable = new Divelements.Navisight.NavigationButton();
             this.nbPlugins = new Divelements.Navisight.NavigationButton();
             this.nbTools = new Divelements.Navisight.NavigationButton();
-            this.nbIdent = new Divelements.Navisight.NavigationButton();
             this.hcPlugins = new TD.Eyefinder.HeaderControl();
             this.btpup = new System.Windows.Forms.Button();
             this.btpdown = new System.Windows.Forms.Button();
@@ -295,9 +294,9 @@ namespace SimPe
             this.linkLabel5 = new System.Windows.Forms.LinkLabel();
             this.cbValid = new System.Windows.Forms.CheckBox();
             this.linkLabel3 = new System.Windows.Forms.LinkLabel();
-            this.tbUserId = new System.Windows.Forms.TextBox();
+            //this.tbUserId = new System.Windows.Forms.TextBox();
             this.label13 = new System.Windows.Forms.Label();
-            this.tbPassword = new System.Windows.Forms.TextBox();
+            //this.tbPassword = new System.Windows.Forms.TextBox();
             this.label12 = new System.Windows.Forms.Label();
             this.tbUsername = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
@@ -313,20 +312,17 @@ namespace SimPe
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox4.SuspendLayout();
-            this.hcFolders.SuspendLayout();
             this.hcSettings.SuspendLayout();
             this.groupBox6.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.hcTools.SuspendLayout();
-            this.hcFileTable.SuspendLayout();
             this.groupBox8.SuspendLayout();
             this.groupBox9.SuspendLayout();
             this.hcSceneGraph.SuspendLayout();
             this.groupBox10.SuspendLayout();
             this.groupBox7.SuspendLayout();
             this.hcPlugins.SuspendLayout();
-            this.hcIdent.SuspendLayout();
-            this.hcCheck.SuspendLayout();
+            //this.hcIdent.SuspendLayout();
             this.hcCustom.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -824,15 +820,6 @@ namespace SimPe
             resources.ApplyResources(this.hcTools, "hcTools");
             this.hcTools.Name = "hcTools";
             // 
-            // hcFileTable
-            // 
-            this.hcFileTable.Controls.Add(this.groupBox8);
-            this.hcFileTable.Controls.Add(this.btReload);
-            this.hcFileTable.Controls.Add(this.groupBox9);
-            this.hcFileTable.HeaderFont = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
-            resources.ApplyResources(this.hcFileTable, "hcFileTable");
-            this.hcFileTable.Name = "hcFileTable";
-            // 
             // groupBox8
             // 
             this.groupBox8.Controls.Add(this.cbIncCep);
@@ -997,30 +984,14 @@ namespace SimPe
             // 
             resources.ApplyResources(this.bb, "bb");
             this.bb.Buttons.AddRange(new Divelements.Navisight.NavigationButton[] {
-            this.nbFolders,
-            this.nbCheck,
             this.nbSettings,
-            this.nbFileTable,
             this.nbCustom,
             this.nbSceneGraph,
             this.nbPlugins,
-            this.nbTools,
-            this.nbIdent});
+            //this.nbIdent,
+            this.nbTools});
             this.bb.ButtonSpacing = 16;
             this.bb.Name = "bb";
-            // 
-            // nbFolders
-            // 
-            this.nbFolders.Checked = true;
-            this.nbFolders.Image = ((System.Drawing.Image)(resources.GetObject("nbFolders.Image")));
-            resources.ApplyResources(this.nbFolders, "nbFolders");
-            this.nbFolders.Activate += new System.EventHandler(this.SelectCategory);
-            // 
-            // nbCheck
-            // 
-            this.nbCheck.Image = ((System.Drawing.Image)(resources.GetObject("nbCheck.Image")));
-            resources.ApplyResources(this.nbCheck, "nbCheck");
-            this.nbCheck.Activate += new System.EventHandler(this.SelectCategory);
             // 
             // nbSettings
             // 
@@ -1040,12 +1011,6 @@ namespace SimPe
             resources.ApplyResources(this.nbCustom, "nbCustom");
             this.nbCustom.Activate += new System.EventHandler(this.SelectCategory);
             // 
-            // nbFileTable
-            // 
-            this.nbFileTable.Image = ((System.Drawing.Image)(resources.GetObject("nbFileTable.Image")));
-            resources.ApplyResources(this.nbFileTable, "nbFileTable");
-            this.nbFileTable.Activate += new System.EventHandler(this.SelectCategory);
-            // 
             // nbPlugins
             // 
             this.nbPlugins.Image = ((System.Drawing.Image)(resources.GetObject("nbPlugins.Image")));
@@ -1057,12 +1022,12 @@ namespace SimPe
             this.nbTools.Image = ((System.Drawing.Image)(resources.GetObject("nbTools.Image")));
             resources.ApplyResources(this.nbTools, "nbTools");
             this.nbTools.Activate += new System.EventHandler(this.SelectCategory);
-            // 
+            /* 
             // nbIdent
             // 
             this.nbIdent.Image = ((System.Drawing.Image)(resources.GetObject("nbIdent.Image")));
             resources.ApplyResources(this.nbIdent, "nbIdent");
-            this.nbIdent.Activate += new System.EventHandler(this.SelectCategory);
+            this.nbIdent.Activate += new System.EventHandler(this.SelectCategory);*/
             // 
             // hcPlugins
             // 
@@ -1090,7 +1055,7 @@ namespace SimPe
             resources.ApplyResources(this.cnt, "cnt");
             this.cnt.BackColor = System.Drawing.SystemColors.Window;
             this.cnt.Name = "cnt";
-            // 
+            /* 
             // hcIdent
             // 
             this.hcIdent.Controls.Add(this.linkLabel5);
@@ -1104,7 +1069,7 @@ namespace SimPe
             this.hcIdent.Controls.Add(this.label11);
             this.hcIdent.HeaderFont = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
             resources.ApplyResources(this.hcIdent, "hcIdent");
-            this.hcIdent.Name = "hcIdent";
+            this.hcIdent.Name = "hcIdent";*/
             // 
             // linkLabel5
             // 
@@ -1125,35 +1090,35 @@ namespace SimPe
             this.linkLabel3.Name = "linkLabel3";
             this.linkLabel3.TabStop = true;
             this.linkLabel3.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel3_LinkClicked_1);
-            // 
+            /* 
             // tbUserId
             // 
             resources.ApplyResources(this.tbUserId, "tbUserId");
             this.tbUserId.Name = "tbUserId";
             this.tbUserId.ReadOnly = true;
-            this.tbUserId.TextChanged += new System.EventHandler(this.tbUserId_TextChanged);
+            this.tbUserId.TextChanged += new System.EventHandler(this.tbUserId_TextChanged);*/
             // 
             // label13
             // 
             resources.ApplyResources(this.label13, "label13");
             this.label13.Name = "label13";
-            // 
+            /* 
             // tbPassword
             // 
             resources.ApplyResources(this.tbPassword, "tbPassword");
             this.tbPassword.Name = "tbPassword";
-            this.tbPassword.Leave += new System.EventHandler(this.tbPassword_Leave);
+            this.tbPassword.Leave += new System.EventHandler(this.tbPassword_Leave);*/
             // 
             // label12
             // 
             resources.ApplyResources(this.label12, "label12");
             this.label12.Name = "label12";
-            // 
+            /* 
             // tbUsername
             // 
             resources.ApplyResources(this.tbUsername, "tbUsername");
             this.tbUsername.Name = "tbUsername";
-            this.tbUsername.Leave += new System.EventHandler(this.tbPassword_Leave);
+            this.tbUsername.Leave += new System.EventHandler(this.tbPassword_Leave);*/
             // 
             // label11
             // 
@@ -1205,13 +1170,10 @@ namespace SimPe
             this.BackColor = System.Drawing.SystemColors.Window;
             this.Controls.Add(this.bb);
             this.Controls.Add(this.button1);
-            this.Controls.Add(this.hcFileTable);
             this.Controls.Add(this.hcCustom);
-            this.Controls.Add(this.hcCheck);
-            this.Controls.Add(this.hcFolders);
             this.Controls.Add(this.hcSceneGraph);
             this.Controls.Add(this.hcSettings);
-            this.Controls.Add(this.hcIdent);
+            //this.Controls.Add(this.hcIdent);
             this.Controls.Add(this.hcPlugins);
             this.Controls.Add(this.hcTools);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -1225,14 +1187,11 @@ namespace SimPe
             this.groupBox1.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
-            this.hcFolders.ResumeLayout(false);
-            this.hcFolders.PerformLayout();
             this.hcSettings.ResumeLayout(false);
             this.groupBox6.ResumeLayout(false);
             this.groupBox5.ResumeLayout(false);
             this.hcTools.ResumeLayout(false);
             this.hcTools.PerformLayout();
-            this.hcFileTable.ResumeLayout(false);
             this.groupBox8.ResumeLayout(false);
             this.groupBox9.ResumeLayout(false);
             this.hcSceneGraph.ResumeLayout(false);
@@ -1240,9 +1199,8 @@ namespace SimPe
             this.groupBox10.PerformLayout();
             this.groupBox7.ResumeLayout(false);
             this.hcPlugins.ResumeLayout(false);
-            this.hcIdent.ResumeLayout(false);
-            this.hcIdent.PerformLayout();
-            this.hcCheck.ResumeLayout(false);
+            //this.hcIdent.ResumeLayout(false);
+            //this.hcIdent.PerformLayout();
             this.hcCustom.ResumeLayout(false);
             this.ResumeLayout(false);
 

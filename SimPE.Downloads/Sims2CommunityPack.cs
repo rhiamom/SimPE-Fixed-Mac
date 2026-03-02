@@ -470,7 +470,7 @@ namespace SimPe.Packages
 		/// </summary>
 		/// <param name="extension">true if you want to add the Community Extension, otherwise 
 		/// a normal Sims2Pack File will be generated</param>
-		public static bool ShowSaveDialog(bool extension) 
+		/*public static bool ShowSaveDialog(bool extension) 
 		{
 			return ShowSaveDialog((SimPe.Packages.GeneratableFile)null, extension);
 		}
@@ -497,7 +497,7 @@ namespace SimPe.Packages
 			}
 
 			return ShowSaveDialog(fls, extension);
-		}
+		}*/
 
 		/// <summary>
 		/// Displays a Save Dialog for the Sims2Pack Files
@@ -539,7 +539,7 @@ namespace SimPe.Packages
 		/// <param name="extension">true if you want to add the Community Extension, otherwise 
 		/// a normal Sims2Pack File will be generated</param>
 		/// <returns>true if the File was saved</returns>
-		public static bool ShowSaveDialog(SimPe.Packages.GeneratableFile[] packages, bool extension) 
+		/*public static bool ShowSaveDialog(SimPe.Packages.GeneratableFile[] packages, bool extension) 
 		{
 			SaveSims2CommunityPack form = new SaveSims2CommunityPack();
 			S2CPDescriptor[] desc = form.Execute(packages, ref extension);
@@ -563,7 +563,7 @@ namespace SimPe.Packages
 			}
 
 			return false;
-		}
+		}*/
 
 		/// <summary>
 		/// Show the Package Selector Dialog for a Sims2Pack File
@@ -585,10 +585,10 @@ namespace SimPe.Packages
 		/// <param name="selmode">Selection Mode for the Listview</param>
 		/// <returns>All Packages that were selected in the Dialog by the User or null 
 		/// if the User Cancled the Dialog</returns>
-		public static S2CPDescriptor[] ShowOpenDialog(string filename, System.Windows.Forms.SelectionMode selmode) 
+		/*public static S2CPDescriptor[] ShowOpenDialog(string filename, System.Windows.Forms.SelectionMode selmode) 
 		{
 			SaveSims2CommunityPack form = new SaveSims2CommunityPack();
 			return form.Execute(Open(filename), selmode);
-		}
+		}*/
 	}
 }
