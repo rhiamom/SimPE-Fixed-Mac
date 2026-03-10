@@ -150,19 +150,45 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="XmlPackageReader.cs" />
-    <EmbeddedResource Include="CheckControl.de.resx" />
-    <EmbeddedResource Include="CheckControl.fr.resx" />
-    <EmbeddedResource Include="CheckControl.it.resx" />
-    <EmbeddedResource Include="CheckControl.resx" />
-    <EmbeddedResource Include="CheckControl.ru.resx" />
-    <EmbeddedResource Include="CheckItem.de.resx" />
-    <EmbeddedResource Include="CheckItem.fr.resx" />
-    <EmbeddedResource Include="CheckItem.it.resx" />
-    <EmbeddedResource Include="CheckItem.resx" />
-    <EmbeddedResource Include="CheckItem.ru.resx" />
-    <EmbeddedResource Include="LoadFileWrappers.resx" />
-    <EmbeddedResource Include="LoadFileWrappersExt.resx" />
-    <EmbeddedResource Include="Message.resx" />
+    <EmbeddedResource Include="CheckControl.de.resx">
+      <DependentUpon>CheckControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CheckControl.fr.resx">
+      <DependentUpon>CheckControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CheckControl.it.resx">
+      <DependentUpon>CheckControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CheckControl.resx">
+      <DependentUpon>CheckControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CheckControl.ru.resx">
+      <DependentUpon>CheckControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CheckItem.de.resx">
+      <DependentUpon>CheckItem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CheckItem.fr.resx">
+      <DependentUpon>CheckItem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CheckItem.it.resx">
+      <DependentUpon>CheckItem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CheckItem.resx">
+      <DependentUpon>CheckItem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CheckItem.ru.resx">
+      <DependentUpon>CheckItem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LoadFileWrappers.resx">
+      <DependentUpon>LoadFileWrappers.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LoadFileWrappersExt.resx">
+      <DependentUpon>LoadFileWrappersExt.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Message.resx">
+      <DependentUpon>Message.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
