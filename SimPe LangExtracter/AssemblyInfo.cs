@@ -1,32 +1,7 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
-
-//
-// Allgemeine Informationen über eine Assembly werden über folgende Attribute 
-// gesteuert. Ändern Sie diese Attributswerte, um die Informationen zu modifizieren,
-// die mit einer Assembly verknüpft sind.
-//
-[assembly: AssemblyTitle("SimPe Language Extractor Plugin")]
-[assembly: AssemblyDescription("SimPe Plugin to extract or import a single language from multiple files")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Chris Hatch")]
-[assembly: AssemblyProduct("")]
-[assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-
-//
-// Versionsinformationen für eine Assembly bestehen aus folgenden vier Werten:
-//
-//      Hauptversion
-//      Nebenversion 
-//      Buildnummer
-//      Revision
-//
-// Sie können alle Werte oder die standardmäßige Revision und Buildnummer 
-// mit '*' angeben:
-
-[assembly: AssemblyVersion("2.69.20.24")]
 
 //
 // Um die Assembly zu signieren, müssen Sie einen Schlüssel angeben. Weitere Informationen 

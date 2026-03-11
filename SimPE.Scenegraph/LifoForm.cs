@@ -94,13 +94,21 @@ namespace SimPe.Plugin
             this.cbitem = new System.Windows.Forms.ComboBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.pb = new System.Windows.Forms.PictureBox();
+            // TODO ContextMenu is no longer supported. Use ContextMenuStrip instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
             this.contextMenu1 = new System.Windows.Forms.ContextMenu();
+            // TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
             this.menuItem1 = new System.Windows.Forms.MenuItem();
+            // TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
             this.menuItem4 = new System.Windows.Forms.MenuItem();
+            // TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
             this.menuItem3 = new System.Windows.Forms.MenuItem();
+            // TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
             this.menuItem6 = new System.Windows.Forms.MenuItem();
+            // TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
             this.menuItem7 = new System.Windows.Forms.MenuItem();
+            // TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
             this.menuItem2 = new System.Windows.Forms.MenuItem();
+            // TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
             this.menuItem5 = new System.Windows.Forms.MenuItem();
             this.panel2 = new System.Windows.Forms.Panel();
             this.btex = new System.Windows.Forms.Button();
@@ -299,7 +307,8 @@ namespace SimPe.Plugin
             // 
             // contextMenu1
             // 
-            this.contextMenu1.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            // TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
+                                                this.contextMenu1.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.menuItem1,
             this.menuItem4,
             this.menuItem3,
@@ -442,15 +451,23 @@ namespace SimPe.Plugin
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.TextBox tbz;
 		private System.Windows.Forms.Label label1;
+		// TODO ContextMenu is no longer supported. Use ContextMenuStrip instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 		private System.Windows.Forms.ContextMenu contextMenu1;
+		// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 		private System.Windows.Forms.MenuItem menuItem1;
+		// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 		private System.Windows.Forms.MenuItem menuItem4;
+		// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 		private System.Windows.Forms.MenuItem menuItem2;
+		// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 		private System.Windows.Forms.MenuItem menuItem5;
 		private System.Windows.Forms.LinkLabel linkLabel1;
 		private System.Windows.Forms.LinkLabel linkLabel2;
+		// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 		private MenuItem menuItem3;
+		// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 		private MenuItem menuItem6;
+		// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 		private MenuItem menuItem7;
 
 		internal Lifo wrapper = null;

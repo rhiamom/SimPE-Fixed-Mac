@@ -54,7 +54,8 @@ namespace SimPe
 		}
 	}
 
-	public class ToolMenuItem  : System.Windows.Forms.MenuItem
+	public class ToolMenuItem  : // TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
+System.Windows.Forms.MenuItem
 	{
 		
 
@@ -402,7 +403,8 @@ namespace SimPe
 		/// </summary>
 		/// <param name="mi">The Menu you want to add Items to</param>
 		/// <param name="chghandler">A Function to call when the Package was chaged by a Tool</param>
-		public void AddMenuItems(System.Windows.Forms.MenuItem mi, System.EventHandler chghandler) 
+		public void AddMenuItems(// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
+System.Windows.Forms.MenuItem mi, System.EventHandler chghandler) 
 		{
 			ITool[] tools = treg.Tools;
 			foreach (SimPe.Interfaces.ITool tool in tools)
@@ -429,8 +431,10 @@ namespace SimPe
 		/// <param name="mi"></param>
 		/// <param name="pfd"></param>
 		/// <param name="package"></param>
-		public void EnableMenuItems(System.Windows.Forms.MenuItem mi, Interfaces.Files.IPackedFileDescriptor pfd, Interfaces.Files.IPackageFile package)
+		public void EnableMenuItems(// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
+System.Windows.Forms.MenuItem mi, Interfaces.Files.IPackedFileDescriptor pfd, Interfaces.Files.IPackageFile package)
 		{
+			// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 			foreach(System.Windows.Forms.MenuItem item in mi.MenuItems) 
 			{
 				try 

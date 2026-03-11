@@ -1,34 +1,8 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-
-//
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-//
-[assembly: AssemblyTitle("PJSE Coder Plugins")]
-[assembly: AssemblyDescription("PJSE enhanced object behaviour modification Plugins for SimPe")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Peter L Jones")]
-[assembly: AssemblyProduct("pjse.coder.plugin")]
-[assembly: AssemblyCopyright("Released under the GNU GPL")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-
-//
-// Version information for an assembly consists of the following four values:
-//
-//      Major Version
-//      Minor Version 
-//      Build Number
-//      Revision
-//
-// You can specify all the values or you can default the Revision and Build Numbers 
-// by using the '*' as shown below:
-//Make the version be what the wants.dll expects
-[assembly: AssemblyVersion("4.0.6608.29748")]
-[assembly: AssemblyFileVersion("4.0.6608.29748")]
 
 
 //

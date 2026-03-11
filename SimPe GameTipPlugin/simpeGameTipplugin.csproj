@@ -1,14 +1,7 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="Current">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>8.0.50727</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{E86E8EF6-EF83-4CD4-B2A7-20A08CD835A0}</ProjectGuid>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ApplicationIcon>
-    </ApplicationIcon>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
     <AssemblyName>simpe.gametip.plugin</AssemblyName>
@@ -23,211 +16,99 @@
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <StartupObject>
     </StartupObject>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
-    <TargetFrameworkProfile />
-    <OldToolsVersion>2.0</OldToolsVersion>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    <PostBuildEvent>if not exist "C:\Users\rhiam\source\repos\SimPeSource\SimPE.Main\bin\Debug\Plugins" mkdir "C:\Users\rhiam\source\repos\SimPeSource\SimPE.Main\bin\Debug\Plugins"
+copy "$(TargetPath)" "C:\Users\rhiam\source\repos\SimPeSource\SimPE.Main\bin\Debug\Plugins\" /Y</PostBuildEvent>
+    <AssemblyTitle>SimPe Game Tip Plugin</AssemblyTitle>
+    <Description>SimPe Plugin To Show Game Tips &amp; Stuff</Description>
+    <Company>Chris Hatch</Company>
+    <AssemblyVersion>2.69.20.24</AssemblyVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>..\__Debug\</OutputPath>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <BaseAddress>285212672</BaseAddress>
-    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
-    <DefineConstants>DEBUG</DefineConstants>
     <DocumentationFile>
     </DocumentationFile>
-    <DebugSymbols>true</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
     <NoStdLib>false</NoStdLib>
     <NoWarn>
     </NoWarn>
-    <Optimize>false</Optimize>
     <RegisterForComInterop>false</RegisterForComInterop>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <WarningLevel>4</WarningLevel>
-    <DebugType>full</DebugType>
-    <ErrorReport>prompt</ErrorReport>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>..\__Release\Plugins\</OutputPath>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <BaseAddress>285212672</BaseAddress>
-    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
     <DefineConstants>
     </DefineConstants>
     <DocumentationFile>
     </DocumentationFile>
-    <DebugSymbols>false</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
     <NoStdLib>false</NoStdLib>
     <NoWarn>
     </NoWarn>
-    <Optimize>true</Optimize>
     <RegisterForComInterop>false</RegisterForComInterop>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <WarningLevel>4</WarningLevel>
     <DebugType>none</DebugType>
-    <ErrorReport>prompt</ErrorReport>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <DebugSymbols>true</DebugSymbols>
     <OutputPath>..\bin\Debug\Plugins\</OutputPath>
-    <DefineConstants>DEBUG</DefineConstants>
     <BaseAddress>285212672</BaseAddress>
     <FileAlignment>4096</FileAlignment>
-    <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>bin\Release\</OutputPath>
     <BaseAddress>285212672</BaseAddress>
-    <Optimize>true</Optimize>
     <FileAlignment>4096</FileAlignment>
     <PlatformTarget>x86</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System">
+    <Reference Update="System">
       <Name>System</Name>
     </Reference>
-    <Reference Include="System.Data">
+    <Reference Update="System.Data">
       <Name>System.Data</Name>
     </Reference>
-    <Reference Include="System.Drawing">
+    <Reference Update="System.Drawing">
       <Name>System.Drawing</Name>
     </Reference>
-    <Reference Include="System.Windows.Forms">
-      <Name>System.Windows.Forms</Name>
-    </Reference>
-    <Reference Include="System.Xml">
+    <Reference Update="System.Xml">
       <Name>System.XML</Name>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="GameTipPackedFileUI.cs">
+    <Compile Update="GameTipPackedFileUI.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GameTipPackedFileUI.Designer.cs">
-      <DependentUpon>GameTipPackedFileUI.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GameTipPackedFileWrapper.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="GoalCacheFile.cs" />
-    <Compile Include="GoalLoader.cs" />
-    <Compile Include="LastEpUsedPackedFileUI.cs">
+    <Compile Update="LastEpUsedPackedFileUI.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="LastEpUsedPackedFileUI.Designer.cs">
-      <DependentUpon>LastEpUsedPackedFileUI.cs</DependentUpon>
-    </Compile>
-    <Compile Include="LastEpUsedPackedFileWrapper.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="GWInvPackedFileUI.cs">
+    <Compile Update="GWInvPackedFileUI.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GWInvPackedFileUI.Designer.cs">
-      <DependentUpon>GWInvPackedFileUI.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GWInvPackedFileWrapper.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="GameTipWrapperFactory.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="XgoalWrapper.cs" />
-    <EmbeddedResource Include="GameTipPackedFileUI.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>GameTipPackedFileUI.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="LastEpUsedPackedFileUI.resx">
-      <DependentUpon>LastEpUsedPackedFileUI.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GWInvPackedFileUI.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>GWInvPackedFileUI.cs</DependentUpon>
-    </EmbeddedResource>
+    <ProjectReference Include="..\SimPE.Cache\SimPE.Cache.csproj" />
+    <ProjectReference Include="..\SimPE.Clst\SimPE.Clst.csproj" />
+    <ProjectReference Include="..\SimPE.Filehandlers\SimPE.Filehandlers.csproj" />
+    <ProjectReference Include="..\SimPE.Helper\SimPE.Helper.csproj" />
+    <ProjectReference Include="..\SimPE.Interfaces\SimPE.Interfaces.csproj" />
+    <ProjectReference Include="..\SimPE.Packages\SimPE.Packages.csproj" />
+    <ProjectReference Include="..\SimPE.WorkSpaceHelper\SimPE.WorkSpaceHelper.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SimPE.Cache\SimPE.Cache.csproj">
-      <Project>{e0936d85-cb24-4564-a773-e0bf85510422}</Project>
-      <Name>SimPE.Cache</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\SimPE.Clst\SimPE.Clst.csproj">
-      <Project>{445be3ff-638c-4b6d-98bf-c7d70e95a7be}</Project>
-      <Name>SimPE.Clst</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\SimPE.Filehandlers\SimPE.Filehandlers.csproj">
-      <Project>{85099415-3448-4d91-979c-44690154fcd1}</Project>
-      <Name>SimPE.Filehandlers</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\SimPE.Helper\SimPE.Helper.csproj">
-      <Project>{7d2040cb-cd32-4c78-944e-472c050f8163}</Project>
-      <Name>SimPE.Helper</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\SimPE.Interfaces\SimPE.Interfaces.csproj">
-      <Project>{8ba84b01-58e5-4125-aa36-4a9dbd0c25c4}</Project>
-      <Name>SimPE.Interfaces</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\SimPE.Packages\SimPE.Packages.csproj">
-      <Project>{25b67dc9-167c-4d53-a51f-ec23135a30e9}</Project>
-      <Name>SimPE.Packages</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\SimPE.WorkSpaceHelper\SimPE.WorkSpaceHelper.csproj">
-      <Project>{f6de1680-4d13-4e34-9eb7-72aa122ce344}</Project>
-      <Name>SimPE.WorkSpaceHelper</Name>
-      <Private>False</Private>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
-    <PostBuildEvent>if not exist "C:\Users\rhiam\source\repos\SimPeSource\SimPE.Main\bin\Debug\Plugins" mkdir "C:\Users\rhiam\source\repos\SimPeSource\SimPE.Main\bin\Debug\Plugins"
-copy "$(TargetPath)" "C:\Users\rhiam\source\repos\SimPeSource\SimPE.Main\bin\Debug\Plugins\" /Y</PostBuildEvent>
-  </PropertyGroup>
 </Project>

@@ -1,14 +1,7 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="Current">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>8.0.50727</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{55A67A5D-43E8-4290-B52F-230233B1439D}</ProjectGuid>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ApplicationIcon>
-    </ApplicationIcon>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
     <AssemblyName>wosimpe.wardrobecleaner.wizard</AssemblyName>
@@ -23,216 +16,101 @@
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <StartupObject>
     </StartupObject>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
-    <TargetFrameworkProfile />
-    <OldToolsVersion>2.0</OldToolsVersion>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    <PostBuildEvent>if not exist "C:\Users\rhiam\source\repos\SimPeSource\SimPE.Main\bin\Debug\Plugins" mkdir "C:\Users\rhiam\source\repos\SimPeSource\SimPE.Main\bin\Debug\Plugins"
+copy "$(TargetPath)" "C:\Users\rhiam\source\repos\SimPeSource\SimPE.Main\bin\Debug\Plugins\" /Y</PostBuildEvent>
+    <AssemblyTitle>SimPe Wizard : Household Wardrobe Cleaner</AssemblyTitle>
+    <Product>SimPe Wizards</Product>
+    <Copyright>Copywrong</Copyright>
+    <AssemblyVersion>1.69.0.%2a</AssemblyVersion>
+    <FileVersion>1.69.0.0</FileVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>obj\Debug\</OutputPath>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <BaseAddress>285212672</BaseAddress>
-    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
-    <DefineConstants>DEBUG</DefineConstants>
     <DocumentationFile>
     </DocumentationFile>
-    <DebugSymbols>true</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
     <NoStdLib>false</NoStdLib>
     <NoWarn>
     </NoWarn>
-    <Optimize>false</Optimize>
     <RegisterForComInterop>false</RegisterForComInterop>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <WarningLevel>4</WarningLevel>
-    <DebugType>full</DebugType>
-    <ErrorReport>prompt</ErrorReport>
     <PlatformTarget>x86</PlatformTarget>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>..\..\__Release\Plugins\</OutputPath>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <BaseAddress>285212672</BaseAddress>
-    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
     <DefineConstants>
     </DefineConstants>
     <DocumentationFile>
     </DocumentationFile>
-    <DebugSymbols>false</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
     <NoStdLib>false</NoStdLib>
     <NoWarn>
     </NoWarn>
-    <Optimize>true</Optimize>
     <RegisterForComInterop>false</RegisterForComInterop>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <WarningLevel>4</WarningLevel>
     <DebugType>none</DebugType>
-    <ErrorReport>prompt</ErrorReport>
     <PlatformTarget>x86</PlatformTarget>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <DebugSymbols>true</DebugSymbols>
     <OutputPath>..\..\bin\Debug\Plugins\</OutputPath>
-    <DefineConstants>DEBUG</DefineConstants>
     <BaseAddress>285212672</BaseAddress>
     <FileAlignment>4096</FileAlignment>
-    <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>bin\Release\</OutputPath>
     <BaseAddress>285212672</BaseAddress>
-    <Optimize>true</Optimize>
     <FileAlignment>4096</FileAlignment>
     <PlatformTarget>x86</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System">
+    <Reference Update="System">
       <Name>System</Name>
     </Reference>
-    <Reference Include="System.Data">
+    <Reference Update="System.Data">
       <Name>System.Data</Name>
     </Reference>
-    <Reference Include="System.Drawing">
+    <Reference Update="System.Drawing">
       <Name>System.Drawing</Name>
     </Reference>
-    <Reference Include="System.Windows.Forms">
-      <Name>System.Windows.Forms</Name>
-    </Reference>
-    <Reference Include="System.Xml">
+    <Reference Update="System.Xml">
       <Name>System.XML</Name>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="HouseholdBrowser.cs">
+    <Compile Update="HouseholdBrowser.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="HouseholdBrowser.designer.cs">
-      <DependentUpon>HouseholdBrowser.cs</DependentUpon>
-    </Compile>
-    <Compile Include="NeighborhoodBrowser.cs">
+    <Compile Update="NeighborhoodBrowser.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="NeighborhoodBrowser.Designer.cs">
-      <DependentUpon>NeighborhoodBrowser.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Step1.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Step2.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Step3.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="WizardController.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="HouseholdBrowser.resx">
-      <DependentUpon>HouseholdBrowser.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="NeighborhoodBrowser.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>NeighborhoodBrowser.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Content Include="folder_home.png" />
-    <None Include="r3did.png" />
     <Content Include="WizardIcon.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\SimPE.Clst\SimPE.Clst.csproj">
-      <Project>{445be3ff-638c-4b6d-98bf-c7d70e95a7be}</Project>
-      <Name>SimPE.Clst</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\SimPE.Filehandlers\SimPE.Filehandlers.csproj">
-      <Project>{85099415-3448-4d91-979c-44690154fcd1}</Project>
-      <Name>SimPE.Filehandlers</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\SimPE.Helper\SimPE.Helper.csproj">
-      <Project>{7d2040cb-cd32-4c78-944e-472c050f8163}</Project>
-      <Name>SimPE.Helper</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\SimPE.Interfaces\SimPE.Interfaces.csproj">
-      <Project>{8ba84b01-58e5-4125-aa36-4a9dbd0c25c4}</Project>
-      <Name>SimPE.Interfaces</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\SimPE.NameProvider\SimPE.NameProvider.csproj">
-      <Project>{2c2b1881-0a90-47dd-8b85-8bf947d8b0c3}</Project>
-      <Name>SimPE.NameProvider</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\SimPE.Packages\SimPE.Packages.csproj">
-      <Project>{25b67dc9-167c-4d53-a51f-ec23135a30e9}</Project>
-      <Name>SimPE.Packages</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\SimPE.RCOL\SimPE.RCOL.csproj">
-      <Project>{849dc662-9191-473f-bc61-8d9ad9068ffa}</Project>
-      <Name>SimPE.RCOL</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\SimPE.Scenegraph\SimPE.Scenegraph.csproj">
-      <Project>{f4145736-97ed-417a-81ea-5635769abe35}</Project>
-      <Name>SimPE.Scenegraph</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\SimPE.Wizardbase\SimPE.Wizardbase.csproj">
-      <Project>{5ee2665c-bfe2-45c0-9ab7-93ff6fcdb63a}</Project>
-      <Name>SimPE.Wizardbase</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\SimPE.WorkSpaceHelper\SimPE.WorkSpaceHelper.csproj">
-      <Project>{f6de1680-4d13-4e34-9eb7-72aa122ce344}</Project>
-      <Name>SimPE.WorkSpaceHelper</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\WOSimPE - Interfaces\WOSimPE - Interfaces.csproj">
-      <Project>{833c3b98-5a2d-476b-8b4b-c9548c1c99b6}</Project>
-      <Name>WOSimPE - Interfaces</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\..\SimPE.Clst\SimPE.Clst.csproj" />
+    <ProjectReference Include="..\..\SimPE.Filehandlers\SimPE.Filehandlers.csproj" />
+    <ProjectReference Include="..\..\SimPE.Helper\SimPE.Helper.csproj" />
+    <ProjectReference Include="..\..\SimPE.Interfaces\SimPE.Interfaces.csproj" />
+    <ProjectReference Include="..\..\SimPE.NameProvider\SimPE.NameProvider.csproj" />
+    <ProjectReference Include="..\..\SimPE.Packages\SimPE.Packages.csproj" />
+    <ProjectReference Include="..\..\SimPE.RCOL\SimPE.RCOL.csproj" />
+    <ProjectReference Include="..\..\SimPE.Scenegraph\SimPE.Scenegraph.csproj" />
+    <ProjectReference Include="..\..\SimPE.Wizardbase\SimPE.Wizardbase.csproj" />
+    <ProjectReference Include="..\..\SimPE.WorkSpaceHelper\SimPE.WorkSpaceHelper.csproj" />
+    <ProjectReference Include="..\..\WOSimPE - Interfaces\WOSimPE - Interfaces.csproj" />
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
-    <PostBuildEvent>if not exist "C:\Users\rhiam\source\repos\SimPeSource\SimPE.Main\bin\Debug\Plugins" mkdir "C:\Users\rhiam\source\repos\SimPeSource\SimPE.Main\bin\Debug\Plugins"
-copy "$(TargetPath)" "C:\Users\rhiam\source\repos\SimPeSource\SimPE.Main\bin\Debug\Plugins\" /Y</PostBuildEvent>
-  </PropertyGroup>
 </Project>

@@ -78,13 +78,21 @@ namespace SimPe.PackedFiles.UserInterface
 		private System.Windows.Forms.ColumnHeader colLine;
 		private System.Windows.Forms.ColumnHeader colTitle;
 		private System.Windows.Forms.ColumnHeader colDesc;
+		// TODO ContextMenu is no longer supported. Use ContextMenuStrip instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 		private System.Windows.Forms.ContextMenu cmLangList;
+		// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 		private System.Windows.Forms.MenuItem menuItem1;
+		// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 		private System.Windows.Forms.MenuItem menuItem2;
+		// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 		private System.Windows.Forms.MenuItem menuItem3;
+		// TODO ContextMenu is no longer supported. Use ContextMenuStrip instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 		private System.Windows.Forms.ContextMenu cmStrList;
+		// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 		private System.Windows.Forms.MenuItem menuItem4;
+		// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 		private System.Windows.Forms.MenuItem menuItem5;
+		// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 		private System.Windows.Forms.MenuItem menuItem6;
 
 
@@ -93,11 +101,17 @@ namespace SimPe.PackedFiles.UserInterface
 		/// The Str wrapper handling the packed file data
 		/// </summary>
 		private SimPe.PackedFiles.Wrapper.Str wrapper;
+		// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 		private System.Windows.Forms.MenuItem menuItem7;
+		// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 		private System.Windows.Forms.MenuItem menuItem8;
+		// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 		private System.Windows.Forms.MenuItem menuItem9;
+		// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 		private System.Windows.Forms.MenuItem menuItem10;
+		// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 		private System.Windows.Forms.MenuItem menuItem11;
+		// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 		private System.Windows.Forms.MenuItem menuItem12;
 
 		private StrLanguage currentLang = null;
@@ -127,24 +141,38 @@ namespace SimPe.PackedFiles.UserInterface
 		private void InitializeComponent()
 		{
 			this.treeView1 = new System.Windows.Forms.TreeView();
+			// TODO ContextMenu is no longer supported. Use ContextMenuStrip instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 			this.cmLangList = new System.Windows.Forms.ContextMenu();
+			// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 			this.menuItem1 = new System.Windows.Forms.MenuItem();
+			// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 			this.menuItem2 = new System.Windows.Forms.MenuItem();
+			// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 			this.menuItem3 = new System.Windows.Forms.MenuItem();
 			this.splitter1 = new System.Windows.Forms.Splitter();
 			this.listView1 = new System.Windows.Forms.ListView();
 			this.colLine = new System.Windows.Forms.ColumnHeader();
 			this.colTitle = new System.Windows.Forms.ColumnHeader();
 			this.colDesc = new System.Windows.Forms.ColumnHeader();
+			// TODO ContextMenu is no longer supported. Use ContextMenuStrip instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 			this.cmStrList = new System.Windows.Forms.ContextMenu();
+			// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 			this.menuItem4 = new System.Windows.Forms.MenuItem();
+			// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 			this.menuItem5 = new System.Windows.Forms.MenuItem();
+			// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 			this.menuItem6 = new System.Windows.Forms.MenuItem();
+			// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 			this.menuItem7 = new System.Windows.Forms.MenuItem();
+			// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 			this.menuItem8 = new System.Windows.Forms.MenuItem();
+			// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 			this.menuItem9 = new System.Windows.Forms.MenuItem();
+			// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 			this.menuItem10 = new System.Windows.Forms.MenuItem();
+			// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 			this.menuItem11 = new System.Windows.Forms.MenuItem();
+			// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 			this.menuItem12 = new System.Windows.Forms.MenuItem();
 			this.SuspendLayout();
 			//
@@ -163,7 +191,8 @@ namespace SimPe.PackedFiles.UserInterface
 			//
 			// cmLangList
 			//
-			this.cmLangList.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+			// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
+												this.cmLangList.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
 																					   this.menuItem1,
 																					   this.menuItem2,
 																					   this.menuItem7,
@@ -230,7 +259,8 @@ namespace SimPe.PackedFiles.UserInterface
 			//
 			// cmStrList
 			//
-			this.cmStrList.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+			// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
+												this.cmStrList.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
 																					  this.menuItem10,
 																					  this.menuItem4,
 																					  this.menuItem5,

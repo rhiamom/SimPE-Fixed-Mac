@@ -57,8 +57,11 @@ namespace SimPe.Plugin
 		private System.Windows.Forms.Button button4;
 		private System.Windows.Forms.Button button2;
         internal System.Windows.Forms.PictureBox pb;
+		// TODO ContextMenu is no longer supported. Use ContextMenuStrip instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 		private System.Windows.Forms.ContextMenu contextMenu1;
+		// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 		private System.Windows.Forms.MenuItem miAdd;
+		// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 		internal System.Windows.Forms.MenuItem miRem;
 		private System.ComponentModel.IContainer components;
         internal System.Drawing.Image imge;
@@ -116,8 +119,11 @@ namespace SimPe.Plugin
             this.cbtypes = new System.Windows.Forms.ComboBox();
             this.llcommit = new System.Windows.Forms.LinkLabel();
             this.lblist = new System.Windows.Forms.ListBox();
+            // TODO ContextMenu is no longer supported. Use ContextMenuStrip instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
             this.contextMenu1 = new System.Windows.Forms.ContextMenu();
+            // TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
             this.miAdd = new System.Windows.Forms.MenuItem();
+            // TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
             this.miRem = new System.Windows.Forms.MenuItem();
             this.panel3 = new SimPe.Windows.Forms.WrapperBaseControl();
             this.wrapperPanel.SuspendLayout();
@@ -398,7 +404,8 @@ namespace SimPe.Plugin
             // 
             // contextMenu1
             // 
-            this.contextMenu1.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            // TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
+                                                this.contextMenu1.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.miAdd,
             this.miRem});
             // 

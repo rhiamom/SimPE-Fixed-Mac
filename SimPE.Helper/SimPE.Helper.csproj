@@ -1,244 +1,32 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7D2040CB-CD32-4C78-944E-472C050F8163}</ProjectGuid>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <OutputType>Library</OutputType>
     <RootNamespace>SimPe</RootNamespace>
-    <AssemblyName>simpe.helper</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Deterministic>true</Deterministic>
-    <TargetFrameworkProfile />
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    <StartupObject />
+    <PostBuildEvent>if not exist "C:\Users\rhiam\source\repos\SimPeSource\SimPE.Main\bin\Debug\" mkdir "C:\Users\rhiam\source\repos\SimPeSource\SimPE.Main\bin\Debug\"
+copy "$(TargetPath)" "C:\Users\rhiam\source\repos\SimPeSource\SimPE.Main\bin\Debug\" /Y
+</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>x86</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
     <OutputPath>..\bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>x86</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
     <OutputPath>..\bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <DebugSymbols>true</DebugSymbols>
     <OutputPath>..\bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AdvancedForms">
-      <HintPath>..\ExternalLibs\AdvancedForms.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="ambertation.utilities">
-      <HintPath>..\Libs\ambertation.utilities.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="NetDocks">
-      <HintPath>..\ExternalLibs\NetDocks.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
-    <Reference Include="XPCommonControls">
-      <HintPath>..\ExternalLibs\XPCommonControls.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Alias.cs" />
-    <Compile Include="ArgParser.cs" />
-    <Compile Include="ASerializeFormater.cs" />
-    <Compile Include="Boolset.cs" />
-    <Compile Include="CaseInvariantArrayList.cs" />
-    <Compile Include="GameRootAutoScanner.cs" />
-    <Compile Include="LoadIcon.cs" />
-    <Compile Include="GetImage.cs" />
-    <Compile Include="ColumnSorter.cs" />
-    <Compile Include="Containers.cs" />
-    <Compile Include="CountedListItem.cs" />
-    <Compile Include="CRC.cs" />
-    <Compile Include="CRCParameters.cs" />
-    <Compile Include="CRCStandard.cs" />
-    <Compile Include="DescriptiveSerializer.cs" />
-    <Compile Include="ExceptionForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ExpansionItem.cs" />
-    <Compile Include="FlagBase.cs" />
-    <Compile Include="FlagBaseConverter.cs" />
-    <Compile Include="FlagObjectBuilder.cs" />
-    <Compile Include="GlobalizedObject.cs" />
-    <Compile Include="HashAlgorithmParameters.cs" />
-    <Compile Include="Hashes.cs" />
-    <Compile Include="Helper.cs" />
-    <Compile Include="Html2Rtf.cs" />
-    <Compile Include="IAlias.cs" />
-    <Compile Include="ICacheFileTest.cs" />
-    <Compile Include="IniRegistry.cs" />
-    <Compile Include="IPackedFileDescriptorBasic.cs" />
-    <Compile Include="IPackedFileName.cs" />
-    <Compile Include="IPropertyClass.cs" />
-    <Compile Include="ISerializeFormater.cs" />
-    <Compile Include="IWaitingBarControl.cs" />
-    <Compile Include="LabelledBoolsetControl.cs">
+    <Compile Update="LabelledBoolsetControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="LabelledBoolsetControl.Designer.cs" />
-    <Compile Include="LayoutRegistry.cs" />
-    <Compile Include="Localization.cs" />
-    <Compile Include="LocalizedEnums.cs" />
-    <Compile Include="MetaData.cs" />
-    <Compile Include="Parameters.cs" />
-    <Compile Include="PathProvider.cs" />
-    <Compile Include="PathSettings.cs" />
-    <Compile Include="pjseMsgBox.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="pjseMsgBox.Designer.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PropertyObjectBuilder.cs" />
-    <Compile Include="PropertyObjectBuilderExt.cs" />
-    <Compile Include="PropertyUserTypes.cs" />
-    <Compile Include="Registry.cs" />
-    <Compile Include="SelectSimFolder.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SemiGlobalAlias.cs" />
-    <Compile Include="SemiGlobalListing.cs" />
-    <Compile Include="Serializer.cs" />
-    <Compile Include="StreamHelper.cs" />
-    <Compile Include="TGILoader.cs" />
-    <Compile Include="Thread.cs" />
-    <Compile Include="ThreadConsumer.cs" />
-    <Compile Include="TypeAlias.cs" />
-    <Compile Include="WaitingBar.cs" />
-    <Compile Include="WaitingForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="WaitingScreen.cs" />
-    <Compile Include="WarningException.cs" />
-    <Compile Include="XmlRegistry.cs" />
-    <EmbeddedResource Include="ExceptionForm.de.resx">
-      <DependentUpon>ExceptionForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ExceptionForm.fr.resx">
-      <DependentUpon>ExceptionForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ExceptionForm.it.resx">
-      <DependentUpon>ExceptionForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ExceptionForm.pl.resx">
-      <DependentUpon>ExceptionForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ExceptionForm.resx">
-      <DependentUpon>ExceptionForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ExceptionForm.ru.resx">
-      <DependentUpon>ExceptionForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="LabelledBoolsetControl.resx">
-      <DependentUpon>LabelledBoolsetControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Localization.de.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>Localization.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Localization.en-US.resx">
-      <DependentUpon>Localization.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Localization.fr.resx">
-      <DependentUpon>Localization.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Localization.it.resx">
-      <DependentUpon>Localization.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Localization.pl.resx">
-      <DependentUpon>Localization.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Localization.resx">
-      <DependentUpon>Localization.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Localization.ru.resx">
-      <DependentUpon>Localization.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="pjseMsgBox.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>pjseMsgBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <EmbeddedResource Include="SelectSimFolder.resx">
-      <DependentUpon>SelectSimFolder.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WaitingForm.de.resx">
-      <DependentUpon>WaitingForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WaitingForm.es.resx">
-      <DependentUpon>WaitingForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WaitingForm.fr.resx">
-      <DependentUpon>WaitingForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WaitingForm.it.resx">
-      <DependentUpon>WaitingForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WaitingForm.pl.resx">
-      <DependentUpon>WaitingForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WaitingForm.resx">
-      <DependentUpon>WaitingForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WaitingForm.ru.resx">
-      <DependentUpon>WaitingForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="IconXmlResources\expansions.xreg" />
     <EmbeddedResource Include="IconXmlResources\propertydefinition.xsd">
       <SubType>Designer</SubType>
@@ -255,18 +43,6 @@
     <Content Include="Data\simpe.layout">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="IconXmlResources\About_%24this.Icon.png" />
@@ -1061,10 +837,4 @@
     <EmbeddedResource Include="IconXmlResources\WizardImage.bmp" />
     <EmbeddedResource Include="IconXmlResources\WizardSmallImage.bmp" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>if not exist "C:\Users\rhiam\source\repos\SimPeSource\SimPE.Main\bin\Debug\" mkdir "C:\Users\rhiam\source\repos\SimPeSource\SimPE.Main\bin\Debug\"
-copy "$(TargetPath)" "C:\Users\rhiam\source\repos\SimPeSource\SimPE.Main\bin\Debug\" /Y
-</PostBuildEvent>
-  </PropertyGroup>
 </Project>

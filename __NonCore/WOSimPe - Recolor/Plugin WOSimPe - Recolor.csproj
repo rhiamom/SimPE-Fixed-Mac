@@ -1,14 +1,7 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="Current">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>8.0.50727</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{05362C54-8D40-46C8-9401-7C40A6647DE6}</ProjectGuid>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ApplicationIcon>
-    </ApplicationIcon>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
     <AssemblyName>wosimpe.recolor.wizard</AssemblyName>
@@ -23,73 +16,55 @@
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <StartupObject>
     </StartupObject>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
-    <OldToolsVersion>2.0</OldToolsVersion>
-    <TargetFrameworkProfile />
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    <AssemblyTitle>Wizards of SimPe - Recolour Wizard</AssemblyTitle>
+    <Description>This is just a Recolour Wizard</Description>
+    <Company>Ambertation</Company>
+    <Product>[DEBUG]</Product>
+    <AssemblyVersion>1.69.%2a</AssemblyVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>..\..\__Debug\Plugins\</OutputPath>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <BaseAddress>285212672</BaseAddress>
-    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DocumentationFile>
     </DocumentationFile>
-    <DebugSymbols>true</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
     <NoStdLib>false</NoStdLib>
     <NoWarn>
     </NoWarn>
-    <Optimize>false</Optimize>
     <RegisterForComInterop>false</RegisterForComInterop>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <WarningLevel>4</WarningLevel>
-    <DebugType>full</DebugType>
-    <ErrorReport>prompt</ErrorReport>
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>..\..\__Release\Plugins\</OutputPath>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <BaseAddress>285212672</BaseAddress>
-    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
     <DefineConstants>
     </DefineConstants>
     <DocumentationFile>
     </DocumentationFile>
-    <DebugSymbols>false</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
     <NoStdLib>false</NoStdLib>
     <NoWarn>
     </NoWarn>
-    <Optimize>true</Optimize>
     <RegisterForComInterop>false</RegisterForComInterop>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <WarningLevel>4</WarningLevel>
     <DebugType>none</DebugType>
-    <ErrorReport>prompt</ErrorReport>
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release MAC|AnyCPU' ">
     <OutputPath>..\..\__Release\Plugins\</OutputPath>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <BaseAddress>285212672</BaseAddress>
-    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
     <DefineConstants>TRACE MAC</DefineConstants>
     <DocumentationFile>
     </DocumentationFile>
-    <DebugSymbols>false</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
     <NoStdLib>false</NoStdLib>
     <NoWarn>
@@ -97,30 +72,18 @@
     <Optimize>true</Optimize>
     <RegisterForComInterop>false</RegisterForComInterop>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <WarningLevel>4</WarningLevel>
     <DebugType>none</DebugType>
-    <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <DebugSymbols>true</DebugSymbols>
     <OutputPath>..\..\bin\Debug\Plugins\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <BaseAddress>285212672</BaseAddress>
     <FileAlignment>4096</FileAlignment>
-    <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>bin\Release\</OutputPath>
     <BaseAddress>285212672</BaseAddress>
-    <Optimize>true</Optimize>
     <FileAlignment>4096</FileAlignment>
     <PlatformTarget>x86</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release MAC|x86'">
     <OutputPath>bin\x86\Release MAC\</OutputPath>
@@ -129,126 +92,35 @@
     <Optimize>true</Optimize>
     <FileAlignment>4096</FileAlignment>
     <PlatformTarget>x86</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System">
+    <Reference Update="System">
       <Name>System</Name>
     </Reference>
-    <Reference Include="System.Data">
+    <Reference Update="System.Data">
       <Name>System.Data</Name>
     </Reference>
-    <Reference Include="System.Drawing">
+    <Reference Update="System.Drawing">
       <Name>System.Drawing</Name>
     </Reference>
-    <Reference Include="System.Windows.Forms">
-      <Name>System.Windows.Forms</Name>
-    </Reference>
-    <Reference Include="System.Xml">
+    <Reference Update="System.Xml">
       <Name>System.XML</Name>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="RecolorWizardForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Step1.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Step1b.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Step2.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Step3.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <EmbeddedResource Include="RecolorWizardForm.resx">
-      <DependentUpon>RecolorWizardForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
+    <ProjectReference Include="..\..\SimPE.Cache\SimPE.Cache.csproj" />
+    <ProjectReference Include="..\..\SimPE.Commandline\SimPE.Commandline.csproj" />
+    <ProjectReference Include="..\..\SimPE.Filehandlers\SimPE.Filehandlers.csproj" />
+    <ProjectReference Include="..\..\SimPE.GraphControl\SimPE.GraphControl.csproj" />
+    <ProjectReference Include="..\..\SimPE.Helper\SimPE.Helper.csproj" />
+    <ProjectReference Include="..\..\SimPE.Interfaces\SimPE.Interfaces.csproj" />
+    <ProjectReference Include="..\..\SimPE.Packages\SimPE.Packages.csproj" />
+    <ProjectReference Include="..\..\SimPE.RCOL\SimPE.RCOL.csproj" />
+    <ProjectReference Include="..\..\SimPE.ResourceControls\SimPE.ResourceControls.csproj" />
+    <ProjectReference Include="..\..\SimPE.Scenegraph\SimPE.Scenegraph.csproj" />
+    <ProjectReference Include="..\..\SimPE.ToolBoxWorkshops\SimPE.ToolBoxWorkshops.csproj" />
+    <ProjectReference Include="..\..\SimPE.Toolbox\SimPE.Toolbox.csproj" />
+    <ProjectReference Include="..\..\SimPE.WorkSpaceHelper\SimPE.WorkSpaceHelper.csproj" />
+    <ProjectReference Include="..\..\WOSimPE - Interfaces\WOSimPE - Interfaces.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\SimPE.Cache\SimPE.Cache.csproj">
-      <Project>{e0936d85-cb24-4564-a773-e0bf85510422}</Project>
-      <Name>SimPE.Cache</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\SimPE.Commandline\SimPE.Commandline.csproj">
-      <Project>{bd9d9744-c621-42ee-8496-5f0642c913cd}</Project>
-      <Name>SimPE.Commandline</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\SimPE.Filehandlers\SimPE.Filehandlers.csproj">
-      <Project>{85099415-3448-4d91-979c-44690154fcd1}</Project>
-      <Name>SimPE.Filehandlers</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\SimPE.GraphControl\SimPE.GraphControl.csproj">
-      <Project>{62da1ebc-f59d-4877-a23f-11f5fc2356da}</Project>
-      <Name>SimPE.GraphControl</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\SimPE.Helper\SimPE.Helper.csproj">
-      <Project>{7d2040cb-cd32-4c78-944e-472c050f8163}</Project>
-      <Name>SimPE.Helper</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\SimPE.Interfaces\SimPE.Interfaces.csproj">
-      <Project>{8ba84b01-58e5-4125-aa36-4a9dbd0c25c4}</Project>
-      <Name>SimPE.Interfaces</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\SimPE.Packages\SimPE.Packages.csproj">
-      <Project>{25b67dc9-167c-4d53-a51f-ec23135a30e9}</Project>
-      <Name>SimPE.Packages</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\SimPE.RCOL\SimPE.RCOL.csproj">
-      <Project>{849dc662-9191-473f-bc61-8d9ad9068ffa}</Project>
-      <Name>SimPE.RCOL</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\SimPE.ResourceControls\SimPE.ResourceControls.csproj">
-      <Project>{81327194-e4cb-4a8c-a0e4-87eb3bb5fcc7}</Project>
-      <Name>SimPE.ResourceControls</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\SimPE.Scenegraph\SimPE.Scenegraph.csproj">
-      <Project>{f4145736-97ed-417a-81ea-5635769abe35}</Project>
-      <Name>SimPE.Scenegraph</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\SimPE.ToolBoxWorkshops\SimPE.ToolBoxWorkshops.csproj">
-      <Project>{3f07c566-8460-4c68-b26f-bdfbcc0496b8}</Project>
-      <Name>SimPE.ToolBoxWorkshops</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\SimPE.Toolbox\SimPE.Toolbox.csproj">
-      <Project>{b5a2448d-f5f4-40ec-9641-05642134c357}</Project>
-      <Name>SimPE.Toolbox</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\SimPE.WorkSpaceHelper\SimPE.WorkSpaceHelper.csproj">
-      <Project>{f6de1680-4d13-4e34-9eb7-72aa122ce344}</Project>
-      <Name>SimPE.WorkSpaceHelper</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\WOSimPE - Interfaces\WOSimPE - Interfaces.csproj">
-      <Project>{833c3b98-5a2d-476b-8b4b-c9548c1c99b6}</Project>
-      <Name>WOSimPE - Interfaces</Name>
-      <Private>False</Private>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
-    <PostBuildEvent>
-    </PostBuildEvent>
-  </PropertyGroup>
 </Project>

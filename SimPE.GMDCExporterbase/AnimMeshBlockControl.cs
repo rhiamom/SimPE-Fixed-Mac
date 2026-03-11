@@ -46,8 +46,11 @@ namespace SimPe.Plugin.Anim
 		private System.Windows.Forms.LinkLabel llExport;
 		private System.Windows.Forms.LinkLabel llImport;
         private System.Windows.Forms.CheckBox cbCorrect;
+		// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 		private System.Windows.Forms.MenuItem miAdd;
+		// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 		private System.Windows.Forms.MenuItem miRem;
+		// TODO ContextMenu is no longer supported. Use ContextMenuStrip instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 		private System.Windows.Forms.ContextMenu cmJoint;
 		/// <summary> 
 		/// Required designer variable.
@@ -116,8 +119,11 @@ namespace SimPe.Plugin.Anim
 			this.pnSubMesh = new System.Windows.Forms.Panel();
 			this.cbSubMesh = new System.Windows.Forms.ComboBox();
 			this.label2 = new System.Windows.Forms.Label();
+			// TODO ContextMenu is no longer supported. Use ContextMenuStrip instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 			this.cmJoint = new System.Windows.Forms.ContextMenu();
+			// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 			this.miAdd = new System.Windows.Forms.MenuItem();
+			// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 			this.miRem = new System.Windows.Forms.MenuItem();
 			this.panel2.SuspendLayout();
 			this.pnJoint.SuspendLayout();
@@ -237,7 +243,8 @@ namespace SimPe.Plugin.Anim
 			// 
 			// cmJoint
 			// 
-			this.cmJoint.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+			// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
+												this.cmJoint.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
 																					this.miAdd,
 																					this.miRem});
 			// 

@@ -54,15 +54,21 @@ namespace SimPe.Plugin.Anim
 		private System.Windows.Forms.Label lbTimeCode;
 		private System.Windows.Forms.LinkLabel llRefresh;
 		private System.Windows.Forms.LinkLabel llClone;
+		// TODO ContextMenu is no longer supported. Use ContextMenuStrip instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 		private System.Windows.Forms.ContextMenu contextMenu1;
+        // TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
         private System.Windows.Forms.MenuItem miExp;
+        // TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
         private System.Windows.Forms.MenuItem miClp;
+        // TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
         private System.Windows.Forms.MenuItem miSlp;
+		// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 		private System.Windows.Forms.MenuItem miRem;
 		private System.Windows.Forms.TextBox tbDuration;
 		private System.Windows.Forms.TextBox tbName;
 		private System.Windows.Forms.Label lbDuration;
 		private System.Windows.Forms.Label lbName;
+		// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 		private System.Windows.Forms.MenuItem miSort;
 		/// <summary> 
 		/// Required designer variable.
@@ -116,11 +122,17 @@ namespace SimPe.Plugin.Anim
 		{
 			System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(AnimFrameBlockControl));
 			this.tv = new System.Windows.Forms.TreeView();
+            // TODO ContextMenu is no longer supported. Use ContextMenuStrip instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
             this.contextMenu1 = new System.Windows.Forms.ContextMenu();
+            // TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
             this.miSlp = new System.Windows.Forms.MenuItem();
+            // TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
             this.miClp = new System.Windows.Forms.MenuItem();
+			// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 			this.miExp = new System.Windows.Forms.MenuItem();
+			// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 			this.miRem = new System.Windows.Forms.MenuItem();
+			// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
 			this.miSort = new System.Windows.Forms.MenuItem();
 			this.splitter1 = new System.Windows.Forms.Splitter();
 			this.panel2 = new System.Windows.Forms.Panel();
@@ -179,7 +191,8 @@ namespace SimPe.Plugin.Anim
 			// 
 			// contextMenu1
 			// 
-			this.contextMenu1.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+			// TODO MenuItem is no longer supported. Use ToolStripMenuItem instead. For more details see https://docs.microsoft.com/en-us/dotnet/core/compatibility/winforms#removed-controls
+												this.contextMenu1.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
 																						 this.miExp,
 																						 this.miRem,
 																						 this.miSort,
