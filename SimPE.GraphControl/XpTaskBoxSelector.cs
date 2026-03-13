@@ -216,7 +216,7 @@ namespace Ambertation.Windows.Forms
 			}
 		}
 
-		protected void DrawSelection(Graphics g, Rectangle ef3)
+		protected void DrawSelection(System.Drawing.Graphics g, Rectangle ef3)
 		{
 			int minleft = ef3.Right;
 			for (int i=0; i<pages.Count; i++)
@@ -255,7 +255,7 @@ namespace Ambertation.Windows.Forms
 			if (cachedimg!=null) cachedimg.Dispose();
 
 			cachedimg = new Bitmap(Width, Height);
-			Graphics g = Graphics.FromImage(cachedimg);
+			System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(cachedimg);
 			Ambertation.Windows.Forms.Graph.GraphPanelElement.SetGraphicsMode(g, false);
 			
 			Rectangle ef3 = this.SelectionRect;

@@ -35,7 +35,7 @@ using System.Windows.Forms;
 namespace Ambertation.Windows.Forms
 {
 	/// <summary>
-	/// Zusammenfassung für SelectorItem.
+	/// Zusammenfassung fï¿½r SelectorItem.
 	/// </summary>
 	public class SelectorItem
 	{
@@ -71,7 +71,7 @@ namespace Ambertation.Windows.Forms
 					txt = value;
 					parent.UpdateSelection(this);
 
-					Graphics g = Graphics.FromImage(new Bitmap(1, 1));
+					System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(new Bitmap(1, 1));
 					SizeF sz = g.MeasureString(Text, parent.HeaderFont);
 					g.Dispose();
 					wd = (int)Math.Ceiling(sz.Width);
@@ -99,7 +99,7 @@ namespace Ambertation.Windows.Forms
 				);
 		}
 
-		internal virtual Rectangle DrawButton(Graphics g, Rectangle rect, bool last, bool hover, bool selected)
+		internal virtual Rectangle DrawButton(System.Drawing.Graphics g, Rectangle rect, bool last, bool hover, bool selected)
 		{
 			pn.Visible = selected;
 			lastrect = rect;

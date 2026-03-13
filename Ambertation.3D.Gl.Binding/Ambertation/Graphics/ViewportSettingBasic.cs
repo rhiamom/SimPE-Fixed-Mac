@@ -1,6 +1,5 @@
 using System;
 using System.ComponentModel;
-using Microsoft.DirectX.Direct3D;
 
 namespace Ambertation.Graphics;
 
@@ -17,204 +16,91 @@ public class ViewportSettingBasic
 	}
 
 	protected bool autoaxismesh;
-
 	protected bool usespec;
-
 	protected bool uselight;
-
 	protected bool joints;
-
 	protected bool allowscr;
-
 	protected bool txtr;
-
 	protected bool bb;
-
-	protected ShadeMode smode;
-
+	protected GlShadeMode smode;
 	protected FillModes fm;
-
 	protected float jsz;
-
 	private bool fstate;
-
 	private bool fattr;
-
 	private bool eventpause;
 
 	[Category("Settings")]
 	public bool EnableTextures
 	{
-		get
-		{
-			return txtr;
-		}
-		set
-		{
-			if (txtr != value)
-			{
-				txtr = value;
-				FireStateChangeEvent();
-			}
-		}
+		get => txtr;
+		set { if (txtr != value) { txtr = value; FireStateChangeEvent(); } }
 	}
 
 	[Category("Settings")]
 	public bool RenderBoundingBoxes
 	{
-		get
-		{
-			return bb;
-		}
-		set
-		{
-			if (bb != value)
-			{
-				bb = value;
-				FireStateChangeEvent();
-			}
-		}
+		get => bb;
+		set { if (bb != value) { bb = value; FireStateChangeEvent(); } }
 	}
 
 	[Category("Settings")]
 	public FillModes FillMode
 	{
-		get
-		{
-			return fm;
-		}
-		set
-		{
-			if (fm != value)
-			{
-				fm = value;
-				FireStateChangeEvent();
-			}
-		}
+		get => fm;
+		set { if (fm != value) { fm = value; FireStateChangeEvent(); } }
 	}
 
 	[Browsable(false)]
 	[Category("Settings")]
 	public bool AllowSettingsDialog
 	{
-		get
-		{
-			return allowscr;
-		}
-		set
-		{
-			if (allowscr != value)
-			{
-				allowscr = value;
-				FireStateChangeEvent();
-			}
-		}
+		get => allowscr;
+		set { if (allowscr != value) { allowscr = value; FireStateChangeEvent(); } }
 	}
 
 	[Category("Settings")]
 	public bool RenderJoints
 	{
-		get
-		{
-			return joints;
-		}
-		set
-		{
-			if (joints != value)
-			{
-				joints = value;
-				FireStateChangeEvent();
-			}
-		}
+		get => joints;
+		set { if (joints != value) { joints = value; FireStateChangeEvent(); } }
 	}
 
 	[Category("Settings")]
 	public bool EnableSpecularHighlights
 	{
-		get
-		{
-			return usespec;
-		}
-		set
-		{
-			if (usespec != value)
-			{
-				usespec = value;
-				FireStateChangeEvent();
-			}
-		}
+		get => usespec;
+		set { if (usespec != value) { usespec = value; FireStateChangeEvent(); } }
 	}
 
 	[Category("Settings")]
 	public bool EnableLights
 	{
-		get
-		{
-			return uselight;
-		}
-		set
-		{
-			if (uselight != value)
-			{
-				uselight = value;
-				FireStateChangeEvent();
-			}
-		}
+		get => uselight;
+		set { if (uselight != value) { uselight = value; FireStateChangeEvent(); } }
 	}
 
 	[Category("Settings")]
-	public ShadeMode ShadeMode
+	public GlShadeMode ShadeMode
 	{
-		get
-		{
-			return smode;
-		}
-		set
-		{
-			if (smode != value)
-			{
-				smode = value;
-				FireStateChangeEvent();
-			}
-		}
+		get => smode;
+		set { if (smode != value) { smode = value; FireStateChangeEvent(); } }
 	}
 
 	[Category("Settings")]
 	public bool AddAxis
 	{
-		get
-		{
-			return autoaxismesh;
-		}
-		set
-		{
-			if (autoaxismesh != value)
-			{
-				autoaxismesh = value;
-				FireStateChangeEvent();
-			}
-		}
+		get => autoaxismesh;
+		set { if (autoaxismesh != value) { autoaxismesh = value; FireStateChangeEvent(); } }
 	}
 
 	[Category("Settings")]
 	public float JointScale
 	{
-		get
-		{
-			return jsz;
-		}
-		set
-		{
-			if (jsz != value)
-			{
-				jsz = value;
-				FireStateChangeEvent();
-			}
-		}
+		get => jsz;
+		set { if (jsz != value) { jsz = value; FireStateChangeEvent(); } }
 	}
 
 	public event EventHandler ChangedAttribute;
-
 	public event EventHandler ChangedState;
 
 	internal ViewportSettingBasic(DirectXPanel parent)
@@ -225,7 +111,7 @@ public class ViewportSettingBasic
 		joints = true;
 		uselight = true;
 		usespec = true;
-		smode = ShadeMode.Phong;
+		smode = GlShadeMode.Phong;
 		autoaxismesh = true;
 		jsz = 10f;
 		bb = false;
@@ -235,31 +121,17 @@ public class ViewportSettingBasic
 	protected void FireStateChangeEvent()
 	{
 		if (!eventpause)
-		{
-			if (this.ChangedState != null)
-			{
-				this.ChangedState(this, new EventArgs());
-			}
-		}
+			this.ChangedState?.Invoke(this, new EventArgs());
 		else
-		{
 			fstate = true;
-		}
 	}
 
 	protected void FireAttributeChangeEvent()
 	{
 		if (!eventpause)
-		{
-			if (this.ChangedAttribute != null)
-			{
-				this.ChangedAttribute(this, new EventArgs());
-			}
-		}
+			this.ChangedAttribute?.Invoke(this, new EventArgs());
 		else
-		{
 			fattr = true;
-		}
 	}
 
 	public void BeginUpdate()
@@ -280,16 +152,19 @@ public class ViewportSettingBasic
 		fstate = false;
 		fattr = false;
 		if (fireattr && firestat)
-		{
 			FireStateChangeEvent();
-		}
 		else if (fireattr)
-		{
 			FireAttributeChangeEvent();
-		}
 		else if (firestat)
-		{
 			FireStateChangeEvent();
-		}
+	}
+
+	internal FillModes GetFillMode(MeshBox box, int pass = 0)
+	{
+		if (fm == FillModes.Default || box.SpecialMesh)
+			return box.Wire ? FillModes.Wireframe : FillModes.Solid;
+		if (fm == FillModes.WireframeOverlay)
+			return pass == 1 ? FillModes.Solid : FillModes.Wireframe;
+		return fm;
 	}
 }

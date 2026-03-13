@@ -406,7 +406,7 @@ namespace Ambertation.Windows.Forms.Graph
 		
 		#region Drawing Support Methods		
 		
-		protected System.Drawing.Drawing2D.CustomLineCap PaintCap(Graphics g, Pen pen, Point loc, LinkControlCapType lcct, bool start)
+		protected System.Drawing.Drawing2D.CustomLineCap PaintCap(System.Drawing.Graphics g, Pen pen, Point loc, LinkControlCapType lcct, bool start)
 		{
 			Size hasz = HalfArrowSize;
 			Size asz = ArrowSize;
@@ -423,7 +423,7 @@ namespace Ambertation.Windows.Forms.Graph
 			return null;
 		}
 
-		protected void DrawNiceRoundRect(Graphics gr, int left, int top, int width, int height, int rad)
+		protected void DrawNiceRoundRect(System.Drawing.Graphics gr, int left, int top, int width, int height, int rad)
 		{
 			Rectangle srect = new Rectangle(left, top, width-1, height-1);
 
@@ -492,7 +492,7 @@ namespace Ambertation.Windows.Forms.Graph
 			if (Text!="") 
 			{
 				Bitmap b = new Bitmap(1, 1);
-				Graphics g = Graphics.FromImage(b);
+				System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(b);
 				SizeF sz = g.MeasureString(Text, Font);
 				g.Dispose();
 				b.Dispose();
@@ -545,7 +545,7 @@ namespace Ambertation.Windows.Forms.Graph
 				pstart.X, pstart.Y, ctrl1.X, ctrl1.Y,
 				ctrl2.X, ctrl2.Y, pend.X, pend.Y);
 		}
-		protected override void UserDraw(Graphics g)
+		protected override void UserDraw(System.Drawing.Graphics g)
 		{
 			if (sc==null || ec==null) return;
 			

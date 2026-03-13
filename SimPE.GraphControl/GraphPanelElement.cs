@@ -223,7 +223,7 @@ namespace Ambertation.Windows.Forms.Graph
 			OnPaint(e.Graphics, cachedimage, dst, src);	
 		}
 
-		protected virtual void OnPaint(Graphics g, Image canvas, Rectangle dst, Rectangle src)
+		protected virtual void OnPaint(System.Drawing.Graphics g, Image canvas, Rectangle dst, Rectangle src)
 		{
 			g.DrawImage(canvas, dst, src, System.Drawing.GraphicsUnit.Pixel);	
 		}
@@ -285,7 +285,7 @@ namespace Ambertation.Windows.Forms.Graph
 
 		
 		#region Drawing Support Methods
-		internal static void SetGraphicsMode(Graphics g, bool fast)
+		internal static void SetGraphicsMode(System.Drawing.Graphics g, bool fast)
 		{
 			if (fast) 
 			{
@@ -323,7 +323,7 @@ namespace Ambertation.Windows.Forms.Graph
 				cachedimage = new Bitmap(1, 1);
 				return;
 			}
-			Graphics g = Graphics.FromImage(cachedimage);
+			System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(cachedimage);
 			CompleteRedraw(g);
 			g.Dispose();
 		}
@@ -333,7 +333,7 @@ namespace Ambertation.Windows.Forms.Graph
 			get {return cachedimage;}
 		}
 
-		protected void CompleteRedraw(Graphics g)
+		protected void CompleteRedraw(System.Drawing.Graphics g)
 		{
 			SetGraphicsMode(g, true);						
 			g.FillRectangle(new SolidBrush(this.BackColor), 0, 0, Width, Height);
@@ -341,7 +341,7 @@ namespace Ambertation.Windows.Forms.Graph
 			UserDraw(g);
 		}
 
-		protected abstract void UserDraw(Graphics g);
+		protected abstract void UserDraw(System.Drawing.Graphics g);
 
 		
 		#endregion		

@@ -122,7 +122,7 @@ namespace Ambertation.Windows.Forms.Graph
 		#endregion
 
 		#region Event Override		
-		protected override void OnPaint(Graphics g, Image canvas, Rectangle dst, Rectangle src)
+		protected override void OnPaint(System.Drawing.Graphics g, Image canvas, Rectangle dst, Rectangle src)
 		{			
 			if (!Focused && fade<1)
 			{
@@ -170,20 +170,20 @@ namespace Ambertation.Windows.Forms.Graph
 			return imgAttributes;
 		}
 
-		protected void DrawNiceRoundRect(Graphics gr, int left, int top, int width, int height)
+		protected void DrawNiceRoundRect(System.Drawing.Graphics gr, int left, int top, int width, int height)
 		{
 			int rad = Math.Min(Math.Min(20, height/2), width/2);
 			DrawNiceRoundRect(gr, left, top, width, height, rad, PanelColor);
 		}
 
-		protected void DrawNiceRoundRect(Graphics gr, int left, int top, int width, int height, int rad, Color panelColor)
+		protected void DrawNiceRoundRect(System.Drawing.Graphics gr, int left, int top, int width, int height, int rad, Color panelColor)
 		{			
 			DrawNiceRoundRectStart(gr, left, top, width, height, rad, panelColor, BorderColor, GradientColor, FadeColor, Focused);
 			this.DrawText(gr);
 			DrawNiceRoundRectEnd(gr, left, top, width, height, rad, panelColor, BorderColor, GradientColor, FadeColor, Focused);
 		}
 
-		protected static void DrawNiceRoundRectStart(Graphics gr, int left, int top, int width, int height, int rad, Color bg, Color borderColor, Color gradientColor, Color fadeColor, bool focused)
+		protected static void DrawNiceRoundRectStart(System.Drawing.Graphics gr, int left, int top, int width, int height, int rad, Color bg, Color borderColor, Color gradientColor, Color fadeColor, bool focused)
 		{
 			Rectangle srect = new Rectangle(left, top, width-1, height-1);
 
@@ -221,7 +221,7 @@ namespace Ambertation.Windows.Forms.Graph
 			linepen.Dispose();
 		}
 
-		protected static void DrawNiceRoundRectEnd(Graphics gr, int left, int top, int width, int height, int rad, Color bg, Color borderColor, Color gradientColor, Color fadeColor, bool focused)
+		protected static void DrawNiceRoundRectEnd(System.Drawing.Graphics gr, int left, int top, int width, int height, int rad, Color bg, Color borderColor, Color gradientColor, Color fadeColor, bool focused)
 		{
 			Rectangle srect = new Rectangle(left, top, width-1, height-1);
 			Pen linepen = new Pen(borderColor);
@@ -236,13 +236,13 @@ namespace Ambertation.Windows.Forms.Graph
 			}
 		}
         
-        protected override void UserDraw(Graphics gr)
+        protected override void UserDraw(System.Drawing.Graphics gr)
 		{
 			
 			DrawNiceRoundRect(gr, 0, 0, Width, Height);		
 		}
 
-		protected virtual void DrawText(Graphics gr)
+		protected virtual void DrawText(System.Drawing.Graphics gr)
 		{
 		}
 		#endregion

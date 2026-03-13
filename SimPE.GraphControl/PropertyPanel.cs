@@ -90,7 +90,7 @@ namespace Ambertation.Windows.Forms.Graph
 
 		#region Basic Draw Methods
         
-        protected override void DrawText(Graphics gr)
+        protected override void DrawText(System.Drawing.Graphics gr)
 		{
 			if (this.properties==null) return;
 			LinkGraphic.SetGraphicsMode(gr, !Quality);

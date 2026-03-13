@@ -218,7 +218,7 @@ namespace Ambertation.Windows.Forms
 				return;
 			}
 			canvas = new Bitmap(this.Width, this.Height);
-			Graphics g = Graphics.FromImage(canvas);
+			System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(canvas);
 			Rectangle ef4;
 			g.SmoothingMode = SmoothingMode.HighQuality;
 			Rectangle ef3 = new Rectangle(0, 16, this.Width-1, headerh);

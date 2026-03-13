@@ -640,7 +640,7 @@ namespace Ambertation.Windows.Forms
 		protected float UpdateHexBoxRowHeight()
 		{
 			SizeF layoutSize = new SizeF(HexBoxColumnWidth, 5000.0F);
-			Graphics g = Graphics.FromHwnd(this.Handle);
+			System.Drawing.Graphics g = System.Drawing.Graphics.FromHwnd(this.Handle);
 			SizeF stringSize = g.MeasureString("0", Font, layoutSize);
 
 			hbrh = stringSize.Height;
@@ -662,7 +662,7 @@ namespace Ambertation.Windows.Forms
 		protected float GetTextWidth(string s, Font f)
 		{
 			SizeF layoutSize = new SizeF(HexBoxColumnWidth, 5000.0F);
-			Graphics g = Graphics.FromHwnd(this.Handle);
+			System.Drawing.Graphics g = System.Drawing.Graphics.FromHwnd(this.Handle);
 			SizeF stringSize = g.MeasureString(s, f, layoutSize);
 			
 			return stringSize.Width;
@@ -980,7 +980,7 @@ namespace Ambertation.Windows.Forms
 		Bitmap cachedimage;
 		Bitmap[] rowimage;
 
-		protected void SetGraphicsMode(Graphics g, bool fast)
+		protected void SetGraphicsMode(System.Drawing.Graphics g, bool fast)
 		{
 			if (fast) 
 			{
@@ -1006,7 +1006,7 @@ namespace Ambertation.Windows.Forms
 			if (cachedimage!=null) cachedimage.Dispose();			
 
 			cachedimage = new Bitmap(Width, Height);
-			Graphics g = Graphics.FromImage(cachedimage);
+			System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(cachedimage);
 			SetGraphicsMode(g, true);
             g.FillRectangle(new SolidBrush(this.BackGroundColour), 0, 0, Width, Height);
 
@@ -1016,13 +1016,13 @@ namespace Ambertation.Windows.Forms
 
 		protected void UpdateGraphics()
 		{
-			Graphics g = Graphics.FromImage(cachedimage);
+			System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(cachedimage);
 			SetGraphicsMode(g, true);
 			UpdateGraphics(g);
 			g.Dispose();
 		}
 
-		protected void UpdateGraphics(Graphics g)
+		protected void UpdateGraphics(System.Drawing.Graphics g)
 		{								
 			PaintOffsetBox(g);
 			PaintHexBox(g);
@@ -1193,7 +1193,7 @@ namespace Ambertation.Windows.Forms
 		#endregion		
 
 		#region Additional Painting Functions
-		protected void DrawImageH(Graphics g, Image i, Rectangle dest, Rectangle src)
+		protected void DrawImageH(System.Drawing.Graphics g, Image i, Rectangle dest, Rectangle src)
 		{
 			Rectangle rec = new Rectangle(dest.Left, dest.Top, src.Width, src.Height);
 
@@ -1207,7 +1207,7 @@ namespace Ambertation.Windows.Forms
 			g.DrawImage(i, rec, src, GraphicsUnit.Pixel);
 		}
 
-		protected void DrawImageV(Graphics g, Image i, Rectangle dest, Rectangle src)
+		protected void DrawImageV(System.Drawing.Graphics g, Image i, Rectangle dest, Rectangle src)
 		{
 			Rectangle rec = new Rectangle(dest.Left, dest.Top, src.Width, src.Height);
 
@@ -1221,7 +1221,7 @@ namespace Ambertation.Windows.Forms
 			g.DrawImage(i, rec, src, GraphicsUnit.Pixel);
 		}
 
-		protected void DrawImageBox(Graphics g, int left, int top, int width, int height)
+		protected void DrawImageBox(System.Drawing.Graphics g, int left, int top, int width, int height)
 		{
 			Rectangle src = new Rectangle(0, 0, bm.Left, bm.Top);
 
@@ -1236,7 +1236,7 @@ namespace Ambertation.Windows.Forms
 			DrawImageV(g, border[7], new Rectangle(left, top+src.Height, src.Width, height-2*src.Height), src);
 		}
 
-		protected void DrawImageSide(Graphics g, int left, int top, int width, int height)
+		protected void DrawImageSide(System.Drawing.Graphics g, int left, int top, int width, int height)
 		{
 			Rectangle src = new Rectangle(0, 0, bm.Left, bm.Top);
 
@@ -1244,7 +1244,7 @@ namespace Ambertation.Windows.Forms
 			DrawImageV(g, border[7], new Rectangle(left, top, src.Width, height), src);
 		}
 
-		protected void DrawBar(Graphics g, SolidBrush b, int left, int top, int width, int height, bool start, bool end)
+		protected void DrawBar(System.Drawing.Graphics g, SolidBrush b, int left, int top, int width, int height, bool start, bool end)
 		{						
 			//if (start) g.FillPie(b, left-COLSPACING, top, height-1, height-1, 90, 180);
 			//if (end) g.FillPie(b, left+width-height+COLSPACING, top, height-1, height-1, -90, 180);
@@ -1281,14 +1281,14 @@ namespace Ambertation.Windows.Forms
 			g.FillPath(b, gp);
 		}
 
-		protected void DrawHighlightedCell(Graphics g, int left, int top, int width, int height)
+		protected void DrawHighlightedCell(System.Drawing.Graphics g, int left, int top, int width, int height)
 		{
 			SolidBrush p = new SolidBrush(this.ZeroCellColor);
 			g.FillEllipse(p, left-COLSPACING, top, width, height-1);
 			g.DrawEllipse(this.BorderPen, left-COLSPACING, top, width, height-1);
 		}
 
-		protected void DrawRowGrid(Graphics g, int height, int row)
+		protected void DrawRowGrid(System.Drawing.Graphics g, int height, int row)
 		{
 			if (grid) 
 			{
@@ -1309,13 +1309,13 @@ namespace Ambertation.Windows.Forms
 
 		#region Custom Drawing
 		
-		protected void DrawRowSelection(Graphics g, int offset, int height) 
+		protected void DrawRowSelection(System.Drawing.Graphics g, int offset, int height) 
 		{
 			DrawRowSelection(g, new SolidBrush(this.SelectionColor), offset, height, selection);
 		}
 
 		
-		protected void DrawRowSelection(Graphics g, SolidBrush b, int offset, int height, Highlight sel) 
+		protected void DrawRowSelection(System.Drawing.Graphics g, SolidBrush b, int offset, int height, Highlight sel) 
 		{
 			int hstart = sel.Start;
 			int hlen = sel.Length;
@@ -1359,7 +1359,7 @@ namespace Ambertation.Windows.Forms
 		protected void PaintRow(Bitmap b, int row)
 		{
 			
-			Graphics g = Graphics.FromImage(b);
+			System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(b);
 			SetGraphicsMode(g, true);
 			g.FillRectangle(new SolidBrush(base.BackColor), 0, 0, b.Width, b.Height);
 			
@@ -1442,7 +1442,7 @@ namespace Ambertation.Windows.Forms
 			g.Dispose();
 		}
 
-		protected void PaintRows(Graphics g)
+		protected void PaintRows(System.Drawing.Graphics g)
 		{
 			if (rowimage.Length==0) return;
 			Rectangle src = new Rectangle(0, 0, rowimage[0].Width-1, rowimage[0].Height-1);
@@ -1455,7 +1455,7 @@ namespace Ambertation.Windows.Forms
 			}
 		}
 
-		protected void PaintOffsetBox(Graphics g)
+		protected void PaintOffsetBox(System.Drawing.Graphics g)
 		{			
 			g.FillRectangle(this.BackBrush, 0, 0, this.OffsetBoxWidth, this.Height);	
 			g.FillRectangle(this.HeadBackBrush, 0, 0, this.OffsetBoxWidth, this.HexBoxRowHeight+bm.Top-COLSPACING);
@@ -1472,7 +1472,7 @@ namespace Ambertation.Windows.Forms
 			DrawImageBox(g, 0, 0, this.OffsetBoxWidth, this.Height);			
 		}
 
-		protected void PaintHexBox(Graphics g)
+		protected void PaintHexBox(System.Drawing.Graphics g)
 		{			
 			g.FillRectangle(this.BackBrush, this.OffsetBoxWidth+WINDOWSPACING, 0, this.HexBoxWidth, this.Height-1);			
 			g.FillRectangle(this.BackBrush, this.OffsetBoxWidth+this.HexBoxWidth+2*WINDOWSPACING, 0, this.CharBoxWidth, this.Height-1);			

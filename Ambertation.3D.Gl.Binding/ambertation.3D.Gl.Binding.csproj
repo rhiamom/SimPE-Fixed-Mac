@@ -9,11 +9,9 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <!-- TODO: Replace Microsoft.DirectX with OpenTK NuGet packages:
-         <PackageReference Include="OpenTK" Version="4.9.3" />
-         <PackageReference Include="OpenTK.GLControl" Version="4.9.3" />
-         <PackageReference Include="System.Drawing.Common" Version="8.0.0" />
-    -->
+    <PackageReference Include="OpenTK" Version="4.9.4" />
+    <PackageReference Include="OpenTK.GLControl" Version="4.0.2" />
+    <PackageReference Include="System.Drawing.Common" Version="8.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Ambertation.3D\ambertation.3D.csproj" />

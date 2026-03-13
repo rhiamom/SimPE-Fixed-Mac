@@ -116,12 +116,12 @@ namespace Ambertation.Windows.Forms.Graph
 			}
 		}
 
-		protected void DrawThumbnail(Graphics gr, Rectangle trec, int rad)
+		protected void DrawThumbnail(System.Drawing.Graphics gr, Rectangle trec, int rad)
 		{
 			DrawThumbnail(gr, trec, rad, thumb, BorderColor, ImagePanelColor, this.GradientColor, this.FadeColor, this.Focused, tborder, tborder);
 		}
 
-		protected static void DrawThumbnail(Graphics gr, Rectangle trec, int rad, Image thumb, Color borderColor, Color imagePanelColor, Color gradientColor, Color fadeColor, bool focused, int tborderx, int tbordery)
+		protected static void DrawThumbnail(System.Drawing.Graphics gr, Rectangle trec, int rad, Image thumb, Color borderColor, Color imagePanelColor, Color gradientColor, Color fadeColor, bool focused, int tborderx, int tbordery)
 		{
 			Rectangle srect = new Rectangle(trec.Left-tborderx, trec.Top-tbordery, trec.Width+2*tborderx, trec.Height+2*tbordery);;
 			DrawNiceRoundRectStart(gr, srect.X, srect.Y, srect.Width, srect.Height, rad, imagePanelColor, borderColor, gradientColor, fadeColor, focused);
@@ -137,7 +137,7 @@ namespace Ambertation.Windows.Forms.Graph
 			Bitmap b = new Bitmap(sz.Width, sz.Height);
 			Rectangle trec = new Rectangle(new Point(tborderx+2, tbordery+2), new Size(sz.Width-2*tborderx-4, sz.Height-2*tbordery-4));
 			img = Ambertation.Drawing.GraphicRoutines.ScaleImage(img, trec.Width, trec.Height, true);
-			Graphics g = Graphics.FromImage(b);
+			System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(b);
 			SetGraphicsMode(g, false);
 
 			DrawThumbnail(g, trec, rad, img, borderColor, imagePanelColor, gradientColor, fadeColor, focused, tborderx, tbordery);
@@ -146,7 +146,7 @@ namespace Ambertation.Windows.Forms.Graph
 			return b;
 		}
 
-		protected void DrawCaption(Graphics gr, Rectangle r, Font f, bool center)
+		protected void DrawCaption(System.Drawing.Graphics gr, Rectangle r, Font f, bool center)
 		{
 			StringFormat sf = new StringFormat();
 			sf.FormatFlags = StringFormatFlags.NoWrap;
@@ -176,7 +176,7 @@ namespace Ambertation.Windows.Forms.Graph
 				sf);	
 		}
 
-		protected override void UserDraw(Graphics gr)
+		protected override void UserDraw(System.Drawing.Graphics gr)
 		{
 			Rectangle trec = this.ThumbnailRectangle;
 			int rad = Math.Min(Math.Min(8, trec.Height/2), trec.Width/2);

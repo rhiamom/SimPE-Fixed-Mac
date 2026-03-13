@@ -121,7 +121,7 @@ namespace Ambertation.Windows.Forms
 			base.OnMouseLeave(e);
 			if (this._FlatStyle.Equals(FlatStyle.System)) 
 			{
-				Graphics graph = this.CreateGraphics();
+				System.Drawing.Graphics graph = this.CreateGraphics();
 				DrawingHelper.DrawCheckBox(graph, this.GetCheckBoxRectangle(), false, this.CheckState);
 				graph.Dispose();
 			}
@@ -132,7 +132,7 @@ namespace Ambertation.Windows.Forms
 			base.OnMouseEnter(e);
 			if (this._FlatStyle.Equals(FlatStyle.System)) 
 			{
-				Graphics graph = this.CreateGraphics();
+				System.Drawing.Graphics graph = this.CreateGraphics();
 				DrawingHelper.DrawCheckBox(graph, this.GetCheckBoxRectangle(), true, this.CheckState);
 				graph.Dispose();
 			}
@@ -143,7 +143,7 @@ namespace Ambertation.Windows.Forms
 			base.OnMouseUp(mevent);
 			if (this._FlatStyle.Equals(FlatStyle.System)) 
 			{
-				Graphics graph = this.CreateGraphics();
+				System.Drawing.Graphics graph = this.CreateGraphics();
 				DrawingHelper.DrawCheckBox(graph, this.GetCheckBoxRectangle(), true, this.CheckState);
 				graph.Dispose();
 			}
@@ -204,7 +204,7 @@ namespace Ambertation.Windows.Forms
 	internal class DrawingHelper
 	{
 	
-		public static void DrawCheckBox(Graphics graph, Rectangle rect, bool hot, CheckState state)
+		public static void DrawCheckBox(System.Drawing.Graphics graph, Rectangle rect, bool hot, CheckState state)
 		{
 			DrawCheckBackground(graph, rect);
 			if (hot.Equals(true)) 
@@ -214,7 +214,7 @@ namespace Ambertation.Windows.Forms
 			DrawCheckState(graph, rect, state);
 		}
 	
-		private static void DrawCheckBackground(Graphics graph, Rectangle rect)
+		private static void DrawCheckBackground(System.Drawing.Graphics graph, Rectangle rect)
 		{
 			LinearGradientBrush fillBrush;
 			fillBrush = new LinearGradientBrush(rect, SystemColors.ControlLightLight, SystemColors.ControlDark, LinearGradientMode.ForwardDiagonal);
@@ -227,7 +227,7 @@ namespace Ambertation.Windows.Forms
 			borderPen.Dispose();
 		}
 	
-		private static void DrawCheckHot(Graphics graph, Rectangle rect)
+		private static void DrawCheckHot(System.Drawing.Graphics graph, Rectangle rect)
 		{
 			LinearGradientBrush fillBrush;
 			Pen hotPen;
@@ -246,7 +246,7 @@ namespace Ambertation.Windows.Forms
 			hotPen.Dispose();
 		}
 	
-		private static void DrawCheckState(Graphics graph, Rectangle rect, CheckState state)
+		private static void DrawCheckState(System.Drawing.Graphics graph, Rectangle rect, CheckState state)
 		{
 			if (state == CheckState.Checked) 
 			{

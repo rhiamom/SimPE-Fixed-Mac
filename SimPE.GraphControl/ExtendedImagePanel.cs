@@ -94,7 +94,7 @@ namespace Ambertation.Windows.Forms.Graph
 			}
 		}
 
-		protected override void UserDraw(Graphics gr)
+		protected override void UserDraw(System.Drawing.Graphics gr)
 		{
 			Rectangle prec = this.PanelRectangle;
 			int rad = Math.Min(Math.Min(8, prec.Height/2), prec.Width/2);
@@ -106,7 +106,7 @@ namespace Ambertation.Windows.Forms.Graph
 			DrawThumbnail(gr, trec, rad);	
 		}
 
-		protected void DrawText(Graphics gr, Rectangle prec, Rectangle trec)
+		protected void DrawText(System.Drawing.Graphics gr, Rectangle prec, Rectangle trec)
 		{
 			if (this.properties==null) return;
 			LinkGraphic.SetGraphicsMode(gr, !Quality);

@@ -157,7 +157,7 @@ namespace Ambertation.Windows.Forms
 
 
 
-		public static void Draw(Graphics g, Control ctl, string themeClass, int themePart, int themeState, Rectangle bounds, Rectangle clipRect)
+		public static void Draw(System.Drawing.Graphics g, Control ctl, string themeClass, int themePart, int themeState, Rectangle bounds, Rectangle clipRect)
 		{
 			if (Themed)
 			{
@@ -181,12 +181,12 @@ namespace Ambertation.Windows.Forms
 			}
 		}
  
-		public static void DrawBackground(Graphics g, Control ctl, Rectangle clipRect)
+		public static void DrawBackground(System.Drawing.Graphics g, Control ctl, Rectangle clipRect)
 		{
 			DrawBackground(g, ctl, clipRect, false);
 		}
  
-		public static void DrawBackground(Graphics g, Control ctl, Rectangle clipRect, bool ignoreBackColor)
+		public static void DrawBackground(System.Drawing.Graphics g, Control ctl, Rectangle clipRect, bool ignoreBackColor)
 		{
 			if (Themed && (ignoreBackColor || (ctl.BackColor.ToKnownColor() == KnownColor.Control)))
 			{

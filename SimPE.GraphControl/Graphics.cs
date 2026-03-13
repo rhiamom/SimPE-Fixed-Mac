@@ -27,7 +27,6 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Collections;
 using System.Runtime.InteropServices;
-using Graphics = System.Drawing.Graphics;
 
 namespace Ambertation.Drawing
 {
@@ -158,7 +157,7 @@ namespace Ambertation.Drawing
             {
                 //if it isn't, convert it.
                 bm=new Bitmap(img.Width,img.Height,PixelFormat.Format32bppArgb);
-                Graphics g=Graphics.FromImage(bm);
+                System.Drawing.Graphics g=System.Drawing.Graphics.FromImage(bm);
                 g.InterpolationMode=InterpolationMode.NearestNeighbor;
                 g.DrawImage(img,new
                     Rectangle(0,0,bm.Width,bm.Height),0,0,img.Width,img.Height,GraphicsUnit.Pixel);
@@ -188,22 +187,22 @@ namespace Ambertation.Drawing
 	public class GraphicRoutines
 	{
 		#region RoundRect Routines
-		public static void DrawRoundRect(Graphics g,Pen p, Rectangle rect, int radius)
+		public static void DrawRoundRect(System.Drawing.Graphics g,Pen p, Rectangle rect, int radius)
 		{
 			DrawRoundRect(g, p, rect.X, rect.Y, rect.Width, rect.Height, radius);
 		}
 
-		public static void FillRoundRect(Graphics g, Brush b, Rectangle rect, int radius)
+		public static void FillRoundRect(System.Drawing.Graphics g, Brush b, Rectangle rect, int radius)
 		{
 			FillRoundRect(g, b, rect.X, rect.Y, rect.Width, rect.Height, radius);
 		}
 
-		public static void DrawRoundRect(Graphics g, Pen p, int x, int y, int width, int height, int radius)
+		public static void DrawRoundRect(System.Drawing.Graphics g, Pen p, int x, int y, int width, int height, int radius)
 		{			
 			g.DrawPath(p, RoundRectPath(x, y, width, height, radius));
 		}
 
-		public static void FillRoundRect(Graphics g, Brush b, int x, int y, int width, int height, int radius)
+		public static void FillRoundRect(System.Drawing.Graphics g, Brush b, int x, int y, int width, int height, int radius)
 		{			
 			g.FillPath(b, RoundRectPath(x, y, width, height, radius));
 		}
@@ -311,7 +310,7 @@ namespace Ambertation.Drawing
 			ImageAttributes attr = new ImageAttributes();
 			attr.SetRemapTable(colorMap);	 
  
-			Graphics g = Graphics.FromImage(bm);
+			System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(bm);
 			Ambertation.Windows.Forms.Graph.GraphPanelElement.SetGraphicsMode(g, !quality);
 			Rectangle rect = new Rectangle(0, 0, img.Width, img.Height);
 			g.DrawImage(img, rect, rect.Left, rect.Top, rect.Width, rect.Height, GraphicsUnit.Pixel, attr);
@@ -333,11 +332,11 @@ namespace Ambertation.Drawing
 
 		public static void FloodFill(Image img, Point pos, Color backColor, Color limitColor)
 		{
-			Graphics g = Graphics.FromImage(img);
+			System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(img);
 			FloodFill(g, pos, backColor, limitColor);
 			g.Dispose();
 		}
-		public static void FloodFill(Graphics g, Point pos, Color backColor, Color limitColor)
+		public static void FloodFill(System.Drawing.Graphics g, Point pos, Color backColor, Color limitColor)
 		{
 			// g.DrawRectangle(pens.Black,20,20,50,50);
 			IntPtr p = g.GetHdc();
@@ -361,7 +360,7 @@ namespace Ambertation.Drawing
 			else 			
 				bm = new Bitmap(img.Width+2, img.Height+2);							
 
-			Graphics g = Graphics.FromImage(bm);						
+			System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(bm);						
 			if (save) 
 			{
 				g.FillRectangle(new SolidBrush(((Bitmap)img).GetPixel(pos.X, pos.Y)), 0, 0, bm.Width, bm.Height);
@@ -389,7 +388,7 @@ namespace Ambertation.Drawing
 
 			Bitmap bm = new Bitmap(width, height);
 			
-			Graphics g = Graphics.FromImage(bm);						
+			System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(bm);						
 			Ambertation.Windows.Forms.Graph.GraphPanelElement.SetGraphicsMode(g, !quality);
 			g.DrawImage(img, new Rectangle(0, 0, width, height), new Rectangle(0, 0, img.Width, img.Height), GraphicsUnit.Pixel);
 			g.Dispose();

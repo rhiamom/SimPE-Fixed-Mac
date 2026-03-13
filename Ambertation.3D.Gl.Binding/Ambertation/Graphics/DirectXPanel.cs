@@ -1,1228 +1,915 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using Ambertation.Scenes;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
+using OpenTK.Graphics.OpenGL4;
+using OpenTK.GLControl;
+using OpenTK.Mathematics;
 
 namespace Ambertation.Graphics;
 
-public class DirectXPanel : UserControl, IDisposable
+/// <summary>Simple matrix stack for hierarchical transforms.</summary>
+internal class MatrixStack : IDisposable
 {
-	private Device device;
-
-	private PresentParameters presentParams = new PresentParameters();
-
-	private ViewportSetting vp;
-
-	private Effect effect;
-
-	private MeshList meshes;
-
-	private bool ignorechangeevent;
-
-	private MeshList sortedlist;
-
-	private Vector3 lastcampos;
-
-	private Matrix world = Matrix.Identity;
-
-	private MatrixStack mstack;
-
-	private MouseEventArgs last;
-
-	private ViewPortSetup vpsf;
-
-	public MeshList Meshes => meshes;
-
-	public Device Device
-	{
-		get
-		{
-			if (device == null)
-			{
-				InitializeGraphics(force: true);
-			}
-			return device;
-		}
-	}
-
-	public Effect Effect
-	{
-		get
-		{
-			return effect;
-		}
-		set
-		{
-			effect = value;
-		}
-	}
-
-	public ViewportSetting Settings => vp;
-
-	public override Color BackColor
-	{
-		get
-		{
-			return vp.BackgroundColor;
-		}
-		set
-		{
-			vp.BackgroundColor = value;
-		}
-	}
-
-	public virtual Matrix ProjectionMatrix
-	{
-		get
-		{
-			float num = vp.FarPlane / vp.NearPlane;
-			float num2 = Math.Max(vp.BoundingSphereRadius / 30f, vp.NearPlane + vp.Z);
-			Math.Max(num2 * num, num2 * 1000f);
-			num2 = vp.NearPlane + vp.Z;
-			if (Settings.UseLefthandedCoordinates)
-			{
-				return Matrix.PerspectiveFovLH(vp.FoV, vp.Aspect, vp.NearPlane, vp.FarPlane);
-			}
-			return Matrix.PerspectiveFovRH(vp.FoV, vp.Aspect, vp.NearPlane, vp.FarPlane);
-		}
-	}
-
-	public virtual Matrix BillboardMatrix
-	{
-		get
-		{
-			Matrix result = Matrix.Multiply(vp.Rotation, vp.AngelRotation);
-			result.Invert();
-			return result;
-		}
-	}
-
-	public virtual Matrix ViewMatrix => Matrix.Multiply(vp.Rotation, Matrix.Multiply(vp.AngelRotation, Matrix.Translation(vp.RealCameraPosition)));
-
-	public Matrix WorldMatrix
-	{
-		get
-		{
-			return world;
-		}
-		set
-		{
-			world = value;
-		}
-	}
-
-	public event EventHandler ResetDevice;
-
-	public event PrepareEffectEventHandler PrepareEffect;
-
-	public event EventHandler ChangedLights;
-
-	public event EventHandler RotationChanged;
-
-	public DirectXPanel()
-		: this(0.1)
-	{
-	}
-
-	public DirectXPanel(double linewd)
-	{
-		vp = new ViewportSetting(this);
-		vp.ChangedState += vp_ChangedState;
-		vp.ChangedAttribute += vp_ChangedAttribute;
-		Settings.BeginUpdate();
-		Settings.LineWidth = Settings.LineWidth;
-		meshes = new MeshList();
-		base.ClientSize = new Size(400, 300);
-		Text = "Direct3D Panel";
-		BackColor = Color.Gray;
-		ResetView();
-		Settings.EndUpdate(fireattr: false, firestat: false);
-	}
-
-	public void LoadSettings(string flname)
-	{
-		vp.Load(flname);
-	}
-
-	private void vp_ChangedAttribute(object sender, EventArgs e)
-	{
-		if (!ignorechangeevent)
-		{
-			ignorechangeevent = true;
-			Render();
-			ignorechangeevent = false;
-		}
-	}
-
-	private void vp_ChangedState(object sender, EventArgs e)
-	{
-		if (!ignorechangeevent)
-		{
-			ignorechangeevent = true;
-			Reset();
-			ignorechangeevent = false;
-		}
-	}
-
-	protected static bool IsDeviceMultiSampleOK(MultiSampleType multisampleType, DepthFormat depthFmt, Format backbufferFmt, out int result, out int qualityLevels)
-	{
-		AdapterInformation adapterInformation = Manager.Adapters.Default;
-		if ((backbufferFmt == Format.Unknown || Manager.CheckDeviceMultiSampleType(adapterInformation.Adapter, DeviceType.Hardware, backbufferFmt, windowed: false, multisampleType, out result, out qualityLevels)) && Manager.CheckDeviceMultiSampleType(adapterInformation.Adapter, DeviceType.Hardware, (Format)depthFmt, windowed: false, multisampleType, out result, out qualityLevels))
-		{
-			return true;
-		}
-		return false;
-	}
-
-	protected void SetMultiSampleIfAvail(MultiSampleType multisampleType)
-	{
-		int result = 0;
-		int qualityLevels = 0;
-		if (IsDeviceMultiSampleOK(multisampleType, presentParams.AutoDepthStencilFormat, presentParams.BackBufferFormat, out result, out qualityLevels) && result == 0)
-		{
-			presentParams.MultiSample = multisampleType;
-			presentParams.MultiSampleQuality = qualityLevels - 1;
-		}
-	}
-
-	protected bool InitializeGraphics(bool force)
-	{
-		try
-		{
-			presentParams.Windowed = true;
-			presentParams.SwapEffect = SwapEffect.Discard;
-			presentParams.EnableAutoDepthStencil = true;
-			presentParams.AutoDepthStencilFormat = DepthFormat.D16;
-			SetMultiSampleIfAvail(MultiSampleType.NonMaskable);
-			SetMultiSampleIfAvail(MultiSampleType.TwoSamples);
-			SetMultiSampleIfAvail(MultiSampleType.ThreeSamples);
-			SetMultiSampleIfAvail(MultiSampleType.FourSamples);
-			SetMultiSampleIfAvail(MultiSampleType.FiveSamples);
-			SetMultiSampleIfAvail(MultiSampleType.SixSamples);
-			SetMultiSampleIfAvail(MultiSampleType.SevenSamples);
-			SetMultiSampleIfAvail(MultiSampleType.EightSamples);
-			SetMultiSampleIfAvail(MultiSampleType.NineSamples);
-			SetMultiSampleIfAvail(MultiSampleType.TenSamples);
-			SetMultiSampleIfAvail(MultiSampleType.ElevenSamples);
-			SetMultiSampleIfAvail(MultiSampleType.TwelveSamples);
-			SetMultiSampleIfAvail(MultiSampleType.ThirteenSamples);
-			SetMultiSampleIfAvail(MultiSampleType.FourteenSamples);
-			SetMultiSampleIfAvail(MultiSampleType.FifteenSamples);
-			SetMultiSampleIfAvail(MultiSampleType.SixteenSamples);
-			device = new Device(0, DeviceType.Hardware, this, CreateFlags.SoftwareVertexProcessing, presentParams);
-			device.DeviceReset += OnResetDevice;
-			device.DeviceLost += device_DeviceLost;
-			OnCreateDevice(device, null);
-			OnResetDevice(device, null);
-			SetDeviceSize();
-			Settings.Paused = false;
-			return true;
-		}
-		catch (DirectXException)
-		{
-			return false;
-		}
-	}
-
-	private void device_DeviceLost(object sender, EventArgs e)
-	{
-	}
-
-	protected void OnCreateDevice(object sender, EventArgs e)
-	{
-		_ = (Device)sender;
-	}
-
-	public void ReloadMeshes()
-	{
-		OnResetDevice(device, new EventArgs());
-		Render();
-	}
-
-	public void AddScene(Scene scn)
-	{
-		SceneToMesh sceneToMesh = new SceneToMesh(scn, this);
-		meshes.AddRange(sceneToMesh.ConvertToDx());
-	}
-
-	public void AddLightMesh()
-	{
-		Microsoft.DirectX.Direct3D.Material mat = new Microsoft.DirectX.Direct3D.Material();
-		mat.Diffuse = Color.Yellow;
-		mat.Ambient = Color.Yellow;
-		mat.Specular = Color.Yellow;
-		mat.SpecularSharpness = 1f;
-		Microsoft.DirectX.Direct3D.Material mat2 = new Microsoft.DirectX.Direct3D.Material();
-		mat2.Diffuse = Color.DarkGray;
-		mat2.Ambient = Color.DarkGray;
-		mat2.Specular = Color.DarkGray;
-		mat2.SpecularSharpness = 1f;
-		Microsoft.DirectX.Direct3D.Mesh mesh = Microsoft.DirectX.Direct3D.Mesh.Sphere(Device, 2f * Settings.LineWidth, 10, 4);
-		Microsoft.DirectX.Direct3D.Mesh mesh2 = Microsoft.DirectX.Direct3D.Mesh.Box(Device, 2f * Settings.LineWidth, 2f * Settings.LineWidth, 2f * Settings.LineWidth);
-		for (int i = 0; i < Device.Lights.Count; i++)
-		{
-			Light light = Device.Lights[i];
-			MeshBox meshBox = (light.Enabled ? new MeshBox(mesh, 1, mat) : new MeshBox(mesh, 1, mat2));
-			Vector3 position = light.Position;
-			meshBox.Transform = Matrix.Translation(position);
-			meshBox.IgnoreDuringCameraReset = true;
-			Meshes.Add(meshBox);
-			meshBox = (light.Enabled ? new MeshBox(mesh2, 1, mat) : new MeshBox(mesh2, 1, mat2));
-			meshBox.Transform = Matrix.Translation(light.Position + 0.4f * light.Direction);
-			meshBox.IgnoreDuringCameraReset = true;
-			Meshes.Add(meshBox);
-			meshBox = (light.Enabled ? new MeshBox(mesh2, 1, mat) : new MeshBox(mesh2, 1, mat2));
-			meshBox.Transform = Matrix.Translation(light.Position + 0.5f * light.Direction);
-			meshBox.IgnoreDuringCameraReset = true;
-			Meshes.Add(meshBox);
-		}
-	}
-
-	protected void AddAxisMesh()
-	{
-		System.Drawing.Font f = new System.Drawing.Font("Tahoma", 8.25f);
-		AddAxisMesh(f, "X", Color.Green, new Vector3(1f, 0f, 0f));
-		AddAxisMesh(f, "Y", Color.Blue, new Vector3(0f, 1f, 0f));
-		AddAxisMesh(f, "Z", Color.Brown, new Vector3(0f, 0f, 1f));
-	}
-
-	protected void AddBoundingBoxMesh()
-	{
-		Scene owner = new Scene();
-		for (int num = meshes.Count - 1; num >= 0; num--)
-		{
-			if (!meshes[num].SpecialMesh)
-			{
-				Ambertation.Scenes.Mesh m = meshes[num].GetBoundingBox(rec: false, all: false).ToMesh(owner);
-				MeshBox meshBox = SceneToMesh.CreateDxMesh(device, m, isbb: true);
-				if (meshBox != null)
-				{
-					meshes.Add(meshBox);
-				}
-			}
-		}
-	}
-
-	protected void AddAxisMesh(System.Drawing.Font f, string txt, Color cl, Vector3 dir)
-	{
-		Vector3 vector = (0f - Settings.AxisScale) * Settings.LineWidth * dir;
-		MeshBox[] array = CreateLineMesh(vector, dir, 2f * Settings.AxisScale * Settings.LineWidth, GetMaterial(cl), wire: false, arrow: true);
-		MeshBox[] array2 = array;
-		foreach (MeshBox meshBox in array2)
-		{
-			meshBox.IgnoreDuringCameraReset = true;
-		}
-		Meshes.AddRange(array);
-		Matrix rotationMatrix = GetRotationMatrix(new Vector3(0f, 0f, 1f), dir);
-		vector = 1.01f * vector;
-		MeshBox meshBox2 = CreateTextMesh(vector.X, vector.Y, vector.Z, 10f * Settings.LineWidth, txt, Darken(cl, 0.5), rotationMatrix);
-		meshBox2.IgnoreDuringCameraReset = true;
-		Meshes.Add(meshBox2);
-	}
-
-	protected virtual void OnResetDevice(object sender, EventArgs e)
-	{
-		ignorechangeevent = true;
-		try
-		{
-			Device device = (Device)sender;
-			device.RenderState.Lighting = Settings.EnableLights;
-			device.RenderState.AlphaBlendEnable = Settings.EnableAlphaBlendPass;
-			device.RenderState.LocalViewer = true;
-			device.RenderState.ShadeMode = Settings.ShadeMode;
-			device.RenderState.SpecularEnable = Settings.EnableSpecularHighlights;
-			device.RenderState.Ambient = Settings.AmbientColor;
-			SetupLights();
-			if (mstack != null)
-			{
-				mstack.Dispose();
-			}
-			mstack = new MatrixStack();
-			if (this.ResetDevice != null)
-			{
-				this.ResetDevice(this, new EventArgs());
-			}
-			if (Settings.AddAxis)
-			{
-				AddAxisMesh();
-			}
-			if (Settings.AddLightIndicators)
-			{
-				AddLightMesh();
-			}
-			if (Settings.RenderBoundingBoxes)
-			{
-				AddBoundingBoxMesh();
-			}
-		}
-		catch (Exception value)
-		{
-			Console.WriteLine(value);
-		}
-		finally
-		{
-			ignorechangeevent = false;
-		}
-	}
-
-	public void Render()
-	{
-		if (device == null)
-		{
-			InitializeGraphics(force: false);
-		}
-		if (device == null || Settings.Paused)
-		{
-			return;
-		}
-		if (sortedlist == null)
-		{
-			sortedlist = new MeshList();
-		}
-		else
-		{
-			sortedlist.Clear(dispose: false);
-		}
-		device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, BackColor, 1f, 0);
-		device.BeginScene();
-		int ct = 1;
-		if (effect != null && Settings.EnableShaderEffectPass)
-		{
-			ct = effect.Begin(FX.None);
-		}
-		SetupLights();
-		SetupMatrices();
-		SetLastCameraPos();
-		RenderMeshList(ct, Meshes, alphapass: false, sorted: false);
-		if (Settings.EnableAlphaBlendPass)
-		{
-			RenderMeshList(ct, Meshes, alphapass: true, sorted: false);
-		}
-		RenderMeshList(ct, sortedlist, alphapass: true, sorted: true);
-		if (effect != null && Settings.EnableShaderEffectPass)
-		{
-			effect.End();
-		}
-		device.EndScene();
-		try
-		{
-			device.Present();
-		}
-		catch (Exception value)
-		{
-			Console.WriteLine(value);
-		}
-	}
-
-	private void SetLastCameraPos()
-	{
-		lastcampos = new Vector3(0f, 0f, 0f);
-		Matrix viewMatrix = ViewMatrix;
-		viewMatrix.Invert();
-		lastcampos.TransformCoordinate(viewMatrix);
-	}
-
-	private void RenderMeshList(int ct, MeshList meshes, bool alphapass, bool sorted)
-	{
-		if (meshes == null || meshes.Count == 0)
-		{
-			return;
-		}
-		if (!alphapass && !sorted)
-		{
-			device.RenderState.ZBufferWriteEnable = true;
-			device.RenderState.AlphaBlendEnable = true;
-			{
-				foreach (MeshBox item in (IEnumerable)meshes)
-				{
-					if (item.Opaque || !Settings.EnableAlphaBlendPass)
-					{
-						RenderMeshBox(ct, item, Settings.MeshPassCullMode, alphapass, sorted);
-					}
-				}
-				return;
-			}
-		}
-		if (!Settings.EnableAlphaBlendPass && !sorted)
-		{
-			return;
-		}
-		device.RenderState.ZBufferWriteEnable = false;
-		device.RenderState.AlphaBlendEnable = true;
-		foreach (MeshBox item2 in (IEnumerable)meshes)
-		{
-			if (sorted || !item2.Opaque)
-			{
-				RenderMeshBox(ct, item2, Settings.AlphaPassCullMode, alphapass, sorted);
-			}
-		}
-	}
-
-	private void RenderMeshBox(int ct, MeshBox box, Cull cull, bool alphapass, bool sorted)
-	{
-		device.RenderState.ZBufferEnable = box.ZTest;
-		SetupTextures(box.TextureMode);
-		if (!sorted)
-		{
-			mstack.Push();
-			mstack.MultiplyMatrixLocal(box.Transform);
-			if (box.Billboard)
-			{
-				mstack.MultiplyMatrixLocal(BillboardMatrix);
-			}
-			device.Transform.World = mstack.Top;
-			if (box.Sort)
-			{
-				box.SetupSortWorld(device.Transform.World, lastcampos);
-				AddToSortedList(box);
-			}
-		}
-		else
-		{
-			device.Transform.World = box.World;
-		}
-		if ((!box.JointMesh || Settings.RenderJoints) && (sorted || !box.Sort))
-		{
-			DoRenderMeshBox(ct, box, cull, 0);
-		}
-		RenderMeshList(ct, box, alphapass, sorted: false);
-		mstack.Pop();
-	}
-
-	private void DoRenderMeshBox(int ct, MeshBox box, Cull cull, int pass)
-	{
-		if (box.Mesh == null)
-		{
-			return;
-		}
-		device.RenderState.FillMode = Settings.GetFillMode(box, pass);
-		device.RenderState.CullMode = box.GetCullMode(cull);
-		if (pass == 0 && Settings.FillMode == ViewportSettingBasic.FillModes.WireframeOverlay)
-		{
-			device.Material = GetMaterial(255, Color.Black);
-		}
-		else
-		{
-			device.Material = box.Material;
-			if (Settings.EnableTextures)
-			{
-				if (box.Texture == null)
-				{
-					box.PrepareTexture(device);
-				}
-				device.SetTexture(0, box.Texture);
-			}
-		}
-		if (effect != null && this.PrepareEffect != null && Settings.EnableShaderEffectPass)
-		{
-			this.PrepareEffect(this, new PrepareEffectEventArgs(box));
-		}
-		for (int i = 0; i < ct; i++)
-		{
-			if (effect != null && Settings.EnableShaderEffectPass)
-			{
-				effect.BeginPass(i);
-			}
-			try
-			{
-				for (int j = 0; j < box.SubSetCount; j++)
-				{
-					box.Mesh.DrawSubset(j);
-				}
-			}
-			catch
-			{
-			}
-			if (effect != null && Settings.EnableShaderEffectPass)
-			{
-				effect.EndPass();
-			}
-		}
-		if (Settings.FillMode == ViewportSettingBasic.FillModes.WireframeOverlay && pass == 0 && !box.SpecialMesh)
-		{
-			DoRenderMeshBox(ct, box, cull, 1);
-		}
-	}
-
-	private void AddToSortedList(MeshBox box)
-	{
-		int index = sortedlist.Count;
-		int num = 0;
-		foreach (MeshBox item in (IEnumerable)sortedlist)
-		{
-			if (item.Distance < box.Distance)
-			{
-				index = num;
-				break;
-			}
-			num++;
-		}
-		sortedlist.Insert(index, box);
-	}
-
-	protected virtual void SetupLights()
-	{
-		Vector3 cameraPosition = vp.CameraPosition;
-		cameraPosition.TransformCoordinate(Matrix.RotationY(-(float)Math.PI / 6f));
-		Vector3 vector = -vp.CameraPosition;
-		vector.TransformCoordinate(Matrix.RotationY(-0.9239978f));
-		vector.TransformCoordinate(Matrix.RotationZ(-0.9239978f));
-		Vector3 vector2 = -1f * vp.CameraPosition;
-		vector2.TransformCoordinate(Matrix.RotationZ(0.9817477f));
-		vector2.TransformCoordinate(Matrix.RotationX(0.74799824f));
-		vector2.TransformCoordinate(Matrix.RotationY(0.8975979f));
-		device.Lights[0].Type = LightType.Directional;
-		device.Lights[0].Attenuation0 = 0.1f;
-		device.Lights[0].Attenuation1 = 0.1f;
-		device.Lights[0].Attenuation2 = 0.1f;
-		device.Lights[0].Diffuse = Settings.LightColorDiffuse;
-		device.Lights[0].Specular = Settings.LightColorSpecular;
-		device.Lights[0].Position = 2f * cameraPosition;
-		device.Lights[0].Direction = vp.CameraTarget - device.Lights[0].Position;
-		device.Lights[0].Range = 1f * (vp.ObjectCenter - device.Lights[0].Position).Length();
-		device.Lights[0].Enabled = true;
-		device.Lights[1].Type = device.Lights[0].Type;
-		device.Lights[1].Attenuation0 = 0.1f;
-		device.Lights[1].Attenuation1 = 0.1f;
-		device.Lights[1].Attenuation2 = 0.1f;
-		device.Lights[1].Falloff = device.Lights[0].Falloff;
-		device.Lights[1].Diffuse = device.Lights[0].Diffuse;
-		device.Lights[1].Specular = device.Lights[0].Specular;
-		device.Lights[1].Position = 4f * vector;
-		device.Lights[1].Direction = vp.CameraTarget - device.Lights[1].Position;
-		device.Lights[1].Range = 1f * (vp.ObjectCenter - device.Lights[1].Position).Length();
-		device.Lights[1].Enabled = true;
-		device.Lights[2].Type = LightType.Directional;
-		device.Lights[2].Attenuation0 = 0.1f;
-		device.Lights[2].Attenuation1 = 0.1f;
-		device.Lights[2].Attenuation2 = 0.1f;
-		device.Lights[2].Falloff = device.Lights[0].Falloff;
-		device.Lights[2].Diffuse = device.Lights[0].Diffuse;
-		device.Lights[2].Specular = device.Lights[0].Specular;
-		device.Lights[2].Position = 2f * vector2;
-		device.Lights[2].Direction = vp.CameraTarget - device.Lights[2].Position;
-		device.Lights[2].Range = 1f * (vp.ObjectCenter - device.Lights[2].Position).Length();
-		device.Lights[2].Enabled = true;
-		if (this.ChangedLights != null)
-		{
-			this.ChangedLights(this, new EventArgs());
-		}
-	}
-
-	private void SetupMatrices()
-	{
-		device.Transform.World = world;
-		device.Transform.View = ViewMatrix;
-		device.Transform.Projection = ProjectionMatrix;
-		mstack.LoadMatrix(world);
-	}
-
-	private void SetupTextures(Ambertation.Scenes.Material.TextureModes mode)
-	{
-		switch (mode)
-		{
-		case Ambertation.Scenes.Material.TextureModes.Default:
-			device.RenderState.SourceBlend = Blend.SourceAlpha;
-			device.RenderState.AlphaSourceBlend = Blend.SourceAlpha;
-			device.RenderState.DestinationBlend = Blend.InvSourceAlpha;
-			device.RenderState.AlphaDestinationBlend = Blend.InvSourceAlpha;
-			device.RenderState.AlphaBlendOperation = BlendOperation.Add;
-			device.TextureState[0].ColorOperation = TextureOperation.BlendCurrentAlpha;
-			device.TextureState[0].ColorArgument0 = TextureArgument.Diffuse;
-			device.TextureState[0].ColorArgument1 = TextureArgument.TextureColor;
-			device.TextureState[0].ColorArgument2 = TextureArgument.Diffuse;
-			device.TextureState[0].AlphaOperation = TextureOperation.Modulate;
-			device.TextureState[0].AlphaArgument0 = TextureArgument.Diffuse;
-			device.TextureState[0].AlphaArgument1 = TextureArgument.TextureColor;
-			device.TextureState[0].AlphaArgument2 = TextureArgument.Current;
-			break;
-		case Ambertation.Scenes.Material.TextureModes.ShadowTexture:
-			device.RenderState.SourceBlend = Blend.Zero;
-			device.RenderState.DestinationBlend = Blend.InvSourceColor;
-			device.RenderState.AlphaSourceBlend = Blend.SourceColor;
-			device.RenderState.AlphaDestinationBlend = Blend.One;
-			device.RenderState.AlphaBlendOperation = BlendOperation.Add;
-			device.TextureState[0].ColorOperation = TextureOperation.Subtract;
-			device.TextureState[0].ColorArgument0 = TextureArgument.Current;
-			device.TextureState[0].ColorArgument1 = TextureArgument.TextureColor;
-			device.TextureState[0].ColorArgument2 = TextureArgument.Diffuse;
-			device.TextureState[0].AlphaOperation = TextureOperation.Disable;
-			device.TextureState[0].AlphaArgument0 = TextureArgument.Current;
-			device.TextureState[0].AlphaArgument1 = TextureArgument.Current;
-			device.TextureState[0].AlphaArgument2 = TextureArgument.TextureColor;
-			break;
-		case Ambertation.Scenes.Material.TextureModes.MaterialWithTexture:
-			device.RenderState.SourceBlend = Blend.SourceAlpha;
-			device.RenderState.AlphaSourceBlend = Blend.SourceAlpha;
-			device.RenderState.DestinationBlend = Blend.InvSourceAlpha;
-			device.RenderState.AlphaDestinationBlend = Blend.InvSourceAlpha;
-			device.RenderState.AlphaBlendOperation = BlendOperation.Add;
-			device.TextureState[0].ColorOperation = TextureOperation.BlendTextureAlpha;
-			device.TextureState[0].ColorArgument0 = TextureArgument.Diffuse;
-			device.TextureState[0].ColorArgument1 = TextureArgument.TextureColor;
-			device.TextureState[0].ColorArgument2 = TextureArgument.Current;
-			device.TextureState[0].AlphaOperation = TextureOperation.Disable;
-			device.TextureState[0].AlphaArgument0 = TextureArgument.Diffuse;
-			device.TextureState[0].AlphaArgument1 = TextureArgument.TextureColor;
-			device.TextureState[0].AlphaArgument2 = TextureArgument.Current;
-			break;
-		default:
-			device.RenderState.SourceBlend = Blend.SourceAlpha;
-			device.RenderState.DestinationBlend = Blend.SourceColor;
-			device.RenderState.AlphaSourceBlend = Blend.SourceAlpha;
-			device.RenderState.AlphaDestinationBlend = Blend.SourceAlpha;
-			device.RenderState.AlphaBlendOperation = BlendOperation.Add;
-			device.TextureState[0].ColorOperation = TextureOperation.SelectArg1;
-			device.TextureState[0].ColorArgument0 = TextureArgument.Current;
-			device.TextureState[0].ColorArgument1 = TextureArgument.Diffuse;
-			device.TextureState[0].ColorArgument2 = TextureArgument.Current;
-			device.TextureState[0].AlphaOperation = TextureOperation.Disable;
-			device.TextureState[0].AlphaArgument0 = TextureArgument.Diffuse;
-			device.TextureState[0].AlphaArgument1 = TextureArgument.Diffuse;
-			device.TextureState[0].AlphaArgument2 = TextureArgument.Current;
-			break;
-		}
-		device.TextureState[1].ColorOperation = TextureOperation.Disable;
-		device.TextureState[1].AlphaOperation = TextureOperation.Disable;
-	}
-
-	public void Reset()
-	{
-		if (device != null)
-		{
-			device.EvictManagedResources();
-			try
-			{
-				OnResize(null);
-				device.Reset(presentParams);
-			}
-			catch (Exception value)
-			{
-				Console.WriteLine(value);
-			}
-		}
-		Render();
-	}
-
-	public void ResetDefaultViewport()
-	{
-		ResetView();
-		OnResetDevice(device, null);
-		Render();
-	}
-
-	public void ResetViewport(Vector3 min, Vector3 max)
-	{
-		ResetView(min, max);
-		OnResetDevice(device, null);
-		Render();
-	}
-
-	protected void ResetView()
-	{
-		vp.Reset();
-		BoundingBox boundingBox = new BoundingBox();
-		try
-		{
-			foreach (MeshBox item in (IEnumerable)Meshes)
-			{
-				if (!item.SpecialMesh)
-				{
-					boundingBox += item.GetBoundingBox(rec: true, all: false);
-				}
-			}
-			ResetView(Converter.ToDx(boundingBox.Min), Converter.ToDx(boundingBox.Max));
-		}
-		catch (Exception ex)
-		{
-			MessageBox.Show(ex.Message + "\n\n" + ex.StackTrace);
-		}
-	}
-
-	protected void ResetView(Vector3 min, Vector3 max)
-	{
-		try
-		{
-			Settings.BeginUpdate();
-			ignorechangeevent = true;
-			if (!(min.X > max.X))
-			{
-				Vector3 objectCenter = new Vector3((float)((double)(max.X + min.X) / 2.0), (float)((double)(max.Y + min.Y) / 2.0), (float)((double)(max.Z + min.Z) / 2.0));
-				double num = new Vector3(min.X - objectCenter.X, min.Y - objectCenter.Y, min.Z - objectCenter.Z).Length();
-				double num2 = num / Math.Sin(vp.FoV / 2f);
-				vp.ObjectCenter = objectCenter;
-				vp.X = 0f - objectCenter.X;
-				vp.Y = 0f - objectCenter.Y;
-				vp.Z = 0f - objectCenter.Z;
-				vp.CameraTarget = new Vector3(0f, 0f, 0f);
-				if (Settings.UseLefthandedCoordinates)
-				{
-					vp.CameraPosition = new Vector3(0f, 0f, (float)num2 * Settings.InitialCameraOffsetScale);
-				}
-				else
-				{
-					vp.CameraPosition = new Vector3(0f, 0f, (0f - (float)num2) * Settings.InitialCameraOffsetScale);
-				}
-				vp.NearPlane = (float)(num2 - num);
-				vp.FarPlane = (float)(num2 + num);
-				vp.NearPlane = 1f;
-				vp.FarPlane = 10000f;
-				vp.BoundingSphereRadius = (float)num;
-			}
-		}
-		catch (Exception ex)
-		{
-			MessageBox.Show(ex.Message + "\n\n" + ex.StackTrace);
-		}
-		finally
-		{
-			Settings.EndUpdate();
-			ignorechangeevent = false;
-		}
-	}
-
-	public void UpdateRotation()
-	{
-		OnMouseUp(null);
-	}
-
-	protected override void OnMouseUp(MouseEventArgs e)
-	{
-		ignorechangeevent = true;
-		vp.Rotation = Matrix.Multiply(vp.Rotation, vp.AngelRotation);
-		vp.ResetAngle();
-		ignorechangeevent = false;
-	}
-
-	protected override void OnMouseMove(MouseEventArgs e)
-	{
-		ignorechangeevent = true;
-		try
-		{
-			base.OnMouseMove(e);
-			if (last != null)
-			{
-				int num = e.X - last.X;
-				int num2 = e.Y - last.Y;
-				float num3 = 1f;
-				if (!Settings.UseLefthandedCoordinates)
-				{
-					num3 = -1f;
-				}
-				if (e.Button == MouseButtons.Right)
-				{
-					vp.AngelY -= num3 * ((float)num / vp.InputRotationScale);
-					vp.AngelX -= num3 * ((float)num2 / vp.InputRotationScale);
-					if (this.RotationChanged != null)
-					{
-						this.RotationChanged(this, new EventArgs());
-					}
-				}
-				if (e.Button == MouseButtons.Left)
-				{
-					vp.X += (float)num / ((float)base.Width * vp.InputTranslationScale / vp.BoundingSphereRadius);
-					vp.Y -= (float)num2 / ((float)base.Height * vp.InputTranslationScale / vp.BoundingSphereRadius);
-				}
-				if (e.Button == MouseButtons.Middle)
-				{
-					vp.Z += num3 * ((float)num2 / ((float)base.Height * vp.InputTranslationScale / vp.BoundingSphereRadius));
-					vp.AngelZ -= (float)num / vp.InputRotationScale;
-					if (this.RotationChanged != null)
-					{
-						this.RotationChanged(this, new EventArgs());
-					}
-				}
-				Render();
-			}
-			last = e;
-		}
-		finally
-		{
-			ignorechangeevent = false;
-		}
-	}
-
-	protected override void OnPaint(PaintEventArgs e)
-	{
-		Render();
-	}
-
-	protected override void OnSizeChanged(EventArgs e)
-	{
-		base.Width = Math.Max(1, base.Width);
-		base.Height = Math.Max(1, base.Height);
-		base.OnSizeChanged(e);
-	}
-
-	protected override void OnResize(EventArgs e)
-	{
-		base.Width = Math.Max(1, base.Width);
-		base.Height = Math.Max(1, base.Height);
-		Settings.Paused = Math.Min(base.Width, base.Height) <= 0;
-		SetDeviceSize();
-		if (base.Height != 0)
-		{
-			vp.Aspect = (float)base.Width / (float)base.Height;
-		}
-		else
-		{
-			vp.Aspect = 1f;
-		}
-		base.OnResize(e);
-	}
-
-	private void SetDeviceSize()
-	{
-		if (device != null)
-		{
-			Viewport viewport = new Viewport();
-			viewport.Width = base.Width;
-			viewport.Height = base.Height;
-			device.Viewport = viewport;
-		}
-	}
-
-	public Image Screenshot()
-	{
-		return Screenshot(ImageFileFormat.Png);
-	}
-
-	public Image Screenshot(ImageFileFormat format)
-	{
-		Surface backBuffer = device.GetBackBuffer(0, 0, BackBufferType.Mono);
-		Stream stream = SurfaceLoader.SaveToStream(format, backBuffer);
-		Image result = Image.FromStream(stream);
-		backBuffer.Dispose();
-		return result;
-	}
-
-	private static double Sign(double v)
-	{
-		return v / Math.Abs(v);
-	}
-
-	public static Matrix GetRotationMatrix(Vector3 src, Vector3 dst)
-	{
-		Quaternion rotationQuaternion = GetRotationQuaternion(src, dst);
-		return Matrix.RotationQuaternion(rotationQuaternion);
-	}
-
-	public static Quaternion GetRotationQuaternion(Vector3 src, Vector3 dst)
-	{
-		src.Normalize();
-		dst.Normalize();
-		Vector3 vector = Vector3.Cross(src, dst);
-		_ = Math.Asin(vector.Length()) / 2.0;
-		double num = Math.Acos(Vector3.Dot(src, dst)) / 2.0;
-		vector.Normalize();
-		vector = (float)Math.Sin(num) * vector;
-		return new Quaternion(vector.X, vector.Y, vector.Z, (float)Math.Cos(num));
-	}
-
-	public Microsoft.DirectX.Direct3D.Mesh CreatePyramidMesh(double width, double height)
-	{
-		float num = (float)(width / 2.0);
-		float num2 = (float)(height / 2.0);
-		CustomVertex.PositionNormal[] array = new CustomVertex.PositionNormal[5]
-		{
-			new CustomVertex.PositionNormal(0f - num, 0f - num, 0f - num2, 0f, 0f, 0f),
-			new CustomVertex.PositionNormal(num, 0f - num, 0f - num2, 0f, 0f, 0f),
-			new CustomVertex.PositionNormal(num, num, 0f - num2, 0f, 0f, 0f),
-			new CustomVertex.PositionNormal(0f - num, num, 0f - num2, 0f, 0f, 0f),
-			new CustomVertex.PositionNormal(0f, 0f, num2, 0f, 0f, 0f)
-		};
-		short[] array2 = new short[18]
-		{
-			2, 1, 0, 0, 3, 2, 0, 1, 4, 1,
-			2, 4, 2, 3, 4, 3, 0, 4
-		};
-		Microsoft.DirectX.Direct3D.Mesh mesh = new Microsoft.DirectX.Direct3D.Mesh(array2.Length / 3, array.Length, (MeshFlags)0, VertexFormats.PositionNormal, device);
-		mesh.SetVertexBufferData(array, LockFlags.None);
-		mesh.SetIndexBufferData(array2, LockFlags.None);
-		int[] array3 = new int[mesh.NumberFaces * 3];
-		mesh.GenerateAdjacency(0.01f, array3);
-		mesh.OptimizeInPlace(MeshFlags.OptimizeVertexCache, array3);
-		mesh.ComputeNormals(array3);
-		return mesh;
-	}
-
-	public MeshBox[] CreateLineMesh(Vector3 start, Vector3 stop, Microsoft.DirectX.Direct3D.Material mat, bool wire, bool arrow)
-	{
-		Vector3 dir = stop - start;
-		return CreateLineMesh(start, dir, dir.Length(), mat, wire, arrow);
-	}
-
-	public MeshBox[] CreateLineMesh(Vector3 start, Vector3 stop, Microsoft.DirectX.Direct3D.Material mat, bool wire, bool arrow, double linewd)
-	{
-		Vector3 dir = stop - start;
-		return CreateLineMesh(start, dir, dir.Length(), mat, wire, arrow, linewd);
-	}
-
-	public MeshBox[] CreateLineMesh(Vector3 dir, double len, Microsoft.DirectX.Direct3D.Material mat, bool wire, bool arrow)
-	{
-		return CreateLineMesh(new Vector3(0f, 0f, 0f), dir, len, mat, wire, arrow);
-	}
-
-	public MeshBox[] CreateLineMesh(Vector3 start, Vector3 dir, double len, Microsoft.DirectX.Direct3D.Material mat, bool wire, bool arrow)
-	{
-		return CreateLineMesh(start, dir, len, mat, wire, arrow, Settings.LineWidth);
-	}
-
-	public MeshBox[] CreateLineMesh(Vector3 start, Vector3 dir, double len, Microsoft.DirectX.Direct3D.Material mat, bool wire, bool arrow, double linewd)
-	{
-		float num = (float)linewd;
-		Microsoft.DirectX.Direct3D.Mesh mesh = Microsoft.DirectX.Direct3D.Mesh.Cylinder(device, num, num, (float)len, 8, 2);
-		Matrix rotationMatrix = GetRotationMatrix(new Vector3(0f, 0f, 1f), dir);
-		Vector3 v = new Vector3(0f, 0f, (float)(len / 2.0));
-		Matrix left = Matrix.Translation(v);
-		Matrix transform = Matrix.Multiply(left, rotationMatrix);
-		transform.Multiply(Matrix.Translation(start));
-		MeshBox meshBox = new MeshBox(mesh, 1, mat, transform);
-		meshBox.Wire = wire;
-		if (arrow)
-		{
-			mesh = CreatePyramidMesh(7f * num, 7f * num);
-			v = new Vector3(0f, 0f, (float)len);
-			left = Matrix.Translation(v);
-			transform = Matrix.Multiply(left, rotationMatrix);
-			transform.Multiply(Matrix.Translation(start));
-			MeshBox meshBox2 = new MeshBox(mesh, 1, mat, transform);
-			meshBox.Opaque = mat.Diffuse.A == byte.MaxValue || mat.Diffuse.A != 0;
-			meshBox2.Opaque = meshBox.Opaque;
-			meshBox2.Wire = wire;
-			return new MeshBox[2] { meshBox, meshBox2 };
-		}
-		return new MeshBox[1] { meshBox };
-	}
-
-	public MeshBox[] CreateNamedCube(double sz, Color bcl)
-	{
-		return CreateNamedCube(sz, bcl, GetTextColor(bcl), Matrix.Identity);
-	}
-
-	public MeshBox[] CreateNamedCube(double sz, Color bcl, Color tcl)
-	{
-		return CreateNamedCube(sz, bcl, tcl, Matrix.Identity);
-	}
-
-	public MeshBox[] CreateNamedCube(double sz, Color bcl, Color tcl, Matrix basetrans)
-	{
-		MeshBox[] array = new MeshBox[7];
-		double num = sz / 2.0;
-		array[0] = CreateCube(sz, bcl);
-		array[0].Transform = basetrans;
-		array[1] = CreateTextMesh(0.0, 0.0, num, sz * 0.5, "+pz", tcl, Matrix.RotationY((float)Math.PI));
-		array[1].Transform = Matrix.Multiply(array[1].Transform, array[0].Transform);
-		array[2] = CreateTextMesh(0.0, 0.0, 0.0 - num, sz * 0.5, "-pz", tcl, Matrix.Identity);
-		array[2].Transform = Matrix.Multiply(array[2].Transform, array[0].Transform);
-		array[3] = CreateTextMesh(0.0, num, 0.0, sz * 0.5, "+py", tcl, Matrix.RotationX((float)Math.PI / 2f));
-		array[3].Transform = Matrix.Multiply(array[3].Transform, array[0].Transform);
-		array[4] = CreateTextMesh(0.0, 0.0 - num, 0.0, sz * 0.5, "-py", tcl, Matrix.RotationX(-(float)Math.PI / 2f));
-		array[4].Transform = Matrix.Multiply(array[4].Transform, array[0].Transform);
-		array[5] = CreateTextMesh(num, 0.0, 0.0, sz * 0.5, "+px", tcl, Matrix.RotationY(-(float)Math.PI / 2f));
-		array[5].Transform = Matrix.Multiply(array[5].Transform, array[0].Transform);
-		array[6] = CreateTextMesh(0.0 - num, 0.0, 0.0, sz * 0.5, "-px", tcl, Matrix.RotationY((float)Math.PI / 2f));
-		array[6].Transform = Matrix.Multiply(array[6].Transform, array[0].Transform);
-		return array;
-	}
-
-	public MeshBox CreateCube(double sz, Color cl)
-	{
-		Microsoft.DirectX.Direct3D.Mesh mesh = Microsoft.DirectX.Direct3D.Mesh.Box(Device, (float)sz, (float)sz, (float)sz);
-		MeshBox meshBox = new MeshBox(mesh, 1, GetMaterial(cl));
-		meshBox.Wire = false;
-		return meshBox;
-	}
-
-	public MeshBox CreateBillboard(double width, double height, Image img)
-	{
-		float num = (float)(width / 2.0);
-		float num2 = (float)(height / 2.0);
-		CustomVertex.PositionNormalTextured[] array = new CustomVertex.PositionNormalTextured[5]
-		{
-			new CustomVertex.PositionNormalTextured(0f - num, 0f - num2, 0f, 0f, 0f, 0f, 0f, 0f),
-			new CustomVertex.PositionNormalTextured(0f - num, num2, 0f, 0f, 0f, 0f, 0f, -1f),
-			new CustomVertex.PositionNormalTextured(num, num2, 0f, 0f, 0f, 0f, 1f, -1f),
-			new CustomVertex.PositionNormalTextured(num, 0f - num2, 0f, 0f, 0f, 0f, 1f, 0f),
-			default(CustomVertex.PositionNormalTextured)
-		};
-		short[] array2 = new short[6] { 2, 1, 0, 0, 3, 2 };
-		Microsoft.DirectX.Direct3D.Mesh mesh = new Microsoft.DirectX.Direct3D.Mesh(array2.Length / 3, array.Length, (MeshFlags)0, VertexFormats.PositionNormal | VertexFormats.Texture1, device);
-		mesh.SetVertexBufferData(array, LockFlags.None);
-		mesh.SetIndexBufferData(array2, LockFlags.None);
-		int[] array3 = new int[mesh.NumberFaces * 3];
-		mesh.GenerateAdjacency(0.01f, array3);
-		mesh.OptimizeInPlace(MeshFlags.OptimizeVertexCache, array3);
-		mesh.ComputeNormals(array3);
-		MeshBox meshBox = new MeshBox(mesh, 1, GetMaterial(Color.FromArgb(255, Color.White)));
-		meshBox.Wire = false;
-		meshBox.Billboard = true;
-		meshBox.Sort = true;
-		meshBox.CullMode = MeshBox.Cull.None;
-		meshBox.SetTexture(img);
-		return meshBox;
-	}
-
-	public MeshBox CreateTextMesh(double x, double y, double z, double textsz, string text, Color cl)
-	{
-		return CreateTextMesh(x, y, z, textsz, text, cl, Matrix.Identity);
-	}
-
-	public MeshBox CreateTextMesh(double x, double y, double z, double textsz, string text, Color cl, Matrix trans)
-	{
-		if (double.IsNaN(textsz))
-		{
-			textsz = 1.0;
-		}
-		System.Drawing.Font font = new System.Drawing.Font("Tahoma", (float)textsz);
-		Microsoft.DirectX.Direct3D.Mesh mesh = Microsoft.DirectX.Direct3D.Mesh.TextFromFont(Device, font, text, Settings.LineWidth, Settings.LineWidth);
-		MeshBox meshBox = new MeshBox(mesh, 1, GetMaterial(cl));
-		Vector3[] boundingBoxVectors = meshBox.GetBoundingBoxVectors();
-		double num = (double)Math.Abs(boundingBoxVectors[1].X - boundingBoxVectors[0].X) / -2.0;
-		double num2 = (double)Math.Abs(boundingBoxVectors[1].Y - boundingBoxVectors[0].Y) / -2.0;
-		double num3 = (double)Math.Abs(boundingBoxVectors[1].Z - boundingBoxVectors[0].Z) / -2.0;
-		meshBox.Transform = Matrix.Multiply(Matrix.Translation(new Vector3((float)num, (float)num2, (float)num3)), Matrix.Multiply(Matrix.Scaling((float)textsz, (float)textsz, 1f), Matrix.Multiply(trans, Matrix.Translation(new Vector3((float)x, (float)y, (float)z)))));
-		meshBox.Wire = false;
-		return meshBox;
-	}
-
-	public MeshBox[] CreateLayerMesh(Vector3 start, Vector3 dir1, Vector3 dir2, double width, double height, Microsoft.DirectX.Direct3D.Material mat, bool wire)
-	{
-		Vector3 n = Vector3.Cross(dir1, dir2);
-		return CreateLayerMesh(start, n, width, height, mat, wire);
-	}
-
-	public MeshBox[] CreateLayerMesh(Vector3 start, Vector3 n, double width, double height, Microsoft.DirectX.Direct3D.Material mat, bool wire)
-	{
-		Microsoft.DirectX.Direct3D.Mesh mesh = Microsoft.DirectX.Direct3D.Mesh.Box(device, (float)width, (float)height, Settings.LineWidth * 0.3f);
-		try
-		{
-			int[] array = new int[mesh.NumberFaces * 3];
-			mesh.GenerateAdjacency(Settings.LineWidth, array);
-			mesh = Microsoft.DirectX.Direct3D.Mesh.TessellateNPatches(mesh, array, 32f, quadraticInterpNormals: true);
-		}
-		catch (Exception ex)
-		{
-			Console.WriteLine(ex.Message);
-		}
-		Matrix rotationMatrix = GetRotationMatrix(new Vector3(0f, 0f, 1f), n);
-		Matrix right = Matrix.Translation(start);
-		Matrix transform = Matrix.Multiply(rotationMatrix, right);
-		MeshBox meshBox = new MeshBox(mesh, 1, mat, transform);
-		meshBox.Opaque = mat.Diffuse.A == byte.MaxValue || mat.Diffuse.A == 0;
-		meshBox.Wire = wire;
-		return new MeshBox[1] { meshBox };
-	}
-
-	public static Microsoft.DirectX.Direct3D.Material GetMaterial(int alpha, Color cl)
-	{
-		return GetMaterial(Color.FromArgb(alpha, cl));
-	}
-
-	public static Microsoft.DirectX.Direct3D.Material GetMaterial(Color cl)
-	{
-		Microsoft.DirectX.Direct3D.Material result = new Microsoft.DirectX.Direct3D.Material();
-		result.Diffuse = cl;
-		result.Ambient = Color.FromArgb(cl.A, (int)Math.Floor((double)(int)cl.R * 0.1), (int)Math.Floor((double)(int)cl.G * 0.1), (int)Math.Floor((double)(int)cl.B * 0.1));
-		result.Specular = cl;
-		result.SpecularSharpness = 100f;
-		return result;
-	}
-
-	public static int Clamp(double comp)
-	{
-		int num = (int)comp;
-		if (num < 0)
-		{
-			num = 0;
-		}
-		if (num > 255)
-		{
-			num = 255;
-		}
-		return num;
-	}
-
-	public static Color ChangeBrightness(Color cl, double fact)
-	{
-		return Color.FromArgb(cl.A, Clamp((double)(int)cl.R * fact), Clamp((double)(int)cl.G * fact), Clamp((double)(int)cl.B * fact));
-	}
-
-	public static Color Brighten(Color cl, double fact)
-	{
-		fact += 1.0;
-		return ChangeBrightness(cl, fact);
-	}
-
-	public static Color Darken(Color cl, double fact)
-	{
-		return ChangeBrightness(cl, fact);
-	}
-
-	public static Color GetTextColor(Color cl)
-	{
-		if (cl.GetBrightness() >= 0.5f)
-		{
-			return Darken(cl, 0.5);
-		}
-		return Brighten(cl, 0.5);
-	}
-
-	protected override void OnDoubleClick(EventArgs e)
-	{
-		base.OnDoubleClick(e);
-		if (Settings.AllowSettingsDialog)
-		{
-			if (vpsf == null)
-			{
-				vpsf = ViewPortSetup.Execute(Settings, this);
-				return;
-			}
-			ViewPortSetup.Hide(vpsf);
-			vpsf.Dispose();
-			vpsf = null;
-		}
-	}
-
-	protected override void OnHandleDestroyed(EventArgs e)
-	{
-		base.OnHandleDestroyed(e);
-		if (vpsf != null)
-		{
-			vpsf.Dispose();
-			vpsf = null;
-		}
-	}
-
-	protected override void Dispose(bool disposing)
-	{
-		if (disposing)
-		{
-			try
-			{
-				if (device != null)
-				{
-					device.DeviceReset -= OnResetDevice;
-					device.DeviceLost -= device_DeviceLost;
-					device.EvictManagedResources();
-					device.Dispose();
-				}
-			}
-			catch
-			{
-			}
-			device = null;
-			vp = null;
-			if (meshes != null)
-			{
-				meshes.Clear(dispose: true);
-			}
-			meshes = null;
-		}
-		base.Dispose(disposing);
-	}
+    private System.Collections.Generic.Stack<Matrix4> stack = new();
+    public MatrixStack() { stack.Push(Matrix4.Identity); }
+    public Matrix4 Top => stack.Peek();
+    public void Push() { stack.Push(stack.Peek()); }
+    public void Pop() { if (stack.Count > 1) stack.Pop(); }
+    public void MultiplyMatrixLocal(Matrix4 m) { var top = stack.Pop(); stack.Push(Matrix4.Mult(top, m)); }
+    public void LoadMatrix(Matrix4 m) { stack.Pop(); stack.Push(m); }
+    public void Dispose() { stack.Clear(); }
+}
+
+public class DirectXPanel : GLControl, IDisposable
+{
+    // -----------------------------------------------------------------------
+    // GLSL Shaders
+    // -----------------------------------------------------------------------
+    private const string VertSrc = @"#version 330 core
+layout(location=0) in vec3 aPosition;
+layout(location=1) in vec3 aNormal;
+layout(location=2) in vec2 aTexCoord;
+layout(location=3) in vec4 aColor;
+uniform mat4 uModel;
+uniform mat4 uView;
+uniform mat4 uProjection;
+out vec3 vFragPos;
+out vec3 vNormal;
+out vec2 vTexCoord;
+out vec4 vColor;
+void main() {
+    vec4 worldPos = uModel * vec4(aPosition, 1.0);
+    vFragPos = worldPos.xyz;
+    vNormal = normalize(mat3(transpose(inverse(uModel))) * aNormal);
+    vTexCoord = aTexCoord;
+    vColor = aColor;
+    gl_Position = uProjection * uView * worldPos;
+}";
+    private const string FragSrc = @"#version 330 core
+in vec3 vFragPos;
+in vec3 vNormal;
+in vec2 vTexCoord;
+in vec4 vColor;
+uniform bool uUseTexture;
+uniform bool uUseVertexColor;
+uniform bool uEnableLighting;
+uniform bool uEnableSpecular;
+uniform vec4 uMatDiffuse;
+uniform vec4 uMatAmbient;
+uniform vec4 uMatSpecular;
+uniform vec4 uMatEmissive;
+uniform float uMatShininess;
+uniform vec3 uAmbient;
+uniform vec3 uCamPos;
+uniform vec3 uLightDir0, uLightDir1, uLightDir2;
+uniform vec4 uLightDiff0, uLightDiff1, uLightDiff2;
+uniform vec4 uLightSpec0, uLightSpec1, uLightSpec2;
+uniform sampler2D uTexture;
+out vec4 fragColor;
+vec4 CalcLight(vec3 toLight, vec4 lightDiff, vec4 lightSpec, vec3 normal, vec3 viewDir, vec4 diffMat) {
+    float diff = max(dot(normal, toLight), 0.0);
+    vec4 diffuse = diff * lightDiff * diffMat;
+    vec3 reflectDir = reflect(-toLight, normal);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), max(uMatShininess, 1.0));
+    vec4 specular = uEnableSpecular ? spec * lightSpec * uMatSpecular : vec4(0.0);
+    return diffuse + specular;
+}
+void main() {
+    vec4 baseColor = uUseVertexColor ? vColor : uMatDiffuse;
+    if (uUseTexture) baseColor = texture(uTexture, vTexCoord) * baseColor;
+    if (!uEnableLighting) { fragColor = clamp(baseColor + uMatEmissive, 0.0, 1.0); return; }
+    vec3 normal = normalize(vNormal);
+    vec3 viewDir = normalize(uCamPos - vFragPos);
+    vec4 ambient = vec4(uAmbient, 1.0) * uMatAmbient;
+    vec4 light = CalcLight(-normalize(uLightDir0), uLightDiff0, uLightSpec0, normal, viewDir, baseColor)
+               + CalcLight(-normalize(uLightDir1), uLightDiff1, uLightSpec1, normal, viewDir, baseColor)
+               + CalcLight(-normalize(uLightDir2), uLightDiff2, uLightSpec2, normal, viewDir, baseColor);
+    fragColor = vec4(clamp((ambient + light).rgb + uMatEmissive.rgb, 0.0, 1.0), baseColor.a);
+}";
+
+    // -----------------------------------------------------------------------
+    // Fields
+    // -----------------------------------------------------------------------
+    private int _prog;
+    private bool _glReady;
+    private int _uModel, _uView, _uProj;
+    private int _uUseTexture, _uUseVertexColor, _uEnableLighting, _uEnableSpecular;
+    private int _uMatDiffuse, _uMatAmbient, _uMatSpecular, _uMatEmissive, _uMatShininess;
+    private int _uAmbient, _uCamPos;
+    private int _uLightDir0, _uLightDir1, _uLightDir2;
+    private int _uLightDiff0, _uLightDiff1, _uLightDiff2;
+    private int _uLightSpec0, _uLightSpec1, _uLightSpec2;
+    private int _uTexture;
+
+    private ViewportSetting vp;
+    private MeshList meshes;
+    private MeshList sortedlist;
+    private Vector3 lastcampos;
+    private Matrix4 world = Matrix4.Identity;
+    private MatrixStack mstack;
+    private MouseEventArgs last;
+    private ViewPortSetup vpsf;
+    private bool ignorechangeevent;
+
+    // -----------------------------------------------------------------------
+    // Public surface
+    // -----------------------------------------------------------------------
+    public MeshList Meshes => meshes;
+    // Device property kept for API compat â€” returns null (callers should not use it)
+    public object Device => null;
+    public object Effect { get; set; }
+    public ViewportSetting Settings => vp;
+    public override Color BackColor
+    {
+        get => vp.BackgroundColor;
+        set => vp.BackgroundColor = value;
+    }
+
+    public virtual Matrix4 ProjectionMatrix
+    {
+        get
+        {
+            float fov = vp.FoV, aspect = vp.Aspect, near = vp.NearPlane, far = vp.FarPlane;
+            return Matrix4.CreatePerspectiveFieldOfView(fov, aspect, near, far);
+        }
+    }
+
+    public virtual Matrix4 BillboardMatrix
+    {
+        get
+        {
+            Matrix4 result = Matrix4.Mult(vp.Rotation, vp.AngelRotation);
+            return result.Inverted();
+        }
+    }
+
+    public virtual Matrix4 ViewMatrix =>
+        Matrix4.Mult(vp.Rotation, Matrix4.Mult(vp.AngelRotation, Matrix4.CreateTranslation(vp.RealCameraPosition)));
+
+    public Matrix4 WorldMatrix { get => world; set => world = value; }
+
+    public event EventHandler ResetDevice;
+    public event PrepareEffectEventHandler PrepareEffect;
+    public event EventHandler ChangedLights;
+    public event EventHandler RotationChanged;
+
+    // -----------------------------------------------------------------------
+    // Construction
+    // -----------------------------------------------------------------------
+    public DirectXPanel() : this(0.1) { }
+
+    public DirectXPanel(double linewd) : base(new GLControlSettings())
+    {
+        vp = new ViewportSetting(this);
+        vp.ChangedState += vp_ChangedState;
+        vp.ChangedAttribute += vp_ChangedAttribute;
+        Settings.BeginUpdate();
+        Settings.LineWidth = Settings.LineWidth;
+        meshes = new MeshList();
+        base.ClientSize = new Size(400, 300);
+        Text = "GL Panel";
+        BackColor = Color.Gray;
+        ResetView();
+        Settings.EndUpdate(fireattr: false, firestat: false);
+    }
+
+    public void LoadSettings(string flname) { vp.Load(flname); }
+
+    private void vp_ChangedAttribute(object sender, EventArgs e)
+    {
+        if (!ignorechangeevent) { ignorechangeevent = true; Render(); ignorechangeevent = false; }
+    }
+
+    private void vp_ChangedState(object sender, EventArgs e)
+    {
+        if (!ignorechangeevent) { ignorechangeevent = true; Reset(); ignorechangeevent = false; }
+    }
+
+    // -----------------------------------------------------------------------
+    // GL Initialization
+    // -----------------------------------------------------------------------
+    private void EnsureGLInit()
+    {
+        if (_glReady || !IsHandleCreated) return;
+        try
+        {
+            MakeCurrent();
+            _prog = CreateShaderProgram(VertSrc, FragSrc);
+            CacheUniforms();
+            GL.Enable(EnableCap.DepthTest);
+            GL.Enable(EnableCap.Blend);
+            GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+            _glReady = true;
+        }
+        catch (Exception ex) { Console.WriteLine("GL init failed: " + ex.Message); }
+    }
+
+    private void CacheUniforms()
+    {
+        _uModel   = GL.GetUniformLocation(_prog, "uModel");
+        _uView    = GL.GetUniformLocation(_prog, "uView");
+        _uProj    = GL.GetUniformLocation(_prog, "uProjection");
+        _uUseTexture      = GL.GetUniformLocation(_prog, "uUseTexture");
+        _uUseVertexColor  = GL.GetUniformLocation(_prog, "uUseVertexColor");
+        _uEnableLighting  = GL.GetUniformLocation(_prog, "uEnableLighting");
+        _uEnableSpecular  = GL.GetUniformLocation(_prog, "uEnableSpecular");
+        _uMatDiffuse      = GL.GetUniformLocation(_prog, "uMatDiffuse");
+        _uMatAmbient      = GL.GetUniformLocation(_prog, "uMatAmbient");
+        _uMatSpecular     = GL.GetUniformLocation(_prog, "uMatSpecular");
+        _uMatEmissive     = GL.GetUniformLocation(_prog, "uMatEmissive");
+        _uMatShininess    = GL.GetUniformLocation(_prog, "uMatShininess");
+        _uAmbient         = GL.GetUniformLocation(_prog, "uAmbient");
+        _uCamPos          = GL.GetUniformLocation(_prog, "uCamPos");
+        _uLightDir0 = GL.GetUniformLocation(_prog, "uLightDir0");
+        _uLightDir1 = GL.GetUniformLocation(_prog, "uLightDir1");
+        _uLightDir2 = GL.GetUniformLocation(_prog, "uLightDir2");
+        _uLightDiff0 = GL.GetUniformLocation(_prog, "uLightDiff0");
+        _uLightDiff1 = GL.GetUniformLocation(_prog, "uLightDiff1");
+        _uLightDiff2 = GL.GetUniformLocation(_prog, "uLightDiff2");
+        _uLightSpec0 = GL.GetUniformLocation(_prog, "uLightSpec0");
+        _uLightSpec1 = GL.GetUniformLocation(_prog, "uLightSpec1");
+        _uLightSpec2 = GL.GetUniformLocation(_prog, "uLightSpec2");
+        _uTexture    = GL.GetUniformLocation(_prog, "uTexture");
+    }
+
+    private static int CreateShaderProgram(string vertSrc, string fragSrc)
+    {
+        int vert = GL.CreateShader(ShaderType.VertexShader);
+        GL.ShaderSource(vert, vertSrc);
+        GL.CompileShader(vert);
+        GL.GetShader(vert, ShaderParameter.CompileStatus, out int vs);
+        if (vs == 0) Console.WriteLine("Vert: " + GL.GetShaderInfoLog(vert));
+
+        int frag = GL.CreateShader(ShaderType.FragmentShader);
+        GL.ShaderSource(frag, fragSrc);
+        GL.CompileShader(frag);
+        GL.GetShader(frag, ShaderParameter.CompileStatus, out int fs);
+        if (fs == 0) Console.WriteLine("Frag: " + GL.GetShaderInfoLog(frag));
+
+        int prog = GL.CreateProgram();
+        GL.AttachShader(prog, vert);
+        GL.AttachShader(prog, frag);
+        GL.LinkProgram(prog);
+        GL.GetProgram(prog, GetProgramParameterName.LinkStatus, out int ls);
+        if (ls == 0) Console.WriteLine("Link: " + GL.GetProgramInfoLog(prog));
+        GL.DeleteShader(vert);
+        GL.DeleteShader(frag);
+        return prog;
+    }
+
+    // -----------------------------------------------------------------------
+    // Render pipeline
+    // -----------------------------------------------------------------------
+    public void Render()
+    {
+        EnsureGLInit();
+        if (!_glReady || Settings.Paused) return;
+        MakeCurrent();
+        var bg = BackColor;
+        GL.ClearColor(bg.R / 255f, bg.G / 255f, bg.B / 255f, 1f);
+        GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+        GL.UseProgram(_prog);
+        if (sortedlist == null) sortedlist = new MeshList();
+        else sortedlist.Clear(dispose: false);
+        SetupLights();
+        SetupMatrices();
+        SetLastCameraPos();
+        RenderMeshList(Meshes, alphapass: false, sorted: false);
+        if (Settings.EnableAlphaBlendPass) RenderMeshList(Meshes, alphapass: true, sorted: false);
+        RenderMeshList(sortedlist, alphapass: true, sorted: true);
+        SwapBuffers();
+    }
+
+    private void SetLastCameraPos()
+    {
+        Matrix4 inv = ViewMatrix.Inverted();
+        lastcampos = inv.Row3.Xyz;
+    }
+
+    private void RenderMeshList(MeshList meshes, bool alphapass, bool sorted)
+    {
+        if (meshes == null || meshes.Count == 0) return;
+        if (!alphapass && !sorted)
+        {
+            GL.DepthMask(true);
+            foreach (MeshBox item in (IEnumerable)meshes)
+                if (item.Opaque || !Settings.EnableAlphaBlendPass)
+                    RenderMeshBox(item, Settings.MeshPassCullMode, alphapass, sorted);
+            return;
+        }
+        if (!Settings.EnableAlphaBlendPass && !sorted) return;
+        GL.DepthMask(false);
+        foreach (MeshBox item in (IEnumerable)meshes)
+            if (sorted || !item.Opaque)
+                RenderMeshBox(item, Settings.AlphaPassCullMode, alphapass, sorted);
+        GL.DepthMask(true);
+    }
+
+    private void RenderMeshBox(MeshBox box, GlCullMode cull, bool alphapass, bool sorted)
+    {
+        GL.DepthFunc(box.ZTest ? DepthFunction.Less : DepthFunction.Always);
+        if (!sorted)
+        {
+            mstack.Push();
+            mstack.MultiplyMatrixLocal(box.Transform);
+            if (box.Billboard) mstack.MultiplyMatrixLocal(BillboardMatrix);
+            var top = mstack.Top;
+            GL.UniformMatrix4(_uModel, true, ref top);
+            if (box.Sort)
+            {
+                box.SetupSortWorld(top, lastcampos);
+                AddToSortedList(box);
+            }
+        }
+        else
+        {
+            var w = box.World;
+            GL.UniformMatrix4(_uModel, true, ref w);
+        }
+
+        if ((!box.JointMesh || Settings.RenderJoints) && (sorted || !box.Sort))
+            DoRenderMeshBox(box, cull, 0);
+
+        RenderMeshList(box, alphapass, sorted: false);
+        if (!sorted) mstack.Pop();
+    }
+
+    private void DoRenderMeshBox(MeshBox box, GlCullMode cull, int pass)
+    {
+        if (box.Mesh == null || box.Mesh.Disposed) return;
+
+        // Fill mode
+        var fillMode = Settings.GetFillMode(box, pass);
+        GL.PolygonMode(MaterialFace.FrontAndBack,
+            fillMode == ViewportSettingBasic.FillModes.Wireframe ? PolygonMode.Line :
+            fillMode == ViewportSettingBasic.FillModes.Point ? PolygonMode.Point : PolygonMode.Fill);
+
+        // Culling
+        var effectiveCull = box.GetCullMode(cull);
+        if (effectiveCull == GlCullMode.None)
+        {
+            GL.Disable(EnableCap.CullFace);
+        }
+        else
+        {
+            GL.Enable(EnableCap.CullFace);
+            GL.CullFace(effectiveCull == GlCullMode.Clockwise ? CullFaceMode.Back : CullFaceMode.Front);
+        }
+
+        // Material
+        GlMaterial mat;
+        bool useVertexColor = false;
+        if (pass == 0 && Settings.FillMode == ViewportSettingBasic.FillModes.WireframeOverlay)
+        {
+            mat = GetMaterial(Color.Black);
+        }
+        else
+        {
+            mat = box.Material;
+            if (Settings.EnableTextures)
+            {
+                if (box.Texture == null || box.Texture.Disposed) box.PrepareTexture();
+                if (box.Texture != null && !box.Texture.Disposed)
+                {
+                    GL.ActiveTexture(TextureUnit.Texture0);
+                    GL.BindTexture(TextureTarget.Texture2D, box.Texture.Id);
+                    GL.Uniform1(_uTexture, 0);
+                    GL.Uniform1(_uUseTexture, 1);
+                }
+                else GL.Uniform1(_uUseTexture, 0);
+            }
+            else GL.Uniform1(_uUseTexture, 0);
+        }
+
+        GL.Uniform1(_uUseVertexColor, useVertexColor ? 1 : 0);
+        GL.Uniform1(_uEnableLighting, Settings.EnableLights ? 1 : 0);
+        GL.Uniform1(_uEnableSpecular, Settings.EnableSpecularHighlights ? 1 : 0);
+        SetMaterialUniforms(mat);
+
+        for (int j = 0; j < box.SubSetCount; j++)
+        {
+            try { box.Mesh.DrawSubset(j); } catch { }
+        }
+
+        GL.Uniform1(_uUseTexture, 0);
+        GL.BindTexture(TextureTarget.Texture2D, 0);
+
+        if (Settings.FillMode == ViewportSettingBasic.FillModes.WireframeOverlay && pass == 0 && !box.SpecialMesh)
+            DoRenderMeshBox(box, cull, 1);
+    }
+
+    private void SetMaterialUniforms(GlMaterial mat)
+    {
+        var d = mat.Diffuse; GL.Uniform4(_uMatDiffuse, d.R/255f, d.G/255f, d.B/255f, d.A/255f);
+        var a = mat.Ambient; GL.Uniform4(_uMatAmbient, a.R/255f, a.G/255f, a.B/255f, a.A/255f);
+        var s = mat.Specular; GL.Uniform4(_uMatSpecular, s.R/255f, s.G/255f, s.B/255f, s.A/255f);
+        var e = mat.Emissive; GL.Uniform4(_uMatEmissive, e.R/255f, e.G/255f, e.B/255f, e.A/255f);
+        GL.Uniform1(_uMatShininess, mat.SpecularSharpness);
+    }
+
+    private void AddToSortedList(MeshBox box)
+    {
+        int index = sortedlist.Count, num = 0;
+        foreach (MeshBox item in (IEnumerable)sortedlist)
+        {
+            if (item.Distance < box.Distance) { index = num; break; }
+            num++;
+        }
+        sortedlist.Insert(index, box);
+    }
+
+    protected virtual void SetupLights()
+    {
+        Vector3 camPos = vp.CameraPosition;
+        Vector3 cp0 = Vector3.TransformPosition(camPos, Matrix4.CreateRotationY(-MathF.PI / 6f));
+        Vector3 cp1 = -vp.CameraPosition;
+        cp1 = Vector3.TransformPosition(cp1, Matrix4.CreateRotationY(-0.9239978f));
+        cp1 = Vector3.TransformPosition(cp1, Matrix4.CreateRotationZ(-0.9239978f));
+        Vector3 cp2 = -1f * vp.CameraPosition;
+        cp2 = Vector3.TransformPosition(cp2, Matrix4.CreateRotationZ(0.9817477f));
+        cp2 = Vector3.TransformPosition(cp2, Matrix4.CreateRotationX(0.74799824f));
+        cp2 = Vector3.TransformPosition(cp2, Matrix4.CreateRotationY(0.8975979f));
+
+        Vector3 lp0 = 2f * cp0, lp1 = 4f * cp1, lp2 = 2f * cp2;
+        Vector3 dir0 = vp.CameraTarget - lp0;
+        Vector3 dir1 = vp.CameraTarget - lp1;
+        Vector3 dir2 = vp.CameraTarget - lp2;
+
+        var ld = Settings.LightColorDiffuse; var ls = Settings.LightColorSpecular;
+        GL.Uniform3(_uLightDir0, dir0.X, dir0.Y, dir0.Z);
+        GL.Uniform3(_uLightDir1, dir1.X, dir1.Y, dir1.Z);
+        GL.Uniform3(_uLightDir2, dir2.X, dir2.Y, dir2.Z);
+        GL.Uniform4(_uLightDiff0, ld.R/255f, ld.G/255f, ld.B/255f, 1f);
+        GL.Uniform4(_uLightDiff1, ld.R/255f, ld.G/255f, ld.B/255f, 1f);
+        GL.Uniform4(_uLightDiff2, ld.R/255f, ld.G/255f, ld.B/255f, 1f);
+        GL.Uniform4(_uLightSpec0, ls.R/255f, ls.G/255f, ls.B/255f, 1f);
+        GL.Uniform4(_uLightSpec1, ls.R/255f, ls.G/255f, ls.B/255f, 1f);
+        GL.Uniform4(_uLightSpec2, ls.R/255f, ls.G/255f, ls.B/255f, 1f);
+        var amb = Settings.AmbientColor;
+        GL.Uniform3(_uAmbient, amb.R/255f, amb.G/255f, amb.B/255f);
+        GL.Uniform3(_uCamPos, lastcampos.X, lastcampos.Y, lastcampos.Z);
+        this.ChangedLights?.Invoke(this, new EventArgs());
+    }
+
+    private void SetupMatrices()
+    {
+        var view = ViewMatrix;
+        var proj = ProjectionMatrix;
+        GL.UniformMatrix4(_uView, true, ref view);
+        GL.UniformMatrix4(_uProj, true, ref proj);
+        var w = world;
+        GL.UniformMatrix4(_uModel, true, ref w);
+        if (mstack == null) mstack = new MatrixStack();
+        mstack.LoadMatrix(world);
+    }
+
+    // -----------------------------------------------------------------------
+    // Reset / device events (ported from DX)
+    // -----------------------------------------------------------------------
+    protected virtual void OnResetDevice(object sender, EventArgs e)
+    {
+        ignorechangeevent = true;
+        try
+        {
+            if (mstack != null) { mstack.Dispose(); }
+            mstack = new MatrixStack();
+            this.ResetDevice?.Invoke(this, new EventArgs());
+            if (Settings.AddAxis) AddAxisMesh();
+            if (Settings.AddLightIndicators) AddLightMesh();
+            if (Settings.RenderBoundingBoxes) AddBoundingBoxMesh();
+        }
+        catch (Exception ex) { Console.WriteLine(ex); }
+        finally { ignorechangeevent = false; }
+    }
+
+    public void ReloadMeshes() { OnResetDevice(this, new EventArgs()); Render(); }
+
+    public void AddScene(Scene scn)
+    {
+        var stm = new SceneToMesh(scn, this);
+        meshes.AddRange(stm.ConvertToDx());
+    }
+
+    public void AddLightMesh()
+    {
+        var mat = GetMaterial(Color.Yellow);
+        var mat2 = GetMaterial(Color.DarkGray);
+        float lw = 2f * Settings.LineWidth;
+        var sphere = GlMesh.CreateSphere(lw, 10, 4);
+        var box = GlMesh.CreateBox(lw, lw, lw);
+        // Just add 3 placeholder indicator meshes (no Device.Lights API)
+        for (int i = 0; i < 3; i++)
+        {
+            var mb = new MeshBox(sphere, 1, mat);
+            mb.Transform = Matrix4.Identity; mb.IgnoreDuringCameraReset = true;
+            Meshes.Add(mb);
+        }
+    }
+
+    protected void AddAxisMesh()
+    {
+        AddAxisMesh("X", Color.Green, new Vector3(1f, 0f, 0f));
+        AddAxisMesh("Y", Color.Blue, new Vector3(0f, 1f, 0f));
+        AddAxisMesh("Z", Color.Brown, new Vector3(0f, 0f, 1f));
+    }
+
+    protected void AddBoundingBoxMesh()
+    {
+        Scene owner = new Scene();
+        for (int num = meshes.Count - 1; num >= 0; num--)
+        {
+            if (!meshes[num].SpecialMesh)
+            {
+                Ambertation.Scenes.Mesh m = meshes[num].GetBoundingBox(rec: false, all: false).ToMesh(owner);
+                MeshBox mb = SceneToMesh.CreateDxMesh(m, isbb: true);
+                if (mb != null) meshes.Add(mb);
+            }
+        }
+    }
+
+    protected void AddAxisMesh(string txt, Color cl, Vector3 dir)
+    {
+        Vector3 vector = (0f - Settings.AxisScale) * Settings.LineWidth * dir;
+        MeshBox[] array = CreateLineMesh(vector, dir, 2f * Settings.AxisScale * Settings.LineWidth, GetMaterial(cl), wire: false, arrow: true);
+        foreach (MeshBox mb in array) { mb.IgnoreDuringCameraReset = true; }
+        Meshes.AddRange(array);
+        Matrix4 rotm = GetRotationMatrix(new Vector3(0f, 0f, 1f), dir);
+        Vector3 textPos = 1.01f * vector;
+        MeshBox textMb = CreateTextMesh(textPos.X, textPos.Y, textPos.Z, 10f * Settings.LineWidth, txt, Darken(cl, 0.5), rotm);
+        textMb.IgnoreDuringCameraReset = true;
+        Meshes.Add(textMb);
+    }
+
+    // -----------------------------------------------------------------------
+    // Reset / view
+    // -----------------------------------------------------------------------
+    public void Reset()
+    {
+        if (_glReady)
+        {
+            try
+            {
+                MakeCurrent();
+                OnResetDevice(this, null);
+            }
+            catch (Exception ex) { Console.WriteLine(ex); }
+        }
+        Render();
+    }
+
+    public void ResetDefaultViewport()
+    {
+        ResetView();
+        OnResetDevice(this, null);
+        Render();
+    }
+
+    public void ResetViewport(Vector3 min, Vector3 max)
+    {
+        ResetView(min, max);
+        OnResetDevice(this, null);
+        Render();
+    }
+
+    protected void ResetView()
+    {
+        vp.Reset();
+        BoundingBox boundingBox = new BoundingBox();
+        try
+        {
+            foreach (MeshBox item in (IEnumerable)Meshes)
+                if (!item.SpecialMesh) boundingBox += item.GetBoundingBox(rec: true, all: false);
+            ResetView(Converter.ToDx(boundingBox.Min), Converter.ToDx(boundingBox.Max));
+        }
+        catch (Exception ex) { MessageBox.Show(ex.Message + "\n\n" + ex.StackTrace); }
+    }
+
+    protected void ResetView(Vector3 min, Vector3 max)
+    {
+        try
+        {
+            Settings.BeginUpdate();
+            ignorechangeevent = true;
+            if (!(min.X > max.X))
+            {
+                Vector3 objectCenter = new Vector3((max.X + min.X) / 2f, (max.Y + min.Y) / 2f, (max.Z + min.Z) / 2f);
+                double num = new Vector3(min.X - objectCenter.X, min.Y - objectCenter.Y, min.Z - objectCenter.Z).Length;
+                double num2 = num / Math.Sin(vp.FoV / 2f);
+                vp.ObjectCenter = objectCenter;
+                vp.X = -objectCenter.X; vp.Y = -objectCenter.Y; vp.Z = -objectCenter.Z;
+                vp.CameraTarget = Vector3.Zero;
+                vp.CameraPosition = Settings.UseLefthandedCoordinates
+                    ? new Vector3(0f, 0f, (float)num2 * Settings.InitialCameraOffsetScale)
+                    : new Vector3(0f, 0f, -(float)num2 * Settings.InitialCameraOffsetScale);
+                vp.NearPlane = 1f; vp.FarPlane = 10000f;
+                vp.BoundingSphereRadius = (float)num;
+            }
+        }
+        catch (Exception ex) { MessageBox.Show(ex.Message + "\n\n" + ex.StackTrace); }
+        finally { Settings.EndUpdate(); ignorechangeevent = false; }
+    }
+
+    // -----------------------------------------------------------------------
+    // Mouse interaction
+    // -----------------------------------------------------------------------
+    public void UpdateRotation() { OnMouseUp(null); }
+
+    protected override void OnMouseUp(MouseEventArgs e)
+    {
+        ignorechangeevent = true;
+        vp.Rotation = Matrix4.Mult(vp.Rotation, vp.AngelRotation);
+        vp.ResetAngle();
+        ignorechangeevent = false;
+    }
+
+    protected override void OnMouseMove(MouseEventArgs e)
+    {
+        ignorechangeevent = true;
+        try
+        {
+            base.OnMouseMove(e);
+            if (last != null)
+            {
+                int dx = e.X - last.X, dy = e.Y - last.Y;
+                float sign = Settings.UseLefthandedCoordinates ? 1f : -1f;
+                if (e.Button == MouseButtons.Right)
+                {
+                    vp.AngelY -= sign * (dx / vp.InputRotationScale);
+                    vp.AngelX -= sign * (dy / vp.InputRotationScale);
+                    this.RotationChanged?.Invoke(this, new EventArgs());
+                }
+                if (e.Button == MouseButtons.Left)
+                {
+                    vp.X += dx / (base.Width * vp.InputTranslationScale / vp.BoundingSphereRadius);
+                    vp.Y -= dy / (base.Height * vp.InputTranslationScale / vp.BoundingSphereRadius);
+                }
+                if (e.Button == MouseButtons.Middle)
+                {
+                    vp.Z += sign * (dy / (base.Height * vp.InputTranslationScale / vp.BoundingSphereRadius));
+                    vp.AngelZ -= dx / vp.InputRotationScale;
+                    this.RotationChanged?.Invoke(this, new EventArgs());
+                }
+                Render();
+            }
+            last = e;
+        }
+        finally { ignorechangeevent = false; }
+    }
+
+    protected override void OnPaint(PaintEventArgs e) { Render(); }
+
+    protected override void OnSizeChanged(EventArgs e)
+    {
+        base.Width = Math.Max(1, base.Width); base.Height = Math.Max(1, base.Height);
+        base.OnSizeChanged(e);
+    }
+
+    protected override void OnResize(EventArgs e)
+    {
+        base.Width = Math.Max(1, base.Width); base.Height = Math.Max(1, base.Height);
+        Settings.Paused = Math.Min(base.Width, base.Height) <= 0;
+        if (_glReady) { MakeCurrent(); GL.Viewport(0, 0, base.Width, base.Height); }
+        vp.Aspect = base.Height != 0 ? (float)base.Width / base.Height : 1f;
+        base.OnResize(e);
+    }
+
+    // -----------------------------------------------------------------------
+    // Screenshot
+    // -----------------------------------------------------------------------
+    public Image Screenshot()
+    {
+        if (!_glReady) return null;
+        MakeCurrent();
+        var bmp = new System.Drawing.Bitmap(base.Width, base.Height);
+        var data = bmp.LockBits(new Rectangle(0, 0, base.Width, base.Height),
+            System.Drawing.Imaging.ImageLockMode.WriteOnly,
+            System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+        GL.ReadPixels(0, 0, base.Width, base.Height,
+            OpenTK.Graphics.OpenGL4.PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
+        bmp.UnlockBits(data);
+        bmp.RotateFlip(System.Drawing.RotateFlipType.RotateNoneFlipY);
+        return bmp;
+    }
+
+    // -----------------------------------------------------------------------
+    // Math helpers
+    // -----------------------------------------------------------------------
+    public static Matrix4 GetRotationMatrix(Vector3 src, Vector3 dst)
+    {
+        Quaternion q = GetRotationQuaternion(src, dst);
+        return Matrix4.CreateFromQuaternion(q);
+    }
+
+    public static Quaternion GetRotationQuaternion(Vector3 src, Vector3 dst)
+    {
+        src = Vector3.Normalize(src); dst = Vector3.Normalize(dst);
+        Vector3 axis = Vector3.Cross(src, dst);
+        double angle = Math.Acos(Math.Clamp((double)Vector3.Dot(src, dst), -1.0, 1.0));
+        axis = Vector3.Normalize(axis);
+        axis *= (float)Math.Sin(angle / 2.0);
+        return new Quaternion(axis.X, axis.Y, axis.Z, (float)Math.Cos(angle / 2.0));
+    }
+
+    // -----------------------------------------------------------------------
+    // Mesh factories
+    // -----------------------------------------------------------------------
+    public GlMesh CreatePyramidMesh(double width, double height)
+        => GlMesh.CreatePyramid((float)width, (float)height);
+
+    public MeshBox[] CreateLineMesh(Vector3 start, Vector3 stop, GlMaterial mat, bool wire, bool arrow)
+    {
+        Vector3 dir = stop - start;
+        return CreateLineMesh(start, dir, dir.Length, mat, wire, arrow);
+    }
+
+    public MeshBox[] CreateLineMesh(Vector3 start, Vector3 stop, GlMaterial mat, bool wire, bool arrow, double linewd)
+    {
+        Vector3 dir = stop - start;
+        return CreateLineMesh(start, dir, dir.Length, mat, wire, arrow, linewd);
+    }
+
+    public MeshBox[] CreateLineMesh(Vector3 dir, double len, GlMaterial mat, bool wire, bool arrow)
+        => CreateLineMesh(Vector3.Zero, dir, len, mat, wire, arrow);
+
+    public MeshBox[] CreateLineMesh(Vector3 start, Vector3 dir, double len, GlMaterial mat, bool wire, bool arrow)
+        => CreateLineMesh(start, dir, len, mat, wire, arrow, Settings.LineWidth);
+
+    public MeshBox[] CreateLineMesh(Vector3 start, Vector3 dir, double len, GlMaterial mat, bool wire, bool arrow, double linewd)
+    {
+        float lw = (float)linewd;
+        GlMesh mesh = GlMesh.CreateCylinder(lw, lw, (float)len, 8, 2);
+        Matrix4 rotm = GetRotationMatrix(new Vector3(0, 0, 1), dir);
+        Vector3 v = new Vector3(0, 0, (float)(len / 2.0));
+        Matrix4 t1 = Matrix4.CreateTranslation(v);
+        Matrix4 transform = Matrix4.Mult(t1, rotm);
+        transform = Matrix4.Mult(transform, Matrix4.CreateTranslation(start));
+        MeshBox mb = new MeshBox(mesh, 1, mat, transform);
+        mb.Wire = wire;
+        if (arrow)
+        {
+            GlMesh pyramid = GlMesh.CreatePyramid(7f * lw, 7f * lw);
+            Vector3 v2 = new Vector3(0, 0, (float)len);
+            Matrix4 t2 = Matrix4.CreateTranslation(v2);
+            Matrix4 transform2 = Matrix4.Mult(t2, rotm);
+            transform2 = Matrix4.Mult(transform2, Matrix4.CreateTranslation(start));
+            MeshBox mb2 = new MeshBox(pyramid, 1, mat, transform2);
+            mb.Opaque = mat.Diffuse.A == byte.MaxValue || mat.Diffuse.A != 0;
+            mb2.Opaque = mb.Opaque; mb2.Wire = wire;
+            return new MeshBox[] { mb, mb2 };
+        }
+        return new MeshBox[] { mb };
+    }
+
+    public MeshBox[] CreateNamedCube(double sz, Color bcl) => CreateNamedCube(sz, bcl, GetTextColor(bcl), Matrix4.Identity);
+    public MeshBox[] CreateNamedCube(double sz, Color bcl, Color tcl) => CreateNamedCube(sz, bcl, tcl, Matrix4.Identity);
+
+    public MeshBox[] CreateNamedCube(double sz, Color bcl, Color tcl, Matrix4 basetrans)
+    {
+        var array = new MeshBox[7];
+        double h = sz / 2.0;
+        array[0] = CreateCube(sz, bcl); array[0].Transform = basetrans;
+        array[1] = CreateTextMesh(0, 0, h, sz*0.5, "+pz", tcl, Matrix4.CreateRotationY(MathF.PI)); array[1].Transform = Matrix4.Mult(array[1].Transform, basetrans);
+        array[2] = CreateTextMesh(0, 0, -h, sz*0.5, "-pz", tcl, Matrix4.Identity); array[2].Transform = Matrix4.Mult(array[2].Transform, basetrans);
+        array[3] = CreateTextMesh(0, h, 0, sz*0.5, "+py", tcl, Matrix4.CreateRotationX(MathF.PI/2f)); array[3].Transform = Matrix4.Mult(array[3].Transform, basetrans);
+        array[4] = CreateTextMesh(0, -h, 0, sz*0.5, "-py", tcl, Matrix4.CreateRotationX(-MathF.PI/2f)); array[4].Transform = Matrix4.Mult(array[4].Transform, basetrans);
+        array[5] = CreateTextMesh(h, 0, 0, sz*0.5, "+px", tcl, Matrix4.CreateRotationY(-MathF.PI/2f)); array[5].Transform = Matrix4.Mult(array[5].Transform, basetrans);
+        array[6] = CreateTextMesh(-h, 0, 0, sz*0.5, "-px", tcl, Matrix4.CreateRotationY(MathF.PI/2f)); array[6].Transform = Matrix4.Mult(array[6].Transform, basetrans);
+        return array;
+    }
+
+    public MeshBox CreateCube(double sz, Color cl)
+    {
+        GlMesh mesh = GlMesh.CreateBox((float)sz, (float)sz, (float)sz);
+        MeshBox mb = new MeshBox(mesh, 1, GetMaterial(cl));
+        mb.Wire = false; return mb;
+    }
+
+    public MeshBox CreateBillboard(double width, double height, Image img)
+    {
+        GlMesh mesh = GlMesh.CreateBillboard((float)width, (float)height);
+        MeshBox mb = new MeshBox(mesh, 1, GetMaterial(Color.FromArgb(255, Color.White)));
+        mb.Wire = false; mb.Billboard = true; mb.Sort = true;
+        mb.CullMode = MeshBox.Cull.None; mb.SetTexture(img);
+        return mb;
+    }
+
+    public MeshBox CreateTextMesh(double x, double y, double z, double textsz, string text, Color cl)
+        => CreateTextMesh(x, y, z, textsz, text, cl, Matrix4.Identity);
+
+    public MeshBox CreateTextMesh(double x, double y, double z, double textsz, string text, Color cl, Matrix4 trans)
+    {
+        if (double.IsNaN(textsz)) textsz = 1.0;
+        float sz = (float)textsz;
+        // Render text to bitmap and create a billboard quad
+        var font = new System.Drawing.Font("Tahoma", sz);
+        SizeF textSize;
+        using (var tmp = new System.Drawing.Bitmap(1, 1))
+        using (var g = System.Drawing.Graphics.FromImage(tmp))
+            textSize = g.MeasureString(text, font);
+
+        int bw = Math.Max(1, (int)textSize.Width), bh = Math.Max(1, (int)textSize.Height);
+        var bmp = new System.Drawing.Bitmap(bw, bh, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+        using (var g = System.Drawing.Graphics.FromImage(bmp))
+        {
+            g.Clear(System.Drawing.Color.Transparent);
+            g.DrawString(text, font, new System.Drawing.SolidBrush(cl), 0f, 0f);
+        }
+        font.Dispose();
+
+        float qw = bw * sz * 0.01f, qh = bh * sz * 0.01f;
+        GlMesh mesh = GlMesh.CreateBillboard(qw, qh);
+        MeshBox mb = new MeshBox(mesh, 1, GetMaterial(Color.White));
+        mb.SetTexture(bmp); bmp.Dispose();
+        mb.Wire = false;
+        mb.Transform = Matrix4.Mult(
+            Matrix4.CreateTranslation(-(qw/2f), -(qh/2f), 0f),
+            Matrix4.Mult(trans, Matrix4.CreateTranslation((float)x, (float)y, (float)z)));
+        return mb;
+    }
+
+    public MeshBox[] CreateLayerMesh(Vector3 start, Vector3 dir1, Vector3 dir2, double width, double height, GlMaterial mat, bool wire)
+    {
+        Vector3 n = Vector3.Cross(dir1, dir2);
+        return CreateLayerMesh(start, n, width, height, mat, wire);
+    }
+
+    public MeshBox[] CreateLayerMesh(Vector3 start, Vector3 n, double width, double height, GlMaterial mat, bool wire)
+    {
+        GlMesh mesh = GlMesh.CreateBox((float)width, (float)height, Settings.LineWidth * 0.3f);
+        Matrix4 rotm = GetRotationMatrix(new Vector3(0, 0, 1), n);
+        Matrix4 transform = Matrix4.Mult(rotm, Matrix4.CreateTranslation(start));
+        MeshBox mb = new MeshBox(mesh, 1, mat, transform);
+        mb.Opaque = mat.Diffuse.A == byte.MaxValue || mat.Diffuse.A == 0;
+        mb.Wire = wire;
+        return new MeshBox[] { mb };
+    }
+
+    // -----------------------------------------------------------------------
+    // Material helpers
+    // -----------------------------------------------------------------------
+    public static GlMaterial GetMaterial(int alpha, Color cl) => GetMaterial(Color.FromArgb(alpha, cl));
+
+    public static GlMaterial GetMaterial(Color cl)
+    {
+        return new GlMaterial
+        {
+            Diffuse = cl,
+            Ambient = Color.FromArgb(cl.A, (int)(cl.R * 0.1), (int)(cl.G * 0.1), (int)(cl.B * 0.1)),
+            Specular = cl,
+            SpecularSharpness = 100f
+        };
+    }
+
+    public static int Clamp(double comp)
+    {
+        int n = (int)comp;
+        if (n < 0) n = 0;
+        if (n > 255) n = 255;
+        return n;
+    }
+
+    public static Color ChangeBrightness(Color cl, double fact)
+        => Color.FromArgb(cl.A, Clamp(cl.R * fact), Clamp(cl.G * fact), Clamp(cl.B * fact));
+    public static Color Brighten(Color cl, double fact) => ChangeBrightness(cl, fact + 1.0);
+    public static Color Darken(Color cl, double fact) => ChangeBrightness(cl, fact);
+    public static Color GetTextColor(Color cl)
+        => cl.GetBrightness() >= 0.5f ? Darken(cl, 0.5) : Brighten(cl, 0.5);
+
+    // -----------------------------------------------------------------------
+    // UI events
+    // -----------------------------------------------------------------------
+    protected override void OnDoubleClick(EventArgs e)
+    {
+        base.OnDoubleClick(e);
+        if (Settings.AllowSettingsDialog)
+        {
+            if (vpsf == null) { vpsf = ViewPortSetup.Execute(Settings, this); return; }
+            ViewPortSetup.Hide(vpsf); vpsf.Dispose(); vpsf = null;
+        }
+    }
+
+    protected override void OnHandleDestroyed(EventArgs e)
+    {
+        base.OnHandleDestroyed(e);
+        if (vpsf != null) { vpsf.Dispose(); vpsf = null; }
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            try
+            {
+                if (_glReady) { MakeCurrent(); GL.DeleteProgram(_prog); }
+            }
+            catch { }
+            _glReady = false;
+            vp = null;
+            meshes?.Clear(dispose: true); meshes = null;
+        }
+        base.Dispose(disposing);
+    }
 }
