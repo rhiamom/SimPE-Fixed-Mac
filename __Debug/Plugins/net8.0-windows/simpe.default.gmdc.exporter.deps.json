@@ -202,8 +202,7 @@
         },
         "runtime": {
           "ambertation.3D.gl.binding.dll": {
-            "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.0.0.0"
+            "fileVersion": "0.0.0.0"
           }
         }
       },
