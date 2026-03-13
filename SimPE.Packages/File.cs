@@ -339,12 +339,19 @@ namespace SimPe.Packages
 		}
 
 		protected void CloseReader()
-		{			
+		{
 			if (persistent) return;
 			if ((type == PackageBaseType.Filename) && (reader!=null))
 			{
-				StreamItem si = StreamFactory.FindStreamItem((FileStream)reader.BaseStream);
-				if (si!=null) si.Close();				
+				if (reader.BaseStream is FileStream fs)
+				{
+					StreamItem si = StreamFactory.FindStreamItem(fs);
+					if (si!=null) si.Close();
+				}
+				else
+				{
+					reader.Close();
+				}
 				reader = null;
 			}
 		}
