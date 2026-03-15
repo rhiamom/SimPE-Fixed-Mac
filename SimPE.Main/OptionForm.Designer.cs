@@ -83,27 +83,18 @@ namespace SimPe
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.CheckBox cbupdate;
         private System.Windows.Forms.CheckBox cbpkgmaint;
-        private TD.Eyefinder.HeaderControl hcFolders;
-        private TD.Eyefinder.HeaderControl hcSettings;
-        private TD.Eyefinder.HeaderControl hcTools;
-        private TD.Eyefinder.HeaderControl hcFileTable;
-        private TD.Eyefinder.HeaderControl hcSceneGraph;
-        private Divelements.Navisight.NavigationButton nbFolders;
-        private Divelements.Navisight.NavigationButton nbSettings;
-        private Divelements.Navisight.NavigationButton nbTools;
-        private Divelements.Navisight.NavigationButton nbFileTable;
-        private Divelements.Navisight.NavigationButton nbSceneGraph;
-        private Divelements.Navisight.ButtonBar bb;
+        private System.Windows.Forms.TabControl tc;
+        private System.Windows.Forms.TabPage tpSettings;
+        private System.Windows.Forms.TabPage tpTools;
+        private System.Windows.Forms.TabPage tpSceneGraph;
+        private System.Windows.Forms.TabPage tpPlugins;
+        private System.Windows.Forms.TabPage tpCustom;
         private System.Windows.Forms.CheckBox cbmulti;
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.ComboBox cbThemes;
         private System.Windows.Forms.ToolTip baloonTip;
         private System.Windows.Forms.Button button7;
         private System.Windows.Forms.CheckBox cbSimple;
-        private TD.Eyefinder.HeaderControl hcPlugins;
-        private Divelements.Navisight.NavigationButton navigationButton1;
-        private Divelements.Navisight.NavigationButton navigationButton2;
-        private Divelements.Navisight.NavigationButton nbPlugins;
         private System.Windows.Forms.Panel cnt;
         private System.Windows.Forms.Button btdn;
         private System.Windows.Forms.Button btup;
@@ -115,8 +106,6 @@ namespace SimPe
         private System.Windows.Forms.GroupBox groupBox7;
         private System.Windows.Forms.CheckBox cbDeep;
         private System.Windows.Forms.CheckBox cbAsync;
-        private TD.Eyefinder.HeaderControl hcIdent;
-        private Divelements.Navisight.NavigationButton nbIdent;
         private System.Windows.Forms.TextBox tbUsername;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.TextBox tbPassword;
@@ -143,11 +132,7 @@ namespace SimPe
         private System.Windows.Forms.ComboBox cbReport;
         private System.Windows.Forms.CheckBox cbLock;
         private MyPropertyGrid pgPaths;
-        private Divelements.Navisight.NavigationButton nbCheck;
-        private TD.Eyefinder.HeaderControl hcCheck;
         private SimPe.CheckControl checkControl1;
-        private TD.Eyefinder.HeaderControl hcCustom;
-        private Divelements.Navisight.NavigationButton nbCustom;
         private System.Windows.Forms.ComboBox cbCustom;
         private System.Windows.Forms.PropertyGrid pgcustom;
         private CheckBox cbsplash;
@@ -248,17 +233,16 @@ namespace SimPe
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.label10 = new System.Windows.Forms.Label();
             this.cbjointname = new System.Windows.Forms.CheckBox();
-            this.hcFolders = new TD.Eyefinder.HeaderControl();
             this.pgPaths = new MyPropertyGrid();
             this.tbep2 = new System.Windows.Forms.TextBox();
             this.btNightlife = new System.Windows.Forms.Button();
             this.label14 = new System.Windows.Forms.Label();
-            this.hcSettings = new TD.Eyefinder.HeaderControl();
+            this.tpSettings = new System.Windows.Forms.TabPage();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.cbFirefox = new System.Windows.Forms.CheckBox();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.cbThemes = new System.Windows.Forms.ComboBox();
-            this.hcTools = new TD.Eyefinder.HeaderControl();
+            this.tpTools = new System.Windows.Forms.TabPage();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
             this.cbIncCep = new System.Windows.Forms.CheckBox();
             this.btReload = new System.Windows.Forms.Button();
@@ -268,7 +252,7 @@ namespace SimPe
             this.linkLabel6 = new System.Windows.Forms.LinkLabel();
             this.lbfolder = new System.Windows.Forms.CheckedListBox();
             this.llchg = new System.Windows.Forms.LinkLabel();
-            this.hcSceneGraph = new TD.Eyefinder.HeaderControl();
+            this.tpSceneGraph = new System.Windows.Forms.TabPage();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.cbAsyncSort = new System.Windows.Forms.CheckBox();
             this.cbRLExt = new Ambertation.Windows.Forms.EnumComboBox();
@@ -280,17 +264,11 @@ namespace SimPe
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.cbSimTemp = new System.Windows.Forms.CheckBox();
             this.cbDeep = new System.Windows.Forms.CheckBox();
-            this.bb = new Divelements.Navisight.ButtonBar();
-            this.nbSettings = new Divelements.Navisight.NavigationButton();
-            this.nbSceneGraph = new Divelements.Navisight.NavigationButton();
-            this.nbCustom = new Divelements.Navisight.NavigationButton();
-            this.nbPlugins = new Divelements.Navisight.NavigationButton();
-            this.nbTools = new Divelements.Navisight.NavigationButton();
-            this.hcPlugins = new TD.Eyefinder.HeaderControl();
+            this.tc = new System.Windows.Forms.TabControl();
+            this.tpPlugins = new System.Windows.Forms.TabPage();
             this.btpup = new System.Windows.Forms.Button();
             this.btpdown = new System.Windows.Forms.Button();
             this.cnt = new System.Windows.Forms.Panel();
-            this.hcIdent = new TD.Eyefinder.HeaderControl();
             this.linkLabel5 = new System.Windows.Forms.LinkLabel();
             this.cbValid = new System.Windows.Forms.CheckBox();
             this.linkLabel3 = new System.Windows.Forms.LinkLabel();
@@ -300,30 +278,27 @@ namespace SimPe
             this.label12 = new System.Windows.Forms.Label();
             this.tbUsername = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
-            this.hcCheck = new TD.Eyefinder.HeaderControl();
             this.checkControl1 = new SimPe.CheckControl();
-            this.hcCustom = new TD.Eyefinder.HeaderControl();
+            this.tpCustom = new System.Windows.Forms.TabPage();
             this.pgcustom = new System.Windows.Forms.PropertyGrid();
             this.cbCustom = new System.Windows.Forms.ComboBox();
             this.baloonTip = new System.Windows.Forms.ToolTip(this.components);
-            this.navigationButton1 = new Divelements.Navisight.NavigationButton();
-            this.navigationButton2 = new Divelements.Navisight.NavigationButton();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox4.SuspendLayout();
-            this.hcSettings.SuspendLayout();
+            this.tc.SuspendLayout();
+            this.tpSettings.SuspendLayout();
+            this.tpTools.SuspendLayout();
+            this.tpSceneGraph.SuspendLayout();
+            this.tpPlugins.SuspendLayout();
+            this.tpCustom.SuspendLayout();
             this.groupBox6.SuspendLayout();
             this.groupBox5.SuspendLayout();
-            this.hcTools.SuspendLayout();
             this.groupBox8.SuspendLayout();
             this.groupBox9.SuspendLayout();
-            this.hcSceneGraph.SuspendLayout();
             this.groupBox10.SuspendLayout();
             this.groupBox7.SuspendLayout();
-            this.hcPlugins.SuspendLayout();
-            //this.hcIdent.SuspendLayout();
-            this.hcCustom.SuspendLayout();
             this.SuspendLayout();
             // 
             // button1
@@ -713,35 +688,7 @@ namespace SimPe
             // 
             resources.ApplyResources(this.cbjointname, "cbjointname");
             this.cbjointname.Name = "cbjointname";
-            // 
-            // hcFolders
-            // 
-            this.hcFolders.Controls.Add(this.pgPaths);
-            this.hcFolders.Controls.Add(this.tbep2);
-            this.hcFolders.Controls.Add(this.btNightlife);
-            this.hcFolders.Controls.Add(this.label14);
-            this.hcFolders.Controls.Add(this.llNightlife);
-            this.hcFolders.Controls.Add(this.button2);
-            this.hcFolders.Controls.Add(this.tbsavegame);
-            this.hcFolders.Controls.Add(this.button3);
-            this.hcFolders.Controls.Add(this.button4);
-            this.hcFolders.Controls.Add(this.tbdds);
-            this.hcFolders.Controls.Add(this.label5);
-            this.hcFolders.Controls.Add(this.linkLabel4);
-            this.hcFolders.Controls.Add(this.tbep1);
-            this.hcFolders.Controls.Add(this.button5);
-            this.hcFolders.Controls.Add(this.tbgame);
-            this.hcFolders.Controls.Add(this.lldds2);
-            this.hcFolders.Controls.Add(this.lldds);
-            this.hcFolders.Controls.Add(this.label7);
-            this.hcFolders.Controls.Add(this.label6);
-            this.hcFolders.Controls.Add(this.label3);
-            this.hcFolders.Controls.Add(this.llsetep1);
-            this.hcFolders.Controls.Add(this.label2);
-            this.hcFolders.HeaderFont = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
-            resources.ApplyResources(this.hcFolders, "hcFolders");
-            this.hcFolders.Name = "hcFolders";
-            // 
+            //
             // pgPaths
             // 
             this.pgPaths.CommandsBackColor = System.Drawing.SystemColors.Window;
@@ -766,19 +713,19 @@ namespace SimPe
             resources.ApplyResources(this.label14, "label14");
             this.label14.Name = "label14";
             // 
-            // hcSettings
-            // 
-            this.hcSettings.Controls.Add(this.button8);
-            this.hcSettings.Controls.Add(this.groupBox6);
-            this.hcSettings.Controls.Add(this.groupBox5);
-            this.hcSettings.Controls.Add(this.button6);
-            this.hcSettings.Controls.Add(this.groupBox2);
-            this.hcSettings.Controls.Add(this.groupBox1);
-            this.hcSettings.Controls.Add(this.groupBox3);
-            this.hcSettings.Controls.Add(this.button7);
-            this.hcSettings.HeaderFont = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
-            resources.ApplyResources(this.hcSettings, "hcSettings");
-            this.hcSettings.Name = "hcSettings";
+            // tpSettings
+            //
+            this.tpSettings.Controls.Add(this.button8);
+            this.tpSettings.Controls.Add(this.groupBox6);
+            this.tpSettings.Controls.Add(this.groupBox5);
+            this.tpSettings.Controls.Add(this.button6);
+            this.tpSettings.Controls.Add(this.groupBox2);
+            this.tpSettings.Controls.Add(this.groupBox1);
+            this.tpSettings.Controls.Add(this.groupBox3);
+            this.tpSettings.Controls.Add(this.button7);
+            this.tpSettings.Name = "tpSettings";
+            this.tpSettings.Text = "Settings";
+            this.tpSettings.UseVisualStyleBackColor = true;
             // 
             // groupBox6
             // 
@@ -810,15 +757,17 @@ namespace SimPe
             this.cbThemes.Name = "cbThemes";
             this.cbThemes.SelectedIndexChanged += new System.EventHandler(this.ChangedThemeHandler);
             // 
-            // hcTools
-            // 
-            this.hcTools.Controls.Add(this.lbext);
-            this.hcTools.Controls.Add(this.linkLabel1);
-            this.hcTools.Controls.Add(this.linkLabel2);
-            this.hcTools.Controls.Add(this.label1);
-            this.hcTools.HeaderFont = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
-            resources.ApplyResources(this.hcTools, "hcTools");
-            this.hcTools.Name = "hcTools";
+            // tpTools
+            //
+            this.tpTools.Controls.Add(this.lbext);
+            this.tpTools.Controls.Add(this.linkLabel1);
+            this.tpTools.Controls.Add(this.linkLabel2);
+            this.tpTools.Controls.Add(this.label1);
+            this.tpTools.Controls.Add(this.groupBox8);
+            this.tpTools.Controls.Add(this.groupBox9);
+            this.tpTools.Name = "tpTools";
+            this.tpTools.Text = "Tools";
+            this.tpTools.UseVisualStyleBackColor = true;
             // 
             // groupBox8
             // 
@@ -889,14 +838,14 @@ namespace SimPe
             this.llchg.TabStop = true;
             this.llchg.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.llchg_LinkClicked);
             // 
-            // hcSceneGraph
-            // 
-            this.hcSceneGraph.Controls.Add(this.groupBox10);
-            this.hcSceneGraph.Controls.Add(this.groupBox7);
-            this.hcSceneGraph.Controls.Add(this.groupBox4);
-            this.hcSceneGraph.HeaderFont = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
-            resources.ApplyResources(this.hcSceneGraph, "hcSceneGraph");
-            this.hcSceneGraph.Name = "hcSceneGraph";
+            // tpSceneGraph
+            //
+            this.tpSceneGraph.Controls.Add(this.groupBox10);
+            this.tpSceneGraph.Controls.Add(this.groupBox7);
+            this.tpSceneGraph.Controls.Add(this.groupBox4);
+            this.tpSceneGraph.Name = "tpSceneGraph";
+            this.tpSceneGraph.Text = "Scene Graph";
+            this.tpSceneGraph.UseVisualStyleBackColor = true;
             // 
             // groupBox10
             // 
@@ -979,64 +928,15 @@ namespace SimPe
             resources.ApplyResources(this.cbDeep, "cbDeep");
             this.cbDeep.Name = "cbDeep";
             this.cbDeep.CheckedChanged += new System.EventHandler(this.cbDeep_CheckedChanged);
-            // 
-            // bb
-            // 
-            resources.ApplyResources(this.bb, "bb");
-            this.bb.Buttons.AddRange(new Divelements.Navisight.NavigationButton[] {
-            this.nbSettings,
-            this.nbCustom,
-            this.nbSceneGraph,
-            this.nbPlugins,
-            //this.nbIdent,
-            this.nbTools});
-            this.bb.ButtonSpacing = 16;
-            this.bb.Name = "bb";
-            // 
-            // nbSettings
-            // 
-            this.nbSettings.Image = ((System.Drawing.Image)(resources.GetObject("nbSettings.Image")));
-            resources.ApplyResources(this.nbSettings, "nbSettings");
-            this.nbSettings.Activate += new System.EventHandler(this.SelectCategory);
-            // 
-            // nbSceneGraph
-            // 
-            this.nbSceneGraph.Image = ((System.Drawing.Image)(resources.GetObject("nbSceneGraph.Image")));
-            resources.ApplyResources(this.nbSceneGraph, "nbSceneGraph");
-            this.nbSceneGraph.Activate += new System.EventHandler(this.SelectCategory);
-            // 
-            // nbCustom
-            // 
-            this.nbCustom.Image = ((System.Drawing.Image)(resources.GetObject("nbCustom.Image")));
-            resources.ApplyResources(this.nbCustom, "nbCustom");
-            this.nbCustom.Activate += new System.EventHandler(this.SelectCategory);
-            // 
-            // nbPlugins
-            // 
-            this.nbPlugins.Image = ((System.Drawing.Image)(resources.GetObject("nbPlugins.Image")));
-            resources.ApplyResources(this.nbPlugins, "nbPlugins");
-            this.nbPlugins.Activate += new System.EventHandler(this.SelectCategory);
-            // 
-            // nbTools
-            // 
-            this.nbTools.Image = ((System.Drawing.Image)(resources.GetObject("nbTools.Image")));
-            resources.ApplyResources(this.nbTools, "nbTools");
-            this.nbTools.Activate += new System.EventHandler(this.SelectCategory);
-            /* 
-            // nbIdent
-            // 
-            this.nbIdent.Image = ((System.Drawing.Image)(resources.GetObject("nbIdent.Image")));
-            resources.ApplyResources(this.nbIdent, "nbIdent");
-            this.nbIdent.Activate += new System.EventHandler(this.SelectCategory);*/
-            // 
-            // hcPlugins
-            // 
-            this.hcPlugins.Controls.Add(this.btpup);
-            this.hcPlugins.Controls.Add(this.btpdown);
-            this.hcPlugins.Controls.Add(this.cnt);
-            this.hcPlugins.HeaderFont = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
-            resources.ApplyResources(this.hcPlugins, "hcPlugins");
-            this.hcPlugins.Name = "hcPlugins";
+            //
+            // tpPlugins
+            //
+            this.tpPlugins.Controls.Add(this.btpup);
+            this.tpPlugins.Controls.Add(this.btpdown);
+            this.tpPlugins.Controls.Add(this.cnt);
+            this.tpPlugins.Name = "tpPlugins";
+            this.tpPlugins.Text = "Plugins";
+            this.tpPlugins.UseVisualStyleBackColor = true;
             // 
             // btpup
             // 
@@ -1124,27 +1024,20 @@ namespace SimPe
             // 
             resources.ApplyResources(this.label11, "label11");
             this.label11.Name = "label11";
-            // 
-            // hcCheck
-            // 
-            this.hcCheck.Controls.Add(this.checkControl1);
-            this.hcCheck.HeaderFont = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
-            resources.ApplyResources(this.hcCheck, "hcCheck");
-            this.hcCheck.Name = "hcCheck";
-            // 
+            //
             // checkControl1
             // 
             resources.ApplyResources(this.checkControl1, "checkControl1");
             this.checkControl1.Name = "checkControl1";
             this.checkControl1.FixedFileTable += new System.EventHandler(this.checkControl1_FixedFileTable);
             // 
-            // hcCustom
-            // 
-            this.hcCustom.Controls.Add(this.pgcustom);
-            this.hcCustom.Controls.Add(this.cbCustom);
-            this.hcCustom.HeaderFont = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
-            resources.ApplyResources(this.hcCustom, "hcCustom");
-            this.hcCustom.Name = "hcCustom";
+            // tpCustom
+            //
+            this.tpCustom.Controls.Add(this.pgcustom);
+            this.tpCustom.Controls.Add(this.cbCustom);
+            this.tpCustom.Name = "tpCustom";
+            this.tpCustom.Text = "Custom";
+            this.tpCustom.UseVisualStyleBackColor = true;
             // 
             // pgcustom
             // 
@@ -1159,22 +1052,28 @@ namespace SimPe
             this.cbCustom.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbCustom.Name = "cbCustom";
             this.cbCustom.SelectedIndexChanged += new System.EventHandler(this.cbCustom_SelectedIndexChanged);
-            // 
+            //
+            // tc
+            //
+            this.tc.Controls.Add(this.tpSettings);
+            this.tc.Controls.Add(this.tpTools);
+            this.tc.Controls.Add(this.tpSceneGraph);
+            this.tc.Controls.Add(this.tpPlugins);
+            this.tc.Controls.Add(this.tpCustom);
+            this.tc.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tc.Name = "tc";
+            this.tc.SelectedIndex = 0;
+            //
             // baloonTip
-            // 
-            // 
+            //
+            //
             // OptionForm
-            // 
+            //
             resources.ApplyResources(this, "$this");
             this.BackColor = System.Drawing.SystemColors.Window;
-            this.Controls.Add(this.bb);
+            this.Controls.Add(this.tc);
             this.Controls.Add(this.button1);
-            this.Controls.Add(this.hcCustom);
-            this.Controls.Add(this.hcSceneGraph);
-            this.Controls.Add(this.hcSettings);
-            //this.Controls.Add(this.hcIdent);
-            this.Controls.Add(this.hcPlugins);
-            this.Controls.Add(this.hcTools);
+            this.button1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -1186,21 +1085,20 @@ namespace SimPe
             this.groupBox1.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
-            this.hcSettings.ResumeLayout(false);
+            this.tpSettings.ResumeLayout(false);
             this.groupBox6.ResumeLayout(false);
             this.groupBox5.ResumeLayout(false);
-            this.hcTools.ResumeLayout(false);
-            this.hcTools.PerformLayout();
+            this.tpTools.ResumeLayout(false);
+            this.tpTools.PerformLayout();
             this.groupBox8.ResumeLayout(false);
             this.groupBox9.ResumeLayout(false);
-            this.hcSceneGraph.ResumeLayout(false);
+            this.tpSceneGraph.ResumeLayout(false);
             this.groupBox10.ResumeLayout(false);
             this.groupBox10.PerformLayout();
             this.groupBox7.ResumeLayout(false);
-            this.hcPlugins.ResumeLayout(false);
-            //this.hcIdent.ResumeLayout(false);
-            //this.hcIdent.PerformLayout();
-            this.hcCustom.ResumeLayout(false);
+            this.tpPlugins.ResumeLayout(false);
+            this.tpCustom.ResumeLayout(false);
+            this.tc.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }

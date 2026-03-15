@@ -72,14 +72,6 @@
   <ItemGroup>
     
     
-    <Reference Include="Eyefinder">
-      <HintPath>C:\Users\rhiam\source\repos\SimPeSource\lib\Eyefinder.dll</HintPath>
-    </Reference>
-    
-    <Reference Include="Navisight">
-      <HintPath>C:\Users\rhiam\source\repos\SimPeSource\lib\Navisight.dll</HintPath>
-    </Reference>
-    
     <Reference Include="SandDock">
       <HintPath>C:\Users\rhiam\source\repos\SimPeSource\lib\SandDock.dll</HintPath>
     </Reference>

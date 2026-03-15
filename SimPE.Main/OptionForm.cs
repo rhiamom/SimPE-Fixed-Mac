@@ -31,7 +31,7 @@ using System.Windows.Forms;
 namespace SimPe
 {
     /// <summary>
-    /// Zusammenfassung für OptionForm.
+    /// Zusammenfassung fï¿½r OptionForm.
     /// </summary>
     public partial class OptionForm : System.Windows.Forms.Form
     {
@@ -44,7 +44,7 @@ namespace SimPe
             {
                 Application.DoEvents();
                 //
-                // Erforderlich für die Windows Form-Designerunterstützung
+                // Erforderlich fï¿½r die Windows Form-Designerunterstï¿½tzung
                 //
                 InitializeComponent();
 
@@ -59,7 +59,7 @@ namespace SimPe
 
 
                 for (byte i = 1; i < 0x44; i++) this.cblang.Items.Add(new SimPe.PackedFiles.Wrapper.StrLanguage(i));
-                SelectCategory(nbFolders, null);
+                tc.SelectedTab = tpSettings;
 
                 SimPe.GuiTheme[] gts = (SimPe.GuiTheme[])System.Enum.GetValues(typeof(SimPe.GuiTheme));
                 foreach (SimPe.GuiTheme gt in gts) cbThemes.Items.Add(gt);
@@ -309,32 +309,15 @@ namespace SimPe
             tbep1.Text = SimPe.PathProvider.Global[Expansions.University].RealInstallFolder;
         }
 
-        void EnablePanel(Divelements.Navisight.NavigationButton panel)
+        void EnablePanel(TabPage page)
         {
-            hcSettings.Visible = (panel == nbSettings);
-            hcTools.Visible = (panel == nbTools);
-            hcSceneGraph.Visible = (panel == nbSceneGraph);
-            hcPlugins.Visible = (panel == nbPlugins);
-            //hcIdent.Visible = (panel == nbIdent);
-            hcCustom.Visible = (panel == nbCustom);
+            tc.SelectedTab = page;
         }
 
         private void SelectCategory(object sender, System.EventArgs e)
         {
-            foreach (Divelements.Navisight.NavigationButton nb in bb.Buttons)
-            {
-                nb.Checked = (nb == sender);
-
-                if (nb.Checked)
-                {
-                    if (nb == nbSettings) EnablePanel(nbSettings);
-                    else if (nb == nbTools) EnablePanel(nbTools);
-                    else if (nb == nbSceneGraph) EnablePanel(nbSceneGraph);
-                    else if (nb == nbPlugins) EnablePanel(nbPlugins);
-                    //else if (nb == nbIdent) EnablePanel(nbIdent);
-                    else if (nb == nbCustom) EnablePanel(nbCustom);
-                }
-            }
+            // No longer needed â€” TabControl handles selection natively
+            // Kept as stub in case something calls it
         }
 
         private void ChangedThemeHandler(object sender, System.EventArgs e)
@@ -376,7 +359,7 @@ namespace SimPe
             return System.Drawing.Image.FromStream(typeof(SimPe.Helper).Assembly.GetManifestResourceStream("SimPe.IconXmlResources.disabled.png"));
         }
 
-        public void SetPanel(SimPe.Interfaces.IWrapper wrapper, TD.Eyefinder.HeaderControl pn)
+        internal void SetPanel(SimPe.Interfaces.IWrapper wrapper, PluginPanel pn)
         {
 
 
@@ -394,7 +377,7 @@ namespace SimPe
 
         }
 
-        public Image GetShrinkImage(TD.Eyefinder.HeaderControl pn)
+        internal Image GetShrinkImage(PluginPanel pn)
         {
             if (pn.Height == pn.DisplayRectangle.Top + 1)
             {
@@ -432,14 +415,13 @@ namespace SimPe
 
             const int imgwidth = 22;
             int top = 4 + index * (height + 4);
-            TD.Eyefinder.HeaderControl pn = new TD.Eyefinder.HeaderControl();
+            PluginPanel pn = new PluginPanel();
             pn.Parent = cnt;
             pn.Top = top;
             pn.Left = 4;
             pn.Width = cnt.Width - System.Windows.Forms.SystemInformation.VerticalScrollBarWidth - 2 - 2 * pn.Left;
             pn.Height = height;
             pn.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right;
-            pn.HeaderStyle = TD.Eyefinder.HeaderStyle.SubHeading;
             pn.Click += new EventHandler(pn_Click);
             pn.LostFocus += new EventHandler(pn_LostFocus);
             pn.GotFocus += new EventHandler(pn_Focused);
@@ -740,22 +722,22 @@ namespace SimPe
 
         private void pn_Click(object sender, EventArgs e)
         {
-            if (sender is TD.Eyefinder.HeaderControl)
+            if (sender is PluginPanel)
             {
-                TD.Eyefinder.HeaderControl pn = (TD.Eyefinder.HeaderControl)sender;
+                PluginPanel pn = (PluginPanel)sender;
                 pn.Focus();
             }
             else if (sender is Control)
             {
-                TD.Eyefinder.HeaderControl pn = (TD.Eyefinder.HeaderControl)((Control)sender).Parent;
+                PluginPanel pn = (PluginPanel)((Control)sender).Parent;
                 pn.Focus();
             }
         }
 
-        TD.Eyefinder.HeaderControl lastpn;
+        PluginPanel lastpn;
         private void pn_Focused(object sender, EventArgs e)
         {
-            TD.Eyefinder.HeaderControl pn = (TD.Eyefinder.HeaderControl)sender;
+            PluginPanel pn = (PluginPanel)sender;
             pn.BackColor = SystemColors.Window;
             pn.Font = new Font(pn.Font.Name, pn.Font.Size, FontStyle.Bold, pn.Font.Unit);
 
@@ -768,7 +750,7 @@ namespace SimPe
 
         private void pn_LostFocus(object sender, EventArgs e)
         {
-            TD.Eyefinder.HeaderControl pn = (TD.Eyefinder.HeaderControl)sender;
+            PluginPanel pn = (PluginPanel)sender;
             pn.BackColor = SystemColors.ControlLight;
             pn.Font = new Font(pn.Font.Name, pn.Font.Size, FontStyle.Regular, pn.Font.Unit);
             if (pn.Controls.Count > 9) pn.Controls[9].BackColor = pn.BackColor;
@@ -777,7 +759,7 @@ namespace SimPe
         private void pb_Click(object sender, EventArgs e)
         {
             PictureBox pb = (PictureBox)sender;
-            TD.Eyefinder.HeaderControl pn = (TD.Eyefinder.HeaderControl)pb.Tag;
+            PluginPanel pn = (PluginPanel)pb.Tag;
             SimPe.Interfaces.IWrapper wrapper = (SimPe.Interfaces.IWrapper)pn.Tag;
 
             wrapper.Priority *= -1;
@@ -789,7 +771,7 @@ namespace SimPe
             SetBackgroundColor(pn.Controls[pn.Controls.Count - 3], i, false);
         }
 
-        int FindPanelIndex(TD.Eyefinder.HeaderControl pn)
+        int FindPanelIndex(PluginPanel pn)
         {
             for (int i = 0; i < wrappers.Count; i++)
             {
@@ -801,8 +783,8 @@ namespace SimPe
 
         void Exchange(int index, int o)
         {
-            TD.Eyefinder.HeaderControl pn1 = (TD.Eyefinder.HeaderControl)wrappers[index];
-            TD.Eyefinder.HeaderControl pn2 = (TD.Eyefinder.HeaderControl)wrappers[index + o];
+            PluginPanel pn1 = (PluginPanel)wrappers[index];
+            PluginPanel pn2 = (PluginPanel)wrappers[index + o];
 
             int d = pn1.Top;
             pn1.Top = pn2.Top;
@@ -862,7 +844,7 @@ namespace SimPe
         private void pb_ExpandClick(object sender, EventArgs e)
         {
             PictureBox pb = (PictureBox)sender;
-            TD.Eyefinder.HeaderControl pn = (TD.Eyefinder.HeaderControl)pb.Tag;
+            PluginPanel pn = (PluginPanel)pb.Tag;
 
             if (pn.Height == pn.DisplayRectangle.Top + 1)
             {
@@ -1384,6 +1366,47 @@ namespace SimPe
         class MyPropertyGrid : PropertyGrid
         {
 
+        }
+    }
+
+    /// <summary>
+    /// Replacement for TD.Eyefinder.HeaderControl used in plugin list panels.
+    /// Draws its own header strip and overrides DisplayRectangle to match HeaderControl behavior.
+    /// </summary>
+    internal sealed class PluginPanel : Panel
+    {
+        public const int HeaderHeight = 22;
+
+        // Override DisplayRectangle so existing code using pn.DisplayRectangle.Top still works
+        public override Rectangle DisplayRectangle =>
+            new Rectangle(0, HeaderHeight, ClientSize.Width, Math.Max(0, ClientSize.Height - HeaderHeight));
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
+            var g = e.Graphics;
+            // Header background
+            using (var brush = new SolidBrush(BackColor))
+                g.FillRectangle(brush, 0, 0, Width, HeaderHeight);
+            // Header text
+            if (!string.IsNullOrEmpty(Text))
+                using (var brush = new SolidBrush(ForeColor))
+                using (var sf = new StringFormat { LineAlignment = StringAlignment.Center })
+                    g.DrawString(Text, Font, brush, new RectangleF(4, 0, Width - 8, HeaderHeight), sf);
+            // Separator line
+            using (var pen = new Pen(SystemColors.ControlDark))
+                g.DrawLine(pen, 0, HeaderHeight - 1, Width - 1, HeaderHeight - 1);
+        }
+
+        protected override void OnBackColorChanged(EventArgs e) { base.OnBackColorChanged(e); Invalidate(); }
+        protected override void OnForeColorChanged(EventArgs e) { base.OnForeColorChanged(e); Invalidate(); }
+        protected override void OnFontChanged(EventArgs e) { base.OnFontChanged(e); Invalidate(); }
+        protected override void OnTextChanged(EventArgs e) { base.OnTextChanged(e); Invalidate(); }
+
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            base.OnMouseDown(e);
+            if (e.Y < HeaderHeight) Focus();
         }
     }
 }
