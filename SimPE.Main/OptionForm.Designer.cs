@@ -38,10 +38,6 @@ namespace SimPe
         private System.Windows.Forms.CheckBox cbdebug;
         private System.Windows.Forms.CheckBox cbblur;
         private System.Windows.Forms.CheckBox cbsound;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ListBox lbext;
-        private System.Windows.Forms.LinkLabel linkLabel1;
-        private System.Windows.Forms.LinkLabel linkLabel2;
         private System.Windows.Forms.FolderBrowserDialog fbd;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
@@ -72,9 +68,6 @@ namespace SimPe
         private System.Windows.Forms.CheckBox cbshowobjd;
         private System.Windows.Forms.LinkLabel lldds2;
         private System.Windows.Forms.Label lldds;
-        private System.Windows.Forms.LinkLabel lladd;
-        private System.Windows.Forms.LinkLabel lldel;
-        private System.Windows.Forms.LinkLabel lladddown;
         private System.Windows.Forms.LinkLabel llsetep1;
         private System.Windows.Forms.CheckBox cbhidden;
         private System.Windows.Forms.CheckBox cbjointname;
@@ -85,7 +78,6 @@ namespace SimPe
         private System.Windows.Forms.CheckBox cbpkgmaint;
         private System.Windows.Forms.TabControl tc;
         private System.Windows.Forms.TabPage tpSettings;
-        private System.Windows.Forms.TabPage tpTools;
         private System.Windows.Forms.TabPage tpSceneGraph;
         private System.Windows.Forms.TabPage tpPlugins;
         private System.Windows.Forms.TabPage tpCustom;
@@ -96,8 +88,6 @@ namespace SimPe
         private System.Windows.Forms.Button button7;
         private System.Windows.Forms.CheckBox cbSimple;
         private System.Windows.Forms.Panel cnt;
-        private System.Windows.Forms.Button btdn;
-        private System.Windows.Forms.Button btup;
         private System.Windows.Forms.Button btpup;
         private System.Windows.Forms.Button btpdown;
         private System.Windows.Forms.GroupBox groupBox6;
@@ -119,15 +109,7 @@ namespace SimPe
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.LinkLabel llNightlife;
         private System.Windows.Forms.TextBox tbep2;
-        private System.Windows.Forms.LinkLabel llchg;
         private System.Windows.Forms.CheckBox cbSimTemp;
-        private System.Windows.Forms.CheckedListBox lbfolder;
-        private System.Windows.Forms.Button btReload;
-        private System.Windows.Forms.GroupBox groupBox8;
-        private System.Windows.Forms.CheckBox cbIncCep;
-
-        private System.Windows.Forms.GroupBox groupBox9;
-        private System.Windows.Forms.LinkLabel linkLabel6;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.ComboBox cbReport;
         private System.Windows.Forms.CheckBox cbLock;
@@ -178,10 +160,6 @@ namespace SimPe
             this.cbdebug = new System.Windows.Forms.CheckBox();
             this.cbblur = new System.Windows.Forms.CheckBox();
             this.cbsound = new System.Windows.Forms.CheckBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.lbext = new System.Windows.Forms.ListBox();
-            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-            this.linkLabel2 = new System.Windows.Forms.LinkLabel();
             this.fbd = new System.Windows.Forms.FolderBrowserDialog();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
@@ -227,9 +205,6 @@ namespace SimPe
             this.cbSimple = new System.Windows.Forms.CheckBox();
             this.cbmulti = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.lladddown = new System.Windows.Forms.LinkLabel();
-            this.lldel = new System.Windows.Forms.LinkLabel();
-            this.lladd = new System.Windows.Forms.LinkLabel();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.label10 = new System.Windows.Forms.Label();
             this.cbjointname = new System.Windows.Forms.CheckBox();
@@ -242,16 +217,6 @@ namespace SimPe
             this.cbFirefox = new System.Windows.Forms.CheckBox();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.cbThemes = new System.Windows.Forms.ComboBox();
-            this.tpTools = new System.Windows.Forms.TabPage();
-            this.groupBox8 = new System.Windows.Forms.GroupBox();
-            this.cbIncCep = new System.Windows.Forms.CheckBox();
-            this.btReload = new System.Windows.Forms.Button();
-            this.groupBox9 = new System.Windows.Forms.GroupBox();
-            this.btup = new System.Windows.Forms.Button();
-            this.btdn = new System.Windows.Forms.Button();
-            this.linkLabel6 = new System.Windows.Forms.LinkLabel();
-            this.lbfolder = new System.Windows.Forms.CheckedListBox();
-            this.llchg = new System.Windows.Forms.LinkLabel();
             this.tpSceneGraph = new System.Windows.Forms.TabPage();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.cbAsyncSort = new System.Windows.Forms.CheckBox();
@@ -289,14 +254,11 @@ namespace SimPe
             this.groupBox4.SuspendLayout();
             this.tc.SuspendLayout();
             this.tpSettings.SuspendLayout();
-            this.tpTools.SuspendLayout();
             this.tpSceneGraph.SuspendLayout();
             this.tpPlugins.SuspendLayout();
             this.tpCustom.SuspendLayout();
             this.groupBox6.SuspendLayout();
             this.groupBox5.SuspendLayout();
-            this.groupBox8.SuspendLayout();
-            this.groupBox9.SuspendLayout();
             this.groupBox10.SuspendLayout();
             this.groupBox7.SuspendLayout();
             this.SuspendLayout();
@@ -341,31 +303,7 @@ namespace SimPe
             // 
             resources.ApplyResources(this.cbsound, "cbsound");
             this.cbsound.Name = "cbsound";
-            // 
-            // label1
-            // 
-            resources.ApplyResources(this.label1, "label1");
-            this.label1.Name = "label1";
-            // 
-            // lbext
-            // 
-            resources.ApplyResources(this.lbext, "lbext");
-            this.lbext.Name = "lbext";
-            // 
-            // linkLabel1
-            // 
-            resources.ApplyResources(this.linkLabel1, "linkLabel1");
-            this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.TabStop = true;
-            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.AddExt);
-            // 
-            // linkLabel2
-            // 
-            resources.ApplyResources(this.linkLabel2, "linkLabel2");
-            this.linkLabel2.Name = "linkLabel2";
-            this.linkLabel2.TabStop = true;
-            this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.DeleteExt);
-            // 
+            //
             // button2
             // 
             resources.ApplyResources(this.button2, "button2");
@@ -646,29 +584,7 @@ namespace SimPe
             this.groupBox1.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.TabStop = false;
-            // 
-            // lladddown
-            // 
-            resources.ApplyResources(this.lladddown, "lladddown");
-            this.lladddown.Name = "lladddown";
-            this.lladddown.TabStop = true;
-            this.lladddown.UseCompatibleTextRendering = true;
-            this.lladddown.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lladddown_LinkClicked);
-            // 
-            // lldel
-            // 
-            resources.ApplyResources(this.lldel, "lldel");
-            this.lldel.Name = "lldel";
-            this.lldel.TabStop = true;
-            this.lldel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lldel_LinkClicked);
-            // 
-            // lladd
-            // 
-            resources.ApplyResources(this.lladd, "lladd");
-            this.lladd.Name = "lladd";
-            this.lladd.TabStop = true;
-            this.lladd.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lladd_LinkClicked);
-            // 
+            //
             // groupBox4
             // 
             resources.ApplyResources(this.groupBox4, "groupBox4");
@@ -756,88 +672,7 @@ namespace SimPe
             this.cbThemes.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbThemes.Name = "cbThemes";
             this.cbThemes.SelectedIndexChanged += new System.EventHandler(this.ChangedThemeHandler);
-            // 
-            // tpTools
             //
-            this.tpTools.Controls.Add(this.lbext);
-            this.tpTools.Controls.Add(this.linkLabel1);
-            this.tpTools.Controls.Add(this.linkLabel2);
-            this.tpTools.Controls.Add(this.label1);
-            this.tpTools.Controls.Add(this.groupBox8);
-            this.tpTools.Controls.Add(this.groupBox9);
-            this.tpTools.Name = "tpTools";
-            this.tpTools.Text = "Tools";
-            this.tpTools.UseVisualStyleBackColor = true;
-            // 
-            // groupBox8
-            // 
-            this.groupBox8.Controls.Add(this.cbIncCep);
-            this.groupBox8.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            resources.ApplyResources(this.groupBox8, "groupBox8");
-            this.groupBox8.Name = "groupBox8";
-            this.groupBox8.TabStop = false;
-            // 
-            // cbIncCep
-            // 
-            resources.ApplyResources(this.cbIncCep, "cbIncCep");
-            this.cbIncCep.Name = "cbIncCep";
-            this.cbIncCep.CheckedChanged += new System.EventHandler(this.cbIncNightlife_CheckedChanged);
-            // 
-            // btReload
-            // 
-            resources.ApplyResources(this.btReload, "btReload");
-            this.btReload.Name = "btReload";
-            this.btReload.Click += new System.EventHandler(this.btReload_Click);
-            // 
-            // groupBox9
-            // 
-            this.groupBox9.Controls.Add(this.btup);
-            this.groupBox9.Controls.Add(this.btdn);
-            this.groupBox9.Controls.Add(this.linkLabel6);
-            this.groupBox9.Controls.Add(this.lldel);
-            this.groupBox9.Controls.Add(this.lladddown);
-            this.groupBox9.Controls.Add(this.lbfolder);
-            this.groupBox9.Controls.Add(this.llchg);
-            this.groupBox9.Controls.Add(this.lladd);
-            resources.ApplyResources(this.groupBox9, "groupBox9");
-            this.groupBox9.Name = "groupBox9";
-            this.groupBox9.TabStop = false;
-            // 
-            // btup
-            // 
-            resources.ApplyResources(this.btup, "btup");
-            this.btup.Name = "btup";
-            this.btup.Click += new System.EventHandler(this.btup_Click);
-            // 
-            // btdn
-            // 
-            resources.ApplyResources(this.btdn, "btdn");
-            this.btdn.Name = "btdn";
-            this.btdn.Click += new System.EventHandler(this.btdn_Click);
-            // 
-            // linkLabel6
-            // 
-            resources.ApplyResources(this.linkLabel6, "linkLabel6");
-            this.linkLabel6.Name = "linkLabel6";
-            this.linkLabel6.TabStop = true;
-            this.linkLabel6.UseCompatibleTextRendering = true;
-            this.linkLabel6.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel6_LinkClicked);
-            // 
-            // lbfolder
-            // 
-            resources.ApplyResources(this.lbfolder, "lbfolder");
-            this.lbfolder.Name = "lbfolder";
-            this.lbfolder.CheckOnClick = true;
-            this.lbfolder.SelectedIndexChanged += new System.EventHandler(this.lbfolder_SelectedIndexChanged);
-            this.lbfolder.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.lbfolder_ItemCheck);
-            // 
-            // llchg
-            // 
-            resources.ApplyResources(this.llchg, "llchg");
-            this.llchg.Name = "llchg";
-            this.llchg.TabStop = true;
-            this.llchg.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.llchg_LinkClicked);
-            // 
             // tpSceneGraph
             //
             this.tpSceneGraph.Controls.Add(this.groupBox10);
@@ -1029,7 +864,6 @@ namespace SimPe
             // 
             resources.ApplyResources(this.checkControl1, "checkControl1");
             this.checkControl1.Name = "checkControl1";
-            this.checkControl1.FixedFileTable += new System.EventHandler(this.checkControl1_FixedFileTable);
             // 
             // tpCustom
             //
@@ -1056,7 +890,6 @@ namespace SimPe
             // tc
             //
             this.tc.Controls.Add(this.tpSettings);
-            this.tc.Controls.Add(this.tpTools);
             this.tc.Controls.Add(this.tpSceneGraph);
             this.tc.Controls.Add(this.tpPlugins);
             this.tc.Controls.Add(this.tpCustom);
@@ -1088,10 +921,6 @@ namespace SimPe
             this.tpSettings.ResumeLayout(false);
             this.groupBox6.ResumeLayout(false);
             this.groupBox5.ResumeLayout(false);
-            this.tpTools.ResumeLayout(false);
-            this.tpTools.PerformLayout();
-            this.groupBox8.ResumeLayout(false);
-            this.groupBox9.ResumeLayout(false);
             this.tpSceneGraph.ResumeLayout(false);
             this.groupBox10.ResumeLayout(false);
             this.groupBox10.PerformLayout();
