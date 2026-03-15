@@ -361,3 +361,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# SimPE build output directories not caught by standard patterns
+__Debug/
+__Release/
