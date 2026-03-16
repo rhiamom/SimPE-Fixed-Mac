@@ -220,11 +220,11 @@
     <Content Include="IconXmlResources\FileTableItemForm.ru_%24this.Icon.png" />
     <Content Include="IconXmlResources\FileTableItemForm_%24this.Icon.png" />
     <Content Include="IconXmlResources\FinderDock_%24this.Image.png" />
-    <Content Include="IconXmlResources\FinderDock_%24this.TabImage.png" />
-    <Content Include="IconXmlResources\FinderDock_biDetail.Image.png" />
-    <Content Include="IconXmlResources\FinderDock_biList.Image.png" />
-    <Content Include="IconXmlResources\FinderDock_biTile.Image.png" />
-    <Content Include="IconXmlResources\FinderDock_tbResult.Icon.png" />
+    <EmbeddedResource Include="IconXmlResources\FinderDockTabImage.png" />
+    <EmbeddedResource Include="IconXmlResources\FinderDock_biDetail.Image.png" />
+    <EmbeddedResource Include="IconXmlResources\FinderDock_biList.Image.png" />
+    <EmbeddedResource Include="IconXmlResources\FinderDock_biTile.Image.png" />
+    <EmbeddedResource Include="IconXmlResources\FinderDock_tbResult.Icon.png" />
     <Content Include="IconXmlResources\folder_home.png" />
     <Content Include="IconXmlResources\Form1_%24this.BackgroundImage.png" />
     <Content Include="IconXmlResources\Form1_%24this.Icon.png" />
