@@ -503,6 +503,21 @@ namespace SimPe
         /// <summary>
         /// true, if user wants see the startup splash screen
         /// </summary>
+        public bool ShowWelcomeOnStartup
+        {
+            get
+            {
+                XmlRegistryKey rkf = xrk.CreateSubKey("Settings");
+                object o = rkf.GetValue("ShowWelcomeOnStartup", true);
+                return Convert.ToBoolean(o);
+            }
+            set
+            {
+                XmlRegistryKey rkf = xrk.CreateSubKey("Settings");
+                rkf.SetValue("ShowWelcomeOnStartup", value);
+            }
+        }
+
         public bool ShowStartupSplash
         {
             get

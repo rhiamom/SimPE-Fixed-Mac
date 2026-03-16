@@ -31,7 +31,7 @@ using System.Windows.Forms;
 namespace SimPe
 {
 	/// <summary>
-	/// Zusammenfassung für About.
+	/// Zusammenfassung fï¿½r About.
 	/// </summary>
 	public class About : SimPe.Windows.Forms.HelpForm
     {
@@ -51,7 +51,7 @@ namespace SimPe
 		public About(bool html)
 		{
 			//
-			// Erforderlich für die Windows Form-Designerunterstützung
+			// Erforderlich fï¿½r die Windows Form-Designerunterstï¿½tzung
 			//
 			InitializeComponent();
             button2.BackColor = SystemColors.Control;
@@ -99,8 +99,8 @@ namespace SimPe
 
 		#region Vom Windows Form-Designer generierter Code
 		/// <summary>
-		/// Erforderliche Methode für die Designerunterstützung. 
-		/// Der Inhalt der Methode darf nicht mit dem Code-Editor geändert werden.
+		/// Erforderliche Methode fï¿½r die Designerunterstï¿½tzung. 
+		/// Der Inhalt der Methode darf nicht mit dem Code-Editor geï¿½ndert werden.
 		/// </summary>
 		private void InitializeComponent()
 		{
@@ -220,11 +220,25 @@ namespace SimPe
 		{
 			About f = new About();
 			f.Text = SimPe.Localization.GetString("Welcome");
-
             f.LoadResource("welcome");
             SimPe.Splash.Screen.Stop();
 
+            // Add "Don't show this again" checkbox
+            CheckBox cbDontShow = new CheckBox();
+            cbDontShow.Text = "Don't show this again on startup";
+            cbDontShow.AutoSize = true;
+            cbDontShow.Checked = !Helper.WindowsRegistry.ShowWelcomeOnStartup;
+            cbDontShow.BackColor = System.Drawing.SystemColors.Control;
+            // Position it just above the close button
+            cbDontShow.Location = new System.Drawing.Point(
+                f.button1.Left,
+                f.button1.Top - 20);
+            f.Controls.Add(cbDontShow);
+            cbDontShow.BringToFront();
+
 			f.ShowDialog();
+
+            Helper.WindowsRegistry.ShowWelcomeOnStartup = !cbDontShow.Checked;
 		}
 
         //static System.Threading.Thread uthread;

@@ -143,7 +143,7 @@ namespace SimPe
             waitControl1.Progress = 0;
             waitControl1.Message = "";
             waitControl1.Visible = Helper.WindowsRegistry.ShowWaitBarPermanent;
-            // Debug aid — useful when diagnosing game path / FileTable issues
+            // Debug aid ï¿½ useful when diagnosing game path / FileTable issues
             //System.Diagnostics.Debug.WriteLine("[SetupMainForm] GameRootPath = '" + (Helper.GameRootPath ?? "<null>") + "'");
         }
 
@@ -179,7 +179,7 @@ namespace SimPe
 
             SimPe.Splash.Screen.Stop();
 
-            if (Helper.WindowsRegistry.PreviousVersion == 0)
+            if (Helper.WindowsRegistry.ShowWelcomeOnStartup)
                 About.ShowWelcome();
 
             //if (Helper.WindowsRegistry.CheckForUpdates)
