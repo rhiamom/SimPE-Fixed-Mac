@@ -1,0 +1,61 @@
+SimPE External Dependencies
+===========================
+Last updated: 2026-03-16
+
+
+DLLs IN THIS FOLDER (lib/)
+---------------------------
+These are closed-source third-party libraries with no available source code.
+They must be kept here and are referenced by projects via relative HintPath.
+
+  SandDock.dll
+    Vendor:  Divelements Ltd.
+    Purpose: Docking panel/tab UI framework (main window layout)
+    Used by: SimPE.Helper, SimPE.Main, SimPE.WorkSpaceHelper, and many others
+
+  soil2.dll
+    Vendor:  Unknown (native C library — Simple OpenGL Image Library 2)
+    Purpose: Image loading/saving for 3D texture preview
+    Used by: SimPE.Main, SimPE.WorkSpaceHelper
+
+
+NUGET PACKAGES (auto-restored on build, no DLL copy needed)
+------------------------------------------------------------
+These are declared as <PackageReference> in the relevant .csproj files
+and are downloaded automatically by dotnet restore / MSBuild.
+
+  SharpZipLib (ICSharpCode.SharpZipLib) v1.4.2
+    Purpose: ZIP/GZip/BZip2 compression — replaces the old ICSharpCode.SharpZipLib.dll
+
+  SharpCompress v0.47.0
+    Purpose: Additional archive format support — replaces the old 7z.dll
+
+  BCnEncoder.Net v2.3.0
+    Purpose: BCn (DXT/BC) texture compression and decompression
+
+  System.Drawing.Common (via Windows SDK targeting)
+    Purpose: GDI+ drawing — required for net8.0-windows projects
+
+
+SOURCE PROJECTS (formerly closed-source DLLs, now decompiled and in-tree)
+--------------------------------------------------------------------------
+These DLLs have been decompiled and are now built from source as part of
+the solution. The original DLL files are no longer used.
+
+  ambertation.3D.dll        -> Ambertation.3D\
+  ambertation.utilities.dll -> Ambertation.Utilities\
+  ambertation.3D.gl.binding.dll (formerly ambertation.3D.mdx.binding.dll,
+                             originally Managed DirectX)
+                            -> Ambertation.3D.Gl.Binding\  (rewritten using OpenTK)
+  NetDocks.dll              -> NetDocks\
+  xsi.lib.dll               -> xsi.lib\
+  AdvancedForms.dll         -> AdvancedForms\
+
+  XPCommonControls.dll      -- ELIMINATED. All XPGradientPanel controls were
+                               replaced with standard System.Windows.Forms.Panel.
+
+  Eyefinder.dll             -- ELIMINATED. UI controls replaced in OptionForm.cs.
+  Navisight.dll             -- ELIMINATED. UI controls replaced in OptionForm.cs.
+
+  ICSharpCode.SharpZipLib.dll -- REPLACED by NuGet SharpZipLib (see above)
+  7z.dll                      -- REPLACED by NuGet SharpCompress (see above)
