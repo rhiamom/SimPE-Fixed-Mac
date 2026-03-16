@@ -130,7 +130,7 @@ namespace pj
             // 
             // gradientpanel1
             // 
-            this.gradientpanel1.BackColor = System.Drawing.Color.Transparent;
+            this.gradientpanel1.BackColor = System.Drawing.SystemColors.Control;
             this.gradientpanel1.Controls.Add(this.cbusecres);
             this.gradientpanel1.Controls.Add(this.label3);
             this.gradientpanel1.Controls.Add(this.label2);

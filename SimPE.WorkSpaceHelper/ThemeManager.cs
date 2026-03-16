@@ -283,7 +283,7 @@ namespace SimPe
         {
             get
             {
-                if (ctheme == GuiTheme.Office2003) return SystemColors.InactiveCaptionText;
+                if (ctheme == GuiTheme.Office2003) return SystemColors.ControlLight;
                 else if (ctheme == GuiTheme.Everett) return SystemColors.ControlLight;
                 else if (ctheme == GuiTheme.Glossy) return Color.FromArgb(0xDB, 0xE4, 0xEE);
                 else return clight;

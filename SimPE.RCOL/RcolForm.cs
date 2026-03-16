@@ -323,7 +323,7 @@ namespace SimPe.Plugin
             // 
             // gradientpanel1
             // 
-            this.gradientpanel1.BackColor = System.Drawing.Color.Transparent;
+            this.gradientpanel1.BackColor = System.Drawing.SystemColors.Control;
             this.gradientpanel1.Controls.Add(this.lbref);
             this.gradientpanel1.Controls.Add(this.xpTaskBoxSimple2);
             this.gradientpanel1.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -527,7 +527,7 @@ namespace SimPe.Plugin
             // 
             // gradientpanel3
             // 
-            this.gradientpanel3.BackColor = System.Drawing.Color.Transparent;
+            this.gradientpanel3.BackColor = System.Drawing.SystemColors.Control;
             this.gradientpanel3.Controls.Add(this.lbblocks);
             this.gradientpanel3.Controls.Add(this.btup);
             this.gradientpanel3.Controls.Add(this.cbblocks);
@@ -619,7 +619,7 @@ namespace SimPe.Plugin
             // 
             // gradientpanel2
             // 
-            this.gradientpanel2.BackColor = System.Drawing.Color.Transparent;
+            this.gradientpanel2.BackColor = System.Drawing.SystemColors.Control;
             this.gradientpanel2.Controls.Add(this.tv);
             this.gradientpanel2.Controls.Add(this.xpTaskBoxSimple1);
             this.gradientpanel2.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));

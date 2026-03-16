@@ -261,7 +261,7 @@ namespace SimPe.Plugin.Tool.Dockable
             // xpGradientPanel4
             // 
             resources.ApplyResources(this.xpGradientPanel4, "xpGradientPanel4");
-            this.xpGradientPanel4.BackColor = System.Drawing.Color.Transparent;
+            this.xpGradientPanel4.BackColor = System.Drawing.SystemColors.Control;
             
             this.xpGradientPanel4.Controls.Add(this.label13);
             this.xpGradientPanel4.Controls.Add(this.label12);
@@ -349,7 +349,7 @@ namespace SimPe.Plugin.Tool.Dockable
             // 
             // xpGradientPanel3
             // 
-            this.xpGradientPanel3.BackColor = System.Drawing.Color.Transparent;
+            this.xpGradientPanel3.BackColor = System.Drawing.SystemColors.Control;
             
             this.xpGradientPanel3.Controls.Add(this.lv);
             this.xpGradientPanel3.Controls.Add(this.label4);
@@ -422,7 +422,7 @@ namespace SimPe.Plugin.Tool.Dockable
             // 
             // xpGradientPanel2
             // 
-            this.xpGradientPanel2.BackColor = System.Drawing.Color.Transparent;
+            this.xpGradientPanel2.BackColor = System.Drawing.SystemColors.Control;
             
             
             this.xpGradientPanel2.Controls.Add(this.lbName);
@@ -522,7 +522,7 @@ namespace SimPe.Plugin.Tool.Dockable
             // 
             // xpGradientPanel1
             // 
-            this.xpGradientPanel1.BackColor = System.Drawing.Color.Transparent;
+            this.xpGradientPanel1.BackColor = System.Drawing.SystemColors.Control;
             
             this.xpGradientPanel1.Controls.Add(this.linkLabel1);
             this.xpGradientPanel1.Controls.Add(this.lbComp);
@@ -662,7 +662,7 @@ namespace SimPe.Plugin.Tool.Dockable
             // 
             // gradientpanel1
             // 
-            this.gradientpanel1.BackColor = System.Drawing.Color.Transparent;
+            this.gradientpanel1.BackColor = System.Drawing.SystemColors.Control;
             
             this.gradientpanel1.Controls.Add(this.hvc);
             this.gradientpanel1.Controls.Add(this.panel1);
@@ -709,7 +709,7 @@ namespace SimPe.Plugin.Tool.Dockable
             // 
             // panel1
             // 
-            this.panel1.BackColor = System.Drawing.Color.Transparent;
+            this.panel1.BackColor = System.Drawing.SystemColors.Control;
             resources.ApplyResources(this.panel1, "panel1");
             this.panel1.Controls.Add(this.button1);
             this.panel1.Controls.Add(this.btcopie);

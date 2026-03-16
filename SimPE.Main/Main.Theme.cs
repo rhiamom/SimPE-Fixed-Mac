@@ -174,15 +174,21 @@ namespace SimPe
                         toRemove.Add(dp);
                 }
                 foreach (var dp in toRemove)
-                    container.Controls.Remove(dp);
+                    dp.Close();
             }
 
             // Default Object Workshop to dockRight (user preference).
-            // Only move it if it's still sitting in dockBottom (i.e. no saved position yet).
+            // Move it there whether it is floating or in another container.
             var owPanel = Ambertation.Windows.Forms.ManagerSingelton.Global
                 .GetPanelWithName("dc.SimPe.Plugin.Tool.Dockable.ObectWorkshopDockTool");
-            if (owPanel != null && owPanel.DockContainer == dockBottom)
+            if (owPanel != null && owPanel.DockContainer != dockRight)
                 owPanel.DockContainer = dockRight;
+
+            // Make key panels the active (visible) panel in their respective containers.
+            // After ghost-panel removal the button bar's active index can shift, leaving
+            // the correct panel docked but hidden behind whichever panel is now active.
+            dcResource.EnsureVisible();
+            if (owPanel != null) owPanel.EnsureVisible();
 
             resourceViewManager1.RestoreLayout();
             

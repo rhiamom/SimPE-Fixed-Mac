@@ -97,7 +97,7 @@ namespace SimPe.Plugin.Tool
             // 
             // xpGradientPanel1
             // 
-            this.xpGradientPanel1.BackColor = System.Drawing.Color.Transparent;
+            this.xpGradientPanel1.BackColor = System.Drawing.SystemColors.Control;
             this.xpGradientPanel1.Controls.Add(this.button1);
             this.xpGradientPanel1.Controls.Add(this.rtb);
             resources.ApplyResources(this.xpGradientPanel1, "xpGradientPanel1");

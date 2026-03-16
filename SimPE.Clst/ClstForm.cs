@@ -117,7 +117,7 @@ namespace SimPe.PackedFiles.UserInterface
             this.SuspendLayout();
 
             // clstPanel (replaces Chris Hatch.gradientpanel)
-            this.clstPanel.BackColor = System.Drawing.Color.Transparent;
+            this.clstPanel.BackColor = System.Drawing.SystemColors.Control;
             this.clstPanel.Controls.Add(this.lbformat);
             this.clstPanel.Controls.Add(this.label9);
             this.clstPanel.Controls.Add(this.lbclst);
