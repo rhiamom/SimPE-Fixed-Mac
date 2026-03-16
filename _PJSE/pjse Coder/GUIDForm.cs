@@ -578,7 +578,7 @@ namespace pjse.guidtool
             // progressBar1
             // 
             resources.ApplyResources(this.progressBar1, "progressBar1");
-            this.progressBar1.BackColor = System.Drawing.Color.Transparent;
+            // Transparent BackColor not supported on ProgressBar in .NET 8
             
             this.progressBar1.Maximum = 100;
             this.progressBar1.Minimum = 0;
