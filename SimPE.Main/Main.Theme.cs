@@ -184,20 +184,13 @@ namespace SimPe
             if (owPanel != null && owPanel.DockContainer != dockRight)
                 owPanel.DockContainer = dockRight;
 
-            // Make key panels the active (visible) panel in their respective containers.
-            // After ghost-panel removal the button bar's active index can shift, leaving
-            // the correct panel docked but hidden behind whichever panel is now active.
-            dcResource.EnsureVisible();
-            if (owPanel != null) owPanel.EnsureVisible();
-
             resourceViewManager1.RestoreLayout();
-            
 
             UpdateDockMenus();
             MyButtonItem.GetLayoutInformations(this);
 
             FixCheckedState(tbTools);
-            FixCheckedState(toolBar1);            
+            FixCheckedState(toolBar1);
 
             foreach (ToolStripItem tsi in miWindow.DropDownItems)
             {
@@ -206,10 +199,21 @@ namespace SimPe
                 if (tsmi.Tag == null) continue;
 
                 Ambertation.Windows.Forms.DockPanel dp = tsmi.Tag as Ambertation.Windows.Forms.DockPanel;
-                if (dp != null)                
-                    tsmi.Checked = dp.IsOpen;                                
+                if (dp != null)
+                    tsmi.Checked = dp.IsOpen;
             }
             this.ResumeLayout();
+
+            // Defer EnsureVisible until after all layout events have settled.
+            // RestoreLayout and ResumeLayout can reset the active panel; BeginInvoke
+            // guarantees these run after the message loop processes those changes.
+            this.BeginInvoke((Action)(() =>
+            {
+                dcResource.EnsureVisible();
+                var ow = Ambertation.Windows.Forms.ManagerSingelton.Global
+                    .GetPanelWithName("dc.SimPe.Plugin.Tool.Dockable.ObectWorkshopDockTool");
+                if (ow != null) ow.EnsureVisible();
+            }));
         }
 
         private void FixCheckedState(System.Windows.Forms.ToolStrip ts)
