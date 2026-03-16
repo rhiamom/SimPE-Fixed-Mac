@@ -160,10 +160,10 @@
   <ItemGroup>
     
     <Reference Include="SandDock">
-      <HintPath>C:\Users\rhiam\source\repos\SimPeSource\lib\SandDock.dll</HintPath>
+      <HintPath>..\lib\SandDock.dll</HintPath>
     </Reference>
     <Reference Include="soil2">
-      <HintPath>C:\Users\rhiam\source\repos\SimPeSource\lib\soil2.dll</HintPath>
+      <HintPath>..\lib\soil2.dll</HintPath>
     </Reference>
     
   </ItemGroup>
