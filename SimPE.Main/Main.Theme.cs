@@ -204,16 +204,29 @@ namespace SimPe
             }
             this.ResumeLayout();
 
-            // Defer EnsureVisible until after all layout events have settled.
-            // RestoreLayout and ResumeLayout can reset the active panel; BeginInvoke
-            // guarantees these run after the message loop processes those changes.
-            this.BeginInvoke((Action)(() =>
-            {
-                dcResource.EnsureVisible();
-                var ow = Ambertation.Windows.Forms.ManagerSingelton.Global
-                    .GetPanelWithName("dc.SimPe.Plugin.Tool.Dockable.ObectWorkshopDockTool");
-                if (ow != null) ow.EnsureVisible();
-            }));
+            // For layout resets triggered after the form is already shown (e.g. Reset Layout
+            // menu action), BeginInvoke is still needed to let dock events settle first.
+            this.BeginInvoke((Action)EnsureKeyPanelsVisible);
+        }
+
+        /// <summary>
+        /// Forces the three primary panels to be the active (visible) panel in their
+        /// respective dock containers. Called both from Shown (on first load) and via
+        /// BeginInvoke from ReloadLayout (on subsequent layout resets).
+        /// </summary>
+        void EnsureKeyPanelsVisible()
+        {
+            dcResource.EnsureVisible();
+            dcPlugin.EnsureVisible();
+            var ow = Ambertation.Windows.Forms.ManagerSingelton.Global
+                .GetPanelWithName("dc.SimPe.Plugin.Tool.Dockable.ObectWorkshopDockTool");
+            if (ow != null) ow.EnsureVisible();
+        }
+
+        void MainForm_FirstShown(object sender, EventArgs e)
+        {
+            this.Shown -= MainForm_FirstShown;
+            EnsureKeyPanelsVisible();
         }
 
         private void FixCheckedState(System.Windows.Forms.ToolStrip ts)

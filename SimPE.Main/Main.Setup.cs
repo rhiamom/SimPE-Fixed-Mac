@@ -179,6 +179,10 @@ namespace SimPe
 
             SimPe.Splash.Screen.Stop();
 
+            // Shown fires after the form is fully painted and all dock managers have
+            // finished their own initialization — more reliable than BeginInvoke from Load.
+            this.Shown += MainForm_FirstShown;
+
             if (Helper.WindowsRegistry.ShowWelcomeOnStartup)
                 About.ShowWelcome();
 
