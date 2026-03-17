@@ -149,6 +149,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <!-- Data file required for catalog sort labels (Room, Function, Build, Community, EP flags) -->
+    <None Include="pjse.coder.plugin\GlobalStrings.package">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>Plugins\pjse.coder.plugin\GlobalStrings.package</TargetPath>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\SimPE.Filehandlers\SimPE.Filehandlers.csproj" />
     <ProjectReference Include="..\..\SimPE.GraphControl\SimPE.GraphControl.csproj" />
     <ProjectReference Include="..\..\SimPE.Helper\SimPE.Helper.csproj" />
