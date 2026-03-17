@@ -951,10 +951,10 @@ namespace SimPe.Plugin.Tool.Dockable
 			string[][] cats = oci.ObjectCategory;			
 			foreach (string[] ss in cats)				
 			{			
-				this.tv.Invoke(new GetParentNodeHandler(ObjectLoader.GetParentNode), new object[] {RootNode.Nodes, ss, 0, oci, a, ilist});				
+				this.tv.BeginInvoke(new GetParentNodeHandler(ObjectLoader.GetParentNode), new object[] {RootNode.Nodes, ss, 0, oci, a, ilist});
 			}
-		
-            lb.Invoke(new System.EventHandler(AddItemToListBox), new object[] { a });			
+
+            lb.BeginInvoke(new System.EventHandler(AddItemToListBox), new object[] { a });			
 		}
 
         private void AddItemToListBox(object obj, EventArgs e)

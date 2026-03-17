@@ -1265,7 +1265,7 @@ namespace SimPe.PackedFiles.UserInterface
             if (!pnRel.Visible) return;
             if (Sdesc == null) return;
 
-            // If the neighborhood package changed, reload the relation control’s content
+            // If the neighborhood package changed, reload the relation controlï¿½s content
             if (lastpkg == null || !lastpkg.Equals(Sdesc.Package))
             {
                 LoadRelList(); // (your existing method)
@@ -1286,11 +1286,11 @@ namespace SimPe.PackedFiles.UserInterface
 
             }
 
-            // Force the household dropdown to the currently selected sim’s household
+            // Force the household dropdown to the currently selected simï¿½s household
             // (otherwise SimPoolControl defaults to the provider's "current"/first household, e.g. Burb)
             lv.SelectHousehold(Sdesc.HouseholdName);
 
-            // Now build the list immediately (don’t wait for dropdown events)
+            // Now build the list immediately (donï¿½t wait for dropdown events)
             lv.UpdateSimList();
 
             lastpkg = Sdesc.Package;
@@ -1312,7 +1312,7 @@ namespace SimPe.PackedFiles.UserInterface
             // Force initial population (otherwise it waits for the dropdown event)
             lv.UpdateSimList();
 
-            // Optional: default the dropdown to the current sim’s household
+            // Optional: default the dropdown to the current simï¿½s household
             // lv.SelectHousehold(Sdesc.HouseholdName);
 
             ResetLabel();
@@ -2024,12 +2024,6 @@ namespace SimPe.PackedFiles.UserInterface
                     SimPe.Interfaces.Scenegraph.IScenegraphFileIndexItem fii =
     FileTable.FileIndex.CreateFileIndexItem(scorPfd, Sdesc.Package);
 
-                    if (fii == null)
-                        System.Windows.Forms.MessageBox.Show("fii is null");
-                    else
-                        System.Windows.Forms.MessageBox.Show("fii ok: type=0x" +
-                            fii.FileDescriptor.Type.ToString("X8") +
-                            " inst=0x" + fii.FileDescriptor.Instance.ToString("X8"));
                     SimPe.RemoteControl.OpenPackedFile(scorPfd, Sdesc.Package);
 			}
             }
