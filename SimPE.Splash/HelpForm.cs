@@ -45,8 +45,8 @@ namespace SimPe.Windows.Forms
             : base()//Color.Transparent, new Size(781, 475))
         {
             InitializeComponent();
-            this.MinimumSize = new Size(1024, 661);
-            this.MaximumSize = new Size(1024, 2048);
+            this.MinimumSize = Size.Empty;
+            this.MaximumSize = new Size(2048, 2048);
         }
 
         protected override void OnCreateBitmap(Graphics g, Bitmap b)
