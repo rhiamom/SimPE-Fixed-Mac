@@ -61,8 +61,6 @@ namespace SimPe
         int version;
         int runtimeversion;
         Expansions exp;
-        Microsoft.Win32.RegistryKey rk;
-        Microsoft.Win32.RegistryKey tk;
         bool isfound;
         string exe;
         Flags flag;
@@ -151,7 +149,6 @@ namespace SimPe
         {
             filtablefolders = new Ambertation.CaseInvariantArrayList();
             preobjectfiltablefolders = new Ambertation.CaseInvariantArrayList();
-            string[] inst = Helper.WindowsRegistry.InstalledEPExecutables;
 
             shortname = "Unk.";
             shortername = "Unknown";
@@ -170,42 +167,12 @@ namespace SimPe
                 flag = new Flags((int)key.GetValue("Flag", 0));
 
                 exe = (string)key.GetValue("ExeName", "Sims2.exe");
-                tk = Microsoft.Win32.Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\" + exe, false);
 
                 if (Helper.WindowsRegistry.LoadOnlySimsStory > 0)
-                {
-                    if (version == Helper.WindowsRegistry.LoadOnlySimsStory) isfound = true;
-                    else isfound = false;
-                }
+                    isfound = (version == Helper.WindowsRegistry.LoadOnlySimsStory);
                 else
-                {
-                    if (version == 0 || flag.SimStory == true) isfound = true;
-                    else
-                    {
-                        isfound = false;
-                        foreach (string si in inst)
-                        {
-                            if (si == "") continue;
-                            if (si == exe.ToLower().Trim()) isfound = true;
-                        }
-                    }
-                }
-                /*
-                 * to try to support both store editions
-                 * as they have the same exe name they can't both exist,
-                 *  the game couldn't handle that because the app paths could only have one
-                 * if version == 20 then if the last string in inst == exe.ToLower().Trim() is found
-                 * if version == 12 then if the last string in inst == exe.ToLower().Trim() is not found
-                 * int big = inst.GetLength(0);
-                 * if (version == 12 && inst[inst.GetLength(0)] == exe.ToLower().Trim()) isfound = false;
-                 */
+                    isfound = (version == 0 || flag.SimStory == true);
 
-                if (tk != null) // if (tk != null && isfound == true)
-                {
-                    object o = tk.GetValue("Game Registry", false);
-                    rk = Microsoft.Win32.Registry.LocalMachine.OpenSubKey((string)o, false);
-                }
-                else rk = null;
                 if (version == 18 || version == 19) censor = ""; else censor = (string)key.GetValue("Censor", "");
                 group = (int)key.GetValue("Group", 1);
                 objfolder = (string)key.GetValue("ObjectsFolder", "TSData" + Helper.PATH_SEP + "Res" + Helper.PATH_SEP + "Objects");
@@ -229,7 +196,6 @@ namespace SimPe
                 {
                     shortname = (string)lang.GetValue("short", name);
                     shortername = (string)lang.GetValue("name", shortname);
-                    if (rk != null) dname = (string)rk.GetValue("DisplayName", shortername);
                     longname = (string)lang.GetValue("long", dname);
                 }
                 else //1. check the resource files, then try default language, then set to defaults
@@ -245,12 +211,9 @@ namespace SimPe
                     }
                     if (shortname == "EP SNAME " + version) shortname = name;
 
-                    if (rk != null) dname = (string)rk.GetValue("DisplayName", shortername);
-
                     longname = SimPe.Localization.GetString("EP NAME " + version);
                     if (longname == "EP NAME " + version && lang!=null) longname = (string)lang.GetValue("long", dname);
                     if (longname == "EP NAME " + version) longname = dname;
-                    
                 }
             }
             else
@@ -440,32 +403,14 @@ namespace SimPe
         {
             get
             {
-                // Original logic: App Paths + EPsInstalled list
-                if (tk != null && isfound == true) return true;
-
-                // --- UC / Legacy SP8 (and friends) registry hack support ---
+                if (isfound) return true;
                 try
                 {
-                    // This hack stores per-EXE keys under:
-                    // HKEY_CURRENT_USER\Software\Electronic Arts\The Sims 2 Ultimate Collection 25\<ExeName>
-                    Microsoft.Win32.RegistryKey hackKey =
-                        Microsoft.Win32.Registry.CurrentUser.OpenSubKey(
-                            @"Software\\Electronic Arts\\The Sims 2 Ultimate Collection 25\\" + exe,
-                            false);
-
-                    if (hackKey != null)
-                    {
-                        object installed = hackKey.GetValue("Installed");
-                        if (installed is int iv && iv == 1)
-                            return true;
-                    }
+                    XmlRegistryKey rkf = Helper.WindowsRegistry.RegistryKey.CreateSubKey("Settings");
+                    object o = rkf.GetValue(IdKey + "Path");
+                    return o != null && System.IO.Directory.Exists(o.ToString());
                 }
-                catch
-                {
-                    // Ignore any registry read errors and fall back to "not installed"
-                }
-
-                return false;
+                catch { return false; }
             }
         }
 
@@ -483,11 +428,6 @@ namespace SimPe
         public Expansions Expansion
         {
             get { return exp;}
-        }
-
-        public Microsoft.Win32.RegistryKey Registry
-        {
-            get { return rk; }
         }
 
         public string ExeName
@@ -604,45 +544,15 @@ namespace SimPe
         {
             get
             {
-                if (!Exists) return "";
-
                 try
                 {
-                    // 1) Original SimPE behavior – App Paths
-                    object o = null;
-                    if (tk != null)
-                        o = tk.GetValue("Path");
-
-                    // 2) UC/Legacy hack fallback (when no App Paths entry)
-                    if (o == null)
-                    {
-                        try
-                        {
-                            Microsoft.Win32.RegistryKey hackKey =
-                                Microsoft.Win32.Registry.CurrentUser.OpenSubKey(
-                                    @"Software\\Electronic Arts\\The Sims 2 Ultimate Collection 25\\" + exe,
-                                    false);
-
-                            if (hackKey != null)
-                            {
-                                o = hackKey.GetValue("Path");
-                            }
-                        }
-                        catch
-                        {
-                            // ignore and let o stay null
-                        }
-                    }
-
-                    if (o == null)
-                        return "";
-                    else
-                        return Helper.ToLongPathName(o.ToString());
-                }
-                catch (Exception)
-                {
+                    XmlRegistryKey rkf = Helper.WindowsRegistry.RegistryKey.CreateSubKey("Settings");
+                    object o = rkf.GetValue(IdKey + "Path");
+                    if (o != null && System.IO.Directory.Exists(o.ToString()))
+                        return o.ToString();
                     return "";
                 }
+                catch { return ""; }
             }
         }
 
@@ -687,23 +597,7 @@ namespace SimPe
         /// Location of the Sims Application
         /// even if it is not currently loaded
         /// </summary>
-        public string InstalledPath(int ep)
-        {
-            try
-            {
-                string s = exe;
-                if (ep == 19) s = "Sims2EP10.exe"; // if T&A not installed SimPe loads no support, not even exe name
-                Microsoft.Win32.RegistryKey fk = Microsoft.Win32.Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\" + s, false);
-                if (fk == null) return null;
-                object fr = fk.GetValue("Path");
-                if (fr == null) return null;
-                return fr.ToString();
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-        }
+        public string InstalledPath(int ep) => null;
 
         /*
          * reading the ini file works well but we can't gleen the Latest EP here.
@@ -773,7 +667,6 @@ namespace SimPe
         public override string ToString()
         {
             string s = name + ": " + version + "=" + exp + ", " + exe + ", " + flag + ", "+Flag.Class;
-            if (rk != null) s += ", " + rk.Name;
             return s;
 
         }

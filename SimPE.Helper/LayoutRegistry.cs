@@ -25,8 +25,6 @@ using System;
 using System.Collections;
 using System.IO;
 using System.Xml;
-using Microsoft.Win32;
-
 
 namespace SimPe
 {
@@ -97,7 +95,7 @@ namespace SimPe
         public bool PluginActionBoxExpanded
         {
             get { return true; }   // or false if you prefer collapsed by default
-            set { /* ignore for now, we’re not persisting this yet */ }
+            set { /* ignore for now, weï¿½re not persisting this yet */ }
         }
 
         public bool ToolActionBoxExpanded

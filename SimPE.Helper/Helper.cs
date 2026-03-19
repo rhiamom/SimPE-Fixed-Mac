@@ -483,7 +483,7 @@ namespace SimPe
 		{
 			get
 			{
-				return Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath);
+				return AppContext.BaseDirectory.TrimEnd(Path.DirectorySeparatorChar);
 			}
 		}
 
@@ -494,7 +494,7 @@ namespace SimPe
 		{
 			get
 			{
-				return Path.Combine(Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath), "Plugins");
+				return Path.Combine(AppContext.BaseDirectory.TrimEnd(Path.DirectorySeparatorChar), "Plugins");
 			}
 		}
 
@@ -770,7 +770,7 @@ namespace SimPe
 		{
 			get 
 			{
-				return System.Diagnostics.FileVersionInfo.GetVersionInfo(System.Windows.Forms.Application.ExecutablePath); 
+				return System.Diagnostics.FileVersionInfo.GetVersionInfo(typeof(Helper).Assembly.Location);
 			}
 		}
 		/// <summary>
@@ -894,9 +894,7 @@ namespace SimPe
 			get
 			{
                 if (WindowsRegistry.Layout.IsClassicPreset == true) return Executable.Classic;
-                else if (System.Windows.Forms.Application.ExecutablePath.Trim().ToLower().EndsWith("wizards of simpe.exe")) return Executable.WizardsOfSimpe;
-				else if (System.Windows.Forms.Application.ExecutablePath.Trim().ToLower().EndsWith("simpe.exe")) return Executable.Default;
-				else return Executable.Other;
+                return Executable.Default;
 			}
 		}
 
@@ -1488,12 +1486,7 @@ namespace SimPe
 		}
 
 		#region Folders
-		
-		[DllImport("kernel32.dll", SetLastError=true, CharSet=CharSet.Auto)]
-		static extern uint GetLongPathName(
-			string lpszShortPath,
-			[Out] System.Text.StringBuilder lpszLongPath,
-			uint cchBuffer);
+
 
 		/// <summary>
 		/// The ToShortPathNameToLongPathName function retrieves the long path form of a specified short input path
@@ -1502,13 +1495,7 @@ namespace SimPe
 		/// <returns>A long name path string</returns>
 		public static string ToLongPathName(string shortName)
 		{
-            if (!Directory.Exists(shortName)) return shortName.Trim().ToLower();
-			StringBuilder longNameBuffer = new StringBuilder(256);
-			uint bufferSize = (uint)longNameBuffer.Capacity;
-
-			GetLongPathName(shortName, longNameBuffer, bufferSize);
-
-			return longNameBuffer.ToString();
+			return shortName;
 		}
 
 		public static string ToLongFileName(string shortName)

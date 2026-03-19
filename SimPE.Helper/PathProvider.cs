@@ -272,27 +272,7 @@ namespace SimPe
 
         }
 
-        public string InGameLang
-        {
-            get
-            {
-                Microsoft.Win32.RegistryKey tk;
-                if (Latest.Version == 19 || Latest.Version == 18)
-                    tk = Microsoft.Win32.Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\Sims2EP9.exe", false);
-                else
-                    tk = Microsoft.Win32.Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\" + Latest.ExeName, false);
-                if (tk == null) return "English";
-                object gr = tk.GetValue("Game Registry", "");
-                Microsoft.Win32.RegistryKey rk = Microsoft.Win32.Registry.LocalMachine.OpenSubKey((string)gr + "\\1.0", false);
-                if (rk != null)
-                {
-                    object o = rk.GetValue("Language");
-                    if (o == null) return "Invalid Language Id";
-                    return SimPe.Data.MetaData.GetLanguageName(Convert.ToInt16(o.ToString()));
-                }
-                else return "Invalid Language Id";
-            }
-        }
+        public string InGameLang => "English";
 
         public void SetDefaultPaths()
         {
@@ -482,9 +462,6 @@ namespace SimPe
 
                 if (System.IO.File.Exists(fl) || System.IO.File.Exists(f2)) return;
 
-                if (!silent)
-                    if (System.Windows.Forms.MessageBox.Show(SimPe.Localization.GetString("Censor_Install_Warn").Replace("{filename}", fl), SimPe.Localization.GetString("Warning"), System.Windows.Forms.MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.No)
-                        return;
 
                 try
                 {
@@ -535,9 +512,6 @@ namespace SimPe
                     {
                         try
                         {
-                            if (!silent)
-                                if (System.Windows.Forms.MessageBox.Show(SimPe.Localization.GetString("Censor_UnInstall_Warn").Replace("{filename}", fl), SimPe.Localization.GetString("Warning"), System.Windows.Forms.MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.No)
-                                    return;
                             System.IO.File.Delete(fl);
                         }
                         catch (Exception ex)
@@ -771,77 +745,20 @@ namespace SimPe
         /// </summary>
         /// <param name="ei">Expansion you are looking for</param>
         /// <returns>DisplayName of the Expoansion</returns>
-        internal static string GetDisplayedNameForExpansion(ExpansionItem ei)
-        {
-            try
-            {
-                Microsoft.Win32.RegistryKey rk = ei.Registry;
-                return GetDisplayedNameForExpansion(rk);
-            }
-            catch (Exception)
-            {
-                return "The Sims 2";
-            }
-        }
+        internal static string GetDisplayedNameForExpansion(ExpansionItem ei) => ei?.NameShorter ?? "The Sims 2";
 
         /// <summary>
         /// Returns the Display name stored in a RegistryKey.
         /// </summary>
         /// <param name="rk">RegistryKey to look in</param>
         /// <returns>DisplayName found in that Key</returns>
-        protected static string GetDisplayedNameForExpansion(Microsoft.Win32.RegistryKey rk)
-        {
-            try
-            {
-                if (rk == null)
-                    return "The Sims 2";
 
-                object o = rk.GetValue("DisplayName");
-                if (o == null)
-                    return "The Sims 2";
-                else
-                    return o.ToString();
-            }
-            catch
-            {
-                return "The Sims 2";
-            }
-        }
 
 
         /// <summary>
         /// Returns the Displayed BaseGame name, no good for sim stories
         /// </summary>
-        protected static string DisplayedName
-        {
-            get
-            {
-                try
-                {
-                    Microsoft.Win32.RegistryKey tk;
-                    if (Helper.WindowsRegistry.LoadOnlySimsStory == 28) // Castaway Stories
-                        tk = Microsoft.Win32.Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\SimsCS.exe", false);
-                    else if (Helper.WindowsRegistry.LoadOnlySimsStory == 29) // Pet Stories
-                        tk = Microsoft.Win32.Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\SimsPS.exe", false);
-                    else if (Helper.WindowsRegistry.LoadOnlySimsStory == 30) // Life Stories
-                        tk = Microsoft.Win32.Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\SimsLS.exe", false);
-                    else
-                        tk = Microsoft.Win32.Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\Sims2.exe", false);
-                    if (tk != null)
-                    {
-                        object o = tk.GetValue("Game Registry", false);
-                        Microsoft.Win32.RegistryKey rk = Microsoft.Win32.Registry.LocalMachine.OpenSubKey((string)o, false);
-                        return GetDisplayedNameForExpansion(rk);
-                    }
-                    else
-                        return "The Sims 2";
-                }
-                catch (Exception)
-                {
-                    return "The Sims 2";
-                }
-            }
-        }
+        protected static string DisplayedName => "The Sims 2";
 
         /// <summary>
         /// Returns the Location of the Personal Folder

@@ -24,7 +24,6 @@ using System;
 using SimPe.Packages;
 using System.Threading;
 using System.Diagnostics;
-using Microsoft.Win32;
 using System.Collections;
 
 namespace SimPe

@@ -46,7 +46,7 @@ namespace SimPe
             try
             {
                 string logPath = System.IO.Path.Combine(
-                    System.IO.Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath),
+                    AppContext.BaseDirectory,
                     "crash.log");
                 string msg = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] Terminating={isTerminating}\r\n{ex}\r\n\r\n";
                 System.IO.File.AppendAllText(logPath, msg);

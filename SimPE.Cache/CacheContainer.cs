@@ -180,7 +180,7 @@ namespace SimPe.Cache
                         else valid = ContainerValid.Modified;
                     }
 
-                    if (valid == ContainerValid.Yes || System.Windows.Forms.Application.ExecutablePath.Trim().ToLower().EndsWith("settingmanager.exe"))
+                    if (valid == ContainerValid.Yes)
                     {
                         switch (type)
                         {
