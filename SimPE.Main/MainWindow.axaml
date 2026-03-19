@@ -1,0 +1,224 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="SimPe.MainWindow"
+        Title="SimPE - Sims Package Editor"
+        Width="1200" Height="800"
+        MinWidth="800" MinHeight="600">
+
+    <DockPanel>
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- Menu bar                                                    -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_New"            x:Name="MenuFileNew"/>
+                <MenuItem Header="_Open..."         x:Name="MenuFileOpen"/>
+                <MenuItem Header="_Save"            x:Name="MenuFileSave"/>
+                <MenuItem Header="Save _As..."      x:Name="MenuFileSaveAs"/>
+                <Separator/>
+                <MenuItem Header="_Recent Files"    x:Name="MenuFileRecent"/>
+                <Separator/>
+                <MenuItem Header="E_xit"            x:Name="MenuFileExit"/>
+            </MenuItem>
+            <MenuItem Header="_Edit">
+                <MenuItem Header="_Undo"            x:Name="MenuEditUndo"/>
+                <MenuItem Header="_Redo"            x:Name="MenuEditRedo"/>
+            </MenuItem>
+            <MenuItem Header="_Package">
+                <MenuItem Header="_Properties..."   x:Name="MenuPackageProps"/>
+            </MenuItem>
+            <MenuItem Header="_Resource">
+                <MenuItem Header="_Add..."          x:Name="MenuResourceAdd"/>
+                <MenuItem Header="_Delete"          x:Name="MenuResourceDelete"/>
+                <Separator/>
+                <MenuItem Header="_Export..."       x:Name="MenuResourceExport"/>
+                <MenuItem Header="_Import..."       x:Name="MenuResourceImport"/>
+                <MenuItem Header="_Replace..."      x:Name="MenuResourceReplace"/>
+                <Separator/>
+                <MenuItem Header="C_lone..."        x:Name="MenuResourceClone"/>
+            </MenuItem>
+            <MenuItem Header="_Tools"               x:Name="MenuTools"/>
+            <MenuItem Header="E_xtra"               x:Name="MenuExtra"/>
+            <MenuItem Header="_Help">
+                <MenuItem Header="_About SimPE"     x:Name="MenuHelpAbout"/>
+            </MenuItem>
+        </Menu>
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- Toolbar                                                     -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <Border DockPanel.Dock="Top"
+                Background="#F0F0F0"
+                BorderBrush="#CCCCCC"
+                BorderThickness="0,0,0,1">
+            <StackPanel Orientation="Horizontal" Margin="2,2">
+                <Button x:Name="TbNew"     Content="New"     Margin="1" Padding="6,2"/>
+                <Button x:Name="TbOpen"    Content="Open"    Margin="1" Padding="6,2"/>
+                <Button x:Name="TbSave"    Content="Save"    Margin="1" Padding="6,2"/>
+                <Button x:Name="TbClose"   Content="Close"   Margin="1" Padding="6,2"/>
+                <Separator Width="1" Background="#CCCCCC" Margin="6,2"/>
+                <Button x:Name="TbAdd"     Content="Add"     Margin="1" Padding="6,2"/>
+                <Button x:Name="TbDelete"  Content="Delete"  Margin="1" Padding="6,2"/>
+                <Button x:Name="TbExport"  Content="Export"  Margin="1" Padding="6,2"/>
+                <Button x:Name="TbImport"  Content="Import"  Margin="1" Padding="6,2"/>
+                <Button x:Name="TbReplace" Content="Replace" Margin="1" Padding="6,2"/>
+                <Button x:Name="TbClone"   Content="Clone"   Margin="1" Padding="6,2"/>
+            </StackPanel>
+        </Border>
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- Status bar                                                  -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <Border DockPanel.Dock="Bottom"
+                Background="#F0F0F0"
+                BorderBrush="#CCCCCC"
+                BorderThickness="0,1,0,0"
+                Height="22">
+            <TextBlock x:Name="StatusText"
+                       Text="Ready"
+                       VerticalAlignment="Center"
+                       Margin="6,0"/>
+        </Border>
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- Main content — vertical split: upper panel / lower panel   -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <Grid>
+            <Grid.RowDefinitions>
+                <!-- Upper panel: resource tree, list, actions -->
+                <RowDefinition Height="3*" MinHeight="120"/>
+                <!-- Horizontal drag handle -->
+                <RowDefinition Height="5"/>
+                <!-- Lower panel: plugin / wrapper editor -->
+                <RowDefinition Height="2*" MinHeight="80"/>
+            </Grid.RowDefinitions>
+
+            <!-- ─────────────────────────────────────────────────────── -->
+            <!-- Upper panel — three columns with two drag handles       -->
+            <!-- ─────────────────────────────────────────────────────── -->
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <!-- Resource Tree -->
+                    <ColumnDefinition Width="200" MinWidth="80"/>
+                    <!-- Vertical drag handle -->
+                    <ColumnDefinition Width="5"/>
+                    <!-- Resource List (expands) -->
+                    <ColumnDefinition Width="*"   MinWidth="200"/>
+                    <!-- Vertical drag handle -->
+                    <ColumnDefinition Width="5"/>
+                    <!-- Actions / Filter -->
+                    <ColumnDefinition Width="220" MinWidth="120"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Resource Tree -->
+                <Border Grid.Column="0"
+                        BorderBrush="#DCDCDC"
+                        BorderThickness="0,0,0,0">
+                    <DockPanel>
+                        <Border DockPanel.Dock="Top"
+                                Background="#E4E4E4"
+                                Padding="6,3">
+                            <TextBlock Text="Resource Tree"
+                                       FontWeight="SemiBold"
+                                       FontSize="11"/>
+                        </Border>
+                        <TreeView x:Name="ResourceTree"/>
+                    </DockPanel>
+                </Border>
+
+                <GridSplitter Grid.Column="1"
+                              ResizeDirection="Columns"
+                              Background="#CCCCCC"
+                              HorizontalAlignment="Stretch"/>
+
+                <!-- Resource List -->
+                <Border Grid.Column="2" Background="White">
+                    <DockPanel>
+                        <Border DockPanel.Dock="Top"
+                                Background="#E4E4E4"
+                                Padding="6,3">
+                            <TextBlock Text="Resource List"
+                                       FontWeight="SemiBold"
+                                       FontSize="11"/>
+                        </Border>
+                        <DataGrid x:Name="ResourceList"
+                                  AutoGenerateColumns="False"
+                                  CanUserReorderColumns="False"
+                                  CanUserResizeColumns="True"
+                                  GridLinesVisibility="Horizontal"
+                                  IsReadOnly="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Name"        Width="*"   Binding="{Binding Name}"/>
+                                <DataGridTextColumn Header="Type"        Width="72"  Binding="{Binding Type}"/>
+                                <DataGridTextColumn Header="Group"       Width="88"  Binding="{Binding Group}"/>
+                                <DataGridTextColumn Header="Instance Hi" Width="88"  Binding="{Binding InstanceHi}"/>
+                                <DataGridTextColumn Header="Instance"    Width="88"  Binding="{Binding Instance}"/>
+                                <DataGridTextColumn Header="Offset"      Width="78"  Binding="{Binding Offset}"/>
+                                <DataGridTextColumn Header="Size"        Width="68"  Binding="{Binding Size}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </DockPanel>
+                </Border>
+
+                <GridSplitter Grid.Column="3"
+                              ResizeDirection="Columns"
+                              Background="#CCCCCC"
+                              HorizontalAlignment="Stretch"/>
+
+                <!-- Right panel: Resource Actions, Filter Resources, Object Workshop -->
+                <TabControl Grid.Column="4" Background="#FAFAFA" TabStripPlacement="Right">
+                    <TabItem Header="Resource Actions">
+                        <ScrollViewer>
+                            <StackPanel x:Name="ActionPanel" Margin="4" Spacing="4"/>
+                        </ScrollViewer>
+                    </TabItem>
+                    <TabItem Header="Filter Resources">
+                        <StackPanel x:Name="FilterPanel" Margin="8" Spacing="6">
+                            <TextBlock Text="Group:" FontSize="11"/>
+                            <TextBox x:Name="FilterGroup"/>
+                            <TextBlock Text="Instance:" FontSize="11"/>
+                            <TextBox x:Name="FilterInstance"/>
+                            <TextBlock Text="Type / RCOL Name:" FontSize="11"/>
+                            <TextBox x:Name="FilterType"/>
+                            <Button x:Name="BtnApplyFilter" Content="Apply Filter" Margin="0,6,0,0"/>
+                        </StackPanel>
+                    </TabItem>
+                    <TabItem Header="Object Workshop">
+                        <!-- OW panel loaded here at runtime; future: Dock.Avalonia host -->
+                        <ContentControl x:Name="ObjectWorkshopPanel"/>
+                    </TabItem>
+                </TabControl>
+
+            </Grid>
+
+            <!-- Horizontal drag handle (upper / lower) -->
+            <GridSplitter Grid.Row="1"
+                          ResizeDirection="Rows"
+                          HorizontalAlignment="Stretch"
+                          Background="#CCCCCC"/>
+
+            <!-- ─────────────────────────────────────────────────────── -->
+            <!-- Lower panel — plugin / wrapper editor                   -->
+            <!-- Future: replace ContentControl with Dock.Avalonia host  -->
+            <!-- ─────────────────────────────────────────────────────── -->
+            <Border Grid.Row="2"
+                    Background="#FAFAFA"
+                    BorderBrush="#DCDCDC"
+                    BorderThickness="0,0,0,0">
+                <DockPanel>
+                    <Border DockPanel.Dock="Top"
+                            Background="#E4E4E4"
+                            Padding="6,3">
+                        <TextBlock Text="Plugin"
+                                   FontWeight="SemiBold"
+                                   FontSize="11"/>
+                    </Border>
+                    <!-- Plugin panels loaded here at runtime -->
+                    <ContentControl x:Name="PluginPanel"/>
+                </DockPanel>
+            </Border>
+
+        </Grid>
+    </DockPanel>
+</Window>
