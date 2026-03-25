@@ -224,7 +224,7 @@ namespace SimPe.PackedFiles.Wrapper
 				CpfUpdate();
 				Cpf wrp = (Cpf)wrapper;
 				wrp.SynchronizeUserData();
-				SimPe.Message.Show(Localization.Manager.GetString("commited"), null, System.Windows.Forms.MessageBoxButtons.OK);
+				SimPe.Message.Show(Localization.Manager.GetString("commited"), null, MessageBoxButtons.OK);
 			}
 			catch (Exception ex)
 			{
@@ -258,7 +258,7 @@ namespace SimPe.PackedFiles.Wrapper
 			try
 			{
 				wrapper.SynchronizeUserData();
-				SimPe.Message.Show(Localization.Manager.GetString("commited"), null, System.Windows.Forms.MessageBoxButtons.OK);
+				SimPe.Message.Show(Localization.Manager.GetString("commited"), null, MessageBoxButtons.OK);
 			}
 			catch (Exception ex)
 			{

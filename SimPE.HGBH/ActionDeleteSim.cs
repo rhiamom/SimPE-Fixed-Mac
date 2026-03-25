@@ -62,9 +62,9 @@ namespace SimPe.Plugin.Tool.Action
             string messige = "All the Male ";
             if (e.Items.Count > 0)
                 messige = "The selected ";
-            if (Message.Show(messige + "sims will be deleted from your Neighbourhood!\nYou MUST commit the changes to the neighbourhood after this procedure.\nYou can not undo this, so make sure you have created a Backup!\n\nDelete the Sims?", "Warning", System.Windows.Forms.MessageBoxButtons.YesNo) == SimPe.DialogResult.No)
+            if (Message.Show(messige + "sims will be deleted from your Neighbourhood!\nYou MUST commit the changes to the neighbourhood after this procedure.\nYou can not undo this, so make sure you have created a Backup!\n\nDelete the Sims?", "Warning", MessageBoxButtons.YesNo) == SimPe.DialogResult.No)
                 return;
-            deleteInvalidDna = (Message.Show("Delete all orphan DNA, Scores and Wants records as well?", "Clean Up", System.Windows.Forms.MessageBoxButtons.YesNo) == SimPe.DialogResult.Yes);
+            deleteInvalidDna = (Message.Show("Delete all orphan DNA, Scores and Wants records as well?", "Clean Up", MessageBoxButtons.YesNo) == SimPe.DialogResult.Yes);
             int c = 0;
             if (e.Items.Count > 0)
             {
@@ -96,7 +96,7 @@ namespace SimPe.Plugin.Tool.Action
             Message.Show(
                 string.Format("Done. {0} sim character file(s) deleted", c)
                 , "Notice"
-                , System.Windows.Forms.MessageBoxButtons.OK
+                , MessageBoxButtons.OK
                 );
 
         }

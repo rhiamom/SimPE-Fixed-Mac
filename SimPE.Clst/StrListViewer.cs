@@ -21,293 +21,164 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-using System;
-using System.Collections;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Windows.Forms;
-using SimPe.Interfaces.Files;
-using SimPe.Interfaces.Wrapper;
-using SimPe.Data;
+using System.Collections.ObjectModel;
+using Avalonia.Controls;
+using Avalonia.Controls.Templates;
+using Avalonia.Input;
+using Avalonia.Layout;
+using Avalonia.Media;
 using SimPe.PackedFiles.Wrapper;
-using SimPe.Interfaces.Plugin;
+using SimPe.Data;
 
 namespace SimPe.PackedFiles.UserInterface
 {
-	/// <summary>
-	/// Summary description for StrListViewer.
-	/// </summary>
-	public class StrListViewer : System.Windows.Forms.UserControl
-	{
-		#region Form elements
+    /// <summary>
+    /// Displays the languages and string items of a Str packed file.
+    /// Left pane: TreeView of languages.  Right pane: list of line/title/description rows.
+    /// Ported from WinForms UserControl to Avalonia UserControl.
+    /// </summary>
+    public class StrListViewer : Avalonia.Controls.UserControl
+    {
+        // ── row model ─────────────────────────────────────────────────────────
+        sealed class StrRow
+        {
+            public string Line        { get; }
+            public string Title       { get; }
+            public string Description { get; }
+            public StrRow(string line, string title, string desc)
+            { Line = line; Title = title; Description = desc; }
+        }
 
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		private System.ComponentModel.Container components = null;
-		#endregion
+        // ── controls & state ─────────────────────────────────────────────────
+        readonly TreeView  _tree;
+        readonly ListBox   _list;
+        readonly ObservableCollection<StrLanguage> _languages = new();
+        readonly ObservableCollection<StrRow>      _rows      = new();
+        Str _wrapper;
 
-		public StrListViewer()
-		{
-			// This call is required by the Windows.Forms Form Designer.
-			InitializeComponent();
+        // ── constructor ───────────────────────────────────────────────────────
+        public StrListViewer()
+        {
+            // ── language tree (left pane) ─────────────────────────────────────
+            _tree = new TreeView
+            {
+                Width       = 216,
+                ItemsSource = _languages,
+                ItemTemplate = new FuncDataTemplate<StrLanguage>(
+                    (lang, _) => new TextBlock { Text = lang?.ToString() ?? "" }, true),
+                ContextMenu = BuildLangContextMenu(),
+            };
 
-			// TODO: Add any initialization after the InitializeComponent call
+            // ── splitter ──────────────────────────────────────────────────────
+            var splitter = new GridSplitter
+            {
+                Width      = 3,
+                Background = new SolidColorBrush(Colors.LightGray),
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+            };
 
-		}
+            // ── string list (right pane) ──────────────────────────────────────
+            _list = new ListBox
+            {
+                ItemsSource = _rows,
+                ItemTemplate = new FuncDataTemplate<StrRow>(BuildRowTemplate, true),
+                ContextMenu  = BuildStrContextMenu(),
+            };
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
-		{
-			if( disposing )
-			{
-				if(components != null)
-				{
-					components.Dispose();
-				}
-			}
-			base.Dispose( disposing );
-		}
+            // ── layout ────────────────────────────────────────────────────────
+            var grid = new Grid();
+            grid.ColumnDefinitions.Add(new ColumnDefinition(216,            GridUnitType.Pixel));
+            grid.ColumnDefinitions.Add(new ColumnDefinition(3,              GridUnitType.Pixel));
+            grid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
 
-		private System.Windows.Forms.TreeView treeView1;
-		private System.Windows.Forms.Splitter splitter1;
-		private System.Windows.Forms.ListView listView1;
-		private System.Windows.Forms.ColumnHeader colLine;
-		private System.Windows.Forms.ColumnHeader colTitle;
-		private System.Windows.Forms.ColumnHeader colDesc;
-		private System.Windows.Forms.ContextMenuStrip cmLangList;
-		private System.Windows.Forms.ToolStripMenuItem menuItem1;
-		private System.Windows.Forms.ToolStripMenuItem menuItem2;
-		private System.Windows.Forms.ToolStripMenuItem menuItem3;
-		private System.Windows.Forms.ContextMenuStrip cmStrList;
-		private System.Windows.Forms.ToolStripMenuItem menuItem4;
-		private System.Windows.Forms.ToolStripMenuItem menuItem5;
-		private System.Windows.Forms.ToolStripMenuItem menuItem6;
+            Grid.SetColumn(_tree,    0);
+            Grid.SetColumn(splitter, 1);
+            Grid.SetColumn(_list,    2);
+            grid.Children.Add(_tree);
+            grid.Children.Add(splitter);
+            grid.Children.Add(_list);
 
+            Content = grid;
 
-		#region Str
-		/// <summary>
-		/// The Str wrapper handling the packed file data
-		/// </summary>
-		private SimPe.PackedFiles.Wrapper.Str wrapper;
-		private System.Windows.Forms.ToolStripMenuItem menuItem7;
-		private System.Windows.Forms.ToolStripMenuItem menuItem8;
-		private System.Windows.Forms.ToolStripMenuItem menuItem9;
-		private System.Windows.Forms.ToolStripMenuItem menuItem10;
-		private System.Windows.Forms.ToolStripMenuItem menuItem11;
-		private System.Windows.Forms.ToolStripMenuItem menuItem12;
+            _tree.SelectionChanged += TreeSelectionChanged;
+        }
 
-		private StrLanguage currentLang = null;
+        // ── public API ────────────────────────────────────────────────────────
 
+        internal void UpdateGUI(Str wrp)
+        {
+            _wrapper = wrp;
+            _languages.Clear();
+            _rows.Clear();
+            foreach (StrLanguage l in wrp.Languages)
+                _languages.Add(l);
+        }
 
-		internal void UpdateGUI(Str wrp)
-		{
-			wrapper = wrp;
-			this.treeView1.Nodes.Clear();
-			this.listView1.Items.Clear();
-			foreach (StrLanguage l in wrapper.Languages)
-			{
-				TreeNode node = new TreeNode();
-				node.Tag = (object)l;
-				node.Text = l.ToString();
-				this.treeView1.Nodes.Add(node);
-			}
+        // ── event handler ─────────────────────────────────────────────────────
 
-		}
-		#endregion
+        void TreeSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            _rows.Clear();
+            if (_tree.SelectedItem is not StrLanguage lang) return;
 
-		#region Component Designer generated code
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
-			this.treeView1 = new System.Windows.Forms.TreeView();
-			this.cmLangList = new System.Windows.Forms.ContextMenuStrip();
-			this.menuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.menuItem2 = new System.Windows.Forms.ToolStripMenuItem();
-			this.menuItem3 = new System.Windows.Forms.ToolStripMenuItem();
-			this.splitter1 = new System.Windows.Forms.Splitter();
-			this.listView1 = new System.Windows.Forms.ListView();
-			this.colLine = new System.Windows.Forms.ColumnHeader();
-			this.colTitle = new System.Windows.Forms.ColumnHeader();
-			this.colDesc = new System.Windows.Forms.ColumnHeader();
-			this.cmStrList = new System.Windows.Forms.ContextMenuStrip();
-			this.menuItem4 = new System.Windows.Forms.ToolStripMenuItem();
-			this.menuItem5 = new System.Windows.Forms.ToolStripMenuItem();
-			this.menuItem6 = new System.Windows.Forms.ToolStripMenuItem();
-			this.menuItem7 = new System.Windows.Forms.ToolStripMenuItem();
-			this.menuItem8 = new System.Windows.Forms.ToolStripMenuItem();
-			this.menuItem9 = new System.Windows.Forms.ToolStripMenuItem();
-			this.menuItem10 = new System.Windows.Forms.ToolStripMenuItem();
-			this.menuItem11 = new System.Windows.Forms.ToolStripMenuItem();
-			this.menuItem12 = new System.Windows.Forms.ToolStripMenuItem();
-			this.SuspendLayout();
-			//
-			// treeView1
-			//
-			this.treeView1.ContextMenuStrip = this.cmLangList;
-			this.treeView1.Dock = System.Windows.Forms.DockStyle.Left;
-			this.treeView1.ImageIndex = -1;
-			this.treeView1.Location = new System.Drawing.Point(0, 0);
-			this.treeView1.Name = "treeView1";
-			this.treeView1.SelectedImageIndex = -1;
-			this.treeView1.Size = new System.Drawing.Size(216, 144);
-			this.treeView1.Sorted = true;
-			this.treeView1.TabIndex = 0;
-			this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
-			//
-			// cmLangList
-			//
-			this.cmLangList.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-				this.menuItem1,
-				this.menuItem2,
-				this.menuItem7,
-				this.menuItem3,
-				this.menuItem8,
-				this.menuItem9});
-			//
-			// menuItem1
-			//
-			this.menuItem1.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C;
-			this.menuItem1.Text = "&Copy";
-			//
-			// menuItem2
-			//
-			this.menuItem2.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V;
-			this.menuItem2.Text = "&Paste";
-			//
-			// menuItem3
-			//
-			this.menuItem3.Text = "&Set all to these";
-			//
-			// splitter1
-			//
-			this.splitter1.Location = new System.Drawing.Point(216, 0);
-			this.splitter1.Name = "splitter1";
-			this.splitter1.Size = new System.Drawing.Size(3, 144);
-			this.splitter1.TabIndex = 1;
-			this.splitter1.TabStop = false;
-			//
-			// listView1
-			//
-			this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-				this.colLine,
-				this.colTitle,
-				this.colDesc});
-			this.listView1.ContextMenuStrip = this.cmStrList;
-			this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.listView1.FullRowSelect = true;
-			this.listView1.GridLines = true;
-			this.listView1.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-			this.listView1.Location = new System.Drawing.Point(219, 0);
-			this.listView1.Name = "listView1";
-			this.listView1.Size = new System.Drawing.Size(621, 144);
-			this.listView1.TabIndex = 2;
-			this.listView1.View = System.Windows.Forms.View.Details;
-			//
-			// colLine
-			//
-			this.colLine.Text = "Line";
-			this.colLine.Width = 36;
-			//
-			// colTitle
-			//
-			this.colTitle.Text = "Title";
-			this.colTitle.Width = 246;
-			//
-			// colDesc
-			//
-			this.colDesc.Text = "Description";
-			this.colDesc.Width = 307;
-			//
-			// cmStrList
-			//
-			this.cmStrList.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-				this.menuItem10,
-				this.menuItem4,
-				this.menuItem5,
-				this.menuItem6,
-				this.menuItem11,
-				this.menuItem12});
-			//
-			// menuItem4
-			//
-			this.menuItem4.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C;
-			this.menuItem4.Text = "&Copy";
-			//
-			// menuItem5
-			//
-			this.menuItem5.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V;
-			this.menuItem5.Text = "&Paste";
-			//
-			// menuItem6
-			//
-			this.menuItem6.Text = "&Set in all languages";
-			//
-			// menuItem7
-			//
-			this.menuItem7.Text = "Pas&te As...";
-			//
-			// menuItem8
-			//
-			this.menuItem8.ShortcutKeys = System.Windows.Forms.Keys.Insert;
-			this.menuItem8.Text = "&Add";
-			//
-			// menuItem9
-			//
-			this.menuItem9.ShortcutKeys = System.Windows.Forms.Keys.Delete;
-			this.menuItem9.Text = "&Delete";
-			//
-			// menuItem10
-			//
-			this.menuItem10.Text = "&Edit";
-			//
-			// menuItem11
-			//
-			this.menuItem11.ShortcutKeys = System.Windows.Forms.Keys.Insert;
-			this.menuItem11.Text = "&Add";
-			//
-			// menuItem12
-			//
-			this.menuItem12.ShortcutKeys = System.Windows.Forms.Keys.Delete;
-			this.menuItem12.Text = "&Delete";
-			//
-			// StrListViewer
-			//
-			this.Controls.Add(this.listView1);
-			this.Controls.Add(this.splitter1);
-			this.Controls.Add(this.treeView1);
-			this.Name = "StrListViewer";
-			this.Size = new System.Drawing.Size(840, 144);
-			this.ResumeLayout(false);
+            StrItemList items = _wrapper?.LanguageItems(lang);
+            if (items == null) return;
 
-		}
-		#endregion
+            for (int i = 0; i < items.Length; i++)
+            {
+                StrToken s = items[i];
+                _rows.Add(new StrRow(i.ToString(), s.Title, s.Description));
+            }
+        }
 
-		private void treeView1_AfterSelect(object sender, System.Windows.Forms.TreeViewEventArgs e)
-		{
-			this.listView1.Items.Clear();
-			StrLanguage l = (StrLanguage) e.Node.Tag;
-			StrItemList items = wrapper.LanguageItems(l);
-			if (items == null) return;
+        // ── item template ─────────────────────────────────────────────────────
 
-			for (int i = 0; i < items.Length; i++)
-			{
+        static Control BuildRowTemplate(StrRow row, Avalonia.Controls.INameScope _)
+        {
+            var g = new Grid();
+            g.ColumnDefinitions.Add(new ColumnDefinition(36,              GridUnitType.Pixel));
+            g.ColumnDefinitions.Add(new ColumnDefinition(246,             GridUnitType.Pixel));
+            g.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
 
-				StrToken s = items[i];
-				string[] ss = new string[3];
-				ss[0] = i.ToString();
-				ss[1] = s.Title;
-				ss[2] = s.Description;
-				ListViewItem v = new ListViewItem(ss);
-				this.listView1.Items.Add(v);
-			}
-			currentLang = l;
-		}
-	}
+            var tbLine  = new TextBlock { Text = row?.Line        ?? "" };
+            var tbTitle = new TextBlock { Text = row?.Title       ?? "" };
+            var tbDesc  = new TextBlock { Text = row?.Description ?? "" };
+
+            Grid.SetColumn(tbLine,  0);
+            Grid.SetColumn(tbTitle, 1);
+            Grid.SetColumn(tbDesc,  2);
+            g.Children.Add(tbLine);
+            g.Children.Add(tbTitle);
+            g.Children.Add(tbDesc);
+            return g;
+        }
+
+        // ── context menus ─────────────────────────────────────────────────────
+
+        static ContextMenu BuildLangContextMenu() => new ContextMenu
+        {
+            ItemsSource = new MenuItem[]
+            {
+                new MenuItem { Header = "&Copy",             InputGesture = new KeyGesture(Key.C, KeyModifiers.Control) },
+                new MenuItem { Header = "&Paste",            InputGesture = new KeyGesture(Key.V, KeyModifiers.Control) },
+                new MenuItem { Header = "Pas&te As\u2026" },
+                new MenuItem { Header = "&Set all to these" },
+                new MenuItem { Header = "&Add",              InputGesture = new KeyGesture(Key.Insert) },
+                new MenuItem { Header = "&Delete",           InputGesture = new KeyGesture(Key.Delete) },
+            },
+        };
+
+        static ContextMenu BuildStrContextMenu() => new ContextMenu
+        {
+            ItemsSource = new MenuItem[]
+            {
+                new MenuItem { Header = "&Edit" },
+                new MenuItem { Header = "&Copy",              InputGesture = new KeyGesture(Key.C, KeyModifiers.Control) },
+                new MenuItem { Header = "&Paste",             InputGesture = new KeyGesture(Key.V, KeyModifiers.Control) },
+                new MenuItem { Header = "&Set in all languages" },
+                new MenuItem { Header = "&Add",               InputGesture = new KeyGesture(Key.Insert) },
+                new MenuItem { Header = "&Delete",            InputGesture = new KeyGesture(Key.Delete) },
+            },
+        };
+    }
 }

@@ -208,7 +208,7 @@ namespace SimPe.PackedFiles.UserInterface
 					if (tbname.Text != fami.Name) fami.Name = tbname.Text;
 
 					wrapper.SynchronizeUserData();
-					SimPe.Message.Show(Localization.Manager.GetString("commited"), null, System.Windows.Forms.MessageBoxButtons.OK);
+					SimPe.Message.Show(Localization.Manager.GetString("commited"), null, MessageBoxButtons.OK);
 				}
 				catch (Exception ex)
 				{
@@ -226,7 +226,7 @@ namespace SimPe.PackedFiles.UserInterface
 					SimPe.PackedFiles.Wrapper.Xml xml = (Wrapper.Xml)wrapper;
 					xml.Text = rtb.Text;
 					wrapper.SynchronizeUserData();
-					SimPe.Message.Show(Localization.Manager.GetString("commited"), null, System.Windows.Forms.MessageBoxButtons.OK);
+					SimPe.Message.Show(Localization.Manager.GetString("commited"), null, MessageBoxButtons.OK);
 				}
 				catch (Exception) {}
 			}
@@ -421,7 +421,7 @@ namespace SimPe.PackedFiles.UserInterface
 						srel.FamilyRelation = (Data.LocalizedRelationshipTypes)cbfamtype.Items[cbfamtype.SelectedIndex];
 
 					wrapper.SynchronizeUserData();
-					SimPe.Message.Show(Localization.Manager.GetString("commited"), null, System.Windows.Forms.MessageBoxButtons.OK);
+					SimPe.Message.Show(Localization.Manager.GetString("commited"), null, MessageBoxButtons.OK);
 				}
 				catch (Exception ex)
 				{
@@ -457,7 +457,7 @@ namespace SimPe.PackedFiles.UserInterface
 					objd.ProxyGuid = (uint)Helper.HexStringToUInt(this.tbproxguid.Text);
 
 					objd.SynchronizeUserData();
-					SimPe.Message.Show(Localization.Manager.GetString("commited"), null, System.Windows.Forms.MessageBoxButtons.OK);
+					SimPe.Message.Show(Localization.Manager.GetString("commited"), null, MessageBoxButtons.OK);
 				}
 				catch (Exception ex)
 				{

@@ -620,7 +620,7 @@ namespace SimPe
 						if (flname==null) flname="";
 						System.Windows.Forms.DialogResult dr = System.Windows.Forms.DialogResult.Yes;
 						if (!Helper.XmlRegistry.Silent)
-							dr = Message.Show(SimPe.Localization.GetString("reschanged").Replace("{name}", doc.Text).Replace("{filename}", flname), SimPe.Localization.GetString("changed?"), System.Windows.Forms.MessageBoxButtons.YesNo);
+							dr = Message.Show(SimPe.Localization.GetString("reschanged").Replace("{name}", doc.Text).Replace("{filename}", flname), SimPe.Localization.GetString("changed?"), MessageBoxButtons.YesNo);
 
 						if (dr==System.Windows.Forms.DialogResult.Yes)
 						{

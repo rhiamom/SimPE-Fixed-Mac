@@ -65,7 +65,7 @@ namespace SimPe.Plugin
 		{
 			if (Helper.StartedGui == Executable.Default) 
 			{
-				if (Message.Show(SimPe.Localization.GetString("ObsoleteOW"), SimPe.Localization.GetString("Warning"), System.Windows.Forms.MessageBoxButtons.YesNo)==SimPe.DialogResult.No)
+				if (Message.Show(SimPe.Localization.GetString("ObsoleteOW"), SimPe.Localization.GetString("Warning"), MessageBoxButtons.YesNo)==SimPe.DialogResult.No)
 					return new ToolResult(false, false);
 			}
 

@@ -49,7 +49,7 @@ namespace SimPe.Plugin
                 wrp.FileName = tbfilenm.Text;
                 lbBloat.IsVisible = lbBug.IsVisible = false;
                 wrapper.SynchronizeUserData();
-                SimPe.Message.Show(Localization.Manager.GetString("commited"), null, System.Windows.Forms.MessageBoxButtons.OK);
+                SimPe.Message.Show(Localization.Manager.GetString("commited"), null, MessageBoxButtons.OK);
             }
             catch (Exception ex)
             {

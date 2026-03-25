@@ -26,7 +26,7 @@ using System;
 namespace SimPe.Actions.Default
 {
 	/// <summary>
-	/// Zusammenfassung für ExportAction.
+	/// Zusammenfassung fï¿½r ExportAction.
 	/// </summary>
 	public class ExportAction : AbstractActionDefault
 	{
@@ -110,7 +110,7 @@ namespace SimPe.Actions.Default
 						excount++;
 						Helper.ExceptionMessage(Localization.Manager.GetString("errwritingfile")+" "+name, ex);
 						if (excount>=5) 
-							if (Message.Show(Localization.Manager.GetString("ask000"), Localization.Manager.GetString("proceed"), System.Windows.Forms.MessageBoxButtons.YesNo)==System.Windows.Forms.DialogResult.Yes) 
+							if (Message.Show(Localization.Manager.GetString("ask000"), Localization.Manager.GetString("proceed"), MessageBoxButtons.YesNo)==System.Windows.Forms.DialogResult.Yes) 
 								i=pfds.Length;
 					}
 				
@@ -139,7 +139,7 @@ namespace SimPe.Actions.Default
 				if (!run)WaitingScreen.Stop();
 			}
 
-			Message.Show(Localization.Manager.GetString("nfo000").Replace("{0}", filecount.ToString()), "Info", System.Windows.Forms.MessageBoxButtons.OK);			
+			Message.Show(Localization.Manager.GetString("nfo000").Replace("{0}", filecount.ToString()), "Info", MessageBoxButtons.OK);			
 		}
 		#region IToolAction Member		
 

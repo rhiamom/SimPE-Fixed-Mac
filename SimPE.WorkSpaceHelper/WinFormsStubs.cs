@@ -30,11 +30,7 @@ namespace System.Windows.Forms
 
     public enum DockStyle { None, Top, Bottom, Left, Right, Fill }
 
-    /// <summary>Minimal stub for System.Windows.Forms.MessageBoxButtons.</summary>
-    public enum MessageBoxButtons { OK, OKCancel, YesNo, YesNoCancel, AbortRetryIgnore, RetryCancel }
-
-    /// <summary>Minimal stub for System.Windows.Forms.MessageBoxIcon.</summary>
-    public enum MessageBoxIcon { None, Error, Warning, Information, Question, Hand, Stop, Asterisk, Exclamation }
+    // MessageBoxButtons, MessageBoxIcon, MessageBoxDefaultButton — defined in SimPe namespace (Message.cs).
 
     /// <summary>Minimal stub for System.Windows.Forms.Padding.</summary>
     public struct Padding

@@ -59,7 +59,7 @@ namespace SimPe
                     "SimPE can generate a new one (" +
                     msg + ").\n\nShould SimPe delete the " + filename + " File?"
                     , "Error",
-                    System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Error) == System.Windows.Forms.DialogResult.Yes)
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Error) == System.Windows.Forms.DialogResult.Yes)
                     System.IO.File.Delete(file);
             }
         }
@@ -91,7 +91,7 @@ namespace SimPe
                 string name = Helper.DataFolder.FoldersXREG;
 				if (System.IO.File.Exists(name)) 
 				{
-					if (Message.Show(SimPe.Localization.GetString("Reset Filetable").Replace("{flname}", name), "Update", System.Windows.Forms.MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
+					if (Message.Show(SimPe.Localization.GetString("Reset Filetable").Replace("{flname}", name), "Update", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
 					{
 						try 
 						{						
@@ -112,7 +112,7 @@ namespace SimPe
 				string name = Helper.SimPeLanguageCache;
 				if (System.IO.File.Exists(name)) 
 				{
-					if (Message.Show(SimPe.Localization.GetString("Reset Cache").Replace("{flname}", name), "Update", System.Windows.Forms.MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
+					if (Message.Show(SimPe.Localization.GetString("Reset Cache").Replace("{flname}", name), "Update", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
 					{
 						try 
 						{						
@@ -130,7 +130,7 @@ namespace SimPe
 
             if (Helper.XmlRegistry.FoundUnknownEP())
             {
-                if (Message.Show(SimPe.Localization.GetString("Unknown EP found").Replace("{name}", SimPe.PathProvider.Global.GetExpansion(SimPe.PathProvider.Global.LastKnown).Name), SimPe.Localization.GetString("Warning"), System.Windows.Forms.MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.No)
+                if (Message.Show(SimPe.Localization.GetString("Unknown EP found").Replace("{name}", SimPe.PathProvider.Global.GetExpansion(SimPe.PathProvider.Global.LastKnown).Name), SimPe.Localization.GetString("Warning"), MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.No)
                     return false;
             }
 
@@ -152,7 +152,7 @@ namespace SimPe
                         if (Helper.XmlRegistry.PreviousDataFolder.Trim().ToLower() != Helper.SimPeDataPath.Trim().ToLower())
                             if (Helper.SimPeVersionLong > Helper.XmlRegistry.PreviousVersion && Helper.XmlRegistry.PreviousVersion > 0)
                             {
-                                if (Message.Show("Should SimPE import old Settings from \"" + Helper.XmlRegistry.PreviousDataFolder + "\"?", "Import Settings", System.Windows.Forms.MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
+                                if (Message.Show("Should SimPE import old Settings from \"" + Helper.XmlRegistry.PreviousDataFolder + "\"?", "Import Settings", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
                                 {
                                     WaitingScreen.Wait();
                                     try
@@ -270,7 +270,7 @@ namespace SimPe
                     if (Helper.LocalMode) s += Localization.GetString("InLocalMode") + "\r\n";
                     if (Helper.NoPlugins) s += "\r\n" + Localization.GetString("NoPlugins") + "\r\n";
                     if (Helper.NoErrors) s += "\r\n" + Localization.GetString("NoErrors");
-                    Message.Show(s, "Notice", System.Windows.Forms.MessageBoxButtons.OK);
+                    Message.Show(s, "Notice", MessageBoxButtons.OK);
                 }
 
                 return false; // Don't exit SimPE!
@@ -408,7 +408,7 @@ namespace SimPe
                 Helper.XmlRegistry.Flush();
 
                 return !(System.Windows.Forms.MessageBox.Show(SimPe.Localization.GetString("PresetChanged").Replace("{name}", SimPe.Localization.GetString("PresetClassic")),
-                    SimPe.Localization.GetString("Information"), System.Windows.Forms.MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes);
+                    SimPe.Localization.GetString("Information"), MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes);
             }
             public string[] Help() { return new string[] { "-classicpreset", null }; }
             #endregion
@@ -425,7 +425,7 @@ namespace SimPe
 
                 return (System.Windows.Forms.MessageBox.Show(SimPe.Localization.GetString("PresetChanged").Replace("{name}",
                     SimPe.Localization.GetString("PresetModern")), SimPe.Localization.GetString("Information"),
-                    System.Windows.Forms.MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes);
+                    MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes);
             }
             public string[] Help() { return new string[] { "-modernpreset", null }; }
             #endregion
@@ -485,8 +485,8 @@ namespace SimPe
                     + pluginHelp
                     + "\r\n"
                     , "SimPE Commandline Parameters"
-                    , System.Windows.Forms.MessageBoxButtons.OK
-                    , System.Windows.Forms.MessageBoxIcon.Information
+                    , MessageBoxButtons.OK
+                    , MessageBoxIcon.Information
                 );
 
             return true;

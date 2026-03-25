@@ -689,7 +689,7 @@ namespace SimPe.Plugin
 			System.Collections.Hashtable parentmap = new System.Collections.Hashtable();
             if (rn == null)
             {
-                Message.Show(SimPe.Localization.GetString("NO_CRES_FOUND"), SimPe.Localization.GetString("Information"), System.Windows.Forms.MessageBoxButtons.OK);
+                Message.Show(SimPe.Localization.GetString("NO_CRES_FOUND"), SimPe.Localization.GetString("Information"), MessageBoxButtons.OK);
                 return parentmap;
             }
             else LoadJointRelationRec(parentmap, -1, rn);

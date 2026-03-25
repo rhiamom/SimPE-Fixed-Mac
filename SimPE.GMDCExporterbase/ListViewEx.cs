@@ -67,8 +67,8 @@ namespace System.Windows.Forms
 
     // AnchorStyles is defined in SimPE.WorkSpaceHelper/WinFormsStubs.cs
 
-    // ─── MessageBoxButtons defined in WorkSpaceHelper (System.Windows.Forms) ───
-    // Callers should use System.Windows.Forms.MessageBoxButtons.
+    // ─── MessageBoxButtons / MessageBoxIcon / MessageBoxDefaultButton ─────────
+    // Defined in SimPe namespace (Message.cs). Use SimPe.MessageBoxButtons etc.
 
     // ─── DialogResult ─────────────────────────────────────────────────────────
     // Also defined as SimPe.DialogResult in SimPE.Helper/DialogResult.cs with matching values.
@@ -306,8 +306,9 @@ namespace System.Windows.Forms
     {
         public static DialogResult Show(string text) { return DialogResult.OK; }
         public static DialogResult Show(string text, string caption) { return DialogResult.OK; }
-        public static DialogResult Show(string text, string caption, MessageBoxButtons buttons) { return DialogResult.OK; }
-        public static DialogResult Show(string text, string caption, MessageBoxButtons buttons, MessageBoxIcon icon) { return DialogResult.OK; }
+        public static DialogResult Show(string text, string caption, SimPe.MessageBoxButtons buttons) { return DialogResult.OK; }
+        public static DialogResult Show(string text, string caption, SimPe.MessageBoxButtons buttons, SimPe.MessageBoxIcon icon) { return DialogResult.OK; }
+        public static DialogResult Show(string text, string caption, SimPe.MessageBoxButtons buttons, SimPe.MessageBoxIcon icon, SimPe.MessageBoxDefaultButton def) { return DialogResult.OK; }
     }
 
     // ─── FormBorderStyle enum ─────────────────────────────────────────────────

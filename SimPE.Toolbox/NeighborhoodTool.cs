@@ -78,7 +78,7 @@ namespace SimPe.Plugin
 			{
 				if (package.HasUserChanges) 
 				{
-					if (System.Windows.Forms.MessageBox.Show(Localization.Manager.GetString("unsavedchanges"), Localization.Manager.GetString("savechanges?"), System.Windows.Forms.MessageBoxButtons.YesNo)==System.Windows.Forms.DialogResult.No) return new Plugin.ToolResult(false, false);
+					if (System.Windows.Forms.MessageBox.Show(Localization.Manager.GetString("unsavedchanges"), Localization.Manager.GetString("savechanges?"), MessageBoxButtons.YesNo)==System.Windows.Forms.DialogResult.No) return new Plugin.ToolResult(false, false);
 				}
 			}
 			NeighborhoodForm nf = new NeighborhoodForm();

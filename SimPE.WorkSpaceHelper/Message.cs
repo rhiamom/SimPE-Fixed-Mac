@@ -29,6 +29,24 @@ using System;
 
 namespace SimPe
 {
+    // ── Message dialog enums ──────────────────────────────────────────────────
+    // Defined here in the SimPe namespace; replaces the WinForms originals.
+
+    public enum MessageBoxButtons
+    {
+        OK, OKCancel, YesNo, YesNoCancel, AbortRetryIgnore, RetryCancel
+    }
+
+    public enum MessageBoxIcon
+    {
+        None, Error, Warning, Information, Question, Hand, Stop, Asterisk, Exclamation
+    }
+
+    public enum MessageBoxDefaultButton
+    {
+        Button1, Button2, Button3
+    }
+
     /// <summary>
     /// Cross-platform message helper — replaces WinForms MessageBox calls.
     /// In the Avalonia port all messages are written to Trace; UI dialogs
@@ -38,15 +56,15 @@ namespace SimPe
     {
         public static DialogResult Show(string message)
         {
-            return Show(message, null, System.Windows.Forms.MessageBoxButtons.OK);
+            return Show(message, null, MessageBoxButtons.OK);
         }
 
         public static DialogResult Show(string message, string caption)
         {
-            return Show(message, caption, System.Windows.Forms.MessageBoxButtons.OK);
+            return Show(message, caption, MessageBoxButtons.OK);
         }
 
-        public static DialogResult Show(string message, string caption, System.Windows.Forms.MessageBoxButtons mbb)
+        public static DialogResult Show(string message, string caption, MessageBoxButtons mbb)
         {
             bool wasWaiting = WaitingScreen.Running;
             if (wasWaiting) WaitingScreen.Stop();
@@ -56,7 +74,7 @@ namespace SimPe
                 caption = SimPe.Localization.GetString(caption);
                 System.Diagnostics.Trace.TraceInformation("[Message] {0}: {1}", caption, message);
                 // For YesNo/YesNoCancel default to Yes so "Fix" operations proceed.
-                return (mbb == System.Windows.Forms.MessageBoxButtons.YesNo || mbb == System.Windows.Forms.MessageBoxButtons.YesNoCancel)
+                return (mbb == MessageBoxButtons.YesNo || mbb == MessageBoxButtons.YesNoCancel)
                     ? DialogResult.Yes
                     : DialogResult.OK;
             }
