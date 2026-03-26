@@ -87,11 +87,11 @@ namespace SimPe.Plugin
 			}
 			form.wrapper = wrp;
 
-			form.btex.Enabled = false;
+			form.btex.IsEnabled = false;
 			form.lbimg.Items.Clear();
 			form.cbitem.Items.Clear();
 			form.cbmipmaps.Items.Clear();
-			form.lldel.Enabled = false;
+			form.lldel.IsEnabled = false;
 			
 
 			foreach (ImageData id in wrp.Blocks) 

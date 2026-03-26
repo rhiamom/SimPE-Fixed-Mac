@@ -993,19 +993,15 @@ namespace SimPe.Plugin
 
 		public void WriteContentToConsole()
 		{
-			System.Windows.Forms.Form f = new System.Windows.Forms.Form();
-			System.Windows.Forms.ListBox lb = new System.Windows.Forms.ListBox();
-			f.Controls.Add(lb);
-			lb.Dock = System.Windows.Forms.DockStyle.Fill;
-
-			foreach (IScenegraphFileIndex fi in childs) 
+			// WinForms UI removed (Avalonia port) â€” output written to Console instead
+			foreach (IScenegraphFileIndex fi in childs)
 			{
-				if (fi is FileIndex) ((FileIndex)fi).WriteContentToConsole();				
+				if (fi is FileIndex) ((FileIndex)fi).WriteContentToConsole();
 			}
-			foreach (uint type  in index.Keys)
+			foreach (uint type in index.Keys)
 			{
 				Hashtable groups = (Hashtable)index[type];
-				foreach (uint group in groups.Keys) 
+				foreach (uint group in groups.Keys)
 				{
 					Hashtable instances = (Hashtable)groups[group];
 					foreach (ulong inst in instances.Keys)
@@ -1014,14 +1010,11 @@ namespace SimPe.Plugin
 						foreach (object o in list)
 						{
 							FileIndexItem fii = o as FileIndexItem;
-							lb.Items.Add(fii.FileDescriptor.ToString()+" in "+fii.Package.SaveFileName);
+							Console.WriteLine(fii.FileDescriptor.ToString() + " in " + fii.Package.SaveFileName);
 						}
 					}
 				}
-			}	
-			
-			f.ShowDialog();
-			f.Dispose();
+			}
 		}
 
 		/// <summary>
@@ -1278,7 +1271,7 @@ namespace SimPe.Plugin
 		/// <summary>
 		/// Looks for a File based on the Filename
 		/// </summary>
-		/// <param name="filename">The name of the File (applies only to Scenegraüh Resources)</param>
+		/// <param name="filename">The name of the File (applies only to Scenegraï¿½h Resources)</param>
 		/// <param name="type">The Type of the File you are looking for</param>
 		/// <param name="defgroup">If the Filename has no group Hash, use this one</param>
 		/// <param name="betolerant">

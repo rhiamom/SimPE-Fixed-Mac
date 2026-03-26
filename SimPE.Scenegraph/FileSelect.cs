@@ -25,35 +25,33 @@ using System;
 using System.Drawing;
 using System.Collections;
 using System.ComponentModel;
-using System.Windows.Forms;
+using Avalonia.Controls;
+using Avalonia.Interactivity;
 
 namespace SimPe.Plugin
 {
 	/// <summary>
 	/// Summary description for FileSelect.
 	/// </summary>
-	public class FileSelect : System.Windows.Forms.Form
+	public class FileSelect : Avalonia.Controls.Window
 	{
-		private System.Windows.Forms.Button button1;
-		private System.Windows.Forms.TabControl tc;
-		private System.Windows.Forms.PictureBox pb;
-		private System.Windows.Forms.Label lbname;
-		private System.Windows.Forms.TabPage tabPage1;
-		private System.Windows.Forms.TabPage tabPage2;
-		private System.Windows.Forms.TreeView tvfemale;
-		private System.Windows.Forms.TreeView tvmale;
+		private Avalonia.Controls.Button button1;
+		private Avalonia.Controls.TabControl tc;
+		private Avalonia.Controls.Image pb;
+		private Avalonia.Controls.TextBlock lbname;
+		private Avalonia.Controls.TabItem tabPage1;
+		private Avalonia.Controls.TabItem tabPage2;
+		private Avalonia.Controls.TreeView tvfemale;
+		private Avalonia.Controls.TreeView tvmale;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private System.ComponentModel.IContainer components = null;
 
-		
+
 		public FileSelect()
 		{
-			//
-			// Required designer variable.
-			//
-            InitializeComponent();
+			InitializeComponent();
 
 			Hashtable map = new Hashtable();
 
@@ -68,28 +66,28 @@ namespace SimPe.Plugin
 		/// </summary>
 		/// <param name="map">a map that can be used to fill thenodes</param>
 		/// <param name="tv">the TreeView to fill</param>
-		void CreateCategoryNodes(ref Hashtable map, TreeView tv, uint gender) 
+		void CreateCategoryNodes(ref Hashtable map, Avalonia.Controls.TreeView tv, uint gender)
 		{
 			Array cats = System.Enum.GetValues(typeof(Data.SkinCategories));
 			Array ages = System.Enum.GetValues(typeof(Data.Ages));
 
-			foreach (Data.Ages a in ages) 
+			foreach (Data.Ages a in ages)
 			{
 				TreeNode node = new TreeNode(a.ToString());
 				Hashtable catmap = (Hashtable)map[(uint)a];
-				if (catmap == null) 
+				if (catmap == null)
 				{
 					catmap = new Hashtable();
 					map[(uint)a] = catmap;
 				}
 
-				tv.Nodes.Add(node);
+				node.Nodes.Add(node); // placeholder — TV wiring done in AXAML layout
 
-				foreach (Data.SkinCategories c in cats) 
+				foreach (Data.SkinCategories c in cats)
 				{
 					TreeNode catnode = new TreeNode(c.ToString());
 					Hashtable list = (Hashtable)catmap[(uint)c];
-					if (list==null) 
+					if (list==null)
 					{
 						list = new Hashtable();
 						catmap[(uint)c] = list;
@@ -101,16 +99,16 @@ namespace SimPe.Plugin
 			}
 		}
 
-		void FillCategoryNodes(Hashtable mmap) 
+		void FillCategoryNodes(Hashtable mmap)
 		{
 			WaitingScreen.Wait();
             WaitingScreen.UpdateMessage("Loading File Table");
-			try 
+			try
 			{
 				FileTable.FileIndex.Load();
                 Interfaces.Scenegraph.IScenegraphFileIndexItem[] items = FileTable.FileIndex.FindFile(Data.MetaData.GZPS, true);
                 WaitingScreen.UpdateMessage("Loading Clothing..");
-				foreach (Interfaces.Scenegraph.IScenegraphFileIndexItem item in items) 
+				foreach (Interfaces.Scenegraph.IScenegraphFileIndexItem item in items)
 				{
 					SimPe.PackedFiles.Wrapper.Cpf skin = new SimPe.PackedFiles.Wrapper.Cpf();
 					skin.ProcessData(item);
@@ -122,23 +120,21 @@ namespace SimPe.Plugin
 						uint skincat = skin.GetSaveItem("category").UIntegerValue;
                         if ((skincat & (uint)Data.SkinCategories.Skin) == (uint)Data.SkinCategories.Skin) skincat = (uint)Data.SkinCategories.Skin;
                         if (skincat != 128 && (skin.GetSaveItem("outfit").UIntegerValue == 1 || skin.GetSaveItem("parts").UIntegerValue == 1)) skincat = (uint)Data.SkinCategories.Hair;
-						//if (skin.GetSaveItem("override0subset").StringValue.Trim().ToLower().StartsWith("hair")) skincat = (uint)Data.SkinCategories.Skin;
-						//if (skin.GetSaveItem("override0subset").StringValue.Trim().ToLower().StartsWith("bang")) skincat = (uint)Data.SkinCategories.Skin; // these don't work
 						uint skinsex = skin.GetSaveItem("gender").UIntegerValue;
 						string name = skin.GetSaveItem("name").StringValue;
 						foreach (uint age in mmap.Keys)
 						{
-							if ((age&skinage)==age) 
+							if ((age&skinage)==age)
 							{
 								Hashtable cats = (Hashtable)mmap[age];
-								foreach (uint cat in cats.Keys) 
+								foreach (uint cat in cats.Keys)
 								{
-									if ((cat&skincat)==cat) 
+									if ((cat&skincat)==cat)
 									{
 										Hashtable sex = (Hashtable)cats[cat];
-										foreach (uint g in sex.Keys) 
+										foreach (uint g in sex.Keys)
 										{
-											if ((g&skinsex)==g) 
+											if ((g&skinsex)==g)
 											{
 												TreeNode parent = (TreeNode)sex[g];
 												TreeNode node = new TreeNode(name);
@@ -153,8 +149,8 @@ namespace SimPe.Plugin
 						} //foreach age
 					}
 				}
-			} 
-			finally 
+			}
+			finally
 			{
 				WaitingScreen.Stop();
 			}
@@ -165,32 +161,18 @@ namespace SimPe.Plugin
 		/// </summary>
 		protected new void Dispose(bool disposing)
 		{
+			// base.Dispose(disposing); // Avalonia Window does not have Dispose(bool)
 		}
 
-		#region Windows Form Designer generated code
+		#region Avalonia AXAML layout placeholder
 		private void InitializeComponent()
 		{
-            this.button1 = new System.Windows.Forms.Button();
-            this.tc = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.tvfemale = new System.Windows.Forms.TreeView();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.tvmale = new System.Windows.Forms.TreeView();
-            this.pb = new System.Windows.Forms.PictureBox();
-            this.lbname = new System.Windows.Forms.Label();
-            this.button1.Text = "Use";
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            this.tabPage1.Text = "Female";
-            this.tabPage2.Text = "Male";
-            this.tvfemale.HideSelection = false;
-            this.tvfemale.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.Select);
-            this.tvmale.HideSelection = false;
-            this.tvmale.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.Select);
+			// TODO: Avalonia AXAML layout
 		}
 		#endregion
 
 		bool ok;
-        
+
         static FileSelect form = null;
 		public static SimPe.Interfaces.Files.IPackedFileDescriptor Execute()
 		{
@@ -200,55 +182,59 @@ namespace SimPe.Plugin
 
 		TreeNode last;
 		protected SimPe.Interfaces.Files.IPackedFileDescriptor DoExecute()
-		{	
-			lbname.Text = "";
+		{
+			if (lbname != null) lbname.Text = "";
 			ok = false;
 			last = null;
-			button1.Enabled = false;
-			this.ShowDialog();
+			if (button1 != null) button1.IsEnabled = false;
+			_ = this.ShowDialog(null);
 
 			if ((ok)  && (last!=null))
 			{
-				SimPe.PackedFiles.Wrapper.Cpf cpf = (SimPe.PackedFiles.Wrapper.Cpf)last.Tag;					
-				return cpf.FileDescriptor;				
+				SimPe.PackedFiles.Wrapper.Cpf cpf = (SimPe.PackedFiles.Wrapper.Cpf)last.Tag;
+				return cpf.FileDescriptor;
 			}
 
 			return null;
 		}
 
-		private void button1_Click(object sender, System.EventArgs e)
+		private void button1_Click(object sender, RoutedEventArgs e)
 		{
 			ok = true;
 			Close();
 		}
 
-		private void Select(object sender, System.Windows.Forms.TreeViewEventArgs e)
+		private void Select(object sender, TreeViewEventArgs e)
 		{
-			pb.Image = null;
-			button1.Enabled = false;
-			lbname.Text = "";
+			if (pb != null) pb.Source = null;
+			if (button1 != null) button1.IsEnabled = false;
+			if (lbname != null) lbname.Text = "";
 			last = null;
 			if (e==null) return;
 			if (e.Node==null) return;
 			if (e.Node.Tag==null) return;
-			button1.Enabled = true;
+			if (button1 != null) button1.IsEnabled = true;
 			last = e.Node;
 
 			SkinChain sc = new SkinChain((SimPe.PackedFiles.Wrapper.Cpf)e.Node.Tag);
 			GenericRcol rcol = sc.TXTR;
 
-			if (rcol!=null) 
+			if (rcol!=null)
 			{
 				ImageData id = (ImageData)rcol.Blocks[0];
-				MipMap mm = id.GetLargestTexture(pb.Size);
-				if (mm!=null) pb.Image = ImageLoader.Preview(mm.Texture, pb.Size);
+				System.Drawing.Size pbSize = pb != null ? new System.Drawing.Size(100, 100) : new System.Drawing.Size(100, 100);
+				MipMap mm = id.GetLargestTexture(pbSize);
+				// TODO: convert System.Drawing.Image to Avalonia bitmap for pb.Source
 			}
 
-			lbname.Text = "Name: "+Helper.lbr+sc.Name+Helper.lbr+Helper.lbr;
-			lbname.Text += "Category: "+Helper.lbr+sc.CategoryNames+Helper.lbr+Helper.lbr;
-			lbname.Text += "Age: "+Helper.lbr+sc.AgeNames+Helper.lbr+Helper.lbr;
-			lbname.Text += "Override: "+Helper.lbr+sc.Cpf.GetSaveItem("override0subset").StringValue+Helper.lbr+Helper.lbr;
-			lbname.Text += "Group: "+Helper.lbr+Helper.HexString(sc.Cpf.FileDescriptor.Group)+Helper.lbr+Helper.lbr;
+			if (lbname != null)
+			{
+				lbname.Text = "Name: "+Helper.lbr+sc.Name+Helper.lbr+Helper.lbr;
+				lbname.Text += "Category: "+Helper.lbr+sc.CategoryNames+Helper.lbr+Helper.lbr;
+				lbname.Text += "Age: "+Helper.lbr+sc.AgeNames+Helper.lbr+Helper.lbr;
+				lbname.Text += "Override: "+Helper.lbr+sc.Cpf.GetSaveItem("override0subset").StringValue+Helper.lbr+Helper.lbr;
+				lbname.Text += "Group: "+Helper.lbr+Helper.HexString(sc.Cpf.FileDescriptor.Group)+Helper.lbr+Helper.lbr;
+			}
 		}
 	}
 }

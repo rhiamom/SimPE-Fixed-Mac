@@ -25,35 +25,29 @@ using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Drawing;
-using System.Windows.Forms;
 using System.Diagnostics;
+using Avalonia.Interactivity;
+using SimPe.Scenegraph.Compat;
 
 namespace SimPe.Plugin
 {
 	/// <summary>
 	/// Summary description for SubsetSelectForm.
 	/// </summary>
-	public class SubsetSelectForm : System.Windows.Forms.Form
+	public class SubsetSelectForm : Avalonia.Controls.Window
 	{
-		private System.Windows.Forms.Panel panel1;
-		public System.Windows.Forms.Panel pnselect;
-		public System.Windows.Forms.Button button1;
-		public System.Windows.Forms.CheckBox cbauto;
+		private Avalonia.Controls.Panel panel1;
+		public Avalonia.Controls.Panel pnselect;
+		public Avalonia.Controls.Button button1;
+		public Avalonia.Controls.CheckBox cbauto;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private System.ComponentModel.IContainer components = null;
 
 		internal SubsetSelectForm()
 		{
-			//
-			// Required designer variable.
-			//
 			InitializeComponent();
-
-			//
-			// TODO: F�gen Sie den Konstruktorcode nach dem Aufruf von InitializeComponent hinzu
-			//
 		}
 
 		/// <summary>
@@ -61,19 +55,17 @@ namespace SimPe.Plugin
 		/// </summary>
 		protected new void Dispose(bool disposing)
 		{
+			// base.Dispose(disposing); // Avalonia Window does not have Dispose(bool)
 		}
 
-		#region Windows Form Designer generated code
+		#region Avalonia AXAML layout placeholder
 		private void InitializeComponent()
 		{
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.cbauto = new System.Windows.Forms.CheckBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.pnselect = new System.Windows.Forms.Panel();
-            this.cbauto.Checked = true;
-            this.cbauto.Text = "Autoselect matching Textures";
-            this.button1.Text = "OK";
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+			// TODO: Avalonia AXAML layout
+			panel1 = new Avalonia.Controls.Panel();
+			cbauto = new Avalonia.Controls.CheckBox();
+			button1 = new Avalonia.Controls.Button();
+			pnselect = new Avalonia.Controls.Panel();
 		}
 		#endregion
 
@@ -96,48 +88,20 @@ namespace SimPe.Plugin
 		/// <param name="subset">The name of the Subset</param>
 		/// <param name="top">the top coordinate for the Selection Panel</param>
 		/// <returns>the ListView you can use to add Items to</returns>
-		protected ListView AddSelection(SubsetSelectForm ssf, string subset, ref int top) 
+		protected ListView AddSelection(SubsetSelectForm ssf, string subset, ref int top)
 		{
-			Panel pn = new Panel();
-			pn.Parent = ssf.pnselect;
-			pn.Top = top;
-			pn.Left = 8;
-			pn.Width = ssf.pnselect.Width-16;
-			pn.Height = ImageSize.Height + 64;
-			pn.Visible = false;
-			pn.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right;
-
-			CheckBox cb = new CheckBox();
-			cb.Parent = pn;
-			cb.Top = 0;
-			cb.Left = 0;
-			cb.Checked = true;
-			cb.Width = pn.Width;
-			cb.Text = subset;
-			cb.Anchor = pn.Anchor;
-			cb.FlatStyle = FlatStyle.System;
-			cb.CheckedChanged += new EventHandler(CheckedChanged);
-
 			ListView lv = new ListView();
-			lv.Parent = pn;
 			lv.Tag = subset;
-			lv.Left = 8;
-			lv.Top = cb.Height + cb.Top;
-			lv.Width = pn.Width - lv.Left;
-			lv.Height = pn.Height - lv.Top;
-			lv.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom;
 			lv.HideSelection = false;
 			lv.MultiSelect = false;
 			lv.SelectedIndexChanged += new EventHandler(SelectedIndexChanged);
-			cb.Tag = lv;
 
 			ImageList il = new ImageList();
 			il.ImageSize = ImageSize;
 			il.ColorDepth = ColorDepth.Depth32Bit;
 			lv.LargeImageList = il;
-			
-			top += pn.Height + 8;
-			pn.Visible = true;
+
+			top += ImageSize.Height + 64 + 8;
 
 			listviews.Add(lv);
 			return lv;
@@ -150,19 +114,19 @@ namespace SimPe.Plugin
 		/// <param name="mmats"></param>
 		/// <param name="sz">Size of the Thumbnail</param>
 		/// <returns>a valid Image</returns>
-		protected Image GetItemThumb(int index, ArrayList mmats, Size sz)
+		protected System.Drawing.Image GetItemThumb(int index, ArrayList mmats, Size sz)
 		{
 			if ((index<0) || (index>=mmats.Count)) return new Bitmap(sz.Width, sz.Height);
 
 			SimPe.Plugin.MmatWrapper mmat = (SimPe.Plugin.MmatWrapper)mmats[index];
 			GenericRcol txtr = mmat.TXTR;
-			if (txtr!=null) 
+			if (txtr!=null)
 			{
 				ImageData id = (ImageData)txtr.Blocks[0];
 				MipMap mm = id.LargestTexture;
 
-				if (mm!=null) 
-					return ImageLoader.Preview(mm.Texture, sz);					
+				if (mm!=null)
+					return ImageLoader.Preview(mm.Texture, sz);
 			}
 
 			return new Bitmap(sz.Width, sz.Height);
@@ -174,18 +138,18 @@ namespace SimPe.Plugin
 		/// <param name="il">The ImageList that will hold the Thumbnail</param>
 		/// <param name="lvi">The ListView Item that will get the Thumbnail Image</param>
 		/// <param name="mmats">The Materials</param>
-		protected void MakePreview(ImageList il, ListViewItem lvi, ArrayList mmats) 
+		protected void MakePreview(ImageList il, ListViewItem lvi, ArrayList mmats)
 		{
-			if (mmats.Count == 1) 
+			if (mmats.Count == 1)
 			{
-				Image img = GetItemThumb(0, mmats, il.ImageSize);
+				System.Drawing.Image img = GetItemThumb(0, mmats, il.ImageSize);
 				lvi.ImageIndex = il.Images.Count;
-				il.Images.Add(img);				
-			} 
-			else if (mmats.Count>1) 
-			{				
-				Image img1 = GetItemThumb(0, mmats, il.ImageSize);
-				Image img2 = GetItemThumb(1, mmats, il.ImageSize);
+				il.Images.Add(img);
+			}
+			else if (mmats.Count>1)
+			{
+				System.Drawing.Image img1 = GetItemThumb(0, mmats, il.ImageSize);
+				System.Drawing.Image img2 = GetItemThumb(1, mmats, il.ImageSize);
 
 				Bitmap bm = new Bitmap(il.ImageSize.Width, il.ImageSize.Height);
 				Graphics gr = Graphics.FromImage(bm);
@@ -202,11 +166,11 @@ namespace SimPe.Plugin
 
 				gr.FillEllipse(new Pen(Color.Orange, 1).Brush, (ImageSize.Width-24)/2, 4, 24, 24);
 				System.Drawing.Font ft = new System.Drawing.Font("Verdana", 16.0f, System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
-				
+
 				gr.DrawString(mmats.Count.ToString(), ft, new Pen(Color.White).Brush, new RectangleF((ImageSize.Width-24)/2+2, 6, 20, 20));
 
 				lvi.ImageIndex = il.Images.Count;
-				il.Images.Add(bm);	
+				il.Images.Add(bm);
 			}
 		}
 
@@ -223,21 +187,21 @@ namespace SimPe.Plugin
             ListViewItem lvi = new ListViewItem();
             GenericRcol txtr = ((SimPe.Plugin.MmatWrapper)mmats[0]).TXTR;
             GenericRcol txmt = ((SimPe.Plugin.MmatWrapper)mmats[0]).TXMT;
-			if (txmt!=null) 
+			if (txmt!=null)
 			{
 				string txmtname = Hashes.StripHashFromName(txmt.FileName.Trim().ToLower());
-				if (!txmtnames.ContainsKey(txmtname)) 
+				if (!txmtnames.ContainsKey(txmtname))
 				{
-					if (txtr!=null) 
-					{										
+					if (txtr!=null)
+					{
 						lvi.Text = txtr.FileName;
 						lvi.Tag = mmats;
 
 						MakePreview(lv.LargeImageList, lvi, mmats);
 
-						lv.Items.Add(lvi);	
-					} 
-					else 
+						lv.Items.Add(lvi);
+					}
+					else
 					{
 						lvi.Text = txmt.FileName;
 						lvi.Tag = mmats;
@@ -246,7 +210,7 @@ namespace SimPe.Plugin
 
 					txmtnames.Add(txmtname, lvi);
 				} //txmtnames
-				else 
+				else
 				{
 					ListViewItem l = (ListViewItem)txmtnames[txmtname];
 					ArrayList ls = (ArrayList)l.Tag;
@@ -270,7 +234,7 @@ namespace SimPe.Plugin
             try
             {
                 WaitingScreen.UpdateMessage("Show Subset Selection");
-                ssf.button1.Enabled = false;
+                ssf.button1.IsEnabled = false;
 
                 int top = 0;
 
@@ -303,15 +267,15 @@ namespace SimPe.Plugin
         /// </summary>
         /// <param name="ssf">The Form that was used</param>
         /// <returns>The new Hashtable</returns>
-        public static Hashtable Finish(SubsetSelectForm ssf) 
+        public static Hashtable Finish(SubsetSelectForm ssf)
 		{
 			//now rebuild the Hashtable with the stored Infos
 			Hashtable ret = new Hashtable();
-			foreach (ListView lv in ssf.listviews) 
+			foreach (ListView lv in ssf.listviews)
 			{
 				if (!lv.Enabled) continue;
 
-				if (lv.SelectedItems.Count>0) 
+				if (lv.SelectedItems.Count>0)
 				{
 					Hashtable sub = new Hashtable();
 					sub["user-selection"] = lv.SelectedItems[0].Tag;
@@ -329,15 +293,15 @@ namespace SimPe.Plugin
 		/// <param name="package">the opened source package</param>
 		/// <param name="subsets">List of all Subsets you want to present</param>
 		/// <returns>the map with all the selected Items</returns>
-		public static Hashtable Execute(Hashtable map, ArrayList subsets) 
+		public static Hashtable Execute(Hashtable map, ArrayList subsets)
 		{
-			SubsetSelectForm ssf = Prepare(map, subsets);			
-			ssf.ShowDialog();
+			SubsetSelectForm ssf = Prepare(map, subsets);
+			_ = ssf.ShowDialog(null);
 			return Finish(ssf);
-			
+
 		}
 
-		private void button1_Click(object sender, System.EventArgs e)
+		private void button1_Click(object sender, RoutedEventArgs e)
 		{
 			Close();
 		}
@@ -347,11 +311,11 @@ namespace SimPe.Plugin
 		/// </summary>
 		private bool CanContinue
 		{
-			get 
+			get
 			{
 				if (listviews.Count==0) return true;
 
-				foreach (ListView lv in listviews) 
+				foreach (ListView lv in listviews)
 				{
 					if ((lv.SelectedItems.Count==0) && lv.Enabled && lv.Items.Count!=0) return false;
 				}
@@ -362,11 +326,11 @@ namespace SimPe.Plugin
 
 		private void CheckedChanged(object sender, EventArgs e)
 		{
-			CheckBox cb = (CheckBox)sender;
+			Avalonia.Controls.CheckBox cb = (Avalonia.Controls.CheckBox)sender;
 			ListView lv = (ListView)cb.Tag;
 
-			lv.Enabled = cb.Checked;
-			button1.Enabled = CanContinue;
+			lv.Enabled = cb.IsChecked == true;
+			button1.IsEnabled = CanContinue;
 		}
 
 		bool internalupdate = false;
@@ -375,28 +339,29 @@ namespace SimPe.Plugin
 			if (internalupdate) return;
 
 			internalupdate = true;
-			try 
+			try
 			{
 				ListView lv = (ListView)sender;
-			
+
 				//autoselect matching Textures
-				if ((cbauto.Checked) && (lv.SelectedItems.Count>0))
+				if ((cbauto.IsChecked == true) && (lv.SelectedItems.Count>0))
 				{
 					string name = lv.SelectedItems[0].Text;
-					foreach (ListView lv2 in listviews) 
+					foreach (ListView lv2 in listviews)
 					{
 						if (lv2==lv) continue;
 
-						foreach (ListViewItem lvi in lv2.Items) 
+						foreach (object o in (System.Collections.IEnumerable)lv2.Items)
 						{
+							ListViewItem lvi = (ListViewItem)o;
 							if (lvi.Text == name) lvi.Selected = true;
 						}
 					}
 				}
 
-				button1.Enabled = CanContinue;
-			} 
-			finally 
+				button1.IsEnabled = CanContinue;
+			}
+			finally
 			{
 				internalupdate = false;
 			}
@@ -404,7 +369,7 @@ namespace SimPe.Plugin
 
 		private void DoClosing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
-			if (!CanContinue) 
+			if (!CanContinue)
 			{
 				SimPe.Message.Show("Please select a Texture in each Subset!", "Warning");
 				e.Cancel = true;

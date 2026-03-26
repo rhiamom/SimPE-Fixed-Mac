@@ -83,6 +83,10 @@ public class DockContainer : NCUserControl
 
     public int MinimumDockSize => 20;
 
+    // WinForms designer compat
+    public System.Drawing.Size MinimumSize { get; set; }
+    public bool NoCleanup { get; set; }
+
     // Controls collection — wraps child panels for enumeration by callers.
     public DockPanelControlCollection Controls { get; } = new DockPanelControlCollection();
 

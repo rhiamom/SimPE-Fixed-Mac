@@ -63,7 +63,7 @@ namespace SimPe.Plugin.Tool.Dockable
             sorter.CurrentColumn = 0;
             lv.ListViewItemSorter = sorter;
 
-            lv.View = SteepValley.Windows.Forms.ExtendedView.Details;
+            lv.View = System.Windows.Forms.View.Details;
 
             packages = new System.Collections.Generic.List<string>();
             threads = new System.Threading.Thread[Helper.XmlRegistry.SortProcessCount / 2];
@@ -120,7 +120,7 @@ namespace SimPe.Plugin.Tool.Dockable
             c.Parent = pnContainer;
             c.Left = 0;
             c.Top = 0;
-            c.Dock = DockStyle.Top;
+            c.Dock = System.Windows.Forms.DockStyle.Top;
             c.Visible = true;
             c.Refresh();
         }
@@ -179,7 +179,7 @@ namespace SimPe.Plugin.Tool.Dockable
 
         private void Activate_biList(object sender, System.EventArgs e)
         {
-            lv.View = SteepValley.Windows.Forms.ExtendedView.List;
+            lv.View = System.Windows.Forms.View.List;
             biList.Checked = true;
             biTile.Checked = false;
             biDetail.Checked = false;
@@ -187,7 +187,7 @@ namespace SimPe.Plugin.Tool.Dockable
 
         private void Activate_biTile(object sender, System.EventArgs e)
         {
-            lv.View = SteepValley.Windows.Forms.ExtendedView.Tile;
+            lv.View = System.Windows.Forms.View.Tile;
             biList.Checked = false;
             biTile.Checked = true;
             biDetail.Checked = false;
@@ -195,7 +195,7 @@ namespace SimPe.Plugin.Tool.Dockable
 
         private void Activate_biDetails(object sender, System.EventArgs e)
         {
-            lv.View = SteepValley.Windows.Forms.ExtendedView.Details;
+            lv.View = System.Windows.Forms.View.Details;
             biList.Checked = false;
             biTile.Checked = false;
             biDetail.Checked = true;
@@ -414,13 +414,7 @@ namespace SimPe.Plugin.Tool.Dockable
         }
         #endregion
 
-        protected override void OnControlRemoved(ControlEventArgs e)
-        {
-            base.OnControlRemoved(e);
-            System.Diagnostics.Debug.WriteLine("Stopping Search...");
-            StopSearch();
-            System.Diagnostics.Debug.WriteLine("Stopped Search...");
-        }
+        // OnControlRemoved(ControlEventArgs) is WinForms-specific — not available in the Avalonia port.
     }
 
     /*internal class FinderThread : Ambertation.Threading.StoppableThread, System.IDisposable

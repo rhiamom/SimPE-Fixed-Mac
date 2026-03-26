@@ -34,9 +34,7 @@ namespace SimPe
 {
     public class WaitingScreen
     {
-        /// <summary>Display a new WaitingScreen image.</summary>
-        public static void UpdateImage(AvBitmap? image) { Screen.doUpdate(image); }
-        /// <summary>Display a new WaitingScreen image from a System.Drawing.Image.</summary>
+        /// <summary>Display a new WaitingScreen image from a System.Drawing.Image or null.</summary>
         public static void UpdateImage(System.Drawing.Image? img)
         {
             if (img == null) { Screen.doUpdate((AvBitmap?)null); return; }

@@ -78,7 +78,7 @@ namespace SimPe.Plugin.Tool.Dockable
         private System.Windows.Forms.Label label1 = new System.Windows.Forms.Label();
         private System.Windows.Forms.Label pnErr = new System.Windows.Forms.Label();
         private Ambertation.Windows.Forms.XPTaskBoxSimple tbResult = new Ambertation.Windows.Forms.XPTaskBoxSimple();
-        private SteepValley.Windows.Forms.XPListView lv = new SteepValley.Windows.Forms.XPListView();
+        private System.Windows.Forms.ListView lv = new System.Windows.Forms.ListView();
         private System.Windows.Forms.ToolStrip toolBar1 = new System.Windows.Forms.ToolStrip();
         private System.Windows.Forms.ToolStripButton biList = new System.Windows.Forms.ToolStripButton();
         private System.Windows.Forms.ToolStripButton biTile = new System.Windows.Forms.ToolStripButton();

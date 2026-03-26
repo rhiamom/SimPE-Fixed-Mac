@@ -130,8 +130,6 @@ public class DockPanel : NCUserControl
     }
 
     /// <summary>The BaseDockManager that manages this panel (via its container).</summary>
-    public BaseDockManager Manager => _dockContainer?.Manager;
-
     /// <summary>Dock position within the container.</summary>
     public DockStyle Dock
     {
@@ -151,6 +149,30 @@ public class DockPanel : NCUserControl
 
     public virtual bool ShowCollapseButton { get; set; } = true;
     public virtual bool ShowCloseButton    { get; set; } = true;
+
+    // Allow-flags: no-op on Mac (docking/floating interactions not implemented)
+    public bool AllowClose       { get; set; } = true;
+    public bool AllowCollapse    { get; set; } = true;
+    public bool AllowDockBottom  { get; set; } = true;
+    public bool AllowDockCenter  { get; set; } = true;
+    public bool AllowDockLeft    { get; set; } = true;
+    public bool AllowDockRight   { get; set; } = true;
+    public bool AllowDockTop     { get; set; } = true;
+    public bool AllowFloat       { get; set; } = true;
+
+    // Visible: WinForms compat; Avalonia uses IsVisible
+    public new bool Visible
+    {
+        get => IsVisible;
+        set => IsVisible = value;
+    }
+
+    // Manager: settable proxy so WinForms designer code can assign it
+    public BaseDockManager Manager
+    {
+        get => _dockContainer?.Manager;
+        set { /* no-op: manager is derived from DockContainer on Mac */ }
+    }
 
     /// <summary>True when this panel is hosted inside a floating container.</summary>
     public bool FloatContainer { get; set; }

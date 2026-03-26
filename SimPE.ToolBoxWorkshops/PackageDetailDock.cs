@@ -121,7 +121,7 @@ namespace SimPe.Plugin.Tool.Dockable
 
 		private void dcPackageDetails_VisibleChanged(object sender, System.EventArgs e)
 		{
-			this.op.LoadCustomImage = this.Visible;
+			this.op.LoadCustomImage = this.IsVisible;
 		}
 
         internal void SetPackage(SimPe.Interfaces.Files.IPackageFile pkg) // CJH

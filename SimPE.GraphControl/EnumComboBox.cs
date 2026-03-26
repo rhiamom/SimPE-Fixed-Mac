@@ -48,6 +48,15 @@ namespace Ambertation.Windows.Forms
     {
         public EnumComboBox() { }
 
+        // WinForms designer-generated compat properties (no-ops for Avalonia port).
+        // Use object for enum-typed properties so callers from other assemblies can
+        // assign System.Windows.Forms.AnchorStyles / ComboBoxStyle without a type ref here.
+        public object Anchor { get; set; }
+        public object DropDownStyle { get; set; }
+        public System.Drawing.Point Location { get; set; }
+        public System.Drawing.Size  Size     { get; set; }
+        public new event System.EventHandler SelectedIndexChanged;
+
         #region public Properties
         Type myenum;
         public Type Enum

@@ -77,17 +77,18 @@ namespace SimPe.Plugin
 
 			RefFile mywrapper = (RefFile) wrapper;
 
-			form.llcommit.Enabled = false;
-			form.lldelete.Enabled = false;
-			form.btup.Enabled = false;
-			form.btdown.Enabled = false;
-			form.miRem.Enabled = false;
+			form.llcommit.IsVisible = false;
+			form.lldelete.IsVisible = false;
+			form.btup.IsEnabled = false;
+			form.btdown.IsEnabled = false;
+			form.miRem.IsEnabled = false;
 			form.lblist.Items.Clear();
-			foreach (Interfaces.Files.IPackedFileDescriptor pfd in mywrapper.Items) 
+			foreach (Interfaces.Files.IPackedFileDescriptor pfd in mywrapper.Items)
 			{
 				form.lblist.Items.Add(pfd);
 			}
-            form.pb.Image = form.imge;
+            // form.pb.Source — TODO: convert System.Drawing.Image to Avalonia bitmap
+            form.imge = form.imge; // retain imge reference; display requires async conversion
 		}		
 
 		#endregion
