@@ -42,18 +42,18 @@ namespace SimPe.Windows.Forms
         // ITreeDataTemplate implementation for hierarchical TreeNode display
         sealed class TreeNodeTemplate : Avalonia.Controls.Templates.ITreeDataTemplate
         {
-            public bool Match(object? data) => data is System.Windows.Forms.TreeNode;
+            public bool Match(object? data) => data is TreeNode;
 
             public Avalonia.Controls.Control? Build(object? param)
             {
-                if (param is System.Windows.Forms.TreeNode node)
+                if (param is TreeNode node)
                     return new Avalonia.Controls.TextBlock { Text = node.Text ?? "" };
                 return null;
             }
 
             public Avalonia.Data.InstancedBinding? ItemsSelector(object item)
             {
-                if (item is System.Windows.Forms.TreeNode node && node.Nodes.Count > 0)
+                if (item is TreeNode node && node.Nodes.Count > 0)
                     return Avalonia.Data.InstancedBinding.OneTime(node.Nodes);
                 return null;
             }
@@ -129,7 +129,7 @@ namespace SimPe.Windows.Forms
         }
 
         bool allowselectevent;
-        System.Windows.Forms.TreeNode firstnode;
+        TreeNode firstnode;
         public bool SetResourceMaps(ResourceMaps maps, bool selectevent, bool dontselect)
         {
             return SetResourceMaps(maps, selectevent, dontselect, false);
@@ -173,7 +173,7 @@ namespace SimPe.Windows.Forms
             else builder.LastSelectedId = 0;
         }
 
-        protected bool SelectID(System.Windows.Forms.TreeNode node, ulong id)
+        protected bool SelectID(TreeNode node, ulong id)
         {
             ResourceTreeNodeExt rn = node as ResourceTreeNodeExt;
             if (rn != null)
@@ -185,7 +185,7 @@ namespace SimPe.Windows.Forms
                 }
             }
 
-            foreach (System.Windows.Forms.TreeNode sub in node.Nodes)
+            foreach (TreeNode sub in node.Nodes)
                 if (SelectID(sub, id)) return true;
 
             return false;

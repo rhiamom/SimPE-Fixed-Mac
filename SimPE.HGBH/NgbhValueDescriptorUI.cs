@@ -26,8 +26,8 @@ using System.Collections;
 using System.ComponentModel;
 using System.Drawing;
 using System.Data;
-using System.Windows.Forms;
 using Ambertation.Windows.Forms;
+using Avalonia.Controls;
 
 namespace SimPe.Plugin
 {
@@ -35,7 +35,7 @@ namespace SimPe.Plugin
 	/// Summary description for NgbhValueDescriptorUI.
 	/// </summary>
 	[System.ComponentModel.DefaultEvent("AddedNewItem")]
-	public class NgbhValueDescriptorUI : System.Windows.Forms.UserControl
+	public class NgbhValueDescriptorUI : Avalonia.Controls.UserControl
 	{
 		/// <summary> 
 		/// Required designer variable.
@@ -44,33 +44,10 @@ namespace SimPe.Plugin
 
 		public NgbhValueDescriptorUI()
 		{
-			SetStyle(
-				ControlStyles.SupportsTransparentBackColor |
-				ControlStyles.AllPaintingInWmPaint |
-				//ControlStyles.Opaque |
-				ControlStyles.UserPaint |
-				ControlStyles.ResizeRedraw 
-				| ControlStyles.DoubleBuffer
-				,true);
 			// Required designer variable.
 			InitializeComponent();
-
+			pb.TokenCount = 10;
 			SetContent();
-		}
-
-		/// <summary> 
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
-		{
-			if( disposing )
-			{
-				if(components != null)
-				{
-					components.Dispose();
-				}
-			}
-			base.Dispose( disposing );
 		}
 
 		#region Windows Form Designer generated code
@@ -80,58 +57,44 @@ namespace SimPe.Plugin
 		/// </summary>
 	private void InitializeComponent()
 	{
-		// Avalonia port: instantiate controls and wire events only
-		this.panel1 = new System.Windows.Forms.Panel();
-		this.pb = new LabeledProgressBar();
-		this.panel2 = new System.Windows.Forms.Panel();
-		this.cb = new System.Windows.Forms.CheckBox();
-		this.panel3 = new System.Windows.Forms.Panel();
-		this.lb = new System.Windows.Forms.Label();
-		this.ll = new System.Windows.Forms.LinkLabel();
+		this.pb     = new LabeledProgressBar();
+		this.cb     = new CheckBox();
+		this.lb     = new TextBlock();
+		this.ll     = new Button { Content = "Add" };
+		this.panel1 = new StackPanel();
+		this.panel2 = new StackPanel();
+		this.panel3 = new StackPanel();
 
-		// pb setup (LabeledProgressBar - Avalonia UserControl)
+		// pb
 		this.pb.DisplayOffset = 0;
 		this.pb.LabelText = "";
 		this.pb.Maximum = 100;
-		this.pb.Name = "pb";
 		this.pb.NumberFormat = "N0";
 		this.pb.NumberOffset = 0;
 		this.pb.NumberScale = 1;
 		this.pb.SelectedColor = System.Drawing.Color.YellowGreen;
-		this.pb.TokenCount = 10;
 		this.pb.UnselectedColor = System.Drawing.Color.Black;
 		this.pb.Value = 0;
 		this.pb.Changed += new System.EventHandler(this.pb_Changed);
-		// pb.Resize and pb.HandleCreated not available on Avalonia UserControl
 
-		// cb setup (CheckBox - WinForms stub)
-		this.cb.Name = "cb";
-		this.cb.CheckedChanged += new System.EventHandler(this.cb_CheckedChanged);
+		// cb
+		this.cb.IsCheckedChanged += (s, e) => cb_CheckedChanged(s, EventArgs.Empty);
 
-		// lb setup (Label - WinForms stub)
-		this.lb.Name = "lb";
+		// ll
+		this.ll.Click += (s, e) => ll_Click(s, System.EventArgs.Empty);
 
-		// ll setup (LinkLabel - WinForms stub)
-		this.ll.Name = "ll";
-		this.ll.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.ll_LinkClicked);
+		// panels
+		this.panel1.Children.Add(this.pb);
+		this.panel2.Children.Add(this.cb);
+		this.panel3.Children.Add(this.lb);
+		this.panel3.Children.Add(this.ll);
 
-		// panel1 contains pb
-		this.panel1.Controls.Add(this.pb);
-		this.panel1.Name = "panel1";
-
-		// panel2 contains cb
-		this.panel2.Controls.Add(this.cb);
-		this.panel2.Name = "panel2";
-
-		// panel3 contains lb and ll
-		this.panel3.Controls.Add(this.lb);
-		this.panel3.Controls.Add(this.ll);
-		this.panel3.Name = "panel3";
-
-		// this (NgbhValueDescriptorUI) setup
-		this.Controls.Add(this.panel3);
-		this.Controls.Add(this.panel2);
-		this.Controls.Add(this.panel1);
+		// layout
+		var root = new StackPanel();
+		root.Children.Add(this.panel1);
+		root.Children.Add(this.panel2);
+		root.Children.Add(this.panel3);
+		this.Content = root;
 		this.Name = "NgbhValueDescriptorUI";
 	}
 		#endregion
@@ -149,13 +112,13 @@ namespace SimPe.Plugin
 		}
 
 		NgbhValueDescriptor des;
-		private System.Windows.Forms.Panel panel1;
+		private StackPanel panel1;
         private LabeledProgressBar pb;
-		private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.CheckBox cb;
-		private System.Windows.Forms.Panel panel3;
-		private System.Windows.Forms.LinkLabel ll;
-		private System.Windows.Forms.Label lb;
+		private StackPanel panel2;
+        private CheckBox cb;
+		private StackPanel panel3;
+		private Button ll;
+		private TextBlock lb;
 		
 				
 		[System.ComponentModel.Browsable(false)]
@@ -183,13 +146,13 @@ namespace SimPe.Plugin
 
 		void SetVisible()
 		{
-			panel1.Visible = item!=null;
+			panel1.IsVisible = item!=null;
 			if (des!=null)
-				panel2.Visible = des.HasComplededFlag && item!=null;
+				panel2.IsVisible = des.HasComplededFlag && item!=null;
 			else
-				panel2.Visible = false;
-			
-			panel3.Visible = des!=null && item==null;
+				panel2.IsVisible = false;
+
+			panel3.IsVisible = des!=null && item==null;
 		}
 
 		NgbhItem item;
@@ -208,16 +171,16 @@ namespace SimPe.Plugin
 				{	
 					pb.Value = item.GetValue(des.DataNumber);
 					if (des.HasComplededFlag)
-						cb.Checked = item.GetValue(des.CompletedDataNumber)!=0;
+						cb.IsChecked = item.GetValue(des.CompletedDataNumber)!=0;
 				}
 				else
 					lb.Text = des.ToString();
 
-				this.Enabled = true;
-			} 	
-			else 
+				this.IsEnabled = true;
+			}
+			else
 			{
-				this.Enabled = false;
+				this.IsEnabled = false;
 			}
 
 			SetVisible();
@@ -234,16 +197,12 @@ namespace SimPe.Plugin
 			
 		}
 
-		protected override void OnResize(EventArgs e)
-		{
-			base.OnResize (e);
-			pb.TokenCount = 10;			
-		}
+		// OnResize removed — pb.TokenCount set once in constructor
 
 		public event EventHandler AddedNewItem;
 		public event EventHandler ChangedItem;
 
-		private void ll_LinkClicked(object sender, System.Windows.Forms.LinkLabelLinkClickedEventArgs e)
+		private void ll_Click(object sender, System.EventArgs e)
 		{
 			if (item!=null) return;
 			if (slot==null) return;
@@ -268,7 +227,7 @@ namespace SimPe.Plugin
 			if (des==null) return;
 			if (!des.HasComplededFlag) return;
 
-			if (cb.Checked) item.PutValue(des.CompletedDataNumber, 1);
+			if (cb.IsChecked == true) item.PutValue(des.CompletedDataNumber, 1);
 			else item.PutValue(des.CompletedDataNumber, 0);
 
 			if (ChangedItem!=null) ChangedItem(this, new EventArgs());

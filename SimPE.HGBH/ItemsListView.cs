@@ -22,15 +22,22 @@
  ***************************************************************************/
 
 using System;
-using System.Windows.Forms;
 using System.Drawing;
 using SimPe;
 using SimPe.Cache;
 
 namespace SimPe.Plugin
 {
-	public class NgbhItemsListViewItem : ListViewItem, System.IDisposable
-	{				
+	public class NgbhItemsListViewItem : System.IDisposable
+	{
+		// Plain item class replacing the WinForms ListViewItem base
+		public string Text { get; set; } = "";
+		public System.Drawing.Color ForeColor { get; set; } = System.Drawing.SystemColors.WindowText;
+		public System.Drawing.Font Font { get; set; } = System.Drawing.SystemFonts.DefaultFont;
+		public int ImageIndex { get; set; } = -1;
+		public bool Selected { get; set; }
+		public object Tag { get; set; }
+
 		NgbhItemsListView parent;
 		NgbhItem item;
 		public NgbhItem Item
@@ -39,7 +46,7 @@ namespace SimPe.Plugin
 		}
 
 		public NgbhItemsListViewItem(NgbhItemsListView parent, NgbhItem item) : this(parent, item, true) {}
-		public NgbhItemsListViewItem(NgbhItemsListView parent, NgbhItem item, bool autoadd) : base()
+		public NgbhItemsListViewItem(NgbhItemsListView parent, NgbhItem item, bool autoadd)
 		{
 			this.item = item;
 			this.parent = parent;

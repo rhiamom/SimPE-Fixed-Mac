@@ -27,7 +27,7 @@ using System.Text;
 
 namespace SimPe.Windows.Forms
 {
-    public class ResourceTreeNodeExt : System.Windows.Forms.TreeNode, IComparable<ResourceTreeNodeExt>
+    public class ResourceTreeNodeExt : TreeNode, IComparable<ResourceTreeNodeExt>
     {
         ResourceViewManager.ResourceNameList list;
         ulong id;

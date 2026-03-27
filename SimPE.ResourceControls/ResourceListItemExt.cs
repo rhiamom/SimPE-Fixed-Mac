@@ -23,12 +23,40 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace SimPe.Windows.Forms
 {
-    public class ResourceListItemExt : System.Windows.Forms.ListViewItem
+    // Plain data class used as DataGrid row item in ResourceListViewExt.
+    // The DataGrid uses the Col* computed properties via binding.
+    // Font/ForeColor/SubItems are kept for ChangeDescription compatibility
+    // but are not directly rendered by the DataGrid.
+    public class ResourceListItemExt
     {
+        // ── Minimal SubItems collection ──────────────────────────────────────
+        public class SubItem
+        {
+            public string Text { get; set; }
+            public SubItem(string text) { Text = text; }
+        }
+
+        public class SubItemCollection
+        {
+            private readonly List<SubItem> _items = new List<SubItem>();
+            public SubItem this[int index] => _items[index];
+            public void Add(string text) => _items.Add(new SubItem(text));
+            public void Clear() => _items.Clear();
+            public int Count => _items.Count;
+        }
+
+        // ── Item properties ───────────────────────────────────────────────────
+        public string Text { get; set; } = "";
+        public SubItemCollection SubItems { get; } = new SubItemCollection();
+        public int ImageIndex { get; set; } = -1;
+        public bool Selected { get; set; }
+        public System.Drawing.Font Font { get; set; }
+        public System.Drawing.Color ForeColor { get; set; }
+
+        // ── Static font cache (same states as original) ───────────────────────
         static System.Drawing.Font regular = null;
         static System.Drawing.Font strike = null;
         static System.Drawing.Font compress = null;
@@ -37,25 +65,26 @@ namespace SimPe.Windows.Forms
         bool vis;
         NamedPackedFileDescriptor pfd;
         ResourceViewManager manager;
+
         internal ResourceListItemExt(NamedPackedFileDescriptor pfd, ResourceViewManager manager, bool visible)
-            : base()
         {
             this.vis = visible;
             if (regular == null)
             {
+                var df = System.Drawing.SystemFonts.DefaultFont;
                 if (Helper.XmlRegistry.UseBigIcons)
                 {
-                    regular = new System.Drawing.Font(Font.FontFamily, Font.Size + 5F, System.Drawing.FontStyle.Regular, Font.Unit);
-                    strike = new System.Drawing.Font(Font.FontFamily, Font.Size + 5F, System.Drawing.FontStyle.Strikeout, Font.Unit);
-                    compress = new System.Drawing.Font(Font.FontFamily, Font.Size + 5F, Font.Style | System.Drawing.FontStyle.Bold, Font.Unit);
-                    changeed = new System.Drawing.Font(Font.FontFamily, Font.Size + 5F, Font.Style | System.Drawing.FontStyle.Italic, Font.Unit); // was 3F
+                    regular   = new System.Drawing.Font(df.FontFamily, df.Size + 5F, System.Drawing.FontStyle.Regular,   df.Unit);
+                    strike    = new System.Drawing.Font(df.FontFamily, df.Size + 5F, System.Drawing.FontStyle.Strikeout, df.Unit);
+                    compress  = new System.Drawing.Font(df.FontFamily, df.Size + 5F, df.Style | System.Drawing.FontStyle.Bold,   df.Unit);
+                    changeed  = new System.Drawing.Font(df.FontFamily, df.Size + 5F, df.Style | System.Drawing.FontStyle.Italic, df.Unit);
                 }
                 else
                 {
-                    regular = new System.Drawing.Font(Font.FontFamily, Font.Size, System.Drawing.FontStyle.Regular, Font.Unit);
-                    strike = new System.Drawing.Font(Font.FontFamily, Font.Size, System.Drawing.FontStyle.Strikeout, Font.Unit);
-                    compress = new System.Drawing.Font(Font.FontFamily, Font.Size, Font.Style | System.Drawing.FontStyle.Bold, Font.Unit);
-                    changeed = new System.Drawing.Font(Font.FontFamily, Font.Size, Font.Style | System.Drawing.FontStyle.Italic, Font.Unit);
+                    regular   = new System.Drawing.Font(df.FontFamily, df.Size, System.Drawing.FontStyle.Regular,   df.Unit);
+                    strike    = new System.Drawing.Font(df.FontFamily, df.Size, System.Drawing.FontStyle.Strikeout, df.Unit);
+                    compress  = new System.Drawing.Font(df.FontFamily, df.Size, df.Style | System.Drawing.FontStyle.Bold,   df.Unit);
+                    changeed  = new System.Drawing.Font(df.FontFamily, df.Size, df.Style | System.Drawing.FontStyle.Italic, df.Unit);
                 }
             }
 
@@ -79,18 +108,12 @@ namespace SimPe.Windows.Forms
             subitems[5] = "0x" + Helper.HexString(pfd.Descriptor.Offset);
             subitems[6] = "0x" + Helper.HexString(pfd.Descriptor.Size);
 
-
             this.SubItems.Clear();
             this.Text = (string)subitems[0];
             for (int i = 1; i < subitems.Length; i++)
                 SubItems.Add(subitems[i]);
 
-
             this.ImageIndex = ResourceViewManager.GetIndexForResourceType(pfd.Descriptor.Type);
-
-            /*pfd.Descriptor.ChangedData += new SimPe.Events.PackedFileChanged(Descriptor_ChangedData);
-            pfd.Descriptor.ChangedUserData += new SimPe.Events.PackedFileChanged(Descriptor_ChangedUserData);
-            pfd.Descriptor.DescriptionChanged += new EventHandler(Descriptor_DescriptionChanged);*/
 
             ChangeDescription(true);
         }
@@ -128,21 +151,6 @@ namespace SimPe.Windows.Forms
             return "";
         }
 
-        /*void Descriptor_DescriptionChanged(object sender, EventArgs e)
-        {
-            ChangeDescription(false);
-        }
-
-        void Descriptor_ChangedUserData(SimPe.Interfaces.Files.IPackedFileDescriptor sender)
-        {         
-            ChangeDescription(false);
-        }
-
-        void Descriptor_ChangedData(SimPe.Interfaces.Files.IPackedFileDescriptor sender)
-        {            
-            ChangeDescription(false);
-        }        */
-
         ~ResourceListItemExt()
         {
             FreeResources();
@@ -160,14 +168,11 @@ namespace SimPe.Windows.Forms
                 }
             }
         }
-        internal void FreeResources(){
-            /*pfd.Descriptor.ChangedData -= new SimPe.Events.PackedFileChanged(Descriptor_ChangedData);
-            pfd.Descriptor.ChangedUserData -= new SimPe.Events.PackedFileChanged(Descriptor_ChangedUserData);
-            pfd.Descriptor.DescriptionChanged -= new EventHandler(Descriptor_DescriptionChanged);*/
-        }
+
+        internal void FreeResources() { }
 
         /// <summary>
-        /// Set the Description for this ListViewItem
+        /// Set the Description for this item
         /// </summary>
         void ChangeDescription(bool justfont)
         {
@@ -182,12 +187,12 @@ namespace SimPe.Windows.Forms
                 if (Helper.XmlRegistry.ResourceListShowExtensions) this.SubItems[1].Text = GetExtText();
                 this.SubItems[2].Text = "0x" + Helper.HexString(pfd.Descriptor.Group);
                 this.SubItems[3].Text = "0x" + Helper.HexString(pfd.Descriptor.SubType);
-	            if (Helper.XmlRegistry.ResourceListInstanceFormatHexOnly)
-	                this.SubItems[4].Text = "0x" + Helper.HexString(pfd.Descriptor.Instance);
-	            else if (Helper.XmlRegistry.ResourceListInstanceFormatDecOnly)
-	                this.SubItems[4].Text = ((int)pfd.Descriptor.Instance).ToString();
-	            else
-	                this.SubItems[4].Text = "0x" + Helper.HexString(pfd.Descriptor.Instance) + " (" + ((int)pfd.Descriptor.Instance).ToString() + ")";
+                if (Helper.XmlRegistry.ResourceListInstanceFormatHexOnly)
+                    this.SubItems[4].Text = "0x" + Helper.HexString(pfd.Descriptor.Instance);
+                else if (Helper.XmlRegistry.ResourceListInstanceFormatDecOnly)
+                    this.SubItems[4].Text = ((int)pfd.Descriptor.Instance).ToString();
+                else
+                    this.SubItems[4].Text = "0x" + Helper.HexString(pfd.Descriptor.Instance) + " (" + ((int)pfd.Descriptor.Instance).ToString() + ")";
                 this.SubItems[5].Text = "0x" + Helper.HexString(pfd.Descriptor.Offset);
                 this.SubItems[6].Text = "0x" + Helper.HexString(pfd.Descriptor.Size);
             }
@@ -203,7 +208,6 @@ namespace SimPe.Windows.Forms
             if (pfd.Descriptor.MarkForReCompress || (pfd.Descriptor.WasCompressed && !pfd.Descriptor.HasUserdata))
             {
                 fg = System.Drawing.SystemColors.Highlight;
-                //font = new System.Drawing.Font(font.FontFamily, font.Size, font.Style, font.Unit);
             }
 
             if (pfd.Descriptor.MarkForReCompress)

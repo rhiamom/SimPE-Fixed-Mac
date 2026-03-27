@@ -25,16 +25,16 @@ using System;
 using System.Drawing;
 using System.Collections;
 using System.ComponentModel;
-using System.Windows.Forms;
+using Avalonia.Controls;
 
 namespace SimPe.Wizards
 {
 	/// <summary>
 	/// Summary description for FormStep1.
 	/// </summary>
-	public class FormStep1 : System.Windows.Forms.Form, IWizardForm
+	public class FormStep1 : IWizardForm
 	{
-		private System.Windows.Forms.Panel pnwizard;
+		private Canvas pnwizard;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
@@ -49,64 +49,54 @@ namespace SimPe.Wizards
 
 			WizardSelector ws = new WizardSelector();
 
-			int top = 16;
-			foreach (IWizardEntry we in ws.Wizards) 
+			double top = 16;
+			foreach (IWizardEntry we in ws.Wizards)
 			{
-				Panel pn = BuildWizardPanel(we);
-				pn.Visible = true;
-				pn.Top = top;
+				Canvas pn = BuildWizardPanel(we);
+				pn.IsVisible = true;
+				Canvas.SetTop(pn, top);
+				pnwizard.Children.Add(pn);
 
 				top += pn.Height + 8;
 			}
 
 			pnwizard.Height = top;
-            if (Helper.XmlRegistry.UseBigIcons) this.Font = new System.Drawing.Font("Tahoma", 12F);
 		}
 
-		Panel BuildWizardPanel(IWizardEntry we)
+		Canvas BuildWizardPanel(IWizardEntry we)
 		{
-			Panel pn = new Panel();
-			
-			pn.Parent = pnwizard;
+			Canvas pn = new Canvas();
 			pn.Width = pnwizard.Width - 148;
-			pn.Left = 24;
+			Canvas.SetLeft(pn, 24);
 			pn.Height = 64;
 
-
-			PictureBox pb = new PictureBox();
-			pb.Parent = pn;
+			SimPe.Scenegraph.Compat.PictureBox pb = new SimPe.Scenegraph.Compat.PictureBox();
 			pb.Width = 64;
 			pb.Height = 64;
-			pb.Left = 0;
-			pb.Top = 0;
+			Canvas.SetLeft(pb, 0);
+			Canvas.SetTop(pb, 0);
 			pb.Image = (System.Drawing.Image)(object)we.WizardImage;
-			pb.Visible = true;
+			pb.IsVisible = true;
+			pn.Children.Add(pb);
 
-			LinkLabel lb1 = new LinkLabel();
-			lb1.Parent = pn;
-			lb1.Left = pb.Width + 8;
-			lb1.Top = 0;
-			lb1.AutoSize = true;
-			lb1.Text = we.WizardCaption;
-			lb1.Font = new Font("Georgia", (float)10, System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic);
-			lb1.LinkColor = Color.FromArgb(0xE5, 0x53, 0x00);
-			lb1.Tag = we;
-			lb1.LinkClicked += new LinkLabelLinkClickedEventHandler(StartWizard);
-			lb1.Visible = true;
-			//lb1.Enabled = we.CanContinue;
+			Button lb1 = new Button();
+			Canvas.SetLeft(lb1, pb.Width + 8);
+			Canvas.SetTop(lb1, 0);
+			lb1.Content = we.WizardCaption;
+			lb1.DataContext = we;
+			lb1.Click += (s, e) => StartWizard(s, EventArgs.Empty);
+			lb1.IsVisible = true;
+			pn.Children.Add(lb1);
 
-			Label lb2 = new Label();
-			lb2.Parent = pn;
-			lb2.AutoSize = false;
-			lb2.Left = pb.Width + 8;
-			lb2.Top = lb1.Top + lb1.Height;
-			lb2.Width = pn.Width - lb2.Left - 16;
-			lb2.Height = pn.Height - lb2.Top;
-			lb2.Font = new Font("Verdana", (float)8);
-			lb2.ForeColor = Color.DarkGray;
+			TextBlock lb2 = new TextBlock();
+			Canvas.SetLeft(lb2, pb.Width + 8);
+			Canvas.SetTop(lb2, lb1.Height);
+			lb2.Width = pn.Width - (pb.Width + 8) - 16;
+			lb2.Height = pn.Height - lb1.Height;
+			lb2.Foreground = new Avalonia.Media.SolidColorBrush(Avalonia.Media.Colors.DarkGray);
 			lb2.Text = we.WizardDescription;
-			lb2.Visible = true;
-
+			lb2.IsVisible = true;
+			pn.Children.Add(lb2);
 
 			return pn;
 		}
@@ -114,46 +104,27 @@ namespace SimPe.Wizards
 		/// <summary>
 		/// Clean up any resources being used.
 		/// </summary>
-		protected override void Dispose( bool disposing )
+		public void Dispose()
 		{
-			if( disposing )
+			if(components != null)
 			{
-				if(components != null)
-				{
-					components.Dispose();
-				}
+				components.Dispose();
 			}
-			base.Dispose( disposing );
 		}
 
 		#region Windows Form Designer generated code
 		/// <summary>
-		/// Required method for Designer support - do not modify 
+		/// Required method for Designer support - do not modify
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent()
 		{
-            this.pnwizard = new System.Windows.Forms.Panel();
-            this.SuspendLayout();
-            // 
+            this.pnwizard = new Canvas();
             // pnwizard
-            // 
-            this.pnwizard.BackColor = System.Drawing.Color.White;
-            this.pnwizard.Location = new System.Drawing.Point(0, 0);
+            this.pnwizard.Background = Avalonia.Media.Brushes.White;
             this.pnwizard.Name = "pnwizard";
-            this.pnwizard.Size = new System.Drawing.Size(1022, 626);
-            this.pnwizard.TabIndex = 8;
-            // 
-            // FormStep1
-            // 
-            this.AutoScaleBaseSize = new System.Drawing.Size(7, 16);
-            this.ClientSize = new System.Drawing.Size(1022, 626);
-            this.Controls.Add(this.pnwizard);
-            this.Font = new System.Drawing.Font("Verdana", 9.75F);
-            this.Name = "FormStep1";
-            this.Text = "FormStep1";
-            this.ResumeLayout(false);
-
+            this.pnwizard.Width = 1022;
+            this.pnwizard.Height = 626;
 		}
 		#endregion
 
@@ -168,7 +139,7 @@ namespace SimPe.Wizards
 			get { return "Please select the Task you want to perform.";}
 		}
 
-		public int WizardStep 
+		public int WizardStep
 		{
 			get { return 1; }
 		}
@@ -181,7 +152,7 @@ namespace SimPe.Wizards
 		IWizardForm wizard;
 		public IWizardForm Next
 		{
-			get 
+			get
 			{
 				return wizard;
 			}
@@ -189,17 +160,17 @@ namespace SimPe.Wizards
 
 		public bool CanContinue
 		{
-			get 
+			get
 			{
 				return false;
 			}
 		}
 		#endregion
 
-		private void StartWizard(object sender, LinkLabelLinkClickedEventArgs e)
+		private void StartWizard(object sender, EventArgs e)
 		{
-			LinkLabel ll = (LinkLabel)sender;
-			wizard = (IWizardForm)ll.Tag;
+			Button ll = (Button)sender;
+			wizard = (IWizardForm)ll.DataContext;
 
 			Form1.form1.Next();
 		}

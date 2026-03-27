@@ -26,7 +26,7 @@ using System.Collections;
 using System.ComponentModel;
 using System.Drawing;
 using System.Data;
-using System.Windows.Forms;
+using Avalonia.Controls;
 
 namespace SimPe.Plugin
 {
@@ -34,9 +34,9 @@ namespace SimPe.Plugin
 	/// Summary description for NgbhValueDescriptorSelection.
 	/// </summary>
 	[System.ComponentModel.DefaultEvent("SelectedDescriptorChanged")]
-	public class NgbhValueDescriptorSelection : System.Windows.Forms.UserControl
+	public class NgbhValueDescriptorSelection : Avalonia.Controls.UserControl
 	{
-		private ComboBox cb;
+		private Avalonia.Controls.ComboBox cb;
 		/// <summary> 
 		/// Required designer variable.
 		/// </summary>
@@ -44,14 +44,6 @@ namespace SimPe.Plugin
 
 		public NgbhValueDescriptorSelection()
 		{
-			SetStyle(
-				ControlStyles.SupportsTransparentBackColor |
-				ControlStyles.AllPaintingInWmPaint |
-				//ControlStyles.Opaque |
-				ControlStyles.UserPaint |
-				ControlStyles.ResizeRedraw 
-				| ControlStyles.DoubleBuffer
-				,true);
 			// Required designer variable.
 			InitializeComponent();
 
@@ -62,21 +54,6 @@ namespace SimPe.Plugin
 			SetContent();
 		}
 
-		/// <summary> 
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
-		{
-			if( disposing )
-			{
-				if(components != null)
-				{
-					components.Dispose();
-				}
-			}
-			base.Dispose( disposing );
-		}
-
 		#region Windows Form Designer generated code
 		/// <summary> 
 		/// Required method for Designer support - do not modify 
@@ -84,27 +61,11 @@ namespace SimPe.Plugin
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.cb = new ComboBox();
-			this.SuspendLayout();
-			// 
-			// cb
-			// 
-			this.cb.Dock = System.Windows.Forms.DockStyle.Top;
-			this.cb.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.cb.Location = new System.Drawing.Point(0, 0);
+			this.cb = new Avalonia.Controls.ComboBox();
 			this.cb.Name = "cb";
-			this.cb.Size = new System.Drawing.Size(150, 21);
-			this.cb.TabIndex = 0;
-			this.cb.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
-			// 
-			// NgbhValueDescriptorSelection
-			// 
-			this.Controls.Add(this.cb);
-			this.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
+			this.cb.SelectionChanged += (s, e) => cb_SelectedIndexChanged(s, System.EventArgs.Empty);
+			this.Content = this.cb;
 			this.Name = "NgbhValueDescriptorSelection";
-			this.Size = new System.Drawing.Size(150, 24);
-			this.ResumeLayout(false);
-
 		}
 		#endregion
 
@@ -150,7 +111,7 @@ namespace SimPe.Plugin
 			cb.Items.Clear();
 			try 
 			{
-				if (!this.DesignMode)
+				if (!Avalonia.Controls.Design.IsDesignMode)
 				{
 					foreach (NgbhValueDescriptor nvd in ExtNgbh.ValueDescriptors)
 					{

@@ -23,7 +23,6 @@
 
 using System;
 using SimPe.Interfaces.Plugin;
-using System.Windows.Forms;
 
 namespace SimPe.Plugin
 {
@@ -137,19 +136,19 @@ namespace SimPe.Plugin
 				form.ihist.Images.Clear();			
 				form.ihist.Images.Add(new System.Drawing.Bitmap(this.GetType().Assembly.GetManifestResourceStream("SimPe.Plugin.nothumb.png")));			
 
-				if (wrp.Version >= 0x06) 
+				if (wrp.Version >= 0x06)
 				{
-					if (!form.tabControl1.TabPages.Contains(form.tblife)) 
+					if (!form.tabControl1.Items.Contains(form.tblife))
 					{
-						form.tabControl1.TabPages.Add(form.tblife);
+						form.tabControl1.Items.Add(form.tblife);
 						form.tabControl1.SelectedIndex = 3;
 					}
-				} 
-				else 
+				}
+				else
 				{
-					if (form.tabControl1.TabPages.Contains(form.tblife)) 
+					if (form.tabControl1.Items.Contains(form.tblife))
 					{
-						form.tabControl1.TabPages.Remove(form.tblife);
+						form.tabControl1.Items.Remove(form.tblife);
 						form.tabControl1.SelectedIndex = 0;
 					}
 				}

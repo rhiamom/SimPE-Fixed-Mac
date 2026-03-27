@@ -116,22 +116,22 @@ namespace SimPe.Plugin
                 form.cbtype.SelectedIndex = 0;            
             form.tbtype.Text = "0x" + Helper.HexString((byte)wrp.Type);
 
-            form.btnAddApt.Enabled = form.btnDelApt.Enabled = (wrp.Type == Ltxt.LotType.ApartmentBase);
+            form.btnAddApt.IsEnabled = form.btnDelApt.IsEnabled = (wrp.Type == Ltxt.LotType.ApartmentBase);
             form.tbRoads.Text = "0x" + Helper.HexString(wrp.LotRoads);
             form.tbwd.Text = wrp.LotSize.Width.ToString();
             form.tbhg.Text = wrp.LotSize.Height.ToString();
             form.tbtop.Text = wrp.LotPosition.Y.ToString();
             form.tbleft.Text = wrp.LotPosition.X.ToString();
             form.tbz.Text = wrp.LotElevation.ToString();
-            form.cborient.SelectedValue = wrp.Orientation;
+            form.cborient.SelectedItem = wrp.Orientation;
             form.tbrotation.Text = "0x" + Helper.HexString(wrp.LotRotation);
             form.tbu0.Text = "0x" + Helper.HexString(wrp.Unknown0);
             Boolset bby = wrp.Unknown0;
-            form.cbhidim.Checked = bby[4];
-            form.cbBeachy.Checked = bby[7];
+            form.cbhidim.IsChecked = bby[4];
+            form.cbBeachy.IsChecked = bby[7];
             if (wrp.Version >= LtxtVersion.Apartment || wrp.SubVersion >= LtxtSubVersion.Apartment)
             {
-                form.cbLotClas.Enabled = true;
+                form.cbLotClas.IsEnabled = true;
                 if (bby[12]) form.cbLotClas.SelectedIndex = 1;
                 else if (bby[13]) form.cbLotClas.SelectedIndex = 2;
                 else if (bby[14]) form.cbLotClas.SelectedIndex = 3;
@@ -140,14 +140,13 @@ namespace SimPe.Plugin
             else
             {
                 form.cbLotClas.SelectedIndex = 0;
-                form.cbLotClas.Enabled = false;
+                form.cbLotClas.IsEnabled = false;
             }
 
             if ((wrp.Version >= LtxtVersion.Apartment || wrp.SubVersion >= LtxtSubVersion.Apartment) && (wrp.Type == Ltxt.LotType.ApartmentBase || wrp.Type == Ltxt.LotType.ApartmentSublot))
             {
                 form.gbApart.Visible = true;
                 form.gbunown.Location = new System.Drawing.Point(116, 408);
-                form.llunknone.Location = new System.Drawing.Point(41, 408);
                 form.gbhobby.Location = new System.Drawing.Point(30, 408);
                 form.gbtravel.Location = new System.Drawing.Point(372, 408);
             }
@@ -155,12 +154,11 @@ namespace SimPe.Plugin
             {
                 form.gbApart.Visible = false;
                 form.gbunown.Location = new System.Drawing.Point(116, 333);
-                form.llunknone.Location = new System.Drawing.Point(41, 333);
                 form.gbhobby.Location = new System.Drawing.Point(30, 333);
                 form.gbtravel.Location = new System.Drawing.Point(372, 333);
             }
 
-            form.lbPlayim.Visible = wrp.appendage != null;
+            form.lbPlayim.IsVisible = wrp.appendage != null;
             form.tblotname.Text = wrp.LotName;
             form.tbTexture.Text = wrp.Texture;
             form.tbdesc.Text = wrp.LotDesc;
@@ -170,53 +168,53 @@ namespace SimPe.Plugin
             Boolset tty = wrp.Unknown4;
             if (wrp.SubVersion >= LtxtSubVersion.Freetime)
             {
-                form.cbtrjflag5.Checked = tty[30];
-                form.cbtrjflag4.Checked = tty[28];
-                form.cbtrjflag3.Checked = tty[27];
-                form.cbtrjflag2.Checked = tty[26];
-                form.cbtrjflag1.Checked = tty[25];
-                form.cbtrjungle.Checked = tty[24];
-                form.cbtrhidec.Checked = tty[23];
-                form.cbtrpool.Checked = tty[22];
-                form.cbtrmale.Checked = tty[21];
-                form.cbtrfem.Checked = tty[20];
-                form.cbtrbeach.Checked = tty[19];
-                form.cbtrformal.Checked = tty[18];
-                form.cbtrteen.Checked = tty[17];
-                form.cbtrnude.Checked = tty[16];
-                form.cbtrpern.Checked = tty[15];
-                form.cgtrwhite.Checked = tty[14];
-                form.cbtrblue.Checked = tty[13];
-                form.cbtrredred.Checked = tty[12];
-                form.cbtradult.Checked = tty[11];
-                form.cbtrclub.Checked = tty[10];
-                form.cbhbmusic.Checked = tty[9];
-                form.cbhbscience.Checked = tty[8];
-                form.cbhbfitness.Checked = tty[7];
-                form.cbhbtinker.Checked = tty[6];
-                form.cbhbnature.Checked = tty[5];
-                form.cbhbgames.Checked = tty[4];
-                form.cbhbsport.Checked = tty[3];
-                form.cbhbfilm.Checked = tty[2];
-                form.cbhbart.Checked = tty[1];
-                form.cbhbcook.Checked = tty[0];
+                form.cbtrjflag5.IsChecked = tty[30];
+                form.cbtrjflag4.IsChecked = tty[28];
+                form.cbtrjflag3.IsChecked = tty[27];
+                form.cbtrjflag2.IsChecked = tty[26];
+                form.cbtrjflag1.IsChecked = tty[25];
+                form.cbtrjungle.IsChecked = tty[24];
+                form.cbtrhidec.IsChecked = tty[23];
+                form.cbtrpool.IsChecked = tty[22];
+                form.cbtrmale.IsChecked = tty[21];
+                form.cbtrfem.IsChecked = tty[20];
+                form.cbtrbeach.IsChecked = tty[19];
+                form.cbtrformal.IsChecked = tty[18];
+                form.cbtrteen.IsChecked = tty[17];
+                form.cbtrnude.IsChecked = tty[16];
+                form.cbtrpern.IsChecked = tty[15];
+                form.cgtrwhite.IsChecked = tty[14];
+                form.cbtrblue.IsChecked = tty[13];
+                form.cbtrredred.IsChecked = tty[12];
+                form.cbtradult.IsChecked = tty[11];
+                form.cbtrclub.IsChecked = tty[10];
+                form.cbhbmusic.IsChecked = tty[9];
+                form.cbhbscience.IsChecked = tty[8];
+                form.cbhbfitness.IsChecked = tty[7];
+                form.cbhbtinker.IsChecked = tty[6];
+                form.cbhbnature.IsChecked = tty[5];
+                form.cbhbgames.IsChecked = tty[4];
+                form.cbhbsport.IsChecked = tty[3];
+                form.cbhbfilm.IsChecked = tty[2];
+                form.cbhbart.IsChecked = tty[1];
+                form.cbhbcook.IsChecked = tty[0];
 
                 if (wrp.Type != Ltxt.LotType.Hobby)
                     form.gbtravel.Visible = form.gbhobby.Visible = false;
-                form.cbtrmale.Enabled = !form.cbtrfem.Checked;
-                form.cbtrfem.Enabled = !form.cbtrmale.Checked;
-                form.cbtrclub.Enabled = (wrp.Type == Ltxt.LotType.Hobby);
-                form.cbtrhidec.Enabled = (wrp.Type == Ltxt.LotType.Hobby);
+                form.cbtrmale.IsEnabled = form.cbtrfem.IsChecked != true;
+                form.cbtrfem.IsEnabled = form.cbtrmale.IsChecked != true;
+                form.cbtrclub.IsEnabled = (wrp.Type == Ltxt.LotType.Hobby);
+                form.cbtrhidec.IsEnabled = (wrp.Type == Ltxt.LotType.Hobby);
                 form.gbhobby.Enabled = (wrp.Type == Ltxt.LotType.Hobby);
-                form.bthbytrvl.Enabled = (wrp.Type == Ltxt.LotType.Hobby);
+                form.bthbytrvl.IsEnabled = (wrp.Type == Ltxt.LotType.Hobby);
             }
             else
-            { form.bthbytrvl.Enabled = false; form.gbhobby.Visible = false; form.gbtravel.Visible = false; }
+            { form.bthbytrvl.IsEnabled = false; form.gbhobby.Visible = false; form.gbtravel.Visible = false; }
 
-            form.cbBeachy.Enabled = (wrp.SubVersion >= LtxtSubVersion.Voyage);
-            form.bthbytrvl.Text = "Hobby Flags:"; 
-            form.cbtrclub.Text = "Secret Club"; 
-            form.cbtrpern.Text = "Cinema";
+            form.cbBeachy.IsEnabled = (wrp.SubVersion >= LtxtSubVersion.Voyage);
+            form.bthbytrvl.Content = "Hobby Flags:";
+            form.cbtrclub.Content = "Secret Club";
+            form.cbtrpern.Content = "Cinema";
             
             form.tbu5.Text = Helper.BytesToHexList(wrp.Unknown5);
             //form.tblotclass.Text = "0x" + Helper.HexString(wrp.LotClass);
@@ -242,8 +240,8 @@ namespace SimPe.Plugin
             form.tbApBase.Text = "0x" + Helper.HexString(wrp.ApartmentBase);
             form.tbu6.Text = Helper.BytesToHexList(wrp.Unknown6);
 
-            if (wrp.OwnerInstance > 0) form.label25.ForeColor = System.Drawing.Color.Blue;
-            else form.label25.ForeColor = System.Drawing.SystemColors.ControlText;
+            if (wrp.OwnerInstance > 0) form.label25.Foreground = new Avalonia.Media.SolidColorBrush(Avalonia.Media.Colors.Blue);
+            else form.label25.Foreground = Avalonia.Media.Brushes.Black;
 
             form.lbApts.Items.Clear();
             foreach (Ltxt.SubLot sl in wrp.SubLots)
@@ -257,17 +255,17 @@ namespace SimPe.Plugin
 
             form.tbData.Text = Helper.BytesToHexList(wrp.Followup);
 
-            form.tbowner.ReadOnly = !(wrp.Version >= LtxtVersion.Business);
-            form.tbu3.ReadOnly = !(wrp.SubVersion >= LtxtSubVersion.Voyage);
-            form.tbu4.ReadOnly = !(wrp.SubVersion >= LtxtSubVersion.Freetime);
+            form.tbowner.IsReadOnly =!(wrp.Version >= LtxtVersion.Business);
+            form.tbu3.IsReadOnly =!(wrp.SubVersion >= LtxtSubVersion.Voyage);
+            form.tbu4.IsReadOnly =!(wrp.SubVersion >= LtxtSubVersion.Freetime);
 
-            form.lbApts.Enabled = form.gbApartment.Enabled = form.lbu7.Enabled = (wrp.Version >= LtxtVersion.Apartment || wrp.SubVersion >= LtxtSubVersion.Apartment);
-            form.tbu5.ReadOnly = form.tbApBase.ReadOnly = form.tbu6.ReadOnly = form.tbu7.ReadOnly = !form.lbApts.Enabled;
+            form.lbApts.IsEnabled = form.gbApartment.Enabled = form.lbu7.IsEnabled = (wrp.Version >= LtxtVersion.Apartment || wrp.SubVersion >= LtxtSubVersion.Apartment);
+            form.tbu5.IsReadOnly = form.tbApBase.IsReadOnly = form.tbu6.IsReadOnly = form.tbu7.IsReadOnly = !form.lbApts.IsEnabled;
 
-            form.llAptBase.Enabled = (wrp.ApartmentBase != 0);
-            form.btnAddApt.Visible = form.btnDelApt.Visible = (wrp.Version >= LtxtVersion.Apartment || wrp.SubVersion >= LtxtSubVersion.Apartment) && Helper.XmlRegistry.HiddenMode;
-            form.btnAddApt.Enabled = form.btnDelApt.Enabled = (wrp.Type == Ltxt.LotType.ApartmentBase);
-            form.btnDelApt.Enabled = form.llFamily.Enabled = form.llSubLot.Enabled = false;
+            form.llAptBase.IsEnabled = (wrp.ApartmentBase != 0);
+            form.btnAddApt.IsVisible = form.btnDelApt.IsVisible = (wrp.Version >= LtxtVersion.Apartment || wrp.SubVersion >= LtxtSubVersion.Apartment) && Helper.XmlRegistry.HiddenMode;
+            form.btnAddApt.IsEnabled = form.btnDelApt.IsEnabled = (wrp.Type == Ltxt.LotType.ApartmentBase);
+            form.btnDelApt.IsEnabled = form.llFamily.IsEnabled = form.llSubLot.IsEnabled = false;
 
             form.pb.Image = wrp.LotDescription.Image;
 
@@ -279,7 +277,6 @@ namespace SimPe.Plugin
 		#region IDisposable Member
 		public virtual void Dispose()
 		{
-			this.form.Dispose();
 		}
 		#endregion
 	}

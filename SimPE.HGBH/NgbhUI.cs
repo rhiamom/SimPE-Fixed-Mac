@@ -23,9 +23,9 @@
 
 using System;
 using SimPe.Interfaces.Plugin;
-using System.Windows.Forms;
 using System.Drawing;
 using SimPe.Cache;
+using SimPe.Scenegraph.Compat;
 
 namespace SimPe.Plugin
 {

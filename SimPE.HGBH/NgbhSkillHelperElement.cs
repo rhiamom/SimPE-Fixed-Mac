@@ -26,7 +26,7 @@ using System.Collections;
 using System.ComponentModel;
 using System.Drawing;
 using System.Data;
-using System.Windows.Forms;
+using Avalonia.Controls;
 
 namespace SimPe.Plugin
 {
@@ -34,7 +34,7 @@ namespace SimPe.Plugin
 	/// Summary description for NgbhSkillHelperElement.
 	/// </summary>
 	[System.ComponentModel.DefaultEvent("AddedNewItem")]
-	public class NgbhSkillHelperElement : System.Windows.Forms.UserControl
+	public class NgbhSkillHelperElement : Avalonia.Controls.UserControl
 	{
 		private SimPe.Plugin.NgbhValueDescriptorSelection cb;
 		private SimPe.Plugin.NgbhValueDescriptorUI ui;
@@ -45,14 +45,6 @@ namespace SimPe.Plugin
 
 		public NgbhSkillHelperElement()
 		{
-			SetStyle(
-				ControlStyles.SupportsTransparentBackColor |
-				ControlStyles.AllPaintingInWmPaint |
-				//ControlStyles.Opaque |
-				ControlStyles.UserPaint |
-				ControlStyles.ResizeRedraw 
-				| ControlStyles.DoubleBuffer
-				,true);
 			// Required designer variable.
 			InitializeComponent();
 
@@ -60,21 +52,6 @@ namespace SimPe.Plugin
 			ShowSkills = true;
 			ShowBadges = true;
 
-		}
-
-		/// <summary> 
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
-		{
-			if( disposing )
-			{
-				if(components != null)
-				{
-					components.Dispose();
-				}
-			}
-			base.Dispose( disposing );
 		}
 
 		#region Windows Form Designer generated code
@@ -86,43 +63,26 @@ namespace SimPe.Plugin
 		{
 			this.cb = new SimPe.Plugin.NgbhValueDescriptorSelection();
 			this.ui = new SimPe.Plugin.NgbhValueDescriptorUI();
-			this.SuspendLayout();
-			// 
 			// cb
-			// 
-			this.cb.Dock = System.Windows.Forms.DockStyle.Top;
-			this.cb.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
-			this.cb.Location = new System.Drawing.Point(0, 0);
 			this.cb.Name = "cb";
 			this.cb.ShowBadges = true;
 			this.cb.ShowSkills = true;
 			this.cb.ShowToddlerSkills = true;
-			this.cb.Size = new System.Drawing.Size(400, 24);
-			this.cb.TabIndex = 0;			
-			// 
 			// ui
-			// 
-			this.ui.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.ui.Enabled = false;
-			this.ui.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
-			this.ui.Location = new System.Drawing.Point(0, 24);
+			this.ui.IsEnabled = false;
 			this.ui.Name = "ui";
 			this.ui.NgbhValueDescriptor = null;
 			this.ui.NgbhValueDescriptorSelection = this.cb;
-			this.ui.Size = new System.Drawing.Size(400, 104);
 			this.ui.Slot = null;
-			this.ui.TabIndex = 1;
 			this.ui.AddedNewItem += new System.EventHandler(this.ui_AddedNewItem);
 			this.ui.ChangedItem += new System.EventHandler(this.ui_ChangedItem);
-			// 
-			// NgbhSkillHelperElement
-			// 
-			this.Controls.Add(this.ui);
-			this.Controls.Add(this.cb);
+			// layout
+			var panel = new Avalonia.Controls.DockPanel();
+			Avalonia.Controls.DockPanel.SetDock(this.cb, Avalonia.Controls.Dock.Top);
+			panel.Children.Add(this.cb);
+			panel.Children.Add(this.ui);
+			this.Content = panel;
 			this.Name = "NgbhSkillHelperElement";
-			this.Size = new System.Drawing.Size(400, 128);			
-			this.ResumeLayout(false);
-
 		}
 		#endregion
 

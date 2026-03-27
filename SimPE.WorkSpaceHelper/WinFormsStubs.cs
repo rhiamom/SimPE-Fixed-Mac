@@ -101,4 +101,31 @@ namespace System.Windows.Forms
     public enum CloseReason { None, WindowsShutDown, MdiFormClosing, UserClosing, TaskManagerClosing, FormOwnerClosing, ApplicationExitCall }
 
     // Shortcut is defined in SimPE.GMDCExporterbase (ListViewEx.cs) — do not redefine here.
+
+    /// <summary>Minimal stub for System.Windows.Forms.FolderBrowserDialog.</summary>
+    public class FolderBrowserDialog : IDisposable
+    {
+        public string SelectedPath { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public SimPe.DialogResult ShowDialog() => SimPe.DialogResult.Cancel;
+        public void Dispose() { }
+    }
+
+    /// <summary>Minimal stub for System.Windows.Forms.OpenFileDialog.</summary>
+    public class OpenFileDialog : IDisposable
+    {
+        public string FileName { get; set; } = string.Empty;
+        public string Filter { get; set; } = string.Empty;
+        public string Title { get; set; } = string.Empty;
+        public SimPe.DialogResult ShowDialog() => SimPe.DialogResult.Cancel;
+        public void Dispose() { }
+    }
+
+    /// <summary>Minimal stub for System.Windows.Forms.Application.</summary>
+    public static class Application
+    {
+        public static void Run(object form) { }
+        public static void EnableVisualStyles() { }
+        public static void DoEvents() { }
+    }
 }

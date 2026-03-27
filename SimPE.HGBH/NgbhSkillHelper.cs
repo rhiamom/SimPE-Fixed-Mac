@@ -27,7 +27,6 @@ using System.Collections;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Windows.Forms;
 using SimPe.PackedFiles.Wrapper;
 
 namespace SimPe.Plugin
@@ -36,7 +35,7 @@ namespace SimPe.Plugin
 	/// Summary description for NgbhSkillHelper.
 	/// </summary>
 	[System.ComponentModel.DefaultEvent("AddedNewItem")]
-	public class NgbhSkillHelper : System.Windows.Forms.UserControl
+	public class NgbhSkillHelper : Avalonia.Controls.UserControl
 	{
 		/// <summary> 
 		/// Required designer variable.
@@ -46,16 +45,8 @@ namespace SimPe.Plugin
         ThemeManager tm;
 		public NgbhSkillHelper()
 		{
-			SetStyle(
-				ControlStyles.SupportsTransparentBackColor |
-				ControlStyles.AllPaintingInWmPaint |
-				//ControlStyles.Opaque |
-				ControlStyles.UserPaint |
-				ControlStyles.ResizeRedraw 
-				| ControlStyles.DoubleBuffer
-				,true);
 			// Required designer variable.
-			InitializeComponent();	
+			InitializeComponent();
 		
 			try 
 			{
@@ -67,28 +58,6 @@ namespace SimPe.Plugin
 				SetContent();
 			} 
 			catch {}
-		}
-
-		/// <summary> 
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
-		{
-			if( disposing )
-			{
-				if (tm!=null) 
-				{
-					tm.Clear();
-					tm.Parent = null;
-					tm = null;
-				}
-				
-				if(components != null)
-				{
-					components.Dispose();
-				}
-			}
-			base.Dispose( disposing );
 		}
 
 		#region Windows Form Designer generated code
@@ -150,9 +119,11 @@ namespace SimPe.Plugin
 		this.skills.AddedNewItem += new System.EventHandler(this.skills_AddedNewItem);
 		this.skills.ChangedItem += new System.EventHandler(this.skills_ChangedItem);
 
-		// this (NgbhSkillHelper) setup
-		this.Controls.Add(this.xpSkills);
-		this.Controls.Add(this.xpBadges);
+		// this (NgbhSkillHelper) setup — Avalonia layout
+		var panel = new Avalonia.Controls.StackPanel();
+		panel.Children.Add(this.xpBadges);
+		panel.Children.Add(this.xpSkills);
+		this.Content = panel;
 		this.Name = "NgbhSkillHelper";
 	}
 		#endregion

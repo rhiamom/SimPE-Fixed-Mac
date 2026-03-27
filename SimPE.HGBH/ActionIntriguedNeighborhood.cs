@@ -53,9 +53,10 @@ namespace SimPe.Plugin.Tool.Action
             // Keep the original safety/context check
             if (!RealChangeEnabledStateEventHandler(null, e))
             {
-                System.Windows.Forms.MessageBox.Show(
+                SimPe.Message.Show(
                     SimPe.Localization.GetString("This is not an appropriate context in which to use this tool"),
-                    this.ToString()
+                    this.ToString(),
+                    SimPe.MessageBoxButtons.OK
                 );
                 return;
             }

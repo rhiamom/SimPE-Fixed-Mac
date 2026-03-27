@@ -19,7 +19,6 @@
  ***************************************************************************/
 using System;
 using SimPe.Interfaces.Plugin;
-using System.Windows.Forms;
 
 namespace SimPe.Plugin
 {
@@ -186,45 +185,45 @@ namespace SimPe.Plugin
                 form.tbidflags.Text = "0x" + Helper.HexString((uint)wrp.Idflags);
                 if (wrp.Subtype == 0)
                 { 
-                    form.tbsubname.Visible = false; 
-                    form.label4.Visible = false; 
+                    form.tbsubname.IsVisible = false;
+                    form.label4.IsVisible = false;
                 } 
                 else 
                 { 
-                    form.tbsubname.Visible = true; 
-                    form.label4.Visible = true; 
+                    form.tbsubname.IsVisible = true;
+                    form.label4.IsVisible = true;
                 }
                 if (wrp.Version < NeighborhoodVersion.Sims2_Seasons || Helper.StartedGui == Executable.Classic)
                 {
-                    form.cbsubtp.Visible = false;
-                    form.tbsubep.Visible = false;
-                    form.cbreqtp.Visible = false;
-                    form.tbreqep.Visible = false;
-                    form.label7.Visible = false;
-                    form.label6.Visible = false;
-                    form.label9.Visible = false;
-                    form.label8.Visible = false;
-                    form.tbidflags.Visible = false;
-                    form.cbquada.Visible = false;
-                    form.cbquadb.Visible = false;
-                    form.cbquadc.Visible = false;
-                    form.cbquadd.Visible = false;
+                    form.cbsubtp.IsVisible = false;
+                    form.tbsubep.IsVisible = false;
+                    form.cbreqtp.IsVisible = false;
+                    form.tbreqep.IsVisible = false;
+                    form.label7.IsVisible = false;
+                    form.label6.IsVisible = false;
+                    form.label9.IsVisible = false;
+                    form.label8.IsVisible = false;
+                    form.tbidflags.IsVisible = false;
+                    form.cbquada.IsVisible = false;
+                    form.cbquadb.IsVisible = false;
+                    form.cbquadc.IsVisible = false;
+                    form.cbquadd.IsVisible = false;
                 }
                 else
                 {
-                    form.cbsubtp.Visible = true;
-                    form.tbsubep.Visible = true;
-                    form.cbreqtp.Visible = true;
-                    form.tbreqep.Visible = true;
-                    form.label7.Visible = true;
-                    form.label6.Visible = true;
-                    form.label9.Visible = true;
-                    form.label8.Visible = true;
-                    form.tbidflags.Visible = true;
-                    form.cbquada.Visible = true;
-                    form.cbquadb.Visible = true;
-                    form.cbquadc.Visible = true;
-                    form.cbquadd.Visible = true;
+                    form.cbsubtp.IsVisible = true;
+                    form.tbsubep.IsVisible = true;
+                    form.cbreqtp.IsVisible = true;
+                    form.tbreqep.IsVisible = true;
+                    form.label7.IsVisible = true;
+                    form.label6.IsVisible = true;
+                    form.label9.IsVisible = true;
+                    form.label8.IsVisible = true;
+                    form.tbidflags.IsVisible = true;
+                    form.cbquada.IsVisible = true;
+                    form.cbquadb.IsVisible = true;
+                    form.cbquadc.IsVisible = true;
+                    form.cbquadd.IsVisible = true;
                 }
 
                 form.wrapper = wrp;
@@ -240,7 +239,6 @@ namespace SimPe.Plugin
 		#region IDisposable Member
 		public virtual void Dispose()
 		{
-			this.form.Dispose();
 		}
 		#endregion
 	}

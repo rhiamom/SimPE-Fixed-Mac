@@ -248,11 +248,6 @@ namespace SimPe.Windows.Forms
             lock (names) { names.Clear(); }
         }
 
-        public new System.Windows.Forms.ContextMenuStrip ContextMenuStrip
-        {
-            get { return null; }
-            set { /* Avalonia context menu would need separate handling */ }
-        }
 
         public void StoreLayout()
         {

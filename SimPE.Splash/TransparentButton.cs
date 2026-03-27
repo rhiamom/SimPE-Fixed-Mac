@@ -22,37 +22,34 @@
  ***************************************************************************/
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Forms;
-using System.Drawing;
+using Avalonia.Controls;
+using Avalonia.Media;
 
 namespace SimPe.Windows.Forms
 {
     public class TransparentButton : UserControl
     {
-        public TransparentButton()
-            : base()
+        public TransparentButton() : base()
         {
-            SetStyle(ControlStyles.SupportsTransparentBackColor, true);
-            this.BackColor = System.Drawing.Color.Transparent;             
+            Background = null; // transparent — Avalonia renders null background as transparent
         }
 
-        Image img;
-        public Image Image
+        System.Drawing.Image img;
+        public System.Drawing.Image Image
         {
-            get { return img; }
+            get => img;
             set
             {
                 img = value;
-                this.Refresh();
+                InvalidateVisual();
             }
         }
-        
-        protected virtual void OnPaint(PaintEventArgs pevent)
+
+        public override void Render(DrawingContext context)
         {
-            //base.OnPaint(pevent);
-            if (img!=null) pevent.Graphics.DrawImage(img, 0, 0);
+            base.Render(context);
+            // TODO: convert System.Drawing.Image to Avalonia bitmap for rendering
+            // (SplashForm.cs is currently excluded from compilation)
         }
     }
 }

@@ -3,10 +3,15 @@
 // These stubs preserve the public API for callers; Avalonia replacements come later.
 
 using System;
-using System.Windows.Forms;
+using Avalonia.Controls;
 
 namespace SimPe.Windows.Forms
 {
+    // Event types previously provided by System.Windows.Forms — defined locally
+    // so SplashScreen.cs can subscribe without a WinForms dependency.
+    public class FormClosedEventArgs : EventArgs { }
+    public delegate void FormClosedEventHandler(object sender, FormClosedEventArgs e);
+
     // ── SplashForm ───────────────────────────────────────────────────────────
 
     public class SplashForm : IDisposable
@@ -31,9 +36,8 @@ namespace SimPe.Windows.Forms
     // ── HelpForm ─────────────────────────────────────────────────────────────
     // Base class for About dialogs (SimPE.Main.About, ColorBinningTool.ClbAbout).
 
-    public class HelpForm : System.Windows.Forms.Form
+    public class HelpForm : Window
     {
         public HelpForm() { }
-        protected override void Dispose(bool disposing) { base.Dispose(disposing); }
     }
 }

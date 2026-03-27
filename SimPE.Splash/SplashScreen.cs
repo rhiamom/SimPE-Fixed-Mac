@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using SimPe.Windows.Forms;
 
 namespace SimPe
 {
@@ -76,13 +77,13 @@ namespace SimPe
         protected void StartThread()
         {
             frm = new SimPe.Windows.Forms.SplashForm();
-            frm.FormClosed += new System.Windows.Forms.FormClosedEventHandler(frm_FormClosed);
+            frm.FormClosed += new FormClosedEventHandler(frm_FormClosed);
             SetMessage(mmsg);
             ev1.Set();
             frm.StartSplash();
         }
 
-        void frm_FormClosed(object sender, System.Windows.Forms.FormClosedEventArgs e)
+        void frm_FormClosed(object sender, FormClosedEventArgs e)
         {
             lock (lockObj)
             {

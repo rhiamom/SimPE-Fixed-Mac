@@ -23,12 +23,11 @@
 
 using System;
 using System.Drawing;
-using System.Windows.Forms;
 
 namespace SimPe.Wizards
 {
 	/// <summary>
-	/// This calass can be used to interface the StatusBar of the Main GUI, which will display 
+	/// This class can be used to interface the StatusBar of the Main GUI, which will display
 	/// something like the WaitingScreen
 	/// </summary>
 	internal class WaitBarControl : IWaitingBarControl
@@ -45,19 +44,19 @@ namespace SimPe.Wizards
 		#region Visible Control
 		protected void ShowMain(bool visible)
 		{
-			f.pnP.Visible = visible;
+			f.pnP.IsVisible = visible;
 		}
-		
+
 
 		protected void DoShowProgress(bool visible)
 		{
-			f.pbP.Visible = visible;			
+			f.pbP.IsVisible = visible;
 		}
-		
+
 
 		protected void ShowDescription(bool visible)
-		{			
-			f.lbPmsg.Visible = visible;
+		{
+			f.lbPmsg.IsVisible = visible;
 		}
 		#endregion
 
@@ -65,14 +64,13 @@ namespace SimPe.Wizards
 		protected void SetMessage(object text)
 		{
 			f.lbPmsg.Text = text.ToString();
-			//Application.DoEvents();
 		}
-		
+
 
 		protected void SetProgress(object val)
 		{
 			int i = (int)val;
-			f.pbP.Value = i;			
+			f.pbP.Value = i;
 		}
 
 
@@ -83,28 +81,27 @@ namespace SimPe.Wizards
 			f.pbP.Maximum = i;
 		}
 
-		
+
 		#endregion
 
         public bool ShowProgress
         {
-            get { return f.pbP.Visible;  }
+            get { return f.pbP.IsVisible;  }
             set { DoShowProgress(value); }
         }
 
 		public bool Running
 		{
-			get { return f.pnP.Visible; }
+			get { return f.pnP.IsVisible; }
 		}
 
 		public string Message
 		{
 			get { return f.lbPmsg.Text; }
-			set 
+			set
 			{
-				if (value!=f.lbPmsg.Text) 
-				{	
-					//f.lbOp.Invoke(new SetStuff(SetMessage), new object[] { " "+value });
+				if (value!=f.lbPmsg.Text)
+				{
 					f.lbPmsg.Text = " "+value;
 				}
 			}
@@ -121,27 +118,24 @@ namespace SimPe.Wizards
 
 		public int Progress
 		{
-			get { return f.pbP.Value; }
-			set 
+			get { return (int)f.pbP.Value; }
+			set
 			{
-				if (value!=f.pbP.Value) 
-				{	
+				if (value!=(int)f.pbP.Value)
+				{
 					SetProgress(value);
-					//f.pb.Value = value;
-					//f.pb.Invoke(new SetStuff(SetProgress), new object[] { value });
 				}
 			}
 		}
 
 		public int MaxProgress
 		{
-			get { return f.pbP.Maximum; }
-			set 
+			get { return (int)f.pbP.Maximum; }
+			set
 			{
-				if (value!=f.pbP.Maximum)
+				if (value!=(int)f.pbP.Maximum)
 				{
-                    f.Invoke(new ShowStuff(DoShowProgress), new object[] { true });
-					//f.pb.Invoke(new SetStuff(SetMaxProgress), new object[] { value });
+					DoShowProgress(true);
 					f.pbP.Maximum = value;
 				}
 			}
@@ -149,34 +143,31 @@ namespace SimPe.Wizards
 
 		protected void StartWait()
 		{
-			f.Invoke(new ShowStuff(ShowDescription), new object[] {true});			
-
+			ShowDescription(true);
 			Message = SimPe.Localization.GetString("Please Wait");
 			Image = null;
-			f.pnP.Invoke(new ShowStuff(ShowMain), new object[] {true});						
-			Application.DoEvents();
+			ShowMain(true);
 		}
 
 		public void Wait()
-		{			
-			StartWait();			
+		{
+			StartWait();
 		}
 
 		public void Wait(int max)
-		{			
+		{
 			Progress=0;
 			StartWait();
 			MaxProgress = max;
 		}
 
 		public void Stop()
-		{	
-			try  
-			{ 		
-				f.pnP.Invoke(new ShowStuff(ShowMain), new object[] {false});
-                f.Invoke(new ShowStuff(DoShowProgress), new object[] { false });
-				Application.DoEvents();
-			} 
+		{
+			try
+			{
+				ShowMain(false);
+				DoShowProgress(false);
+			}
 			catch {}
 		}
 	}
