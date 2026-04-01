@@ -29,8 +29,14 @@ namespace SimPe.Plugin
 	/// <summary>
 	/// This class is used to fill the UI for this FileType with Data
 	/// </summary>
-    public partial class LoteUI : SimPe.Windows.Forms.WrapperBaseControl, IPackedFileUI
+    public class LoteUI : SimPe.Windows.Forms.WrapperBaseControl, IPackedFileUI
     {
+        private Avalonia.Controls.TextBlock label1;
+        private Avalonia.Controls.TextBox rtLotDef;
+        private Avalonia.Controls.TextBlock lbnotes;
+        private Avalonia.Controls.ComboBox cbtype;
+        private Avalonia.Controls.TextBlock lbtype;
+
         protected new Lot Wrapper
         {
             get { return base.Wrapper as Lot; }
@@ -39,11 +45,9 @@ namespace SimPe.Plugin
         {
             get { return (Lot)Wrapper; }
         }
-        
-        #region WrapperBaseControl Member
 
         public LoteUI()
-		{
+        {
             InitializeComponent();
 
             this.cbtype.Items.Clear();
@@ -71,8 +75,22 @@ namespace SimPe.Plugin
                 this.cbtype.Items.Add(Ltxt.LotType.ApartmentSublot);
                 this.cbtype.Items.Add(Ltxt.LotType.Witches);
             }
-            
-		}
+        }
+
+        private void InitializeComponent()
+        {
+            this.label1 = new Avalonia.Controls.TextBlock { Text = "Label1", IsVisible = false };
+            this.rtLotDef = new Avalonia.Controls.TextBox { IsReadOnly = true };
+            this.lbnotes = new Avalonia.Controls.TextBlock { Text = "Warning:" };
+            this.cbtype = new Avalonia.Controls.ComboBox();
+            this.lbtype = new Avalonia.Controls.TextBlock { Text = "Lot Type:" };
+
+            this.cbtype.SelectionChanged += (s, e) => cbtype_SelectedIndexChanged(s, EventArgs.Empty);
+
+            this.HeaderText = "Lot";
+        }
+
+        #region WrapperBaseControl Member
 
         public override void RefreshGUI()
         {

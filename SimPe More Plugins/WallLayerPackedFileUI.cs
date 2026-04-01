@@ -31,8 +31,38 @@ namespace SimPe.Plugin
 	/// <summary>
 	/// This class is used to fill the UI for this FileType with Data
 	/// </summary>
-    public partial class WallLayerPackedFileUI : SimPe.Windows.Forms.WrapperBaseControl, IPackedFileUI
+    public class WallLayerPackedFileUI : SimPe.Windows.Forms.WrapperBaseControl, IPackedFileUI
     {
+        private Avalonia.Controls.TextBlock label1 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.ComboBox cballFences = new Avalonia.Controls.ComboBox();
+        private Avalonia.Controls.ComboBox cbExistFences = new Avalonia.Controls.ComboBox();
+        private Avalonia.Controls.TextBlock lbNormal = new Avalonia.Controls.TextBlock();
+        private Ambertation.Windows.Forms.XPTaskBoxSimple taskBox1 = new Ambertation.Windows.Forms.XPTaskBoxSimple();
+        private Avalonia.Controls.TextBlock lbknowned = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock lbfounded = new Avalonia.Controls.TextBlock();
+        private Ambertation.Windows.Forms.XPTaskBoxSimple tbWalls = new Ambertation.Windows.Forms.XPTaskBoxSimple();
+        private Avalonia.Controls.TextBlock lbscreenwood = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock lbofbnormal = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock lbpicket = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock lbunlpool = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock lbattic = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock lbunlevel = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock lbnrskirt = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock lbpool = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock lbredskirt = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock lbwoodfence = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock lbfoundation = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock lbminskirt = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.Button btchanger = new Avalonia.Controls.Button();
+        private Avalonia.Controls.TextBlock lbConvwals = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock lbwarning = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.CheckBox cbClear = new Avalonia.Controls.CheckBox();
+        private System.Windows.Forms.ToolTip toolTip1 = new System.Windows.Forms.ToolTip();
+        private System.ComponentModel.IContainer components = new System.ComponentModel.Container();
+        private Avalonia.Controls.Button llConvwals = new Avalonia.Controls.Button();
+
+        private void InitializeComponent() { }
+
         protected new WallLayerPackedFileWrapper Wrapper
         {
             get { return base.Wrapper as WallLayerPackedFileWrapper; }
@@ -47,9 +77,9 @@ namespace SimPe.Plugin
         public WallLayerPackedFileUI()
 		{
 			InitializeComponent();
-            ThemeManager tm = SimPe.ThemeManager.Global.CreateChild();
-            tm.AddControl(this.tbWalls);
-            tm.AddControl(this.taskBox1);
+//             ThemeManager tm = SimPe.ThemeManager.Global.CreateChild();  // ThemeManager removed
+//             tm.AddControl(this.tbWalls);  // ThemeManager removed
+//             tm.AddControl(this.taskBox1);  // ThemeManager removed
 
             string es = SimPe.Data.MetaData.GetKnownFence(0x8D0B3B3A); // to intialize the dictionary
             foreach (KeyValuePair<uint, string> kvp in SimPe.Data.MetaData.KnownFences)
@@ -64,8 +94,8 @@ namespace SimPe.Plugin
         {
             base.RefreshGUI();
 
-            if (File.Exists(simtools)) {lbConvwals.Visible = false; llConvwals.Visible = true;}
-            else { lbConvwals.Visible = true; llConvwals.Visible = false; }
+            if (File.Exists(simtools)) {lbConvwals.IsVisible = false; llConvwals.IsVisible = true;}
+            else { lbConvwals.IsVisible = true; llConvwals.IsVisible = false; }
 
             int normal = 0;
             int picket = 0;
@@ -119,9 +149,9 @@ namespace SimPe.Plugin
             if (this.cbExistFences.Items.Count > 0) this.cbExistFences.SelectedIndex = 0;
 
             if (fences == 0)
-                this.cbClear.Visible = this.lbwarning.Visible = this.btchanger.Visible = false;
+                this.cbClear.IsVisible = this.lbwarning.IsVisible = this.btchanger.IsVisible = false;
             else
-                this.cbClear.Visible = this.lbwarning.Visible = this.btchanger.Visible = true;
+                this.cbClear.IsVisible = this.lbwarning.IsVisible = this.btchanger.IsVisible = true;
 
             taskBox1.HeaderText = "Fences (" + Convert.ToString(fences) + ")";
             tbWalls.HeaderText = "Walls (" + Convert.ToString(walls) + ")";
@@ -138,7 +168,7 @@ namespace SimPe.Plugin
             lbunlpool.Text = Convert.ToString(unlpool) + " un-level pool walls";
             lbofbnormal.Text = Convert.ToString(ofbnormal) + " abnormal walls (OFB only)";
             lbscreenwood.Text = Convert.ToString(screenwood) + " screen wood (OFB or later)";
-            lbofbnormal.Visible = (ofbnormal > 0);
+            lbofbnormal.IsVisible = (ofbnormal > 0);
         }
 
         public override void OnCommit()
@@ -149,7 +179,7 @@ namespace SimPe.Plugin
         #endregion
 
         #region IPackedFileUI Member
-        System.Windows.Forms.Control IPackedFileUI.GUIHandle
+        Avalonia.Controls.Control IPackedFileUI.GUIHandle
         {
             get { return this; }
         }
@@ -185,12 +215,12 @@ namespace SimPe.Plugin
 
         private void cbExistFences_SelectedIndexChanged(object sender, EventArgs e)
         {
-            btchanger.Enabled = (cbExistFences.SelectedIndex != -1 && cballFences.SelectedIndex != -1 && cbExistFences.SelectedItem != cballFences.SelectedItem);
+            btchanger.IsEnabled = (cbExistFences.SelectedIndex != -1 && cballFences.SelectedIndex != -1 && cbExistFences.SelectedItem != cballFences.SelectedItem);
         }
 
         private void cballFences_SelectedIndexChanged(object sender, EventArgs e)
         {
-            btchanger.Enabled = (cbExistFences.SelectedIndex != -1 && cballFences.SelectedIndex != -1 && cbExistFences.SelectedItem != cballFences.SelectedItem);
+            btchanger.IsEnabled = (cbExistFences.SelectedIndex != -1 && cballFences.SelectedIndex != -1 && cbExistFences.SelectedItem != cballFences.SelectedItem);
         }
 
         private void btchanger_Click(object sender, EventArgs e)
@@ -206,7 +236,7 @@ namespace SimPe.Plugin
                 if (Wrapper.bwallid[j] == bfrom)
                 {
                     Wrapper.bwallid[j] = btoo;
-                    if (cbClear.Checked) Wrapper.lpaint[j] = Wrapper.rpaint[j] = 0;
+                    if (cbClear.IsChecked.GetValueOrDefault()) Wrapper.lpaint[j] = Wrapper.rpaint[j] = 0;
                 }
             }
 
@@ -229,7 +259,7 @@ namespace SimPe.Plugin
             cbExistFences.SelectedIndex = 0;
         }
 
-        private void llConvwals_LinkClicked(object sender, System.Windows.Forms.LinkLabelLinkClickedEventArgs e)
+        private void llConvwals_LinkClicked(object sender, EventArgs e)
         {
             if (File.Exists(simtools))
             {

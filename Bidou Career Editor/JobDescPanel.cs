@@ -18,24 +18,35 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Text;
-using System.Windows.Forms;
+using Avalonia.Controls;
 
 namespace SimPe.Plugin
 {
-    public partial class JobDescPanel : UserControl
+    public class JobDescPanel : Avalonia.Controls.UserControl
     {
+        // Fields
+        private TextBox   tbDesc  = new TextBox { AcceptsReturn = true };
+        private TextBlock lbDesc  = new TextBlock { Text = "Description" };
+        private TextBlock lbTitle = new TextBlock { Text = "Title" };
+        private TextBox   tbTitle = new TextBox();
+
         public JobDescPanel()
         {
-            InitializeComponent();
-            
-                ThemeManager tm = ThemeManager.Global.CreateChild();
-                tm.AddControl(this.tbTitle);
-                tm.AddControl(this.tbDesc);
+            var titleRow = new StackPanel { Orientation = Avalonia.Layout.Orientation.Horizontal };
+            titleRow.Children.Add(lbTitle);
+            titleRow.Children.Add(tbTitle);
+
+            var descRow = new StackPanel { Orientation = Avalonia.Layout.Orientation.Vertical };
+            descRow.Children.Add(lbDesc);
+            descRow.Children.Add(tbDesc);
+
+            var stack = new StackPanel { Orientation = Avalonia.Layout.Orientation.Vertical };
+            stack.Children.Add(titleRow);
+            stack.Children.Add(descRow);
+            Content = stack;
+
+            tbTitle.TextChanged += tbTitle_TextChanged;
+            tbDesc.TextChanged  += tbDesc_TextChanged;
         }
 
         public string TitleLabel { get { return lbTitle.Text; } set { lbTitle.Text = value; } }
@@ -43,43 +54,21 @@ namespace SimPe.Plugin
 
         public string DescLabel { get { return lbDesc.Text; } set { lbDesc.Text = value; } }
         public string DescValue { get { return tbDesc.Text; } set { tbDesc.Text = value; } }
-        /*
-        public Size DescSize
-        {
-            get { return tbDesc.Size; }
-            set
-            {
-                tbDesc.Size = value;
-                tbTitle.Width = tbDesc.Width;
-            }
-        }
-        */
-        /// <summary>
-        /// Raised when the Title text box value changes
-        /// </summary>
+
         public event EventHandler TitleValueChanged;
         public virtual void OnTitleValueChanged(object sender, EventArgs e)
         {
-            if (TitleValueChanged != null)
-            {
-                TitleValueChanged(sender, e);
-            }
+            TitleValueChanged?.Invoke(sender, e);
         }
         private void tbTitle_TextChanged(object sender, EventArgs e)
         {
             OnTitleValueChanged(sender, e);
         }
 
-        /// <summary>
-        /// Raised when the Desc text box value changes
-        /// </summary>
         public event EventHandler DescValueChanged;
         public virtual void OnDescValueChanged(object sender, EventArgs e)
         {
-            if (DescValueChanged != null)
-            {
-                DescValueChanged(sender, e);
-            }
+            DescValueChanged?.Invoke(sender, e);
         }
         private void tbDesc_TextChanged(object sender, EventArgs e)
         {

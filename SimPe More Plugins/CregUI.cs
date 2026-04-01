@@ -29,8 +29,19 @@ namespace SimPe.Plugin
 	/// <summary>
 	/// This class is used to fill the UI for this FileType with Data
 	/// </summary>
-    public partial class CregPackedFileUI : SimPe.Windows.Forms.WrapperBaseControl, IPackedFileUI
+    public class CregPackedFileUI : SimPe.Windows.Forms.WrapperBaseControl, IPackedFileUI
     {
+        private Avalonia.Controls.TextBlock label1 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBox tbVer = new Avalonia.Controls.TextBox();
+        private Avalonia.Controls.TextBox tbCrc = new Avalonia.Controls.TextBox();
+        private Avalonia.Controls.TextBox tbGuid = new Avalonia.Controls.TextBox();
+        private Avalonia.Controls.TextBlock label3 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label2 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label4 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBox rtbContent = new Avalonia.Controls.TextBox();
+
+        private void InitializeComponent() { }
+
         protected new CregPackedFileWrapper Wrapper
         {
             get { return base.Wrapper as CregPackedFileWrapper; }
@@ -55,8 +66,8 @@ namespace SimPe.Plugin
             intern = true;
             if (Helper.XmlRegistry.UseBigIcons)
             {
-                this.rtbContent.Size = new System.Drawing.Size(530, this.rtbContent.Size.Height);
-                this.rtbContent.Font = new System.Drawing.Font(this.rtbContent.Font.FontFamily, 12F);
+//                 this.rtbContent.Size = new System.Drawing.Size(530, this.rtbContent.Size.Height);  // no Size in Avalonia
+//                 this.rtbContent.Font = new System.Drawing.Font(this.rtbContent.Font.FontFamily, 12F);  // no Font in Avalonia
             }
 
             this.rtbContent.Text = "";
@@ -67,7 +78,7 @@ namespace SimPe.Plugin
             if (Wrapper.Vesion == 1)
             {
                 this.CanCommit = false;
-                this.rtbContent.Visible = true;
+                this.rtbContent.IsVisible = true;
                 for (int i = 0; i < Wrapper.Qunty; i++)
                 {
                     this.rtbContent.Text += Wrapper.Conent[i] + "\r\n";
@@ -76,7 +87,7 @@ namespace SimPe.Plugin
             else
             {
                 this.CanCommit = true;
-                this.rtbContent.Visible = false;
+                this.rtbContent.IsVisible = false;
             }
             intern = false;
         }
@@ -89,7 +100,7 @@ namespace SimPe.Plugin
         #endregion
 
         #region IPackedFileUI Member
-        System.Windows.Forms.Control IPackedFileUI.GUIHandle
+        Avalonia.Controls.Control IPackedFileUI.GUIHandle
         {
             get { return this; }
         }

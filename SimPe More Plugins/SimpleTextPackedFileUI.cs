@@ -27,8 +27,13 @@ using SimPe.Interfaces.Plugin;
 
 namespace SimPe.Plugin
 {
-    public partial class SimpleTextPackedFileUI : SimPe.Windows.Forms.WrapperBaseControl, IPackedFileUI
+    public class SimpleTextPackedFileUI : SimPe.Windows.Forms.WrapperBaseControl, IPackedFileUI
     {
+        private Avalonia.Controls.TextBlock label2 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBox TBsting = new Avalonia.Controls.TextBox();
+
+        private void InitializeComponent() { }
+
         protected new SimpleTextPackedFileWrapper Wrapper
         {
             get { return base.Wrapper as SimpleTextPackedFileWrapper; }
@@ -60,7 +65,7 @@ namespace SimPe.Plugin
         #endregion
 
         #region IPackedFileUI Member
-        System.Windows.Forms.Control IPackedFileUI.GUIHandle
+        Avalonia.Controls.Control IPackedFileUI.GUIHandle
         {
             get { return this; }
         }

@@ -26,8 +26,16 @@ using SimPe.Interfaces.Plugin;
 
 namespace SimPe.Plugin
 {
-    public partial class InvenIndexPackedFileUI : SimPe.Windows.Forms.WrapperBaseControl, IPackedFileUI
+    public class InvenIndexPackedFileUI : SimPe.Windows.Forms.WrapperBaseControl, IPackedFileUI
     {
+        private Avalonia.Controls.TextBlock label1 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock invinstlbl = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock desclbl = new Avalonia.Controls.TextBlock();
+        internal Avalonia.Controls.TextBox scinst = new Avalonia.Controls.TextBox();
+        private Avalonia.Controls.TextBlock warnlbl = new Avalonia.Controls.TextBlock();
+
+        private void InitializeComponent() { }
+
         protected new InvenIndexPackedFileWrapper Wrapper
         {
             get { return base.Wrapper as InvenIndexPackedFileWrapper; }
@@ -49,7 +57,7 @@ namespace SimPe.Plugin
         public override void RefreshGUI()
         {
             base.RefreshGUI();
-            warnlbl.Visible = false;
+            warnlbl.IsVisible = false;
 
             scinstance = Wrapper.Sciname;
             scinst.Text = "0x" + Helper.HexString(scinstance);
@@ -63,7 +71,7 @@ namespace SimPe.Plugin
         #endregion
 
         #region IPackedFileUI Member
-        System.Windows.Forms.Control IPackedFileUI.GUIHandle
+        Avalonia.Controls.Control IPackedFileUI.GUIHandle
         {
             get { return this; }
         }
@@ -86,13 +94,13 @@ namespace SimPe.Plugin
                 {
                     scinstance = 1;
                     scinst.Text = "0x00000001";
-                    warnlbl.Visible = true;
+                    warnlbl.IsVisible = true;
                 }
                 Wrapper.Sciname = scinstance;
-                scinst.ForeColor = System.Drawing.SystemColors.WindowText;
+//                 scinst.ForeColor = System.Drawing.SystemColors.WindowText;  // no ForeColor in Avalonia
                 this.CanCommit = true;
             }
-            catch { this.CanCommit = false; scinst.ForeColor = System.Drawing.Color.DarkRed; }
+            catch { this.CanCommit = false; }
         }
     }
 }

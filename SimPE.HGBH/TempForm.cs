@@ -1,4 +1,4 @@
-﻿/***************************************************************************
+/***************************************************************************
  *   Copyright (C) 2005 by Ambertation                                     *
  *   quaxi@ambertation.de                                                  *
  *                                                                         *
@@ -21,16 +21,17 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-using System;
 using Avalonia.Controls;
 
 namespace SimPE.Plugin
 {
-    public partial class Form1 : Window
+    public class Form1 : Window
     {
         public Form1()
         {
-            InitializeComponent();
+            Title = "Form1";
+            Width = 800;
+            Height = 450;
         }
     }
 }

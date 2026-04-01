@@ -121,6 +121,7 @@
     <EmbeddedResource Include="ep9base.career" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SimPE.Scenegraph\SimPE.Scenegraph.csproj" />
     <ProjectReference Include="..\SimPE.Filehandlers\SimPE.Filehandlers.csproj" />
     <ProjectReference Include="..\SimPE.Helper\SimPE.Helper.csproj" />
     <ProjectReference Include="..\SimPE.Interfaces\SimPE.Interfaces.csproj" />

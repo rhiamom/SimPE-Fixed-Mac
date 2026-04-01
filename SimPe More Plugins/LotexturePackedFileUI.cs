@@ -29,8 +29,13 @@ namespace SimPe.Plugin
 	/// <summary>
 	/// This class is used to fill the UI for this FileType with Data
 	/// </summary>
-    public partial class LotexturePackedFileUI : SimPe.Windows.Forms.WrapperBaseControl, IPackedFileUI
+    public class LotexturePackedFileUI : SimPe.Windows.Forms.WrapperBaseControl, IPackedFileUI
     {
+        private Avalonia.Controls.TextBlock label1 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBox rtLotTex = new Avalonia.Controls.TextBox();
+
+        private void InitializeComponent() { }
+
         protected new LotexturePackedFileWrapper Wrapper
         {
             get { return base.Wrapper as LotexturePackedFileWrapper; }
@@ -53,10 +58,10 @@ namespace SimPe.Plugin
         public override void RefreshGUI()
         {
             base.RefreshGUI();
+// 
+            this.BackgroundImage = null;  // no BackgroundImage in Avalonia // or SimPe.GetImage.GetExpansionLogo(Wrapper.Prevep) if appropriate
 
-            this.BackgroundImage = null; // or SimPe.GetImage.GetExpansionLogo(Wrapper.Prevep) if appropriate
-
-            this.rtLotTex.ReadOnly = true;
+            this.rtLotTex.IsReadOnly = true;
             this.CanCommit = false;
 
             memorees = Wrapper.Itemnumber;
@@ -131,10 +136,10 @@ namespace SimPe.Plugin
 
         private void Updatey()
         {
-            if (rtLotTex.Lines.Length < 5) return;
+            if (rtLotTex.Text.Split(new char[]{'\n'}).Length < 5) return;
             bool bgine = false;
             int i = 0;
-            foreach (string clit in rtLotTex.Lines)
+            foreach (string clit in rtLotTex.Text.Split(new char[]{'\n'}))
             {
                 if (bgine)
                 {
@@ -158,7 +163,7 @@ namespace SimPe.Plugin
         #endregion
 
         #region IPackedFileUI Member
-        System.Windows.Forms.Control IPackedFileUI.GUIHandle
+        Avalonia.Controls.Control IPackedFileUI.GUIHandle
         {
             get { return this; }
         }

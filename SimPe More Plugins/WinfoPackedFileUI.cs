@@ -29,8 +29,37 @@ namespace SimPe.Plugin
 	/// <summary>
 	/// This class is used to fill the UI for this FileType with Data
 	/// </summary>
-    public partial class WinfoPackedFileUI : SimPe.Windows.Forms.WrapperBaseControl, IPackedFileUI
+    public class WinfoPackedFileUI : SimPe.Windows.Forms.WrapperBaseControl, IPackedFileUI
     {
+        private Avalonia.Controls.TextBlock label1 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock wiversionlbl = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock wiunk9lbl = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock wiunk3lbl = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock wiunk2lbl = new Avalonia.Controls.TextBlock();
+        internal Avalonia.Controls.TextBox wiversion = new Avalonia.Controls.TextBox();
+        internal Avalonia.Controls.TextBox wiunk9 = new Avalonia.Controls.TextBox();
+        internal Avalonia.Controls.TextBox wiunk3 = new Avalonia.Controls.TextBox();
+        internal Avalonia.Controls.TextBox wiunk2 = new Avalonia.Controls.TextBox();
+        private Avalonia.Controls.TextBlock witemperatelbl = new Avalonia.Controls.TextBlock();
+        internal Avalonia.Controls.TextBox witemperate = new Avalonia.Controls.TextBox();
+        private Avalonia.Controls.TextBlock wiunk8lbl = new Avalonia.Controls.TextBlock();
+        internal Avalonia.Controls.TextBox wiunk8 = new Avalonia.Controls.TextBox();
+        private Avalonia.Controls.TextBlock wiunk7lbl = new Avalonia.Controls.TextBlock();
+        internal Avalonia.Controls.TextBox wiunk7 = new Avalonia.Controls.TextBox();
+        private Avalonia.Controls.TextBlock wiunk6lbl = new Avalonia.Controls.TextBlock();
+        internal Avalonia.Controls.TextBox wiunk6 = new Avalonia.Controls.TextBox();
+        private Avalonia.Controls.TextBlock wiunk5lbl = new Avalonia.Controls.TextBlock();
+        internal Avalonia.Controls.TextBox wiunk5 = new Avalonia.Controls.TextBox();
+        internal Avalonia.Controls.TextBox textBox1 = new Avalonia.Controls.TextBox();
+        private SimPe.Scenegraph.Compat.GroupBox groupBox1 = new SimPe.Scenegraph.Compat.GroupBox();
+        private Avalonia.Controls.TextBlock Notelbl = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock wiunk10lbl = new Avalonia.Controls.TextBlock();
+        internal Avalonia.Controls.TextBox wiunk10 = new Avalonia.Controls.TextBox();
+        private Avalonia.Controls.TextBlock wiunk4lbl = new Avalonia.Controls.TextBlock();
+        internal Avalonia.Controls.TextBox wiunk4 = new Avalonia.Controls.TextBox();
+
+        private void InitializeComponent() { }
+
         protected new WinfoPackedFileWrapper Wrapper
         {
             get { return base.Wrapper as WinfoPackedFileWrapper; }
@@ -61,17 +90,17 @@ namespace SimPe.Plugin
             if (Wrapper.weaversion != 3)
             {
                 this.CanCommit = false;
-                this.textBox1.ForeColor = System.Drawing.Color.DarkRed;
-                groupBox1.Visible = false;
+//                 this.textBox1.ForeColor = System.Drawing.Color.DarkRed;  // no ForeColor in Avalonia
+                groupBox1.IsVisible = false;
             }
             else
             {
                 this.CanCommit = true;
-                this.textBox1.ForeColor = System.Drawing.Color.Black;
-                groupBox1.Visible = true;
+//                 this.textBox1.ForeColor = System.Drawing.Color.Black;  // no ForeColor in Avalonia
+                groupBox1.IsVisible = true;
                 WiTemperC = (Wrapper.wetemperature / 3) + 13;
                 WiTemperF = (Wrapper.wetemperature * 6) / 10 + 55;
-                witemperatelbl.Text = "Temperature (" + Convert.ToString(WiTemperC) + "°c ~ " + Convert.ToString(WiTemperF) + "°f)";
+                witemperatelbl.Text = "Temperature (" + Convert.ToString(WiTemperC) + "ï¿½c ~ " + Convert.ToString(WiTemperF) + "ï¿½f)";
                 wiunk2.Text = "0x" + Helper.HexString(Wrapper.unkn2);
                 wiunk3.Text = "0x" + Helper.HexString(Wrapper.unkn3);
                 wiunk4.Text = "0x" + Helper.HexString(Wrapper.unkn4);
@@ -93,7 +122,7 @@ namespace SimPe.Plugin
         #endregion
 
         #region IPackedFileUI Member
-        System.Windows.Forms.Control IPackedFileUI.GUIHandle
+        Avalonia.Controls.Control IPackedFileUI.GUIHandle
         {
             get { return this; }
         }
@@ -118,11 +147,11 @@ namespace SimPe.Plugin
             if (WiMisc >= 0 && WiMisc < 4)
             {
                 Wrapper.unkn2 = WiMisc;
-                wiunk2.ForeColor = System.Drawing.SystemColors.WindowText;
+//                 wiunk2.ForeColor = System.Drawing.SystemColors.WindowText;  // no ForeColor in Avalonia
                 WiMisc++; if (WiMisc > 3) WiMisc = 0;
                 Wrapper.unkn1 = WiMisc;
             }
-            else wiunk2.ForeColor = System.Drawing.Color.DarkRed;
+//             else wiunk2.ForeColor = System.Drawing.Color.DarkRed;  // no ForeColor in Avalonia
         }
 
         private void wiunk3_TextChanged(object sender, EventArgs e)
@@ -141,9 +170,9 @@ namespace SimPe.Plugin
             if (WiMisc >= 0 && WiMisc < 4)
             {
                 Wrapper.unkn5 = WiMisc;
-                wiunk5.ForeColor = System.Drawing.SystemColors.WindowText;
+//                 wiunk5.ForeColor = System.Drawing.SystemColors.WindowText;  // no ForeColor in Avalonia
             }
-            else wiunk5.ForeColor = System.Drawing.Color.DarkRed;
+//             else wiunk5.ForeColor = System.Drawing.Color.DarkRed;  // no ForeColor in Avalonia
         }
 
         private void wiunk6_TextChanged(object sender, EventArgs e)
@@ -152,9 +181,9 @@ namespace SimPe.Plugin
             if (WiMisc >= 0 && WiMisc < 4)
             {
                 Wrapper.unkn6 = WiMisc;
-                wiunk6.ForeColor = System.Drawing.SystemColors.WindowText;
+//                 wiunk6.ForeColor = System.Drawing.SystemColors.WindowText;  // no ForeColor in Avalonia
             }
-            else wiunk6.ForeColor = System.Drawing.Color.DarkRed;
+//             else wiunk6.ForeColor = System.Drawing.Color.DarkRed;  // no ForeColor in Avalonia
         }
 
         private void wiunk7_TextChanged(object sender, EventArgs e)
@@ -163,9 +192,9 @@ namespace SimPe.Plugin
             if (WiMisc >= 0 && WiMisc < 3)
             {
                 Wrapper.unkn7 = WiMisc;
-                wiunk7.ForeColor = System.Drawing.SystemColors.WindowText;
+//                 wiunk7.ForeColor = System.Drawing.SystemColors.WindowText;  // no ForeColor in Avalonia
             }
-            else wiunk7.ForeColor = System.Drawing.Color.DarkRed;
+//             else wiunk7.ForeColor = System.Drawing.Color.DarkRed;  // no ForeColor in Avalonia
         }
 
         private void wiunk8_TextChanged(object sender, EventArgs e)
@@ -174,9 +203,9 @@ namespace SimPe.Plugin
             if (WiMisc >= 0 && WiMisc < 4)
             {
                 Wrapper.unkn8 = WiMisc;
-                wiunk8.ForeColor = System.Drawing.SystemColors.WindowText;
+//                 wiunk8.ForeColor = System.Drawing.SystemColors.WindowText;  // no ForeColor in Avalonia
             }
-            else wiunk8.ForeColor = System.Drawing.Color.DarkRed;
+//             else wiunk8.ForeColor = System.Drawing.Color.DarkRed;  // no ForeColor in Avalonia
         }
 
         private void wiunk9_TextChanged(object sender, EventArgs e)
@@ -185,9 +214,9 @@ namespace SimPe.Plugin
             if (WiMisc == 0 || WiMisc == 1)
             {
                 Wrapper.unkn9 = Convert.ToUInt32(wiunk9.Text, 16);
-                wiunk9.ForeColor = System.Drawing.SystemColors.WindowText;
+//                 wiunk9.ForeColor = System.Drawing.SystemColors.WindowText;  // no ForeColor in Avalonia
             }
-            else wiunk9.ForeColor = System.Drawing.Color.DarkRed;
+//             else wiunk9.ForeColor = System.Drawing.Color.DarkRed;  // no ForeColor in Avalonia
         }
 
         private void wiunk10_TextChanged(object sender, EventArgs e)
@@ -196,9 +225,9 @@ namespace SimPe.Plugin
             if (WiMisc == 0 || WiMisc == 1)
             {
                 Wrapper.unkn0 = Convert.ToUInt32(wiunk10.Text, 16);
-                wiunk10.ForeColor = System.Drawing.SystemColors.WindowText;
+//                 wiunk10.ForeColor = System.Drawing.SystemColors.WindowText;  // no ForeColor in Avalonia
             }
-            else wiunk10.ForeColor = System.Drawing.Color.DarkRed;
+//             else wiunk10.ForeColor = System.Drawing.Color.DarkRed;  // no ForeColor in Avalonia
         }
 
         private void witemperate_TextChanged(object sender, EventArgs e)
@@ -206,7 +235,7 @@ namespace SimPe.Plugin
             Wrapper.wetemperature = Convert.ToInt32(witemperate.Text, 16);
             WiTemperC = (Wrapper.wetemperature / 3) + 13;
             WiTemperF = (Wrapper.wetemperature * 6) / 10 + 55;
-            witemperatelbl.Text = "Temperature (" + Convert.ToString(WiTemperC) + "°c ~ " + Convert.ToString(WiTemperF) + "°f)";
+            witemperatelbl.Text = "Temperature (" + Convert.ToString(WiTemperC) + "ï¿½c ~ " + Convert.ToString(WiTemperF) + "ï¿½f)";
         }
     }
 }

@@ -34,6 +34,7 @@ namespace SimPe.Plugin
     public class Step2 : StepBase, IWizardFinish
     {
         HouseholdBrowser form;
+        private Avalonia.Controls.Panel _panel;
 
         public override bool CanContinue
         {
@@ -78,7 +79,16 @@ namespace SimPe.Plugin
 
         public override Avalonia.Controls.Panel WizardWindow
         {
-            get { return null; /* TODO: replace HouseholdBrowser with Avalonia panel */ }
+            get
+            {
+                if (_panel == null)
+                {
+                    form = new HouseholdBrowser();
+                    _panel = new Avalonia.Controls.Panel();
+                    _panel.Children.Add(form);
+                }
+                return _panel;
+            }
         }
 
         #region IWizardFinish Members

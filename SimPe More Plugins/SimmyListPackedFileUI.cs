@@ -27,8 +27,17 @@ using SimPe.Interfaces.Plugin;
 
 namespace SimPe.Plugin
 {
-    public partial class SimmyListPackedFileUI : SimPe.Windows.Forms.WrapperBaseControl, IPackedFileUI
+    public class SimmyListPackedFileUI : SimPe.Windows.Forms.WrapperBaseControl, IPackedFileUI
     {
+        private Avalonia.Controls.TextBlock label2 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBox TBsting = new Avalonia.Controls.TextBox();
+        private System.Windows.Forms.ToolTip toolTip1 = new System.Windows.Forms.ToolTip();
+        private System.ComponentModel.IContainer components = new System.ComponentModel.Container();
+        private Avalonia.Controls.TextBlock lbInfo = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.CheckBox checkBox1 = new Avalonia.Controls.CheckBox();
+
+        private void InitializeComponent() { }
+
         protected new SimmyListPackedFileWrapper Wrapper
         {
             get { return base.Wrapper as SimmyListPackedFileWrapper; }
@@ -49,7 +58,7 @@ namespace SimPe.Plugin
         {
             base.RefreshGUI();
 
-            this.checkBox1.Checked = false;
+            this.checkBox1.IsChecked = false;
             this.TBsting.Text = Wrapper.Strung;
         }
 
@@ -59,7 +68,7 @@ namespace SimPe.Plugin
         #endregion
 
         #region IPackedFileUI Member
-        System.Windows.Forms.Control IPackedFileUI.GUIHandle
+        Avalonia.Controls.Control IPackedFileUI.GUIHandle
         {
             get { return this; }
         }
@@ -75,9 +84,9 @@ namespace SimPe.Plugin
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkBox1.Checked == true) this.TBsting.Text = Wrapper.Twine;
+            if (checkBox1.IsChecked.GetValueOrDefault() == true) this.TBsting.Text = Wrapper.Twine;
             else this.TBsting.Text = Wrapper.Strung;
-            this.TBsting.Refresh();
+//             this.TBsting.Refresh();  // no Refresh in Avalonia
         }
     }
 }

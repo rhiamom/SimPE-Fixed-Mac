@@ -27,6 +27,7 @@ using System.Drawing;
 using SimPe.Interfaces;
 using Ambertation.Windows.Forms;
 using Ambertation.Windows.Forms.Graph;
+using Avalonia.Controls;
 
 namespace SimPe.Plugin
 {
@@ -59,7 +60,7 @@ namespace SimPe.Plugin
 		/// </summary>
 		/// <param name="pb"></param>
 		/// <param name="click"></param>
-		public GraphBuilder (System.Windows.Forms.Control pb, System.EventHandler click) 
+		public GraphBuilder (Avalonia.Controls.Panel pb, System.EventHandler click)
 		{
 			colors = new Hashtable();
 			names = new Hashtable();
@@ -74,7 +75,7 @@ namespace SimPe.Plugin
 			colors.Add("LGHT", Color.White);
 
 			gc = new GraphPanel();
-			gc.Parent = pb;
+			pb.Children.Add(gc);
 			this.click = click;
 
 			coords = new Hashtable();
@@ -124,7 +125,7 @@ namespace SimPe.Plugin
 				top += 128;				
 				if (coords.ContainsKey(top)) left = (int)coords[top];
 				//if (parent!=null) if (left<parent.Location.X) left = parent.Location.X;
-			} while (left>gc.Parent.Width && false);
+			} while (false);
 
 			GraphItem gi = new GraphItem(new Ambertation.Collections.PropertyItems());
 			gi.Text = Hashes.StripHashFromName(pfd.Filename);			
@@ -247,7 +248,7 @@ namespace SimPe.Plugin
 			gc.BeginUpdate();
 			gc.Clear();
 			gc.SaveBounds = false;
-			gc.AutoSize = true;
+			gc.AutoSizeToContent = true;
 			this.coords.Clear();
 			this.names.Clear();
             if (Helper.XmlRegistry.CresPrioritize)
@@ -280,7 +281,7 @@ namespace SimPe.Plugin
                     AddItem(pfd, pkg, null, fileindex);
                 }
             }
-			gc.AutoSize = false;
+			gc.AutoSizeToContent = false;
 			gc.SaveBounds = true;
 			gc.EndUpdate();
 		}
@@ -340,7 +341,7 @@ namespace SimPe.Plugin
 				}
 			}
 
-			gc.Update();
+			gc.InvalidateVisual();
 		}
 
 		private void gi_GotFocus(object sender, EventArgs e)

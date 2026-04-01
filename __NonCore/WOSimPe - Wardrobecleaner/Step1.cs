@@ -32,6 +32,7 @@ namespace SimPe.Plugin
     public class Step1 : StepBase, IWizardEntry
     {
         NeighborhoodBrowser form;
+        private Avalonia.Controls.Panel _panel;
 
         #region IWizardEntry Members
 
@@ -47,12 +48,7 @@ namespace SimPe.Plugin
 
         public Avalonia.Media.IImage WizardImage
         {
-            get { return null; /* TODO: convert from System.Drawing.Image */ }
-        }
-
-        private System.Drawing.Image SetKeyName(int p, string p_2)
-        {
-           throw new Exception("The method or operation is not implemented.");
+            get { return null; }
         }
 
         #endregion
@@ -106,7 +102,16 @@ namespace SimPe.Plugin
 
         public override Avalonia.Controls.Panel WizardWindow
         {
-            get { return null; /* TODO: replace NeighborhoodBrowser with Avalonia panel */ }
+            get
+            {
+                if (_panel == null)
+                {
+                    form = new NeighborhoodBrowser();
+                    _panel = new Avalonia.Controls.Panel();
+                    _panel.Children.Add(form);
+                }
+                return _panel;
+            }
         }
     }
 }

@@ -18,32 +18,27 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Text;
-using System.Windows.Forms;
+using Avalonia.Controls;
+using Avalonia.Layout;
 
 namespace SimPe.Plugin
 {
-    public partial class LabelledNumericUpDown : UserControl
+    public class LabelledNumericUpDown : Avalonia.Controls.UserControl
     {
+        // Fields
+        private StackPanel flpMain = new StackPanel { Orientation = Orientation.Horizontal };
+        private TextBlock lbLabel = new TextBlock { Text = "label", VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center };
+        private NumericUpDown nudValue = new NumericUpDown { Minimum = 0, Maximum = 100 };
+
         public LabelledNumericUpDown()
         {
-            InitializeComponent();
-            lbLabel.Visible = !noLabel;
+            flpMain.Children.Add(lbLabel);
+            flpMain.Children.Add(nudValue);
+            nudValue.ValueChanged += nudValue_ValueChanged;
+            Content = flpMain;
+            lbLabel.IsVisible = !noLabel;
         }
 
-        public FlowDirection FlowDirection
-        {
-            get { return flpMain.FlowDirection; }
-            set { flpMain.FlowDirection = value; }
-        }
-
-        /// <summary>
-        /// Hides the label
-        /// </summary>
         private bool noLabel = false;
         public bool NoLabel
         {
@@ -54,41 +49,49 @@ namespace SimPe.Plugin
                 {
                     noLabel = value;
                     if (noLabel)
-                        flpMain.Controls.Remove(lbLabel);
+                        flpMain.Children.Remove(lbLabel);
                     else
                     {
-                        flpMain.Controls.Add(lbLabel);
-                        flpMain.Controls.SetChildIndex(lbLabel, 0);
+                        if (!flpMain.Children.Contains(lbLabel))
+                        {
+                            flpMain.Children.Insert(0, lbLabel);
+                        }
                     }
                 }
             }
         }
 
-        public String Label
+        public string Label
         {
             get { return lbLabel.Text; }
             set { lbLabel.Text = value; }
         }
 
-        public AnchorStyles LabelAnchor
+        // No-op: Avalonia doesn't have AnchorStyles on child elements
+        public System.Windows.Forms.AnchorStyles LabelAnchor
         {
-            get { return lbLabel.Anchor; }
-            set { lbLabel.Anchor = value; }
+            get { return System.Windows.Forms.AnchorStyles.None; }
+            set { }
         }
 
         public decimal Value
         {
-            get { return nudValue.Value; }
+            get { return nudValue.Value ?? 0m; }
             set { nudValue.Value = value; }
         }
 
-        public Size ValueSize
+        // No-op: size is handled by layout
+        public System.Drawing.Size ValueSize
         {
-            get { return nudValue.Size; }
-            set { nudValue.Size = value; }
+            get { return System.Drawing.Size.Empty; }
+            set { }
         }
 
-        public bool ReadOnly { get { return nudValue.ReadOnly; } set { nudValue.ReadOnly = value; } }
+        public bool ReadOnly
+        {
+            get { return nudValue.IsReadOnly; }
+            set { nudValue.IsReadOnly = value; }
+        }
 
         public decimal Maximum
         {
@@ -102,20 +105,14 @@ namespace SimPe.Plugin
             set { nudValue.Minimum = value; }
         }
 
-        /// <summary>
-        /// Raised when the Value changes
-        /// </summary>
         public event EventHandler ValueChanged;
         public virtual void OnValueChanged(object sender, EventArgs e)
         {
-            if (ValueChanged != null)
-            {
-                ValueChanged(sender, e);
-            }
+            ValueChanged?.Invoke(sender, e);
         }
-        private void nudValue_ValueChanged(object sender, EventArgs e)
+        private void nudValue_ValueChanged(object sender, NumericUpDownValueChangedEventArgs e)
         {
-            OnValueChanged(this, e);
+            OnValueChanged(this, EventArgs.Empty);
         }
     }
 }

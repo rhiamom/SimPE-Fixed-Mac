@@ -18,22 +18,44 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Text;
-using System.Windows.Forms;
+using Avalonia.Controls;
 
 namespace SimPe.Plugin
 {
-    public partial class ChoicePanel : UserControl
+    public class ChoicePanel : Avalonia.Controls.UserControl
     {
+        // Fields
+        private TextBlock lbChoice = new TextBlock();
+        private LabelledNumericUpDown lnudCooking = new LabelledNumericUpDown();
+        private LabelledNumericUpDown lnudMechanical = new LabelledNumericUpDown();
+        private LabelledNumericUpDown lnudCharisma = new LabelledNumericUpDown();
+        private LabelledNumericUpDown lnudBody = new LabelledNumericUpDown();
+        private LabelledNumericUpDown lnudCreativity = new LabelledNumericUpDown();
+        private LabelledNumericUpDown lnudLogic = new LabelledNumericUpDown();
+        private LabelledNumericUpDown lnudCleaning = new LabelledNumericUpDown();
+        private TextBox tbChoice = new TextBox();
+
         public ChoicePanel()
         {
-            InitializeComponent();
+            var stack = new StackPanel { Orientation = Avalonia.Layout.Orientation.Vertical };
+            var row1 = new StackPanel { Orientation = Avalonia.Layout.Orientation.Horizontal };
+            row1.Children.Add(lbChoice);
+            row1.Children.Add(tbChoice);
+            var row2 = new StackPanel { Orientation = Avalonia.Layout.Orientation.Horizontal };
+            row2.Children.Add(lnudCooking);
+            row2.Children.Add(lnudMechanical);
+            row2.Children.Add(lnudBody);
+            row2.Children.Add(lnudCharisma);
+            row2.Children.Add(lnudCreativity);
+            row2.Children.Add(lnudLogic);
+            row2.Children.Add(lnudCleaning);
+            stack.Children.Add(row1);
+            stack.Children.Add(row2);
+            Content = stack;
         }
+
         private const int mm = 100;
+
         public void setValues(bool labels, string label, string value, SimPe.PackedFiles.Wrapper.Bcon[] bcon, ushort level)
         {
             Labels = labels;
@@ -51,10 +73,11 @@ namespace SimPe.Plugin
             }
             else
             {
-                lnudCooking.Enabled = lnudMechanical.Enabled = lnudBody.Enabled = lnudCharisma.Enabled =
-                    lnudCreativity.Enabled = lnudLogic.Enabled = lnudCleaning.Enabled = false;
+                lnudCooking.IsEnabled = lnudMechanical.IsEnabled = lnudBody.IsEnabled = lnudCharisma.IsEnabled =
+                    lnudCreativity.IsEnabled = lnudLogic.IsEnabled = lnudCleaning.IsEnabled = false;
             }
         }
+
         public void getValues(SimPe.PackedFiles.Wrapper.Bcon[] bcon, ushort level)
         {
             bcon[0][level] = (short)(lnudCooking.Value * mm);
@@ -69,36 +92,26 @@ namespace SimPe.Plugin
         private bool labels = true;
         public bool Labels
         {
-            get
-            {
-                return labels;
-            }
+            get { return labels; }
             set
             {
                 labels = value;
                 lnudCooking.NoLabel = lnudMechanical.NoLabel = lnudBody.NoLabel = lnudCharisma.NoLabel =
                     lnudCreativity.NoLabel = lnudLogic.NoLabel = lnudCleaning.NoLabel = !labels;
-                if (labels)
-                    this.MaximumSize = new System.Drawing.Size(1160, 48);
-                else
-                    this.MaximumSize = new System.Drawing.Size(1160, 27);                
             }
         }
 
         private bool hsk = true;
         public bool HaveSkills
         {
-            get
-            {
-                return hsk;
-            }
+            get { return hsk; }
             set
             {
                 if (hsk != value)
                 {
                     hsk = value;
-                    lnudCooking.Visible = lnudMechanical.Visible = lnudBody.Visible = lnudCharisma.Visible =
-                        lnudCreativity.Visible = lnudLogic.Visible = lnudCleaning.Visible = hsk;
+                    lnudCooking.IsVisible = lnudMechanical.IsVisible = lnudBody.IsVisible = lnudCharisma.IsVisible =
+                        lnudCreativity.IsVisible = lnudLogic.IsVisible = lnudCleaning.IsVisible = hsk;
                 }
             }
         }
@@ -113,6 +126,5 @@ namespace SimPe.Plugin
         public decimal Creativity { get { return lnudCreativity.Value; } set { lnudCreativity.Value = value; } }
         public decimal Logic { get { return lnudLogic.Value; } set { lnudLogic.Value = value; } }
         public decimal Cleaning { get { return lnudCleaning.Value; } set { lnudCleaning.Value = value; } }
-
     }
 }

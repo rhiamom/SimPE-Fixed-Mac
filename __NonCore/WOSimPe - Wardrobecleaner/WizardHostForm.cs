@@ -66,7 +66,8 @@ namespace SimPe.Plugin
             currentStep = step;
 
             contentPanel.Children.Clear();
-            _ = avPanel; // Avalonia panel embedding deferred — steps return null for now
+            if (avPanel != null)
+                contentPanel.Children.Add(avPanel);
 
             lblMessage.Content = step.WizardMessage;
             UpdateButtons();

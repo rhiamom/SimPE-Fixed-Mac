@@ -27,8 +27,14 @@ using SimPe.Interfaces.Plugin;
 
 namespace SimPe.Plugin
 {
-    public partial class AudioRefPackedFileUI : SimPe.Windows.Forms.WrapperBaseControl, IPackedFileUI
+    public class AudioRefPackedFileUI : SimPe.Windows.Forms.WrapperBaseControl, IPackedFileUI
     {
+        private Avalonia.Controls.TextBlock label2 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBox TBsting = new Avalonia.Controls.TextBox();
+        private Avalonia.Controls.TextBlock lbnote = new Avalonia.Controls.TextBlock();
+
+        private void InitializeComponent() { }
+
         protected new AudioRefPackedFileWrapper Wrapper
         {
             get { return base.Wrapper as AudioRefPackedFileWrapper; }
@@ -60,7 +66,7 @@ namespace SimPe.Plugin
         #endregion
 
         #region IPackedFileUI Member
-        System.Windows.Forms.Control IPackedFileUI.GUIHandle
+        Avalonia.Controls.Control IPackedFileUI.GUIHandle
         {
             get { return this; }
         }

@@ -67,7 +67,7 @@ namespace SimPe.Plugin
             if (package.FindFiles(0x54544173).Length > 0) return true; //Pie String (TTAB)
             if (package.FindFiles(0x43545353).Length > 0) return true; //Catalogue Description (CTSS)
 
-            System.Windows.Forms.MessageBox.Show("This package does not contain any Text Files.");
+            SimPe.Scenegraph.Compat.MessageBox.ShowAsync("This package does not contain any Text Files.").GetAwaiter().GetResult();
             return false;
         }
 

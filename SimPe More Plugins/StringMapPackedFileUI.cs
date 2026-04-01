@@ -30,8 +30,21 @@ namespace SimPe.Plugin
 	/// <summary>
 	/// This class is used to fill the UI for this FileType with Data
 	/// </summary>
-    public partial class StringMapPackedFileUI : SimPe.Windows.Forms.WrapperBaseControl, IPackedFileUI
+    public class StringMapPackedFileUI : SimPe.Windows.Forms.WrapperBaseControl, IPackedFileUI
     {
+        private Avalonia.Controls.TextBlock label1 = new Avalonia.Controls.TextBlock();
+        internal Avalonia.Controls.TextBox tbfilenm = new Avalonia.Controls.TextBox();
+        private Avalonia.Controls.TextBlock lbfilenm = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock lbdatas = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBox rtbStrings = new Avalonia.Controls.TextBox();
+        private Avalonia.Controls.TextBox rtbDatas = new Avalonia.Controls.TextBox();
+        private Avalonia.Controls.TextBlock lbsrins = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock lbType = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.Button btshowim = new Avalonia.Controls.Button();
+        private Avalonia.Controls.TextBox rtbnames = new Avalonia.Controls.TextBox();
+
+        private void InitializeComponent() { }
+
         protected new StringMapPackedFileWrapper Wrapper
         {
             get { return base.Wrapper as StringMapPackedFileWrapper; }
@@ -56,9 +69,9 @@ namespace SimPe.Plugin
             holde = true;
             base.RefreshGUI();
             this.CanCommit = false;
-            this.rtbnames.Visible = false;
-            this.btshowim.Text = "Show Names";
-            this.BackgroundImageLocation = new System.Drawing.Point(730, 0);
+            this.rtbnames.IsVisible = false;
+            this.btshowim.Content = "Show Names";
+//             this.BackgroundImageLocation = new System.Drawing.Point(730, 0);  // no BackgroundImageLocation in Avalonia
             
             this.tbfilenm.Text = Wrapper.FileName;
             if (Wrapper.FileDescriptor.Instance == 13) this.lbType.Text = "Type: Walls";
@@ -76,7 +89,7 @@ namespace SimPe.Plugin
         #endregion
 
         #region IPackedFileUI Member
-        System.Windows.Forms.Control IPackedFileUI.GUIHandle
+        Avalonia.Controls.Control IPackedFileUI.GUIHandle
         {
             get { return this; }
         }
@@ -102,7 +115,7 @@ namespace SimPe.Plugin
         {
             if (holde) return;
             int i = 0;
-            foreach (string clit in rtbStrings.Lines)
+            foreach (string clit in rtbStrings.Text.Split(new char[]{'\n'}))
             {
                 if (i == Wrapper.Strings.Length) break;
                 Wrapper.Strings[i] = clit;
@@ -115,11 +128,11 @@ namespace SimPe.Plugin
         private void btshowim_Click(object sender, EventArgs e)
         {
             if (holde) return;
-            if (this.rtbnames.Visible)
+            if (this.rtbnames.IsVisible)
             {
-                this.rtbnames.Visible = false;
-                this.BackgroundImageLocation = new System.Drawing.Point(730, 0);
-                this.btshowim.Text = "Show Names";
+                this.rtbnames.IsVisible = false;
+//                 this.BackgroundImageLocation = new System.Drawing.Point(730, 0);  // no BackgroundImageLocation in Avalonia
+                this.btshowim.Content = "Show Names";
             }
             else
             {
@@ -127,7 +140,7 @@ namespace SimPe.Plugin
                 this.rtbnames.Text = "";
                 uint tmpy = 0;
                 if (wallsandfloors.Count < 1) fildictionary();
-                foreach (string clit in rtbStrings.Lines)
+                foreach (string clit in rtbStrings.Text.Split(new char[]{'\n'}))
                 {
                     if (clit.Length < 9)
                     {
@@ -144,9 +157,9 @@ namespace SimPe.Plugin
                     else
                         rtbnames.Text += clit + "\r\n";
                 }
-                this.BackgroundImageLocation = new System.Drawing.Point(930, 0);
-                this.rtbnames.Visible = true;
-                this.btshowim.Text = "Hide Names";
+//                 this.BackgroundImageLocation = new System.Drawing.Point(930, 0);  // no BackgroundImageLocation in Avalonia
+                this.rtbnames.IsVisible = true;
+                this.btshowim.Content = "Hide Names";
                 holde = false;
             }
         }

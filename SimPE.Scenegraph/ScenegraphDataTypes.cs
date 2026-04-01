@@ -54,6 +54,7 @@ namespace SimPe.Scenegraph.Compat
 
         public ListViewItem() { Text = ""; }
         public ListViewItem(string text) { Text = text; }
+        public ListViewItem(string text, int imageIndex) { Text = text; ImageIndex = imageIndex; }
         public ListViewItem(string[] items)
         {
             Text = items.Length > 0 ? items[0] : "";
@@ -302,12 +303,14 @@ namespace SimPe.Scenegraph.Compat
     /// <summary>WinForms GroupBox — extends Avalonia ContentControl.</summary>
     public class GroupBox : Avalonia.Controls.ContentControl
     {
-        public class ControlCollection
+        public class ControlCollection : IEnumerable<object>
         {
             private readonly List<object> _controls = new List<object>();
             public int Count => _controls.Count;
             public void Add(object c) => _controls.Add(c);
             public void Clear() => _controls.Clear();
+            public IEnumerator<object> GetEnumerator() => _controls.GetEnumerator();
+            System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => _controls.GetEnumerator();
         }
 
         private string _text = "";

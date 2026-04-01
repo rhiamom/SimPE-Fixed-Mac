@@ -112,11 +112,9 @@
     <ProjectReference Include="..\SimPE.Helper\SimPE.Helper.csproj" />
     <ProjectReference Include="..\SimPE.Interfaces\SimPE.Interfaces.csproj" />
     <ProjectReference Include="..\SimPE.Packages\SimPE.Packages.csproj" />
+    <ProjectReference Include="..\SimPE.Scenegraph\SimPE.Scenegraph.csproj" />
+    <ProjectReference Include="..\SimPE.Filehandlers\SimPE.Filehandlers.csproj" />
     <ProjectReference Include="..\SimPE.WorkSpaceHelper\SimPE.WorkSpaceHelper.csproj" />
     <ProjectReference Include="..\_PJSE\pjse Coder\SimPe pjse coder.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.SystemWebAdapters" Version="2.3.0" />
-    <PackageReference Include="Microsoft.AspNetCore.SystemWebAdapters.CoreServices" Version="2.3.0" />
   </ItemGroup>
 </Project>

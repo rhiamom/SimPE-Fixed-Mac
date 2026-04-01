@@ -29,8 +29,13 @@ namespace SimPe.Plugin
 	/// <summary>
 	/// This class is used to fill the UI for this FileType with Data
 	/// </summary>
-    public partial class InventItemPackedFileUI : SimPe.Windows.Forms.WrapperBaseControl, IPackedFileUI
+    public class InventItemPackedFileUI : SimPe.Windows.Forms.WrapperBaseControl, IPackedFileUI
     {
+        private Avalonia.Controls.TextBlock label1 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock lbdisp = new Avalonia.Controls.TextBlock();
+
+        private void InitializeComponent() { }
+
         protected new InventItemPackedFileWrapper Wrapper
         {
             get { return base.Wrapper as InventItemPackedFileWrapper; }
@@ -61,7 +66,7 @@ namespace SimPe.Plugin
         #endregion
 
         #region IPackedFileUI Member
-        System.Windows.Forms.Control IPackedFileUI.GUIHandle
+        Avalonia.Controls.Control IPackedFileUI.GUIHandle
         {
             get { return this; }
         }

@@ -30,8 +30,17 @@ namespace SimPe.Plugin
 	/// <summary>
 	/// This class is used to fill the UI for this FileType with Data
 	/// </summary>
-    public partial class HugBugPackedFileUI : SimPe.Windows.Forms.WrapperBaseControl, IPackedFileUI
+    public class HugBugPackedFileUI : SimPe.Windows.Forms.WrapperBaseControl, IPackedFileUI
     {
+        private Avalonia.Controls.TextBlock label1 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock lbFail = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock lbpass = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBox TBsting = new Avalonia.Controls.TextBox();
+        private Avalonia.Controls.Button btShow = new Avalonia.Controls.Button();
+        private Avalonia.Controls.Button btcustom = new Avalonia.Controls.Button();
+
+        private void InitializeComponent() { }
+
         protected new HugBugPackedFileWrapper Wrapper
         {
             get { return base.Wrapper as HugBugPackedFileWrapper; }
@@ -54,20 +63,20 @@ namespace SimPe.Plugin
             this.TBsting.Text = "There is " + Convert.ToString(Wrapper.isz) + " Items in this List,\n Press 'Show All Items' to display them all"; // clear previous values
             if (Wrapper.HasCustom) this.TBsting.Text += "\n Press 'Show Only CC' to display Items not in the pjse GUIDIndex";
             if (Wrapper.IsSims) this.TBsting.Text = "This Lot has sim(s) on it.\n\n" + this.TBsting.Text;
-            this.btcustom.Visible = this.btcustom.Enabled = Wrapper.HasCustom;
-            this.btShow.Enabled = true;
+            this.btcustom.IsVisible = this.btcustom.IsEnabled = Wrapper.HasCustom;
+            this.btShow.IsEnabled = true;
             
                 if (Wrapper.IsCorrupt)
                 {
                     this.label1.Text = "Super Duper Hug Found !!";
-                    this.lbFail.Visible = true;
-                    this.lbpass.Visible = false;
+                    this.lbFail.IsVisible = true;
+                    this.lbpass.IsVisible = false;
                 }
                 else
                 {
                     this.label1.Text = "This Lot is Clean";
-                    this.lbFail.Visible = false;
-                    this.lbpass.Visible = true;
+                    this.lbFail.IsVisible = false;
+                    this.lbpass.IsVisible = true;
                 }
         }
         
@@ -80,7 +89,7 @@ namespace SimPe.Plugin
         #endregion
 
         #region IPackedFileUI Member
-        System.Windows.Forms.Control IPackedFileUI.GUIHandle
+        Avalonia.Controls.Control IPackedFileUI.GUIHandle
         {
             get { return this; }
         }
@@ -96,16 +105,16 @@ namespace SimPe.Plugin
 
         private void btShow_Click(object sender, EventArgs e)
         {
-            this.btShow.Enabled = false;
-            this.btcustom.Enabled = Wrapper.HasCustom;
+            this.btShow.IsEnabled = false;
+            this.btcustom.IsEnabled = Wrapper.HasCustom;
             this.TBsting.Text = "";
             for (int i = 0; i < Wrapper.isz; i++)
                 this.TBsting.Text += Wrapper.objekts[i];
         }
         private void btcustom_Click(object sender, EventArgs e)
         {
-            this.btcustom.Enabled = false;
-            this.btShow.Enabled = true;
+            this.btcustom.IsEnabled = false;
+            this.btShow.IsEnabled = true;
             this.TBsting.Text = "";
             for (int i = 0; i < Wrapper.isz; i++)
                 if (Wrapper.objekts[i].Contains("**"))

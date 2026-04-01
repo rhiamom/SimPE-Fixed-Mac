@@ -22,243 +22,109 @@
  ***************************************************************************/
 
 using System;
-using System.Drawing;
 using System.Collections.Generic;
-using System.Collections;
-using System.ComponentModel;
-using System.Windows.Forms;
-using System.Data;
 using System.IO;
-using System.Media;
+using Avalonia.Controls;
+using Avalonia.Layout;
 
 namespace SimPe.Plugin
 {
-	/// <summary>
-	/// Summary description for Form.
-	/// </summary>
-	public class LanguageExtrator : System.Windows.Forms.Form
-	{
-		#region Windows Form Designer generated code
-
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
-        private System.ComponentModel.IContainer components = null;
-
-        #endregion
-
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
-		{
-			if( disposing )
-			{
-				if (components != null) 
-				{
-					components.Dispose();
-				}
-			}
-			base.Dispose( disposing );
-		}
-
-		public LanguageExtrator()
-		{
-			//
-			// Required for Windows Form Designer support
-			//
-            InitializeComponent();
-            
-            languageString = new List<string>(pjse.BhavWiz.readStr(pjse.GS.BhavStr.Languages));
-            languageString.RemoveAt(0);
-
-            this.pntheme.BackgroundImage = GetImage.GetExpansionLogo(PathProvider.Global.Latest.Version);
-        }
-
-		#region Windows Form Designer generated code
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LanguageExtrator));
-            this.pntheme = new Panel();
-            this.Progress = new ProgressBar();
-            this.Language = new System.Windows.Forms.ComboBox();
-            this.btCome = new System.Windows.Forms.Button();
-            this.btGo = new System.Windows.Forms.Button();
-            this.btclean = new System.Windows.Forms.Button();
-            this.lbdone = new System.Windows.Forms.Label();
-            this.lbselect = new System.Windows.Forms.Label();
-            this.pntheme.SuspendLayout();
-            this.SuspendLayout();
-            // 
-            // Language
-            // 
-            this.Language.Font = new System.Drawing.Font("Lucida Console", 9.75F);
-            this.Language.Location = new System.Drawing.Point(215, 4);
-            this.Language.Name = "Language";
-            this.Language.Size = new System.Drawing.Size(188, 21);
-            this.Language.TabIndex = 6;
-            this.Language.SelectedIndexChanged += new System.EventHandler(this.Language_SelectedIndexChanged);
-            // 
-            // pntheme
-            // 
-            this.pntheme.BackColor = System.Drawing.Color.Transparent;
-            
-            this.pntheme.Controls.Add(this.btclean);
-            this.pntheme.Controls.Add(this.btCome);
-            this.pntheme.Controls.Add(this.Progress);
-            this.pntheme.Controls.Add(this.lbdone);
-            this.pntheme.Controls.Add(this.btGo);
-            this.pntheme.Controls.Add(this.lbselect);
-            this.pntheme.Controls.Add(this.Language);
-            this.pntheme.Dock = System.Windows.Forms.DockStyle.Fill;
-            
-            this.pntheme.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.pntheme.Location = new System.Drawing.Point(0, 0);
-            
-            this.pntheme.Name = "pntheme";
-            this.pntheme.Size = new System.Drawing.Size(624, 441);
-            
-            this.pntheme.TabIndex = 15;
-            // 
-            // btCome
-            // 
-            this.btCome.Location = new System.Drawing.Point(479, 3);
-            this.btCome.Name = "btCome";
-            this.btCome.Size = new System.Drawing.Size(68, 23);
-            this.btCome.TabIndex = 11;
-            this.btCome.Text = "Import";
-            this.btCome.UseVisualStyleBackColor = true;
-            this.btCome.Click += new System.EventHandler(this.btCome_Click);
-            // 
-            // Progress
-            // 
-            this.Progress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.Progress.BackColor = System.Drawing.Color.Transparent;
-            
-            this.Progress.Location = new System.Drawing.Point(4, 422);
-            this.Progress.Maximum = 100;
-            this.Progress.Minimum = 0;
-            this.Progress.Name = "Progress";
-            
-            this.Progress.Size = new System.Drawing.Size(616, 16);
-            
-            this.Progress.TabIndex = 10;
-            
-            this.Progress.Value = 0;
-            // 
-            // lbdone
-            // 
-            this.lbdone.AutoSize = true;
-            this.lbdone.Font = new System.Drawing.Font("Lucida Console", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbdone.Location = new System.Drawing.Point(426, 30);
-            this.lbdone.Name = "lbdone";
-            this.lbdone.Size = new System.Drawing.Size(145, 24);
-            this.lbdone.TabIndex = 9;
-            this.lbdone.Text = "All Done!";
-            this.lbdone.Visible = false;
-            // 
-            // btGo
-            // 
-            this.btGo.Location = new System.Drawing.Point(407, 3);
-            this.btGo.Name = "btGo";
-            this.btGo.Size = new System.Drawing.Size(68, 23);
-            this.btGo.TabIndex = 8;
-            this.btGo.Text = "Extract";
-            this.btGo.UseVisualStyleBackColor = true;
-            this.btGo.Click += new System.EventHandler(this.btGo_Click);
-            // 
-            // lbselect
-            // 
-            this.lbselect.AutoSize = true;
-            this.lbselect.Font = new System.Drawing.Font("Lucida Console", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbselect.Location = new System.Drawing.Point(4, 4);
-            this.lbselect.Name = "lbselect";
-            this.lbselect.Size = new System.Drawing.Size(207, 26);
-            this.lbselect.TabIndex = 7;
-            this.lbselect.Text = "Select the Language to\r\nExtract from or Import to";
-            // 
-            // btclean
-            // 
-            this.btclean.Location = new System.Drawing.Point(551, 3);
-            this.btclean.Name = "btclean";
-            this.btclean.Size = new System.Drawing.Size(68, 23);
-            this.btclean.TabIndex = 12;
-            this.btclean.Text = "Clean All";
-            this.btclean.UseVisualStyleBackColor = true;
-            this.btclean.Click += new System.EventHandler(this.btclean_Click);
-            // 
-            // LanguageExtrator
-            // 
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
-            this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(624, 441);
-            this.Controls.Add(this.pntheme);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(640, 480);
-            this.Name = "LanguageExtrator";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Single Language Extractor / Importer";
-            this.pntheme.ResumeLayout(false);
-            this.pntheme.PerformLayout();
-            this.ResumeLayout(false);
-		}
-
-        private ComboBox Language;
-        private Panel pntheme;
-        private ProgressBar Progress;
-        private Label lbselect;
-        private Label lbdone;
-        private Button btGo;
-        private Button btCome;
-        private Button btclean;
+    /// <summary>
+    /// Summary description for Form.
+    /// </summary>
+    public class LanguageExtrator : Avalonia.Controls.Window
+    {
+        private Avalonia.Controls.ComboBox Language;
+        private Avalonia.Controls.StackPanel pntheme;
+        private Avalonia.Controls.ProgressBar Progress;
+        private Avalonia.Controls.TextBlock lbselect;
+        private Avalonia.Controls.TextBlock lbdone;
+        private Avalonia.Controls.Button btGo;
+        private Avalonia.Controls.Button btCome;
+        private Avalonia.Controls.Button btclean;
 
         private SimPe.Packages.GeneratableFile package;
         private List<String> languageString;
         private byte currentLanguage = 1;
         private bool okay = false;
-        #endregion
 
-		public Interfaces.Plugin.IToolResult Execute(ref SimPe.Interfaces.Files.IPackedFileDescriptor pfd, ref SimPe.Interfaces.Files.IPackageFile package, Interfaces.IProviderRegistry prov) 
-		{
-            Language.DataSource = languageString;
+        private void BuildLayout()
+        {
+            Language = new Avalonia.Controls.ComboBox();
+            Language.SelectionChanged += (s, e) => Language_SelectedIndexChanged(s, EventArgs.Empty);
+
+            pntheme = new Avalonia.Controls.StackPanel { Orientation = Orientation.Vertical };
+
+            Progress = new Avalonia.Controls.ProgressBar { Minimum = 0, Maximum = 100, Value = 0 };
+
+            lbdone = new Avalonia.Controls.TextBlock { Text = "All Done!", IsVisible = false };
+            lbselect = new Avalonia.Controls.TextBlock { Text = "Select the Language to\nExtract from or Import to" };
+
+            btGo = new Avalonia.Controls.Button { Content = "Extract" };
+            btGo.Click += (s, e) => btGo_Click(s, EventArgs.Empty);
+
+            btCome = new Avalonia.Controls.Button { Content = "Import" };
+            btCome.Click += (s, e) => btCome_Click(s, EventArgs.Empty);
+
+            btclean = new Avalonia.Controls.Button { Content = "Clean All" };
+            btclean.Click += (s, e) => btclean_Click(s, EventArgs.Empty);
+
+            pntheme.Children.Add(lbselect);
+            pntheme.Children.Add(Language);
+            pntheme.Children.Add(btGo);
+            pntheme.Children.Add(btCome);
+            pntheme.Children.Add(btclean);
+            pntheme.Children.Add(lbdone);
+            pntheme.Children.Add(Progress);
+
+            Title = "Single Language Extractor / Importer";
+            Content = pntheme;
+        }
+
+        public LanguageExtrator()
+        {
+            BuildLayout();
+
+            languageString = new List<string>(pjse.BhavWiz.readStr(pjse.GS.BhavStr.Languages));
+            languageString.RemoveAt(0);
+        }
+
+        public Interfaces.Plugin.IToolResult Execute(ref SimPe.Interfaces.Files.IPackedFileDescriptor pfd, ref SimPe.Interfaces.Files.IPackageFile package, Interfaces.IProviderRegistry prov)
+        {
+            Language.ItemsSource = languageString;
             Language.SelectedIndex = currentLanguage - 1;
             this.package = (SimPe.Packages.GeneratableFile)package;
-            ShowDialog();
+            ShowDialog(null).GetAwaiter().GetResult();
             return new Plugin.ToolResult(okay, okay);
-		}
+        }
 
         private void Language_SelectedIndexChanged(object sender, System.EventArgs e)
         {
-            int index = ((System.Windows.Forms.ComboBox)sender).SelectedIndex;
+            int index = ((Avalonia.Controls.ComboBox)sender).SelectedIndex;
             currentLanguage = (byte)(index + 1);
         }
 
         private void btGo_Click(object sender, EventArgs e)
         {
             Progress.Value = 0;
-            this.lbdone.Visible = false;
+            this.lbdone.IsVisible = false;
             saveFiles();
             if (okay)
             {
                 this.lbdone.Text = "All Done!";
-                this.lbdone.Visible = true;
+                this.lbdone.IsVisible = true;
             }
         }
 
         private void btCome_Click(object sender, EventArgs e)
         {
             Progress.Value = 0;
-            this.lbdone.Visible = false;
+            this.lbdone.IsVisible = false;
             getFiles();
             if (okay)
             {
                 this.lbdone.Text = "All Done!";
-                this.lbdone.Visible = true;
+                this.lbdone.IsVisible = true;
             }
         }
 
@@ -266,15 +132,15 @@ namespace SimPe.Plugin
         {
             cleanim();
             this.lbdone.Text = "Cleaned!";
-            this.lbdone.Visible = true;
+            this.lbdone.IsVisible = true;
         }
 
         private void saveFiles()
         {
             string parf;
             System.Windows.Forms.FolderBrowserDialog fbd = new System.Windows.Forms.FolderBrowserDialog();
-            if (fbd.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
-            this.Language.Enabled = this.btGo.Enabled = this.btCome.Enabled = this.btclean.Enabled = false;
+            if (fbd.ShowDialog() != SimPe.DialogResult.OK) return;
+            this.Language.IsEnabled = this.btGo.IsEnabled = this.btCome.IsEnabled = this.btclean.IsEnabled = false;
             string floder = fbd.SelectedPath + "\\" + languageString[currentLanguage-1];
             if (!Directory.Exists(floder)) Directory.CreateDirectory(floder);
 
@@ -322,15 +188,15 @@ namespace SimPe.Plugin
             uint insta;
             string twine;
             System.Windows.Forms.FolderBrowserDialog fbd = new System.Windows.Forms.FolderBrowserDialog();
-            if (fbd.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
+            if (fbd.ShowDialog() != SimPe.DialogResult.OK) return;
             string[] textfiles = Directory.GetFiles(fbd.SelectedPath, "*.txt", SearchOption.TopDirectoryOnly);
             if (textfiles.Length < 1)
             {
                 this.lbdone.Text = "None Found!";
-                this.lbdone.Visible = true;
+                this.lbdone.IsVisible = true;
                 return;
             }
-            this.Language.Enabled = this.btGo.Enabled = this.btCome.Enabled = this.btclean.Enabled = false;
+            this.Language.IsEnabled = this.btGo.IsEnabled = this.btCome.IsEnabled = this.btclean.IsEnabled = false;
             Progress.Maximum = textfiles.Length;
 
             foreach (string file in textfiles)
@@ -358,7 +224,7 @@ namespace SimPe.Plugin
 
         private void cleanim()
         {
-            this.Language.Enabled = this.btGo.Enabled = this.btCome.Enabled = this.btclean.Enabled = false;
+            this.Language.IsEnabled = this.btGo.IsEnabled = this.btCome.IsEnabled = this.btclean.IsEnabled = false;
             SimPe.Interfaces.Files.IPackedFileDescriptor[] pfdc = this.package.FindFiles(0x43545353); //CTSS
             SimPe.Interfaces.Files.IPackedFileDescriptor[] pfdm = this.package.FindFiles(0x54544173); //Pie String (TTAB)
             SimPe.Interfaces.Files.IPackedFileDescriptor[] pfdt = this.package.FindFiles(0x53545223); //STR#
@@ -375,11 +241,11 @@ namespace SimPe.Plugin
 
             foreach (Interfaces.Files.IPackedFileDescriptor pfd in pfdm)
             {
-                    SimPe.PackedFiles.Wrapper.StrWrapper str = new SimPe.PackedFiles.Wrapper.StrWrapper();
-                    str.ProcessData(pfd, this.package);
-                    str.CleanHim();
-                    str.SynchronizeUserData();
-                    Progress.Value += 1;
+                SimPe.PackedFiles.Wrapper.StrWrapper str = new SimPe.PackedFiles.Wrapper.StrWrapper();
+                str.ProcessData(pfd, this.package);
+                str.CleanHim();
+                str.SynchronizeUserData();
+                Progress.Value += 1;
             }
 
             foreach (Interfaces.Files.IPackedFileDescriptor pfd in pfdt)
@@ -390,7 +256,7 @@ namespace SimPe.Plugin
                 str.SynchronizeUserData();
                 Progress.Value += 1;
             }
-            this.Language.Enabled = this.btGo.Enabled = this.btCome.Enabled = true;
+            this.Language.IsEnabled = this.btGo.IsEnabled = this.btCome.IsEnabled = true;
         }
-	}
+    }
 }

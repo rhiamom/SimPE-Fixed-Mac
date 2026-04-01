@@ -25,6 +25,9 @@ using System.Collections.Generic;
 using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
+using Avalonia.Controls;
+using Avalonia.Layout;
+using SimPe.Scenegraph.Compat;
 using System.Data;
 using System.IO;
 using SimPe;
@@ -38,102 +41,102 @@ namespace SimPe.Plugin
 	/// <summary>
 	/// Summary description for Form1.
 	/// </summary>
-	public class CareerEditor : System.Windows.Forms.Form
+	public class CareerEditor : Avalonia.Controls.Window
 	{
 		#region Windows Form Designer generated code
 
-		private System.Windows.Forms.TabPage tabPage4;
-		private System.Windows.Forms.TabPage tabPage3;
-		private System.Windows.Forms.TabPage tabPage2;
-		private System.Windows.Forms.TabControl tabControl1;
-		private System.Windows.Forms.TextBox CareerTitle;
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.TabPage tabPage1;
-		private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox CareerLvls;
-        private System.Windows.Forms.GroupBox gbJLDetails;
-		private System.Windows.Forms.ComboBox Language;
-        private System.Windows.Forms.Label label10;
-		private System.Windows.Forms.GroupBox gbJLHoursWages;
-        private System.Windows.Forms.GroupBox gbJLPromo;
-		private System.Windows.Forms.NumericUpDown PromoBody;
-		private System.Windows.Forms.NumericUpDown PromoMechanical;
-		private System.Windows.Forms.NumericUpDown PromoCooking;
-		private System.Windows.Forms.NumericUpDown PromoCharisma;
-		private System.Windows.Forms.NumericUpDown PromoFriends;
-		private System.Windows.Forms.NumericUpDown PromoCleaning;
-		private System.Windows.Forms.NumericUpDown PromoLogic;
-		private System.Windows.Forms.NumericUpDown PromoCreativity;
-		private System.Windows.Forms.Label label34;
-		private System.Windows.Forms.Label label35;
-		private System.Windows.Forms.Label label36;
-		private System.Windows.Forms.Label label37;
-		private System.Windows.Forms.Label label38;
-		private System.Windows.Forms.Label label39;
-		private System.Windows.Forms.Label label40;
-        private System.Windows.Forms.Label label41;
-		private System.Windows.Forms.ListView JobDetailList;
-		private System.Windows.Forms.ColumnHeader JdLvl;
-		private System.Windows.Forms.ColumnHeader JdJobTitle;
-		private System.Windows.Forms.ColumnHeader JdDesc;
-		private System.Windows.Forms.ColumnHeader JdOutfit;
-		private System.Windows.Forms.ColumnHeader JdVehicle;
-		private System.Windows.Forms.ListView HoursWagesList;
-		private System.Windows.Forms.ColumnHeader HwLvl;
-		private System.Windows.Forms.ColumnHeader HwStart;
-		private System.Windows.Forms.ColumnHeader HwHours;
-		private System.Windows.Forms.ColumnHeader HwEnd;
-		private System.Windows.Forms.ColumnHeader HwWages;
+		private Avalonia.Controls.TabItem tabPage4;
+		private Avalonia.Controls.TabItem tabPage3;
+		private Avalonia.Controls.TabItem tabPage2;
+		private Avalonia.Controls.TabControl tabControl1;
+		private Avalonia.Controls.TextBox CareerTitle;
+		private Avalonia.Controls.TextBlock label3;
+		private Avalonia.Controls.TabItem tabPage1;
+		private Avalonia.Controls.TextBlock label1;
+        private Avalonia.Controls.TextBox CareerLvls;
+        private GroupBox gbJLDetails;
+		private Avalonia.Controls.ComboBox Language;
+        private Avalonia.Controls.TextBlock label10;
+		private GroupBox gbJLHoursWages;
+        private GroupBox gbJLPromo;
+		private Avalonia.Controls.NumericUpDown PromoBody;
+		private Avalonia.Controls.NumericUpDown PromoMechanical;
+		private Avalonia.Controls.NumericUpDown PromoCooking;
+		private Avalonia.Controls.NumericUpDown PromoCharisma;
+		private Avalonia.Controls.NumericUpDown PromoFriends;
+		private Avalonia.Controls.NumericUpDown PromoCleaning;
+		private Avalonia.Controls.NumericUpDown PromoLogic;
+		private Avalonia.Controls.NumericUpDown PromoCreativity;
+		private Avalonia.Controls.TextBlock label34;
+		private Avalonia.Controls.TextBlock label35;
+		private Avalonia.Controls.TextBlock label36;
+		private Avalonia.Controls.TextBlock label37;
+		private Avalonia.Controls.TextBlock label38;
+		private Avalonia.Controls.TextBlock label39;
+		private Avalonia.Controls.TextBlock label40;
+        private Avalonia.Controls.TextBlock label41;
+		private ListView JobDetailList;
+		private ColumnHeader JdLvl;
+		private ColumnHeader JdJobTitle;
+		private ColumnHeader JdDesc;
+		private ColumnHeader JdOutfit;
+		private ColumnHeader JdVehicle;
+		private ListView HoursWagesList;
+		private ColumnHeader HwLvl;
+		private ColumnHeader HwStart;
+		private ColumnHeader HwHours;
+		private ColumnHeader HwEnd;
+		private ColumnHeader HwWages;
         private ColumnHeader HwCatWages;
         private ColumnHeader HwDogWages;
-        private System.Windows.Forms.ColumnHeader HwSun;
-		private System.Windows.Forms.ColumnHeader HwMon;
-		private System.Windows.Forms.ColumnHeader HwTue;
-		private System.Windows.Forms.ColumnHeader HwWed;
-		private System.Windows.Forms.ColumnHeader HwThu;
-		private System.Windows.Forms.ColumnHeader HwFri;
-		private System.Windows.Forms.ColumnHeader HwSat;
-		private System.Windows.Forms.ListView PromoList;
-		private System.Windows.Forms.ColumnHeader PrLvl;
-		private System.Windows.Forms.ColumnHeader PrCooking;
-		private System.Windows.Forms.ColumnHeader PrMechanical;
-		private System.Windows.Forms.ColumnHeader PrCharisma;
-		private System.Windows.Forms.ColumnHeader PrBody;
-		private System.Windows.Forms.ColumnHeader PrCreativity;
-		private System.Windows.Forms.ColumnHeader PrLogic;
-		private System.Windows.Forms.ColumnHeader PrCleaning;
-		private System.Windows.Forms.ColumnHeader PrFriends;
-        private System.Windows.Forms.GroupBox gbPromo;
-        private System.Windows.Forms.GroupBox gbJobDetails;
-        private System.Windows.Forms.MenuStrip mainMenu1;
-        private System.Windows.Forms.ToolStripMenuItem menuItem1;
-        private System.Windows.Forms.ToolStripMenuItem miEnglishOnly;
-        private System.Windows.Forms.ToolStripMenuItem menuItem6;
-        private System.Windows.Forms.ToolStripMenuItem miAddLvl;
-        private System.Windows.Forms.ToolStripMenuItem miRemoveLvl;
-        private Label label101;
+        private ColumnHeader HwSun;
+		private ColumnHeader HwMon;
+		private ColumnHeader HwTue;
+		private ColumnHeader HwWed;
+		private ColumnHeader HwThu;
+		private ColumnHeader HwFri;
+		private ColumnHeader HwSat;
+		private ListView PromoList;
+		private ColumnHeader PrLvl;
+		private ColumnHeader PrCooking;
+		private ColumnHeader PrMechanical;
+		private ColumnHeader PrCharisma;
+		private ColumnHeader PrBody;
+		private ColumnHeader PrCreativity;
+		private ColumnHeader PrLogic;
+		private ColumnHeader PrCleaning;
+		private ColumnHeader PrFriends;
+        private GroupBox gbPromo;
+        private GroupBox gbJobDetails;
+        private Avalonia.Controls.Menu mainMenu1;
+        private Avalonia.Controls.MenuItem menuItem1;
+        private Avalonia.Controls.MenuItem miEnglishOnly;
+        private Avalonia.Controls.MenuItem menuItem6;
+        private Avalonia.Controls.MenuItem miAddLvl;
+        private Avalonia.Controls.MenuItem miRemoveLvl;
+        private Avalonia.Controls.TextBlock label101;
         private ComboBox cbTrick;
         private ColumnHeader PrTrick;
         private JobDescPanel jdpMale;
         private JobDescPanel jdpFemale;
-        private LinkLabel JobDetailsCopy;
+        private Avalonia.Controls.Button JobDetailsCopy;
         private LabelledNumericUpDown lnudChanceCurrentLevel;
         private LabelledNumericUpDown lnudChancePercent;
         private ChoicePanel cpChoiceA;
         private ChoicePanel cpChoiceB;
-        private Label label51;
+        private Avalonia.Controls.TextBlock label51;
         private TextBox ChanceTextMale;
-        private LinkLabel ChanceCopy;
-        private Label label52;
+        private Avalonia.Controls.Button ChanceCopy;
+        private Avalonia.Controls.TextBlock label52;
         private TextBox ChanceTextFemale;
         private TabControl tcChanceOutcome;
-        private System.Windows.Forms.TabPage tabPage5;
+        private Avalonia.Controls.TabItem tabPage5;
         private EffectPanel epPassA;
-        private System.Windows.Forms.TabPage tabPage6;
+        private Avalonia.Controls.TabItem tabPage6;
         private EffectPanel epFailA;
-        private System.Windows.Forms.TabPage tabPage7;
+        private Avalonia.Controls.TabItem tabPage7;
         private EffectPanel epPassB;
-        private System.Windows.Forms.TabPage tabPage8;
+        private Avalonia.Controls.TabItem tabPage8;
         private EffectPanel epFailB;
         private GroupBox gbHoursWages;
         private LabelledNumericUpDown lnudWorkStart;
@@ -149,25 +152,25 @@ namespace SimPe.Plugin
         private CheckBox WorkSaturday;
         private CheckBox WorkSunday;
         private GroupBox gbHWMotives;
-        private Label label27;
-        private Label label24;
+        private Avalonia.Controls.TextBlock label27;
+        private Avalonia.Controls.TextBlock label24;
         private NumericUpDown ComfortHours;
         private NumericUpDown HygieneTotal;
         private NumericUpDown BladderTotal;
-        private Label label21;
+        private Avalonia.Controls.TextBlock label21;
         private NumericUpDown WorkBladder;
-        private Label label23;
-        private Label label19;
+        private Avalonia.Controls.TextBlock label23;
+        private Avalonia.Controls.TextBlock label19;
         private NumericUpDown WorkComfort;
         private NumericUpDown HungerHours;
         private NumericUpDown EnergyHours;
-        private Label label25;
-        private Label label18;
+        private Avalonia.Controls.TextBlock label25;
+        private Avalonia.Controls.TextBlock label18;
         private NumericUpDown WorkPublic;
         private NumericUpDown WorkHunger;
         private NumericUpDown BladderHours;
         private NumericUpDown ComfortTotal;
-        private Label label22;
+        private Avalonia.Controls.TextBlock label22;
         private NumericUpDown HungerTotal;
         private NumericUpDown HygieneHours;
         private NumericUpDown AmorousHours;
@@ -176,17 +179,17 @@ namespace SimPe.Plugin
         private NumericUpDown WorkAmorous;
         private NumericUpDown WorkSunshine;
         private NumericUpDown PublicHours;
-        private Label label20;
+        private Avalonia.Controls.TextBlock label20;
         private NumericUpDown SunshineTotal;
         private NumericUpDown EnergyTotal;
         private NumericUpDown FunTotal;
         private NumericUpDown PublicTotal;
-        private Label label33;
-        private Label label32;
-        private Label label31;
-        private Label label30;
-        private Label label28;
-        private Label label26;
+        private Avalonia.Controls.TextBlock label33;
+        private Avalonia.Controls.TextBlock label32;
+        private Avalonia.Controls.TextBlock label31;
+        private Avalonia.Controls.TextBlock label30;
+        private Avalonia.Controls.TextBlock label28;
+        private Avalonia.Controls.TextBlock label26;
         private NumericUpDown FunHours;
         private NumericUpDown WorkHygiene;
         private NumericUpDown SunshineHours;
@@ -195,36 +198,36 @@ namespace SimPe.Plugin
         private GUIDChooser gcUpgrade;
         private GUIDChooser gcOutfit;
         private GUIDChooser gcVehicle;
-        private Label lbcrap;
-        private Label lbPTO;
-        private Label lbLscore;
+        private Avalonia.Controls.TextBlock lbcrap;
+        private Avalonia.Controls.TextBlock lbPTO;
+        private Avalonia.Controls.TextBlock lbLscore;
         private NumericUpDown numLscore;
         private NumericUpDown numPTO;
-        private System.Windows.Forms.Panel pntheme;
+        private Avalonia.Controls.Panel pntheme;
         private PictureBox pictureBox1;
-        private System.Windows.Forms.TabPage tabPage9;
-        private System.Windows.Forms.Panel thmepanel1;
+        private Avalonia.Controls.TabItem tabPage9;
+        private Avalonia.Controls.Panel thmepanel1;
         private CheckBox checkBox2;
         private CheckBox checkBox1;
         private GroupBox gbExtras;
         private TextBox textBox1b;
         private TextBox textBox1g;
-        private Label label2;
+        private Avalonia.Controls.TextBlock label2;
         private CheckBox checkBox3;
-        private Label label9;
-        private Label label8;
-        private Label label7;
-        private Label label6;
-        private Label label5;
-        private Label label4;
+        private Avalonia.Controls.TextBlock label9;
+        private Avalonia.Controls.TextBlock label8;
+        private Avalonia.Controls.TextBlock label7;
+        private Avalonia.Controls.TextBlock label6;
+        private Avalonia.Controls.TextBlock label5;
+        private Avalonia.Controls.TextBlock label4;
         private CheckBox checkBox6;
         private CheckBox checkBox5;
         private CheckBox checkBox4;
         private CheckBox checkBox7;
         private ComboBox comboBox1;
-        private Label label13;
-        private Label label11;
-        private Label label12;
+        private Avalonia.Controls.TextBlock label13;
+        private Avalonia.Controls.TextBlock label11;
+        private Avalonia.Controls.TextBlock label12;
         private CheckBox checkBox9;
         private CheckBox checkBox8;
         private CheckBox checkBox42;
@@ -233,63 +236,63 @@ namespace SimPe.Plugin
         private CheckBox checkBox45;
         private TextBox textBox17;
         private TextBox textBox18;
-        private Label label46;
+        private Avalonia.Controls.TextBlock label46;
         private CheckBox checkBox38;
         private CheckBox checkBox39;
         private CheckBox checkBox40;
         private CheckBox checkBox41;
         private TextBox textBox15;
         private TextBox textBox16;
-        private Label label45;
+        private Avalonia.Controls.TextBlock label45;
         private CheckBox checkBox34;
         private CheckBox checkBox35;
         private CheckBox checkBox36;
         private CheckBox checkBox37;
         private TextBox textBox13;
         private TextBox textBox14;
-        private Label label44;
+        private Avalonia.Controls.TextBlock label44;
         private CheckBox checkBox30;
         private CheckBox checkBox31;
         private CheckBox checkBox32;
         private CheckBox checkBox33;
         private TextBox textBox11;
         private TextBox textBox12;
-        private Label label43;
+        private Avalonia.Controls.TextBlock label43;
         private CheckBox checkBox26;
         private CheckBox checkBox27;
         private CheckBox checkBox28;
         private CheckBox checkBox29;
         private TextBox textBox9;
         private TextBox textBox10;
-        private Label label42;
+        private Avalonia.Controls.TextBlock label42;
         private CheckBox checkBox22;
         private CheckBox checkBox23;
         private CheckBox checkBox24;
         private CheckBox checkBox25;
         private TextBox textBox7;
         private TextBox textBox8;
-        private Label label17;
+        private Avalonia.Controls.TextBlock label17;
         private CheckBox checkBox18;
         private CheckBox checkBox19;
         private CheckBox checkBox20;
         private CheckBox checkBox21;
         private TextBox textBox5;
         private TextBox textBox6;
-        private Label label16;
+        private Avalonia.Controls.TextBlock label16;
         private CheckBox checkBox14;
         private CheckBox checkBox15;
         private CheckBox checkBox16;
         private CheckBox checkBox17;
         private TextBox textBox3;
         private TextBox textBox4;
-        private Label label15;
+        private Avalonia.Controls.TextBlock label15;
         private CheckBox checkBox10;
         private CheckBox checkBox11;
         private CheckBox checkBox12;
         private CheckBox checkBox13;
         private TextBox textBox1;
         private TextBox textBox2;
-        private Label label14;
+        private Avalonia.Controls.TextBlock label14;
         private CheckBox checkBox67;
         private CheckBox checkBox68;
         private CheckBox checkBox69;
@@ -326,11 +329,11 @@ namespace SimPe.Plugin
         private CheckBox checkBox71;
         private CheckBox checkBox72;
         private ComboBox comboBox10;
-        private Label lbrewguid;
+        private Avalonia.Controls.TextBlock lbrewguid;
         private Button btexApply;
         private Button btUgrade;
-        private System.Windows.Forms.TabPage tabPagMajor;
-        private System.Windows.Forms.Panel gpmajors;
+        private Avalonia.Controls.TabItem tabPagMajor;
+        private Avalonia.Controls.Panel gpmajors;
         private GroupBox gbmajaffil;
         private GroupBox gbrequir;
         private CheckBox cbrdrama;
@@ -355,44 +358,24 @@ namespace SimPe.Plugin
         private CheckBox cbadrama;
         private CheckBox cbabiol;
         private CheckBox cbaArt;
-        private Label label29;
+        private Avalonia.Controls.TextBlock label29;
         private Button btmajApply;
-        private Label label47;
+        private Avalonia.Controls.TextBlock label47;
         private LabelledNumericUpDown lnudPetChancePercent;
         private CheckBox cbischance;
         private LabelledNumericUpDown lnudFoods;
-        private ToolTip toolTip1;
         private TextBox tbWorkFinish;
-        private Label label48;
+        private Avalonia.Controls.TextBlock label48;
         private PictureBox pictureBox2;
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
-        private System.ComponentModel.IContainer components = null;
 
         #endregion
-
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
-		{
-			if( disposing )
-			{
-				if (components != null) 
-				{
-					components.Dispose();
-				}
-			}
-			base.Dispose( disposing );
-		}
 
 		public CareerEditor()
 		{
 			//
 			// Required for Windows Form Designer support
 			//
-            InitializeComponent();
+            BuildLayout();
 
 			englishOnly = false;
 
@@ -405,13 +388,13 @@ namespace SimPe.Plugin
             gcUpgrade.KnownObjects = new object[] { new List<String>(upgradeName), new List<UInt32>(upgradeGUID) };
             gcOutfit.KnownObjects = new object[] { new List<String>(outfitName), new List<UInt32>(outfitGUID) };
             gcVehicle.KnownObjects = new object[] { new List<String>(vehicleName), new List<UInt32>(vehicleGUID) };
-            this.label18.Visible = this.AmorousHours.Visible = this.WorkAmorous.Visible = this.AmorousTotal.Visible = false;
+            this.label18.IsVisible = this.AmorousHours.IsVisible = this.WorkAmorous.IsVisible = this.AmorousTotal.IsVisible = false;
             
             internalchg = false;
 
             this.gcUpgrade.ComboBoxWidth = this.gcReward.ComboBoxWidth = 220;
             this.gcOutfit.ComboBoxWidth = this.gcVehicle.ComboBoxWidth = 300;
-            this.thmepanel1.BackgroundImage = GetImage.GetExpansionLogo(PathProvider.Global.Latest.Version);
+            // this.thmepanel1.BackgroundImage = GetImage.GetExpansionLogo(PathProvider.Global.Latest.Version); // Panel has no BackgroundImage in Avalonia
             // BackgroundImage omitted — expansion logo renders over checkboxes on .NET 8
             this.pictureBox2.Image = LoadIcon.load("information.png");
         }
@@ -421,4398 +404,872 @@ namespace SimPe.Plugin
 		/// Required method for Designer support - do not modify
 		/// the contents of this method with the code editor.
 		/// </summary>
-		private void InitializeComponent()
+		private void BuildLayout()
 		{
-            this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CareerEditor));
-            this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.tabPage4 = new Avalonia.Controls.TabItem();
+            this.pictureBox2 = new PictureBox();
             this.lnudPetChancePercent = new SimPe.Plugin.LabelledNumericUpDown();
-            this.cbischance = new System.Windows.Forms.CheckBox();
+            this.cbischance = new Avalonia.Controls.CheckBox();
             this.lnudChanceCurrentLevel = new SimPe.Plugin.LabelledNumericUpDown();
             this.lnudChancePercent = new SimPe.Plugin.LabelledNumericUpDown();
             this.cpChoiceA = new SimPe.Plugin.ChoicePanel();
             this.cpChoiceB = new SimPe.Plugin.ChoicePanel();
-            this.ChanceTextMale = new System.Windows.Forms.TextBox();
-            this.ChanceCopy = new System.Windows.Forms.LinkLabel();
-            this.ChanceTextFemale = new System.Windows.Forms.TextBox();
-            this.tcChanceOutcome = new System.Windows.Forms.TabControl();
-            this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.ChanceTextMale = new Avalonia.Controls.TextBox();
+            this.ChanceCopy = new Avalonia.Controls.Button();
+            this.ChanceTextFemale = new Avalonia.Controls.TextBox();
+            this.tcChanceOutcome = new Avalonia.Controls.TabControl();
+            this.tabPage5 = new Avalonia.Controls.TabItem();
             this.epPassA = new SimPe.Plugin.EffectPanel();
-            this.tabPage6 = new System.Windows.Forms.TabPage();
+            this.tabPage6 = new Avalonia.Controls.TabItem();
             this.epFailA = new SimPe.Plugin.EffectPanel();
-            this.tabPage7 = new System.Windows.Forms.TabPage();
+            this.tabPage7 = new Avalonia.Controls.TabItem();
             this.epPassB = new SimPe.Plugin.EffectPanel();
-            this.tabPage8 = new System.Windows.Forms.TabPage();
+            this.tabPage8 = new Avalonia.Controls.TabItem();
             this.epFailB = new SimPe.Plugin.EffectPanel();
-            this.label51 = new System.Windows.Forms.Label();
-            this.label52 = new System.Windows.Forms.Label();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.gbJLPromo = new System.Windows.Forms.GroupBox();
-            this.PromoList = new System.Windows.Forms.ListView();
-            this.PrLvl = new System.Windows.Forms.ColumnHeader();
-            this.PrCooking = new System.Windows.Forms.ColumnHeader();
-            this.PrMechanical = new System.Windows.Forms.ColumnHeader();
-            this.PrBody = new System.Windows.Forms.ColumnHeader();
-            this.PrCharisma = new System.Windows.Forms.ColumnHeader();
-            this.PrCreativity = new System.Windows.Forms.ColumnHeader();
-            this.PrLogic = new System.Windows.Forms.ColumnHeader();
-            this.PrCleaning = new System.Windows.Forms.ColumnHeader();
-            this.PrFriends = new System.Windows.Forms.ColumnHeader();
-            this.PrTrick = new System.Windows.Forms.ColumnHeader();
-            this.gbPromo = new System.Windows.Forms.GroupBox();
-            this.cbTrick = new System.Windows.Forms.ComboBox();
-            this.label101 = new System.Windows.Forms.Label();
-            this.label41 = new System.Windows.Forms.Label();
-            this.label40 = new System.Windows.Forms.Label();
-            this.label39 = new System.Windows.Forms.Label();
-            this.label38 = new System.Windows.Forms.Label();
-            this.label37 = new System.Windows.Forms.Label();
-            this.label36 = new System.Windows.Forms.Label();
-            this.label35 = new System.Windows.Forms.Label();
-            this.label34 = new System.Windows.Forms.Label();
-            this.PromoFriends = new System.Windows.Forms.NumericUpDown();
-            this.PromoCleaning = new System.Windows.Forms.NumericUpDown();
-            this.PromoLogic = new System.Windows.Forms.NumericUpDown();
-            this.PromoCreativity = new System.Windows.Forms.NumericUpDown();
-            this.PromoCharisma = new System.Windows.Forms.NumericUpDown();
-            this.PromoBody = new System.Windows.Forms.NumericUpDown();
-            this.PromoMechanical = new System.Windows.Forms.NumericUpDown();
-            this.PromoCooking = new System.Windows.Forms.NumericUpDown();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.gbHoursWages = new System.Windows.Forms.GroupBox();
-            this.tbWorkFinish = new System.Windows.Forms.TextBox();
-            this.label48 = new System.Windows.Forms.Label();
+            this.label51 = new Avalonia.Controls.TextBlock();
+            this.label52 = new Avalonia.Controls.TextBlock();
+            this.tabPage3 = new Avalonia.Controls.TabItem();
+            this.gbJLPromo = new GroupBox();
+            this.PromoList = new ListView();
+            this.PrLvl = new ColumnHeader();
+            this.PrCooking = new ColumnHeader();
+            this.PrMechanical = new ColumnHeader();
+            this.PrBody = new ColumnHeader();
+            this.PrCharisma = new ColumnHeader();
+            this.PrCreativity = new ColumnHeader();
+            this.PrLogic = new ColumnHeader();
+            this.PrCleaning = new ColumnHeader();
+            this.PrFriends = new ColumnHeader();
+            this.PrTrick = new ColumnHeader();
+            this.gbPromo = new GroupBox();
+            this.cbTrick = new Avalonia.Controls.ComboBox();
+            this.label101 = new Avalonia.Controls.TextBlock();
+            this.label41 = new Avalonia.Controls.TextBlock();
+            this.label40 = new Avalonia.Controls.TextBlock();
+            this.label39 = new Avalonia.Controls.TextBlock();
+            this.label38 = new Avalonia.Controls.TextBlock();
+            this.label37 = new Avalonia.Controls.TextBlock();
+            this.label36 = new Avalonia.Controls.TextBlock();
+            this.label35 = new Avalonia.Controls.TextBlock();
+            this.label34 = new Avalonia.Controls.TextBlock();
+            this.PromoFriends = new Avalonia.Controls.NumericUpDown();
+            this.PromoCleaning = new Avalonia.Controls.NumericUpDown();
+            this.PromoLogic = new Avalonia.Controls.NumericUpDown();
+            this.PromoCreativity = new Avalonia.Controls.NumericUpDown();
+            this.PromoCharisma = new Avalonia.Controls.NumericUpDown();
+            this.PromoBody = new Avalonia.Controls.NumericUpDown();
+            this.PromoMechanical = new Avalonia.Controls.NumericUpDown();
+            this.PromoCooking = new Avalonia.Controls.NumericUpDown();
+            this.tabPage2 = new Avalonia.Controls.TabItem();
+            this.gbHoursWages = new GroupBox();
+            this.tbWorkFinish = new Avalonia.Controls.TextBox();
+            this.label48 = new Avalonia.Controls.TextBlock();
             this.lnudFoods = new SimPe.Plugin.LabelledNumericUpDown();
             this.lnudWorkStart = new SimPe.Plugin.LabelledNumericUpDown();
             this.lnudWorkHours = new SimPe.Plugin.LabelledNumericUpDown();
             this.lnudWages = new SimPe.Plugin.LabelledNumericUpDown();
             this.lnudWagesDog = new SimPe.Plugin.LabelledNumericUpDown();
-            this.lbPTO = new System.Windows.Forms.Label();
+            this.lbPTO = new Avalonia.Controls.TextBlock();
             this.lnudWagesCat = new SimPe.Plugin.LabelledNumericUpDown();
-            this.WorkMonday = new System.Windows.Forms.CheckBox();
-            this.WorkTuesday = new System.Windows.Forms.CheckBox();
-            this.WorkWednesday = new System.Windows.Forms.CheckBox();
-            this.WorkThursday = new System.Windows.Forms.CheckBox();
-            this.WorkFriday = new System.Windows.Forms.CheckBox();
-            this.WorkSaturday = new System.Windows.Forms.CheckBox();
-            this.WorkSunday = new System.Windows.Forms.CheckBox();
-            this.gbHWMotives = new System.Windows.Forms.GroupBox();
-            this.label27 = new System.Windows.Forms.Label();
-            this.label24 = new System.Windows.Forms.Label();
-            this.ComfortHours = new System.Windows.Forms.NumericUpDown();
-            this.HygieneTotal = new System.Windows.Forms.NumericUpDown();
-            this.BladderTotal = new System.Windows.Forms.NumericUpDown();
-            this.label21 = new System.Windows.Forms.Label();
-            this.WorkBladder = new System.Windows.Forms.NumericUpDown();
-            this.label23 = new System.Windows.Forms.Label();
-            this.label19 = new System.Windows.Forms.Label();
-            this.WorkComfort = new System.Windows.Forms.NumericUpDown();
-            this.HungerHours = new System.Windows.Forms.NumericUpDown();
-            this.EnergyHours = new System.Windows.Forms.NumericUpDown();
-            this.label25 = new System.Windows.Forms.Label();
-            this.WorkPublic = new System.Windows.Forms.NumericUpDown();
-            this.WorkHunger = new System.Windows.Forms.NumericUpDown();
-            this.BladderHours = new System.Windows.Forms.NumericUpDown();
-            this.ComfortTotal = new System.Windows.Forms.NumericUpDown();
-            this.label22 = new System.Windows.Forms.Label();
-            this.HungerTotal = new System.Windows.Forms.NumericUpDown();
-            this.HygieneHours = new System.Windows.Forms.NumericUpDown();
-            this.WorkEnergy = new System.Windows.Forms.NumericUpDown();
-            this.WorkFun = new System.Windows.Forms.NumericUpDown();
-            this.WorkSunshine = new System.Windows.Forms.NumericUpDown();
-            this.PublicHours = new System.Windows.Forms.NumericUpDown();
-            this.label20 = new System.Windows.Forms.Label();
-            this.SunshineTotal = new System.Windows.Forms.NumericUpDown();
-            this.EnergyTotal = new System.Windows.Forms.NumericUpDown();
-            this.FunTotal = new System.Windows.Forms.NumericUpDown();
-            this.PublicTotal = new System.Windows.Forms.NumericUpDown();
-            this.label33 = new System.Windows.Forms.Label();
-            this.label32 = new System.Windows.Forms.Label();
-            this.label31 = new System.Windows.Forms.Label();
-            this.label30 = new System.Windows.Forms.Label();
-            this.label28 = new System.Windows.Forms.Label();
-            this.label26 = new System.Windows.Forms.Label();
-            this.FunHours = new System.Windows.Forms.NumericUpDown();
-            this.WorkHygiene = new System.Windows.Forms.NumericUpDown();
-            this.SunshineHours = new System.Windows.Forms.NumericUpDown();
-            this.label18 = new System.Windows.Forms.Label();
-            this.AmorousHours = new System.Windows.Forms.NumericUpDown();
-            this.WorkAmorous = new System.Windows.Forms.NumericUpDown();
-            this.AmorousTotal = new System.Windows.Forms.NumericUpDown();
-            this.lbLscore = new System.Windows.Forms.Label();
-            this.numLscore = new System.Windows.Forms.NumericUpDown();
-            this.numPTO = new System.Windows.Forms.NumericUpDown();
-            this.gbJLHoursWages = new System.Windows.Forms.GroupBox();
-            this.HoursWagesList = new System.Windows.Forms.ListView();
-            this.HwLvl = new System.Windows.Forms.ColumnHeader();
-            this.HwStart = new System.Windows.Forms.ColumnHeader();
-            this.HwHours = new System.Windows.Forms.ColumnHeader();
-            this.HwEnd = new System.Windows.Forms.ColumnHeader();
-            this.HwWages = new System.Windows.Forms.ColumnHeader();
-            this.HwDogWages = new System.Windows.Forms.ColumnHeader();
-            this.HwCatWages = new System.Windows.Forms.ColumnHeader();
-            this.HwMon = new System.Windows.Forms.ColumnHeader();
-            this.HwTue = new System.Windows.Forms.ColumnHeader();
-            this.HwWed = new System.Windows.Forms.ColumnHeader();
-            this.HwThu = new System.Windows.Forms.ColumnHeader();
-            this.HwFri = new System.Windows.Forms.ColumnHeader();
-            this.HwSat = new System.Windows.Forms.ColumnHeader();
-            this.HwSun = new System.Windows.Forms.ColumnHeader();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.gbJobDetails = new System.Windows.Forms.GroupBox();
+            this.WorkMonday = new Avalonia.Controls.CheckBox();
+            this.WorkTuesday = new Avalonia.Controls.CheckBox();
+            this.WorkWednesday = new Avalonia.Controls.CheckBox();
+            this.WorkThursday = new Avalonia.Controls.CheckBox();
+            this.WorkFriday = new Avalonia.Controls.CheckBox();
+            this.WorkSaturday = new Avalonia.Controls.CheckBox();
+            this.WorkSunday = new Avalonia.Controls.CheckBox();
+            this.gbHWMotives = new GroupBox();
+            this.label27 = new Avalonia.Controls.TextBlock();
+            this.label24 = new Avalonia.Controls.TextBlock();
+            this.ComfortHours = new Avalonia.Controls.NumericUpDown();
+            this.HygieneTotal = new Avalonia.Controls.NumericUpDown();
+            this.BladderTotal = new Avalonia.Controls.NumericUpDown();
+            this.label21 = new Avalonia.Controls.TextBlock();
+            this.WorkBladder = new Avalonia.Controls.NumericUpDown();
+            this.label23 = new Avalonia.Controls.TextBlock();
+            this.label19 = new Avalonia.Controls.TextBlock();
+            this.WorkComfort = new Avalonia.Controls.NumericUpDown();
+            this.HungerHours = new Avalonia.Controls.NumericUpDown();
+            this.EnergyHours = new Avalonia.Controls.NumericUpDown();
+            this.label25 = new Avalonia.Controls.TextBlock();
+            this.WorkPublic = new Avalonia.Controls.NumericUpDown();
+            this.WorkHunger = new Avalonia.Controls.NumericUpDown();
+            this.BladderHours = new Avalonia.Controls.NumericUpDown();
+            this.ComfortTotal = new Avalonia.Controls.NumericUpDown();
+            this.label22 = new Avalonia.Controls.TextBlock();
+            this.HungerTotal = new Avalonia.Controls.NumericUpDown();
+            this.HygieneHours = new Avalonia.Controls.NumericUpDown();
+            this.WorkEnergy = new Avalonia.Controls.NumericUpDown();
+            this.WorkFun = new Avalonia.Controls.NumericUpDown();
+            this.WorkSunshine = new Avalonia.Controls.NumericUpDown();
+            this.PublicHours = new Avalonia.Controls.NumericUpDown();
+            this.label20 = new Avalonia.Controls.TextBlock();
+            this.SunshineTotal = new Avalonia.Controls.NumericUpDown();
+            this.EnergyTotal = new Avalonia.Controls.NumericUpDown();
+            this.FunTotal = new Avalonia.Controls.NumericUpDown();
+            this.PublicTotal = new Avalonia.Controls.NumericUpDown();
+            this.label33 = new Avalonia.Controls.TextBlock();
+            this.label32 = new Avalonia.Controls.TextBlock();
+            this.label31 = new Avalonia.Controls.TextBlock();
+            this.label30 = new Avalonia.Controls.TextBlock();
+            this.label28 = new Avalonia.Controls.TextBlock();
+            this.label26 = new Avalonia.Controls.TextBlock();
+            this.FunHours = new Avalonia.Controls.NumericUpDown();
+            this.WorkHygiene = new Avalonia.Controls.NumericUpDown();
+            this.SunshineHours = new Avalonia.Controls.NumericUpDown();
+            this.label18 = new Avalonia.Controls.TextBlock();
+            this.AmorousHours = new Avalonia.Controls.NumericUpDown();
+            this.WorkAmorous = new Avalonia.Controls.NumericUpDown();
+            this.AmorousTotal = new Avalonia.Controls.NumericUpDown();
+            this.lbLscore = new Avalonia.Controls.TextBlock();
+            this.numLscore = new Avalonia.Controls.NumericUpDown();
+            this.numPTO = new Avalonia.Controls.NumericUpDown();
+            this.gbJLHoursWages = new GroupBox();
+            this.HoursWagesList = new ListView();
+            this.HwLvl = new ColumnHeader();
+            this.HwStart = new ColumnHeader();
+            this.HwHours = new ColumnHeader();
+            this.HwEnd = new ColumnHeader();
+            this.HwWages = new ColumnHeader();
+            this.HwDogWages = new ColumnHeader();
+            this.HwCatWages = new ColumnHeader();
+            this.HwMon = new ColumnHeader();
+            this.HwTue = new ColumnHeader();
+            this.HwWed = new ColumnHeader();
+            this.HwThu = new ColumnHeader();
+            this.HwFri = new ColumnHeader();
+            this.HwSat = new ColumnHeader();
+            this.HwSun = new ColumnHeader();
+            this.tabControl1 = new Avalonia.Controls.TabControl();
+            this.tabPage1 = new Avalonia.Controls.TabItem();
+            this.gbJobDetails = new GroupBox();
             this.gcVehicle = new SimPe.Plugin.GUIDChooser();
             this.gcOutfit = new SimPe.Plugin.GUIDChooser();
-            this.JobDetailsCopy = new System.Windows.Forms.LinkLabel();
+            this.JobDetailsCopy = new Avalonia.Controls.Button();
             this.jdpFemale = new SimPe.Plugin.JobDescPanel();
             this.jdpMale = new SimPe.Plugin.JobDescPanel();
-            this.gbJLDetails = new System.Windows.Forms.GroupBox();
-            this.JobDetailList = new System.Windows.Forms.ListView();
-            this.JdLvl = new System.Windows.Forms.ColumnHeader();
-            this.JdJobTitle = new System.Windows.Forms.ColumnHeader();
-            this.JdDesc = new System.Windows.Forms.ColumnHeader();
-            this.JdOutfit = new System.Windows.Forms.ColumnHeader();
-            this.JdVehicle = new System.Windows.Forms.ColumnHeader();
-            this.tabPagMajor = new System.Windows.Forms.TabPage();
-            this.gpmajors = new System.Windows.Forms.Panel();
-            this.btmajApply = new System.Windows.Forms.Button();
-            this.gbmajaffil = new System.Windows.Forms.GroupBox();
-            this.label47 = new System.Windows.Forms.Label();
-            this.cbaphyco = new System.Windows.Forms.CheckBox();
-            this.cbapolit = new System.Windows.Forms.CheckBox();
-            this.cbaphysi = new System.Windows.Forms.CheckBox();
-            this.cbrahilo = new System.Windows.Forms.CheckBox();
-            this.cbamaths = new System.Windows.Forms.CheckBox();
-            this.cbaliter = new System.Windows.Forms.CheckBox();
-            this.cbahisto = new System.Windows.Forms.CheckBox();
-            this.cbaecon = new System.Windows.Forms.CheckBox();
-            this.cbadrama = new System.Windows.Forms.CheckBox();
-            this.cbabiol = new System.Windows.Forms.CheckBox();
-            this.cbaArt = new System.Windows.Forms.CheckBox();
-            this.gbrequir = new System.Windows.Forms.GroupBox();
-            this.label29 = new System.Windows.Forms.Label();
-            this.cbrphyco = new System.Windows.Forms.CheckBox();
-            this.cbrpolit = new System.Windows.Forms.CheckBox();
-            this.cbrphysi = new System.Windows.Forms.CheckBox();
-            this.cbrphilo = new System.Windows.Forms.CheckBox();
-            this.cbrmaths = new System.Windows.Forms.CheckBox();
-            this.cbrliter = new System.Windows.Forms.CheckBox();
-            this.cbrhisto = new System.Windows.Forms.CheckBox();
-            this.cbrecon = new System.Windows.Forms.CheckBox();
-            this.cbrdrama = new System.Windows.Forms.CheckBox();
-            this.cbrbiol = new System.Windows.Forms.CheckBox();
-            this.cbrArt = new System.Windows.Forms.CheckBox();
-            this.tabPage9 = new System.Windows.Forms.TabPage();
-            this.thmepanel1 = new System.Windows.Forms.Panel();
-            this.btexApply = new System.Windows.Forms.Button();
-            this.checkBox70 = new System.Windows.Forms.CheckBox();
-            this.checkBox71 = new System.Windows.Forms.CheckBox();
-            this.checkBox72 = new System.Windows.Forms.CheckBox();
-            this.comboBox10 = new System.Windows.Forms.ComboBox();
-            this.checkBox67 = new System.Windows.Forms.CheckBox();
-            this.checkBox68 = new System.Windows.Forms.CheckBox();
-            this.checkBox69 = new System.Windows.Forms.CheckBox();
-            this.comboBox9 = new System.Windows.Forms.ComboBox();
-            this.checkBox64 = new System.Windows.Forms.CheckBox();
-            this.checkBox65 = new System.Windows.Forms.CheckBox();
-            this.checkBox66 = new System.Windows.Forms.CheckBox();
-            this.comboBox8 = new System.Windows.Forms.ComboBox();
-            this.checkBox61 = new System.Windows.Forms.CheckBox();
-            this.checkBox62 = new System.Windows.Forms.CheckBox();
-            this.checkBox63 = new System.Windows.Forms.CheckBox();
-            this.comboBox7 = new System.Windows.Forms.ComboBox();
-            this.checkBox58 = new System.Windows.Forms.CheckBox();
-            this.checkBox59 = new System.Windows.Forms.CheckBox();
-            this.checkBox60 = new System.Windows.Forms.CheckBox();
-            this.comboBox6 = new System.Windows.Forms.ComboBox();
-            this.checkBox55 = new System.Windows.Forms.CheckBox();
-            this.checkBox56 = new System.Windows.Forms.CheckBox();
-            this.checkBox57 = new System.Windows.Forms.CheckBox();
-            this.comboBox5 = new System.Windows.Forms.ComboBox();
-            this.checkBox52 = new System.Windows.Forms.CheckBox();
-            this.checkBox53 = new System.Windows.Forms.CheckBox();
-            this.checkBox54 = new System.Windows.Forms.CheckBox();
-            this.comboBox4 = new System.Windows.Forms.ComboBox();
-            this.checkBox49 = new System.Windows.Forms.CheckBox();
-            this.checkBox50 = new System.Windows.Forms.CheckBox();
-            this.checkBox51 = new System.Windows.Forms.CheckBox();
-            this.comboBox3 = new System.Windows.Forms.ComboBox();
-            this.checkBox46 = new System.Windows.Forms.CheckBox();
-            this.checkBox47 = new System.Windows.Forms.CheckBox();
-            this.checkBox48 = new System.Windows.Forms.CheckBox();
-            this.comboBox2 = new System.Windows.Forms.ComboBox();
-            this.label13 = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
-            this.checkBox9 = new System.Windows.Forms.CheckBox();
-            this.checkBox8 = new System.Windows.Forms.CheckBox();
-            this.checkBox7 = new System.Windows.Forms.CheckBox();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.gbExtras = new System.Windows.Forms.GroupBox();
-            this.lbrewguid = new System.Windows.Forms.Label();
-            this.checkBox42 = new System.Windows.Forms.CheckBox();
-            this.checkBox43 = new System.Windows.Forms.CheckBox();
-            this.checkBox44 = new System.Windows.Forms.CheckBox();
-            this.checkBox45 = new System.Windows.Forms.CheckBox();
-            this.textBox17 = new System.Windows.Forms.TextBox();
-            this.textBox18 = new System.Windows.Forms.TextBox();
-            this.label46 = new System.Windows.Forms.Label();
-            this.checkBox38 = new System.Windows.Forms.CheckBox();
-            this.checkBox39 = new System.Windows.Forms.CheckBox();
-            this.checkBox40 = new System.Windows.Forms.CheckBox();
-            this.checkBox41 = new System.Windows.Forms.CheckBox();
-            this.textBox15 = new System.Windows.Forms.TextBox();
-            this.textBox16 = new System.Windows.Forms.TextBox();
-            this.label45 = new System.Windows.Forms.Label();
-            this.checkBox34 = new System.Windows.Forms.CheckBox();
-            this.checkBox35 = new System.Windows.Forms.CheckBox();
-            this.checkBox36 = new System.Windows.Forms.CheckBox();
-            this.checkBox37 = new System.Windows.Forms.CheckBox();
-            this.textBox13 = new System.Windows.Forms.TextBox();
-            this.textBox14 = new System.Windows.Forms.TextBox();
-            this.label44 = new System.Windows.Forms.Label();
-            this.checkBox30 = new System.Windows.Forms.CheckBox();
-            this.checkBox31 = new System.Windows.Forms.CheckBox();
-            this.checkBox32 = new System.Windows.Forms.CheckBox();
-            this.checkBox33 = new System.Windows.Forms.CheckBox();
-            this.textBox11 = new System.Windows.Forms.TextBox();
-            this.textBox12 = new System.Windows.Forms.TextBox();
-            this.label43 = new System.Windows.Forms.Label();
-            this.checkBox26 = new System.Windows.Forms.CheckBox();
-            this.checkBox27 = new System.Windows.Forms.CheckBox();
-            this.checkBox28 = new System.Windows.Forms.CheckBox();
-            this.checkBox29 = new System.Windows.Forms.CheckBox();
-            this.textBox9 = new System.Windows.Forms.TextBox();
-            this.textBox10 = new System.Windows.Forms.TextBox();
-            this.label42 = new System.Windows.Forms.Label();
-            this.checkBox22 = new System.Windows.Forms.CheckBox();
-            this.checkBox23 = new System.Windows.Forms.CheckBox();
-            this.checkBox24 = new System.Windows.Forms.CheckBox();
-            this.checkBox25 = new System.Windows.Forms.CheckBox();
-            this.textBox7 = new System.Windows.Forms.TextBox();
-            this.textBox8 = new System.Windows.Forms.TextBox();
-            this.label17 = new System.Windows.Forms.Label();
-            this.checkBox18 = new System.Windows.Forms.CheckBox();
-            this.checkBox19 = new System.Windows.Forms.CheckBox();
-            this.checkBox20 = new System.Windows.Forms.CheckBox();
-            this.checkBox21 = new System.Windows.Forms.CheckBox();
-            this.textBox5 = new System.Windows.Forms.TextBox();
-            this.textBox6 = new System.Windows.Forms.TextBox();
-            this.label16 = new System.Windows.Forms.Label();
-            this.checkBox14 = new System.Windows.Forms.CheckBox();
-            this.checkBox15 = new System.Windows.Forms.CheckBox();
-            this.checkBox16 = new System.Windows.Forms.CheckBox();
-            this.checkBox17 = new System.Windows.Forms.CheckBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.textBox4 = new System.Windows.Forms.TextBox();
-            this.label15 = new System.Windows.Forms.Label();
-            this.checkBox10 = new System.Windows.Forms.CheckBox();
-            this.checkBox11 = new System.Windows.Forms.CheckBox();
-            this.checkBox12 = new System.Windows.Forms.CheckBox();
-            this.checkBox13 = new System.Windows.Forms.CheckBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.label14 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.checkBox6 = new System.Windows.Forms.CheckBox();
-            this.checkBox5 = new System.Windows.Forms.CheckBox();
-            this.checkBox4 = new System.Windows.Forms.CheckBox();
-            this.checkBox3 = new System.Windows.Forms.CheckBox();
-            this.textBox1b = new System.Windows.Forms.TextBox();
-            this.textBox1g = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.CareerLvls = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.CareerTitle = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.Language = new System.Windows.Forms.ComboBox();
-            this.label10 = new System.Windows.Forms.Label();
-            this.mainMenu1 = new System.Windows.Forms.MenuStrip();
-            this.menuItem6 = new System.Windows.Forms.ToolStripMenuItem();
-            this.miAddLvl = new System.Windows.Forms.ToolStripMenuItem();
-            this.miRemoveLvl = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.miEnglishOnly = new System.Windows.Forms.ToolStripMenuItem();
+            this.gbJLDetails = new GroupBox();
+            this.JobDetailList = new ListView();
+            this.JdLvl = new ColumnHeader();
+            this.JdJobTitle = new ColumnHeader();
+            this.JdDesc = new ColumnHeader();
+            this.JdOutfit = new ColumnHeader();
+            this.JdVehicle = new ColumnHeader();
+            this.tabPagMajor = new Avalonia.Controls.TabItem();
+            this.gpmajors = new Avalonia.Controls.Panel();
+            this.btmajApply = new Avalonia.Controls.Button();
+            this.gbmajaffil = new GroupBox();
+            this.label47 = new Avalonia.Controls.TextBlock();
+            this.cbaphyco = new Avalonia.Controls.CheckBox();
+            this.cbapolit = new Avalonia.Controls.CheckBox();
+            this.cbaphysi = new Avalonia.Controls.CheckBox();
+            this.cbrahilo = new Avalonia.Controls.CheckBox();
+            this.cbamaths = new Avalonia.Controls.CheckBox();
+            this.cbaliter = new Avalonia.Controls.CheckBox();
+            this.cbahisto = new Avalonia.Controls.CheckBox();
+            this.cbaecon = new Avalonia.Controls.CheckBox();
+            this.cbadrama = new Avalonia.Controls.CheckBox();
+            this.cbabiol = new Avalonia.Controls.CheckBox();
+            this.cbaArt = new Avalonia.Controls.CheckBox();
+            this.gbrequir = new GroupBox();
+            this.label29 = new Avalonia.Controls.TextBlock();
+            this.cbrphyco = new Avalonia.Controls.CheckBox();
+            this.cbrpolit = new Avalonia.Controls.CheckBox();
+            this.cbrphysi = new Avalonia.Controls.CheckBox();
+            this.cbrphilo = new Avalonia.Controls.CheckBox();
+            this.cbrmaths = new Avalonia.Controls.CheckBox();
+            this.cbrliter = new Avalonia.Controls.CheckBox();
+            this.cbrhisto = new Avalonia.Controls.CheckBox();
+            this.cbrecon = new Avalonia.Controls.CheckBox();
+            this.cbrdrama = new Avalonia.Controls.CheckBox();
+            this.cbrbiol = new Avalonia.Controls.CheckBox();
+            this.cbrArt = new Avalonia.Controls.CheckBox();
+            this.tabPage9 = new Avalonia.Controls.TabItem();
+            this.thmepanel1 = new Avalonia.Controls.Panel();
+            this.btexApply = new Avalonia.Controls.Button();
+            this.checkBox70 = new Avalonia.Controls.CheckBox();
+            this.checkBox71 = new Avalonia.Controls.CheckBox();
+            this.checkBox72 = new Avalonia.Controls.CheckBox();
+            this.comboBox10 = new Avalonia.Controls.ComboBox();
+            this.checkBox67 = new Avalonia.Controls.CheckBox();
+            this.checkBox68 = new Avalonia.Controls.CheckBox();
+            this.checkBox69 = new Avalonia.Controls.CheckBox();
+            this.comboBox9 = new Avalonia.Controls.ComboBox();
+            this.checkBox64 = new Avalonia.Controls.CheckBox();
+            this.checkBox65 = new Avalonia.Controls.CheckBox();
+            this.checkBox66 = new Avalonia.Controls.CheckBox();
+            this.comboBox8 = new Avalonia.Controls.ComboBox();
+            this.checkBox61 = new Avalonia.Controls.CheckBox();
+            this.checkBox62 = new Avalonia.Controls.CheckBox();
+            this.checkBox63 = new Avalonia.Controls.CheckBox();
+            this.comboBox7 = new Avalonia.Controls.ComboBox();
+            this.checkBox58 = new Avalonia.Controls.CheckBox();
+            this.checkBox59 = new Avalonia.Controls.CheckBox();
+            this.checkBox60 = new Avalonia.Controls.CheckBox();
+            this.comboBox6 = new Avalonia.Controls.ComboBox();
+            this.checkBox55 = new Avalonia.Controls.CheckBox();
+            this.checkBox56 = new Avalonia.Controls.CheckBox();
+            this.checkBox57 = new Avalonia.Controls.CheckBox();
+            this.comboBox5 = new Avalonia.Controls.ComboBox();
+            this.checkBox52 = new Avalonia.Controls.CheckBox();
+            this.checkBox53 = new Avalonia.Controls.CheckBox();
+            this.checkBox54 = new Avalonia.Controls.CheckBox();
+            this.comboBox4 = new Avalonia.Controls.ComboBox();
+            this.checkBox49 = new Avalonia.Controls.CheckBox();
+            this.checkBox50 = new Avalonia.Controls.CheckBox();
+            this.checkBox51 = new Avalonia.Controls.CheckBox();
+            this.comboBox3 = new Avalonia.Controls.ComboBox();
+            this.checkBox46 = new Avalonia.Controls.CheckBox();
+            this.checkBox47 = new Avalonia.Controls.CheckBox();
+            this.checkBox48 = new Avalonia.Controls.CheckBox();
+            this.comboBox2 = new Avalonia.Controls.ComboBox();
+            this.label13 = new Avalonia.Controls.TextBlock();
+            this.label11 = new Avalonia.Controls.TextBlock();
+            this.label12 = new Avalonia.Controls.TextBlock();
+            this.checkBox9 = new Avalonia.Controls.CheckBox();
+            this.checkBox8 = new Avalonia.Controls.CheckBox();
+            this.checkBox7 = new Avalonia.Controls.CheckBox();
+            this.comboBox1 = new Avalonia.Controls.ComboBox();
+            this.gbExtras = new GroupBox();
+            this.lbrewguid = new Avalonia.Controls.TextBlock();
+            this.checkBox42 = new Avalonia.Controls.CheckBox();
+            this.checkBox43 = new Avalonia.Controls.CheckBox();
+            this.checkBox44 = new Avalonia.Controls.CheckBox();
+            this.checkBox45 = new Avalonia.Controls.CheckBox();
+            this.textBox17 = new Avalonia.Controls.TextBox();
+            this.textBox18 = new Avalonia.Controls.TextBox();
+            this.label46 = new Avalonia.Controls.TextBlock();
+            this.checkBox38 = new Avalonia.Controls.CheckBox();
+            this.checkBox39 = new Avalonia.Controls.CheckBox();
+            this.checkBox40 = new Avalonia.Controls.CheckBox();
+            this.checkBox41 = new Avalonia.Controls.CheckBox();
+            this.textBox15 = new Avalonia.Controls.TextBox();
+            this.textBox16 = new Avalonia.Controls.TextBox();
+            this.label45 = new Avalonia.Controls.TextBlock();
+            this.checkBox34 = new Avalonia.Controls.CheckBox();
+            this.checkBox35 = new Avalonia.Controls.CheckBox();
+            this.checkBox36 = new Avalonia.Controls.CheckBox();
+            this.checkBox37 = new Avalonia.Controls.CheckBox();
+            this.textBox13 = new Avalonia.Controls.TextBox();
+            this.textBox14 = new Avalonia.Controls.TextBox();
+            this.label44 = new Avalonia.Controls.TextBlock();
+            this.checkBox30 = new Avalonia.Controls.CheckBox();
+            this.checkBox31 = new Avalonia.Controls.CheckBox();
+            this.checkBox32 = new Avalonia.Controls.CheckBox();
+            this.checkBox33 = new Avalonia.Controls.CheckBox();
+            this.textBox11 = new Avalonia.Controls.TextBox();
+            this.textBox12 = new Avalonia.Controls.TextBox();
+            this.label43 = new Avalonia.Controls.TextBlock();
+            this.checkBox26 = new Avalonia.Controls.CheckBox();
+            this.checkBox27 = new Avalonia.Controls.CheckBox();
+            this.checkBox28 = new Avalonia.Controls.CheckBox();
+            this.checkBox29 = new Avalonia.Controls.CheckBox();
+            this.textBox9 = new Avalonia.Controls.TextBox();
+            this.textBox10 = new Avalonia.Controls.TextBox();
+            this.label42 = new Avalonia.Controls.TextBlock();
+            this.checkBox22 = new Avalonia.Controls.CheckBox();
+            this.checkBox23 = new Avalonia.Controls.CheckBox();
+            this.checkBox24 = new Avalonia.Controls.CheckBox();
+            this.checkBox25 = new Avalonia.Controls.CheckBox();
+            this.textBox7 = new Avalonia.Controls.TextBox();
+            this.textBox8 = new Avalonia.Controls.TextBox();
+            this.label17 = new Avalonia.Controls.TextBlock();
+            this.checkBox18 = new Avalonia.Controls.CheckBox();
+            this.checkBox19 = new Avalonia.Controls.CheckBox();
+            this.checkBox20 = new Avalonia.Controls.CheckBox();
+            this.checkBox21 = new Avalonia.Controls.CheckBox();
+            this.textBox5 = new Avalonia.Controls.TextBox();
+            this.textBox6 = new Avalonia.Controls.TextBox();
+            this.label16 = new Avalonia.Controls.TextBlock();
+            this.checkBox14 = new Avalonia.Controls.CheckBox();
+            this.checkBox15 = new Avalonia.Controls.CheckBox();
+            this.checkBox16 = new Avalonia.Controls.CheckBox();
+            this.checkBox17 = new Avalonia.Controls.CheckBox();
+            this.textBox3 = new Avalonia.Controls.TextBox();
+            this.textBox4 = new Avalonia.Controls.TextBox();
+            this.label15 = new Avalonia.Controls.TextBlock();
+            this.checkBox10 = new Avalonia.Controls.CheckBox();
+            this.checkBox11 = new Avalonia.Controls.CheckBox();
+            this.checkBox12 = new Avalonia.Controls.CheckBox();
+            this.checkBox13 = new Avalonia.Controls.CheckBox();
+            this.textBox1 = new Avalonia.Controls.TextBox();
+            this.textBox2 = new Avalonia.Controls.TextBox();
+            this.label14 = new Avalonia.Controls.TextBlock();
+            this.label9 = new Avalonia.Controls.TextBlock();
+            this.label8 = new Avalonia.Controls.TextBlock();
+            this.label7 = new Avalonia.Controls.TextBlock();
+            this.label6 = new Avalonia.Controls.TextBlock();
+            this.label5 = new Avalonia.Controls.TextBlock();
+            this.label4 = new Avalonia.Controls.TextBlock();
+            this.checkBox6 = new Avalonia.Controls.CheckBox();
+            this.checkBox5 = new Avalonia.Controls.CheckBox();
+            this.checkBox4 = new Avalonia.Controls.CheckBox();
+            this.checkBox3 = new Avalonia.Controls.CheckBox();
+            this.textBox1b = new Avalonia.Controls.TextBox();
+            this.textBox1g = new Avalonia.Controls.TextBox();
+            this.label2 = new Avalonia.Controls.TextBlock();
+            this.checkBox2 = new Avalonia.Controls.CheckBox();
+            this.checkBox1 = new Avalonia.Controls.CheckBox();
+            this.CareerLvls = new Avalonia.Controls.TextBox();
+            this.label1 = new Avalonia.Controls.TextBlock();
+            this.CareerTitle = new Avalonia.Controls.TextBox();
+            this.label3 = new Avalonia.Controls.TextBlock();
+            this.Language = new Avalonia.Controls.ComboBox();
+            this.label10 = new Avalonia.Controls.TextBlock();
+            this.mainMenu1 = new Avalonia.Controls.Menu();
+            this.menuItem6 = new Avalonia.Controls.MenuItem();
+            this.miAddLvl = new Avalonia.Controls.MenuItem();
+            this.miRemoveLvl = new Avalonia.Controls.MenuItem();
+            this.menuItem1 = new Avalonia.Controls.MenuItem();
+            this.miEnglishOnly = new Avalonia.Controls.MenuItem();
             this.gcUpgrade = new SimPe.Plugin.GUIDChooser();
             this.gcReward = new SimPe.Plugin.GUIDChooser();
-            this.lbcrap = new System.Windows.Forms.Label();
-            this.pntheme = new System.Windows.Forms.Panel();
-            this.btUgrade = new System.Windows.Forms.Button();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.tabPage4.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
-            this.tcChanceOutcome.SuspendLayout();
-            this.tabPage5.SuspendLayout();
-            this.tabPage6.SuspendLayout();
-            this.tabPage7.SuspendLayout();
-            this.tabPage8.SuspendLayout();
-            this.tabPage3.SuspendLayout();
-            this.gbJLPromo.SuspendLayout();
-            this.gbPromo.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.PromoFriends)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PromoCleaning)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PromoLogic)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PromoCreativity)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PromoCharisma)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PromoBody)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PromoMechanical)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PromoCooking)).BeginInit();
-            this.tabPage2.SuspendLayout();
-            this.gbHoursWages.SuspendLayout();
-            this.gbHWMotives.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ComfortHours)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.HygieneTotal)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.BladderTotal)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.WorkBladder)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.WorkComfort)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.HungerHours)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.EnergyHours)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.WorkPublic)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.WorkHunger)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.BladderHours)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ComfortTotal)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.HungerTotal)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.HygieneHours)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.WorkEnergy)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.WorkFun)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.WorkSunshine)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PublicHours)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.SunshineTotal)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.EnergyTotal)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.FunTotal)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PublicTotal)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.FunHours)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.WorkHygiene)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.SunshineHours)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.AmorousHours)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.WorkAmorous)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.AmorousTotal)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numLscore)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numPTO)).BeginInit();
-            this.gbJLHoursWages.SuspendLayout();
-            this.tabControl1.SuspendLayout();
-            this.tabPage1.SuspendLayout();
-            this.gbJobDetails.SuspendLayout();
-            this.gbJLDetails.SuspendLayout();
-            this.tabPagMajor.SuspendLayout();
-            this.gpmajors.SuspendLayout();
-            this.gbmajaffil.SuspendLayout();
-            this.gbrequir.SuspendLayout();
-            this.tabPage9.SuspendLayout();
-            this.thmepanel1.SuspendLayout();
-            this.mainMenu1.SuspendLayout();
-            this.pntheme.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            this.SuspendLayout();
-            // 
-            // tabPage4
-            // 
-            this.tabPage4.Controls.Add(this.pictureBox2);
-            this.tabPage4.Controls.Add(this.lnudPetChancePercent);
-            this.tabPage4.Controls.Add(this.cbischance);
-            this.tabPage4.Controls.Add(this.lnudChanceCurrentLevel);
-            this.tabPage4.Controls.Add(this.lnudChancePercent);
-            this.tabPage4.Controls.Add(this.cpChoiceA);
-            this.tabPage4.Controls.Add(this.cpChoiceB);
-            this.tabPage4.Controls.Add(this.ChanceTextMale);
-            this.tabPage4.Controls.Add(this.ChanceCopy);
-            this.tabPage4.Controls.Add(this.ChanceTextFemale);
-            this.tabPage4.Controls.Add(this.tcChanceOutcome);
-            this.tabPage4.Controls.Add(this.label51);
-            this.tabPage4.Controls.Add(this.label52);
-            this.tabPage4.Location = new System.Drawing.Point(4, 22);
-            this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Size = new System.Drawing.Size(1092, 534);
-            this.tabPage4.TabIndex = 3;
-            this.tabPage4.Text = "Chance Cards";
-            // 
-            // pictureBox2
-            // 
-            this.pictureBox2.Location = new System.Drawing.Point(343, 0);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(30, 30);
-            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox2.TabIndex = 8;
-            this.pictureBox2.TabStop = false;
-            this.toolTip1.SetToolTip(this.pictureBox2, resources.GetString("pictureBox2.ToolTip"));
-            // 
-            // lnudPetChancePercent
-            // 
-            this.lnudPetChancePercent.AutoSize = true;
-            this.lnudPetChancePercent.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.lnudPetChancePercent.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight;
-            this.lnudPetChancePercent.Label = "Chance for B %";
-            this.lnudPetChancePercent.LabelAnchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)));
-            this.lnudPetChancePercent.Location = new System.Drawing.Point(379, 2);
-            this.lnudPetChancePercent.Margin = new System.Windows.Forms.Padding(0);
-            this.lnudPetChancePercent.Maximum = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-            this.lnudPetChancePercent.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.lnudPetChancePercent.Name = "lnudPetChancePercent";
-            this.lnudPetChancePercent.NoLabel = false;
-            this.lnudPetChancePercent.ReadOnly = false;
-            this.lnudPetChancePercent.Size = new System.Drawing.Size(167, 27);
-            this.lnudPetChancePercent.TabIndex = 7;
-            this.lnudPetChancePercent.Value = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.lnudPetChancePercent.ValueSize = new System.Drawing.Size(57, 21);
-            this.lnudPetChancePercent.Visible = false;
-            // 
-            // cbischance
-            // 
-            this.cbischance.AutoSize = true;
-            this.cbischance.Location = new System.Drawing.Point(276, 100);
-            this.cbischance.Name = "cbischance";
-            this.cbischance.Size = new System.Drawing.Size(172, 17);
-            this.cbischance.TabIndex = 6;
-            this.cbischance.Text = "Is Available at this Level?";
-            this.toolTip1.SetToolTip(this.cbischance, "Unset this if there is to be\r\nno Chance Card for this level.");
-            this.cbischance.UseVisualStyleBackColor = true;
-            this.cbischance.CheckedChanged += new System.EventHandler(this.cbischance_CheckedChanged);
-            // 
-            // lnudChanceCurrentLevel
-            // 
-            this.lnudChanceCurrentLevel.AutoSize = true;
-            this.lnudChanceCurrentLevel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.lnudChanceCurrentLevel.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight;
-            this.lnudChanceCurrentLevel.Label = "Current Level";
-            this.lnudChanceCurrentLevel.LabelAnchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)));
-            this.lnudChanceCurrentLevel.Location = new System.Drawing.Point(7, 2);
-            this.lnudChanceCurrentLevel.Margin = new System.Windows.Forms.Padding(0);
-            this.lnudChanceCurrentLevel.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.lnudChanceCurrentLevel.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.lnudChanceCurrentLevel.Name = "lnudChanceCurrentLevel";
-            this.lnudChanceCurrentLevel.NoLabel = false;
-            this.lnudChanceCurrentLevel.ReadOnly = false;
-            this.lnudChanceCurrentLevel.Size = new System.Drawing.Size(154, 27);
-            this.lnudChanceCurrentLevel.TabIndex = 1;
-            this.lnudChanceCurrentLevel.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.lnudChanceCurrentLevel.ValueSize = new System.Drawing.Size(57, 21);
-            this.lnudChanceCurrentLevel.ValueChanged += new System.EventHandler(this.lnudChanceCurrentLevel_ValueChanged);
-            // 
-            // lnudChancePercent
-            // 
-            this.lnudChancePercent.AutoSize = true;
-            this.lnudChancePercent.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.lnudChancePercent.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight;
-            this.lnudChancePercent.Label = "Chance for A %";
-            this.lnudChancePercent.LabelAnchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)));
-            this.lnudChancePercent.Location = new System.Drawing.Point(170, 2);
-            this.lnudChancePercent.Margin = new System.Windows.Forms.Padding(0);
-            this.lnudChancePercent.Maximum = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-            this.lnudChancePercent.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            -2147483648});
-            this.lnudChancePercent.Name = "lnudChancePercent";
-            this.lnudChancePercent.NoLabel = false;
-            this.lnudChancePercent.ReadOnly = false;
-            this.lnudChancePercent.Size = new System.Drawing.Size(167, 27);
-            this.lnudChancePercent.TabIndex = 2;
-            this.lnudChancePercent.Value = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.lnudChancePercent.ValueSize = new System.Drawing.Size(57, 21);
-            this.lnudChancePercent.ValueChanged += new System.EventHandler(this.lnudChancePercent_ValueChanged);
-            // 
-            // cpChoiceA
-            // 
-            this.cpChoiceA.AutoSize = true;
-            this.cpChoiceA.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cpChoiceA.BackColor = System.Drawing.Color.Transparent;
-            this.cpChoiceA.Body = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.cpChoiceA.Charisma = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.cpChoiceA.Cleaning = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.cpChoiceA.Cooking = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.cpChoiceA.Creativity = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.cpChoiceA.HaveSkills = true;
-            this.cpChoiceA.Label = "ChoiceA";
-            this.cpChoiceA.Labels = true;
-            this.cpChoiceA.Location = new System.Drawing.Point(4, 15);
-            this.cpChoiceA.Logic = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.cpChoiceA.Margin = new System.Windows.Forms.Padding(0);
-            this.cpChoiceA.MaximumSize = new System.Drawing.Size(1160, 48);
-            this.cpChoiceA.Mechanical = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.cpChoiceA.Name = "cpChoiceA";
-            this.cpChoiceA.Size = new System.Drawing.Size(1060, 48);
-            this.cpChoiceA.TabIndex = 2;
-            this.cpChoiceA.Value = "ChoiceA";
-            // 
-            // cpChoiceB
-            // 
-            this.cpChoiceB.AutoSize = true;
-            this.cpChoiceB.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cpChoiceB.BackColor = System.Drawing.Color.Transparent;
-            this.cpChoiceB.Body = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.cpChoiceB.Charisma = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.cpChoiceB.Cleaning = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.cpChoiceB.Cooking = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.cpChoiceB.Creativity = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.cpChoiceB.HaveSkills = true;
-            this.cpChoiceB.Label = "ChoiceB";
-            this.cpChoiceB.Labels = false;
-            this.cpChoiceB.Location = new System.Drawing.Point(4, 68);
-            this.cpChoiceB.Logic = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.cpChoiceB.Margin = new System.Windows.Forms.Padding(0);
-            this.cpChoiceB.MaximumSize = new System.Drawing.Size(1160, 27);
-            this.cpChoiceB.Mechanical = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.cpChoiceB.Name = "cpChoiceB";
-            this.cpChoiceB.Size = new System.Drawing.Size(1060, 27);
-            this.cpChoiceB.TabIndex = 3;
-            this.cpChoiceB.Value = "ChoiceB";
-            // 
-            // ChanceTextMale
-            // 
-            this.ChanceTextMale.Location = new System.Drawing.Point(593, 121);
-            this.ChanceTextMale.Multiline = true;
-            this.ChanceTextMale.Name = "ChanceTextMale";
-            this.ChanceTextMale.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.ChanceTextMale.Size = new System.Drawing.Size(490, 134);
-            this.ChanceTextMale.TabIndex = 2;
-            this.ChanceTextMale.Text = "textBox3";
-            // 
-            // ChanceCopy
-            // 
-            this.ChanceCopy.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.ChanceCopy.AutoSize = true;
-            this.ChanceCopy.Location = new System.Drawing.Point(547, 146);
-            this.ChanceCopy.Name = "ChanceCopy";
-            this.ChanceCopy.Size = new System.Drawing.Size(50, 13);
-            this.ChanceCopy.TabIndex = 3;
-            this.ChanceCopy.TabStop = true;
-            this.ChanceCopy.Text = "Copy >";
-            this.ChanceCopy.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.ChanceCopy_LinkClicked);
-            // 
-            // ChanceTextFemale
-            // 
-            this.ChanceTextFemale.Font = new System.Drawing.Font("Verdana", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ChanceTextFemale.Location = new System.Drawing.Point(7, 121);
-            this.ChanceTextFemale.Multiline = true;
-            this.ChanceTextFemale.Name = "ChanceTextFemale";
-            this.ChanceTextFemale.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.ChanceTextFemale.Size = new System.Drawing.Size(540, 134);
-            this.ChanceTextFemale.TabIndex = 2;
-            this.ChanceTextFemale.Text = "textBox4";
-            // 
-            // tcChanceOutcome
-            // 
-            this.tcChanceOutcome.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.tcChanceOutcome.Controls.Add(this.tabPage5);
-            this.tcChanceOutcome.Controls.Add(this.tabPage6);
-            this.tcChanceOutcome.Controls.Add(this.tabPage7);
-            this.tcChanceOutcome.Controls.Add(this.tabPage8);
-            this.tcChanceOutcome.Location = new System.Drawing.Point(3, 261);
-            this.tcChanceOutcome.Name = "tcChanceOutcome";
-            this.tcChanceOutcome.SelectedIndex = 0;
-            this.tcChanceOutcome.Size = new System.Drawing.Size(1084, 264);
-            this.tcChanceOutcome.TabIndex = 5;
-            // 
-            // tabPage5
-            // 
-            this.tabPage5.Controls.Add(this.epPassA);
-            this.tabPage5.Location = new System.Drawing.Point(4, 22);
-            this.tabPage5.Name = "tabPage5";
-            this.tabPage5.Size = new System.Drawing.Size(1076, 238);
-            this.tabPage5.TabIndex = 0;
-            this.tabPage5.Text = "Pass A";
-            // 
-            // epPassA
-            // 
-            this.epPassA.AutoSize = true;
-            this.epPassA.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.epPassA.Body = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.epPassA.Charisma = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.epPassA.Cleaning = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.epPassA.Cooking = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.epPassA.Creativity = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.epPassA.Female = "textBox2";
-            this.epPassA.Food = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.epPassA.IsCastaway = false;
-            this.epPassA.IsPetCareer = false;
-            this.epPassA.JobLevels = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.epPassA.Location = new System.Drawing.Point(0, 0);
-            this.epPassA.Logic = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.epPassA.Male = "textBox1";
-            this.epPassA.Margin = new System.Windows.Forms.Padding(0);
-            this.epPassA.Mechanical = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.epPassA.Money = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.epPassA.Name = "epPassA";
-            this.epPassA.Size = new System.Drawing.Size(1076, 238);
-            this.epPassA.TabIndex = 0;
-            // 
-            // tabPage6
-            // 
-            this.tabPage6.Controls.Add(this.epFailA);
-            this.tabPage6.Location = new System.Drawing.Point(4, 22);
-            this.tabPage6.Name = "tabPage6";
-            this.tabPage6.Size = new System.Drawing.Size(1076, 238);
-            this.tabPage6.TabIndex = 1;
-            this.tabPage6.Text = "Fail A";
-            // 
-            // epFailA
-            // 
-            this.epFailA.AutoSize = true;
-            this.epFailA.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.epFailA.Body = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.epFailA.Charisma = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.epFailA.Cleaning = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.epFailA.Cooking = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.epFailA.Creativity = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.epFailA.Female = "textBox2";
-            this.epFailA.Food = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.epFailA.IsCastaway = false;
-            this.epFailA.IsPetCareer = false;
-            this.epFailA.JobLevels = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.epFailA.Location = new System.Drawing.Point(0, 0);
-            this.epFailA.Logic = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.epFailA.Male = "textBox1";
-            this.epFailA.Margin = new System.Windows.Forms.Padding(0);
-            this.epFailA.Mechanical = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.epFailA.Money = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.epFailA.Name = "epFailA";
-            this.epFailA.Size = new System.Drawing.Size(1076, 238);
-            this.epFailA.TabIndex = 1;
-            // 
-            // tabPage7
-            // 
-            this.tabPage7.Controls.Add(this.epPassB);
-            this.tabPage7.Location = new System.Drawing.Point(4, 22);
-            this.tabPage7.Name = "tabPage7";
-            this.tabPage7.Size = new System.Drawing.Size(1076, 238);
-            this.tabPage7.TabIndex = 2;
-            this.tabPage7.Text = "Pass B";
-            // 
-            // epPassB
-            // 
-            this.epPassB.AutoSize = true;
-            this.epPassB.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.epPassB.Body = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.epPassB.Charisma = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.epPassB.Cleaning = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.epPassB.Cooking = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.epPassB.Creativity = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.epPassB.Female = "textBox2";
-            this.epPassB.Food = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.epPassB.IsCastaway = false;
-            this.epPassB.IsPetCareer = false;
-            this.epPassB.JobLevels = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.epPassB.Location = new System.Drawing.Point(0, 0);
-            this.epPassB.Logic = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.epPassB.Male = "textBox1";
-            this.epPassB.Margin = new System.Windows.Forms.Padding(0);
-            this.epPassB.Mechanical = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.epPassB.Money = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.epPassB.Name = "epPassB";
-            this.epPassB.Size = new System.Drawing.Size(1076, 238);
-            this.epPassB.TabIndex = 1;
-            // 
-            // tabPage8
-            // 
-            this.tabPage8.Controls.Add(this.epFailB);
-            this.tabPage8.Location = new System.Drawing.Point(4, 22);
-            this.tabPage8.Name = "tabPage8";
-            this.tabPage8.Size = new System.Drawing.Size(1076, 238);
-            this.tabPage8.TabIndex = 3;
-            this.tabPage8.Text = "Fail B";
-            // 
-            // epFailB
-            // 
-            this.epFailB.AutoSize = true;
-            this.epFailB.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.epFailB.Body = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.epFailB.Charisma = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.epFailB.Cleaning = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.epFailB.Cooking = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.epFailB.Creativity = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.epFailB.Female = "textBox2";
-            this.epFailB.Food = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.epFailB.IsCastaway = false;
-            this.epFailB.IsPetCareer = false;
-            this.epFailB.JobLevels = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.epFailB.Location = new System.Drawing.Point(0, 0);
-            this.epFailB.Logic = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.epFailB.Male = "textBox1";
-            this.epFailB.Margin = new System.Windows.Forms.Padding(0);
-            this.epFailB.Mechanical = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.epFailB.Money = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.epFailB.Name = "epFailB";
-            this.epFailB.Size = new System.Drawing.Size(1076, 238);
-            this.epFailB.TabIndex = 1;
-            // 
-            // label51
-            // 
-            this.label51.AutoSize = true;
-            this.label51.Location = new System.Drawing.Point(590, 102);
-            this.label51.Margin = new System.Windows.Forms.Padding(0);
-            this.label51.Name = "label51";
-            this.label51.Size = new System.Drawing.Size(61, 13);
-            this.label51.TabIndex = 1;
-            this.label51.Text = "Text Male";
-            // 
-            // label52
-            // 
-            this.label52.AutoSize = true;
-            this.label52.Location = new System.Drawing.Point(6, 102);
-            this.label52.Margin = new System.Windows.Forms.Padding(0);
-            this.label52.Name = "label52";
-            this.label52.Size = new System.Drawing.Size(76, 13);
-            this.label52.TabIndex = 1;
-            this.label52.Text = "Text Female";
-            // 
-            // tabPage3
-            // 
-            this.tabPage3.Controls.Add(this.gbJLPromo);
-            this.tabPage3.Controls.Add(this.gbPromo);
-            this.tabPage3.Location = new System.Drawing.Point(4, 22);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(1092, 534);
-            this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "Promotion";
-            // 
-            // gbJLPromo
-            // 
-            this.gbJLPromo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.gbJLPromo.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.gbJLPromo.BackColor = System.Drawing.Color.Transparent;
-            this.gbJLPromo.Controls.Add(this.PromoList);
-            this.gbJLPromo.Location = new System.Drawing.Point(10, 6);
-            this.gbJLPromo.Name = "gbJLPromo";
-            this.gbJLPromo.Size = new System.Drawing.Size(1069, 262);
-            this.gbJLPromo.TabIndex = 1;
-            this.gbJLPromo.TabStop = false;
-            this.gbJLPromo.Text = "Job Levels";
-            // 
-            // PromoList
-            // 
-            this.PromoList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.PromoList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.PrLvl,
-            this.PrCooking,
-            this.PrMechanical,
-            this.PrBody,
-            this.PrCharisma,
-            this.PrCreativity,
-            this.PrLogic,
-            this.PrCleaning,
-            this.PrFriends,
-            this.PrTrick});
-            this.PromoList.Font = new System.Drawing.Font("Verdana", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.PromoList.FullRowSelect = true;
-            this.PromoList.GridLines = true;
-            this.PromoList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-            this.PromoList.HideSelection = false;
-            this.PromoList.Location = new System.Drawing.Point(10, 18);
-            this.PromoList.MultiSelect = false;
-            this.PromoList.Name = "PromoList";
-            this.PromoList.Size = new System.Drawing.Size(1048, 232);
-            this.PromoList.TabIndex = 1;
-            this.PromoList.UseCompatibleStateImageBehavior = false;
-            this.PromoList.View = System.Windows.Forms.View.Details;
-            this.PromoList.SelectedIndexChanged += new System.EventHandler(this.PromoList_SelectedIndexChanged);
-            // 
-            // PrLvl
-            // 
-            this.PrLvl.Text = "Lvl";
-            // 
-            // PrCooking
-            // 
-            this.PrCooking.Text = "Cooking";
-            this.PrCooking.Width = 82;
-            // 
-            // PrMechanical
-            // 
-            this.PrMechanical.Text = "Mechanical";
-            this.PrMechanical.Width = 101;
-            // 
-            // PrBody
-            // 
-            this.PrBody.Text = "Body";
-            this.PrBody.Width = 90;
-            // 
-            // PrCharisma
-            // 
-            this.PrCharisma.Text = "Charisma";
-            this.PrCharisma.Width = 99;
-            // 
-            // PrCreativity
-            // 
-            this.PrCreativity.Text = "Creativity";
-            this.PrCreativity.Width = 108;
-            // 
-            // PrLogic
-            // 
-            this.PrLogic.Text = "Logic";
-            this.PrLogic.Width = 98;
-            // 
-            // PrCleaning
-            // 
-            this.PrCleaning.Text = "Cleaning";
-            this.PrCleaning.Width = 117;
-            // 
-            // PrFriends
-            // 
-            this.PrFriends.Text = "Friends";
-            this.PrFriends.Width = 100;
-            // 
-            // PrTrick
-            // 
-            this.PrTrick.Text = "Trick";
-            this.PrTrick.Width = 152;
-            // 
-            // gbPromo
-            // 
-            this.gbPromo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.gbPromo.BackColor = System.Drawing.Color.Transparent;
-            this.gbPromo.Controls.Add(this.cbTrick);
-            this.gbPromo.Controls.Add(this.label101);
-            this.gbPromo.Controls.Add(this.label41);
-            this.gbPromo.Controls.Add(this.label40);
-            this.gbPromo.Controls.Add(this.label39);
-            this.gbPromo.Controls.Add(this.label38);
-            this.gbPromo.Controls.Add(this.label37);
-            this.gbPromo.Controls.Add(this.label36);
-            this.gbPromo.Controls.Add(this.label35);
-            this.gbPromo.Controls.Add(this.label34);
-            this.gbPromo.Controls.Add(this.PromoFriends);
-            this.gbPromo.Controls.Add(this.PromoCleaning);
-            this.gbPromo.Controls.Add(this.PromoLogic);
-            this.gbPromo.Controls.Add(this.PromoCreativity);
-            this.gbPromo.Controls.Add(this.PromoCharisma);
-            this.gbPromo.Controls.Add(this.PromoBody);
-            this.gbPromo.Controls.Add(this.PromoMechanical);
-            this.gbPromo.Controls.Add(this.PromoCooking);
-            this.gbPromo.Location = new System.Drawing.Point(10, 285);
-            this.gbPromo.Name = "gbPromo";
-            this.gbPromo.Size = new System.Drawing.Size(1069, 240);
-            this.gbPromo.TabIndex = 2;
-            this.gbPromo.TabStop = false;
-            this.gbPromo.Text = "Current Level";
-            // 
-            // cbTrick
-            // 
-            this.cbTrick.FormattingEnabled = true;
-            this.cbTrick.Items.AddRange(new object[] {
-            "None",
-            "Stay",
-            "Come Here",
-            "Play Dead",
-            "Speak",
-            "Shake",
-            "Sit Up",
-            "Roll Over"});
-            this.cbTrick.Location = new System.Drawing.Point(322, 51);
-            this.cbTrick.Name = "cbTrick";
-            this.cbTrick.Size = new System.Drawing.Size(157, 21);
-            this.cbTrick.TabIndex = 18;
-            this.cbTrick.SelectedIndexChanged += new System.EventHandler(this.cbTrick_SelectedIndexChanged);
-            // 
-            // label101
-            // 
-            this.label101.AutoSize = true;
-            this.label101.Location = new System.Drawing.Point(184, 54);
-            this.label101.Name = "label101";
-            this.label101.Size = new System.Drawing.Size(34, 13);
-            this.label101.TabIndex = 17;
-            this.label101.Text = "Trick";
-            // 
-            // label41
-            // 
-            this.label41.AutoSize = true;
-            this.label41.Location = new System.Drawing.Point(184, 25);
-            this.label41.Name = "label41";
-            this.label41.Size = new System.Drawing.Size(88, 13);
-            this.label41.TabIndex = 15;
-            this.label41.Text = "Family Friends";
-            // 
-            // label40
-            // 
-            this.label40.AutoSize = true;
-            this.label40.Location = new System.Drawing.Point(10, 191);
-            this.label40.Name = "label40";
-            this.label40.Size = new System.Drawing.Size(57, 13);
-            this.label40.TabIndex = 13;
-            this.label40.Text = "Cleaning";
-            // 
-            // label39
-            // 
-            this.label39.AutoSize = true;
-            this.label39.Location = new System.Drawing.Point(10, 163);
-            this.label39.Name = "label39";
-            this.label39.Size = new System.Drawing.Size(36, 13);
-            this.label39.TabIndex = 11;
-            this.label39.Text = "Logic";
-            // 
-            // label38
-            // 
-            this.label38.AutoSize = true;
-            this.label38.Location = new System.Drawing.Point(10, 135);
-            this.label38.Name = "label38";
-            this.label38.Size = new System.Drawing.Size(63, 13);
-            this.label38.TabIndex = 9;
-            this.label38.Text = "Creativity";
-            // 
-            // label37
-            // 
-            this.label37.AutoSize = true;
-            this.label37.Location = new System.Drawing.Point(10, 107);
-            this.label37.Name = "label37";
-            this.label37.Size = new System.Drawing.Size(62, 13);
-            this.label37.TabIndex = 7;
-            this.label37.Text = "Charisma";
-            // 
-            // label36
-            // 
-            this.label36.AutoSize = true;
-            this.label36.Location = new System.Drawing.Point(10, 79);
-            this.label36.Name = "label36";
-            this.label36.Size = new System.Drawing.Size(36, 13);
-            this.label36.TabIndex = 5;
-            this.label36.Text = "Body";
-            // 
-            // label35
-            // 
-            this.label35.AutoSize = true;
-            this.label35.Location = new System.Drawing.Point(10, 51);
-            this.label35.Name = "label35";
-            this.label35.Size = new System.Drawing.Size(69, 13);
-            this.label35.TabIndex = 3;
-            this.label35.Text = "Mechanical";
-            // 
-            // label34
-            // 
-            this.label34.AutoSize = true;
-            this.label34.Location = new System.Drawing.Point(10, 23);
-            this.label34.Name = "label34";
-            this.label34.Size = new System.Drawing.Size(54, 13);
-            this.label34.TabIndex = 1;
-            this.label34.Text = "Cooking";
-            // 
-            // PromoFriends
-            // 
-            this.PromoFriends.Location = new System.Drawing.Point(322, 23);
-            this.PromoFriends.Maximum = new decimal(new int[] {
-            99,
-            0,
-            0,
-            0});
-            this.PromoFriends.Name = "PromoFriends";
-            this.PromoFriends.Size = new System.Drawing.Size(57, 21);
-            this.PromoFriends.TabIndex = 16;
-            this.PromoFriends.ValueChanged += new System.EventHandler(this.Promo_ValueChanged);
-            this.PromoFriends.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Promo_KeyUp);
-            // 
-            // PromoCleaning
-            // 
-            this.PromoCleaning.Location = new System.Drawing.Point(104, 189);
-            this.PromoCleaning.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.PromoCleaning.Name = "PromoCleaning";
-            this.PromoCleaning.Size = new System.Drawing.Size(57, 21);
-            this.PromoCleaning.TabIndex = 14;
-            this.PromoCleaning.ValueChanged += new System.EventHandler(this.Promo_ValueChanged);
-            this.PromoCleaning.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Promo_KeyUp);
-            // 
-            // PromoLogic
-            // 
-            this.PromoLogic.Location = new System.Drawing.Point(104, 161);
-            this.PromoLogic.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.PromoLogic.Name = "PromoLogic";
-            this.PromoLogic.Size = new System.Drawing.Size(57, 21);
-            this.PromoLogic.TabIndex = 12;
-            this.PromoLogic.ValueChanged += new System.EventHandler(this.Promo_ValueChanged);
-            this.PromoLogic.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Promo_KeyUp);
-            // 
-            // PromoCreativity
-            // 
-            this.PromoCreativity.Location = new System.Drawing.Point(104, 133);
-            this.PromoCreativity.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.PromoCreativity.Name = "PromoCreativity";
-            this.PromoCreativity.Size = new System.Drawing.Size(57, 21);
-            this.PromoCreativity.TabIndex = 10;
-            this.PromoCreativity.ValueChanged += new System.EventHandler(this.Promo_ValueChanged);
-            this.PromoCreativity.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Promo_KeyUp);
-            // 
-            // PromoCharisma
-            // 
-            this.PromoCharisma.Location = new System.Drawing.Point(104, 105);
-            this.PromoCharisma.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.PromoCharisma.Name = "PromoCharisma";
-            this.PromoCharisma.Size = new System.Drawing.Size(57, 21);
-            this.PromoCharisma.TabIndex = 8;
-            this.PromoCharisma.ValueChanged += new System.EventHandler(this.Promo_ValueChanged);
-            this.PromoCharisma.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Promo_KeyUp);
-            // 
-            // PromoBody
-            // 
-            this.PromoBody.Location = new System.Drawing.Point(104, 77);
-            this.PromoBody.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.PromoBody.Name = "PromoBody";
-            this.PromoBody.Size = new System.Drawing.Size(57, 21);
-            this.PromoBody.TabIndex = 6;
-            this.PromoBody.ValueChanged += new System.EventHandler(this.Promo_ValueChanged);
-            this.PromoBody.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Promo_KeyUp);
-            // 
-            // PromoMechanical
-            // 
-            this.PromoMechanical.Location = new System.Drawing.Point(104, 49);
-            this.PromoMechanical.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.PromoMechanical.Name = "PromoMechanical";
-            this.PromoMechanical.Size = new System.Drawing.Size(57, 21);
-            this.PromoMechanical.TabIndex = 4;
-            this.PromoMechanical.ValueChanged += new System.EventHandler(this.Promo_ValueChanged);
-            this.PromoMechanical.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Promo_KeyUp);
-            // 
-            // PromoCooking
-            // 
-            this.PromoCooking.Location = new System.Drawing.Point(104, 21);
-            this.PromoCooking.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.PromoCooking.Name = "PromoCooking";
-            this.PromoCooking.Size = new System.Drawing.Size(57, 21);
-            this.PromoCooking.TabIndex = 2;
-            this.PromoCooking.ValueChanged += new System.EventHandler(this.Promo_ValueChanged);
-            this.PromoCooking.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Promo_KeyUp);
-            // 
-            // tabPage2
-            // 
-            this.tabPage2.Controls.Add(this.gbHoursWages);
-            this.tabPage2.Controls.Add(this.gbJLHoursWages);
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Size = new System.Drawing.Size(1092, 534);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Hours & Wages";
-            // 
-            // gbHoursWages
-            // 
-            this.gbHoursWages.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.gbHoursWages.BackColor = System.Drawing.Color.Transparent;
-            this.gbHoursWages.Controls.Add(this.tbWorkFinish);
-            this.gbHoursWages.Controls.Add(this.label48);
-            this.gbHoursWages.Controls.Add(this.lnudFoods);
-            this.gbHoursWages.Controls.Add(this.lnudWorkStart);
-            this.gbHoursWages.Controls.Add(this.lnudWorkHours);
-            this.gbHoursWages.Controls.Add(this.lnudWages);
-            this.gbHoursWages.Controls.Add(this.lnudWagesDog);
-            this.gbHoursWages.Controls.Add(this.lbPTO);
-            this.gbHoursWages.Controls.Add(this.lnudWagesCat);
-            this.gbHoursWages.Controls.Add(this.WorkMonday);
-            this.gbHoursWages.Controls.Add(this.WorkTuesday);
-            this.gbHoursWages.Controls.Add(this.WorkWednesday);
-            this.gbHoursWages.Controls.Add(this.WorkThursday);
-            this.gbHoursWages.Controls.Add(this.WorkFriday);
-            this.gbHoursWages.Controls.Add(this.WorkSaturday);
-            this.gbHoursWages.Controls.Add(this.WorkSunday);
-            this.gbHoursWages.Controls.Add(this.gbHWMotives);
-            this.gbHoursWages.Controls.Add(this.lbLscore);
-            this.gbHoursWages.Controls.Add(this.numLscore);
-            this.gbHoursWages.Controls.Add(this.numPTO);
-            this.gbHoursWages.Location = new System.Drawing.Point(10, 285);
-            this.gbHoursWages.Name = "gbHoursWages";
-            this.gbHoursWages.Size = new System.Drawing.Size(1069, 240);
-            this.gbHoursWages.TabIndex = 2;
-            this.gbHoursWages.TabStop = false;
-            this.gbHoursWages.Text = "Current Level";
-            // 
-            // tbWorkFinish
-            // 
-            this.tbWorkFinish.BackColor = System.Drawing.SystemColors.Window;
-            this.tbWorkFinish.Location = new System.Drawing.Point(281, 30);
-            this.tbWorkFinish.Name = "tbWorkFinish";
-            this.tbWorkFinish.ReadOnly = true;
-            this.tbWorkFinish.Size = new System.Drawing.Size(41, 21);
-            this.tbWorkFinish.TabIndex = 14;
-            this.tbWorkFinish.Text = "88";
-            // 
-            // label48
-            // 
-            this.label48.AutoSize = true;
-            this.label48.Location = new System.Drawing.Point(236, 34);
-            this.label48.Name = "label48";
-            this.label48.Size = new System.Drawing.Size(39, 13);
-            this.label48.TabIndex = 13;
-            this.label48.Text = "Finish";
-            // 
-            // lnudFoods
-            // 
-            this.lnudFoods.AutoSize = true;
-            this.lnudFoods.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.lnudFoods.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight;
-            this.lnudFoods.Label = "Food";
-            this.lnudFoods.LabelAnchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lnudFoods.Location = new System.Drawing.Point(239, 71);
-            this.lnudFoods.Margin = new System.Windows.Forms.Padding(0);
-            this.lnudFoods.Maximum = new decimal(new int[] {
-            10000,
-            0,
-            0,
-            0});
-            this.lnudFoods.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.lnudFoods.Name = "lnudFoods";
-            this.lnudFoods.NoLabel = false;
-            this.lnudFoods.ReadOnly = false;
-            this.lnudFoods.Size = new System.Drawing.Size(146, 27);
-            this.lnudFoods.TabIndex = 12;
-            this.lnudFoods.Value = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.lnudFoods.ValueSize = new System.Drawing.Size(100, 21);
-            this.lnudFoods.Visible = false;
-            this.lnudFoods.ValueChanged += new System.EventHandler(this.lnudFoods_ValueChanged);
-            // 
-            // lnudWorkStart
-            // 
-            this.lnudWorkStart.AutoSize = true;
-            this.lnudWorkStart.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.lnudWorkStart.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight;
-            this.lnudWorkStart.Label = "Start";
-            this.lnudWorkStart.LabelAnchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lnudWorkStart.Location = new System.Drawing.Point(10, 27);
-            this.lnudWorkStart.Margin = new System.Windows.Forms.Padding(0);
-            this.lnudWorkStart.Maximum = new decimal(new int[] {
-            23,
-            0,
-            0,
-            0});
-            this.lnudWorkStart.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.lnudWorkStart.Name = "lnudWorkStart";
-            this.lnudWorkStart.NoLabel = false;
-            this.lnudWorkStart.ReadOnly = false;
-            this.lnudWorkStart.Size = new System.Drawing.Size(104, 27);
-            this.lnudWorkStart.TabIndex = 1;
-            this.lnudWorkStart.Value = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.lnudWorkStart.ValueSize = new System.Drawing.Size(57, 21);
-            this.lnudWorkStart.ValueChanged += new System.EventHandler(this.lnudWork_ValueChanged);
-            this.lnudWorkStart.KeyUp += new System.Windows.Forms.KeyEventHandler(this.lnudWork_KeyUp);
-            // 
-            // lnudWorkHours
-            // 
-            this.lnudWorkHours.AutoSize = true;
-            this.lnudWorkHours.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.lnudWorkHours.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight;
-            this.lnudWorkHours.Label = "Hours";
-            this.lnudWorkHours.LabelAnchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lnudWorkHours.Location = new System.Drawing.Point(114, 27);
-            this.lnudWorkHours.Margin = new System.Windows.Forms.Padding(6, 0, 0, 0);
-            this.lnudWorkHours.Maximum = new decimal(new int[] {
-            22,
-            0,
-            0,
-            0});
-            this.lnudWorkHours.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.lnudWorkHours.Name = "lnudWorkHours";
-            this.lnudWorkHours.NoLabel = false;
-            this.lnudWorkHours.ReadOnly = false;
-            this.lnudWorkHours.Size = new System.Drawing.Size(109, 27);
-            this.lnudWorkHours.TabIndex = 2;
-            this.lnudWorkHours.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.lnudWorkHours.ValueSize = new System.Drawing.Size(57, 21);
-            this.lnudWorkHours.ValueChanged += new System.EventHandler(this.lnudWork_ValueChanged);
-            this.lnudWorkHours.KeyUp += new System.Windows.Forms.KeyEventHandler(this.lnudWork_KeyUp);
-            // 
-            // lnudWages
-            // 
-            this.lnudWages.AutoSize = true;
-            this.lnudWages.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.lnudWages.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight;
-            this.lnudWages.Label = "Wages";
-            this.lnudWages.LabelAnchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lnudWages.Location = new System.Drawing.Point(61, 71);
-            this.lnudWages.Margin = new System.Windows.Forms.Padding(0);
-            this.lnudWages.Maximum = new decimal(new int[] {
-            20000,
-            0,
-            0,
-            0});
-            this.lnudWages.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.lnudWages.Name = "lnudWages";
-            this.lnudWages.NoLabel = false;
-            this.lnudWages.ReadOnly = false;
-            this.lnudWages.Size = new System.Drawing.Size(156, 27);
-            this.lnudWages.TabIndex = 1;
-            this.lnudWages.Value = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.lnudWages.ValueSize = new System.Drawing.Size(100, 21);
-            this.lnudWages.ValueChanged += new System.EventHandler(this.lnudWork_ValueChanged);
-            this.lnudWages.KeyUp += new System.Windows.Forms.KeyEventHandler(this.lnudWork_KeyUp);
-            // 
-            // lnudWagesDog
-            // 
-            this.lnudWagesDog.AutoSize = true;
-            this.lnudWagesDog.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.lnudWagesDog.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight;
-            this.lnudWagesDog.Label = "Wages (Dog)";
-            this.lnudWagesDog.LabelAnchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)));
-            this.lnudWagesDog.Location = new System.Drawing.Point(24, 103);
-            this.lnudWagesDog.Margin = new System.Windows.Forms.Padding(0);
-            this.lnudWagesDog.Maximum = new decimal(new int[] {
-            20000,
-            0,
-            0,
-            0});
-            this.lnudWagesDog.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.lnudWagesDog.Name = "lnudWagesDog";
-            this.lnudWagesDog.NoLabel = false;
-            this.lnudWagesDog.ReadOnly = false;
-            this.lnudWagesDog.Size = new System.Drawing.Size(193, 27);
-            this.lnudWagesDog.TabIndex = 2;
-            this.lnudWagesDog.Value = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.lnudWagesDog.ValueSize = new System.Drawing.Size(100, 21);
-            this.lnudWagesDog.ValueChanged += new System.EventHandler(this.lnudWork_ValueChanged);
-            this.lnudWagesDog.KeyUp += new System.Windows.Forms.KeyEventHandler(this.lnudWork_KeyUp);
-            // 
-            // lbPTO
-            // 
-            this.lbPTO.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lbPTO.AutoSize = true;
-            this.lbPTO.Location = new System.Drawing.Point(466, 207);
-            this.lbPTO.Name = "lbPTO";
-            this.lbPTO.Size = new System.Drawing.Size(226, 13);
-            this.lbPTO.TabIndex = 11;
-            this.lbPTO.Text = "Paid Time Off (PTO) Daily Accruement";
-            this.lbPTO.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // lnudWagesCat
-            // 
-            this.lnudWagesCat.AutoSize = true;
-            this.lnudWagesCat.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.lnudWagesCat.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight;
-            this.lnudWagesCat.Label = "Wages (Cat)";
-            this.lnudWagesCat.LabelAnchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)));
-            this.lnudWagesCat.Location = new System.Drawing.Point(27, 138);
-            this.lnudWagesCat.Margin = new System.Windows.Forms.Padding(0);
-            this.lnudWagesCat.Maximum = new decimal(new int[] {
-            20000,
-            0,
-            0,
-            0});
-            this.lnudWagesCat.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.lnudWagesCat.Name = "lnudWagesCat";
-            this.lnudWagesCat.NoLabel = false;
-            this.lnudWagesCat.ReadOnly = false;
-            this.lnudWagesCat.Size = new System.Drawing.Size(190, 27);
-            this.lnudWagesCat.TabIndex = 3;
-            this.lnudWagesCat.Value = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.lnudWagesCat.ValueSize = new System.Drawing.Size(100, 21);
-            this.lnudWagesCat.ValueChanged += new System.EventHandler(this.lnudWork_ValueChanged);
-            this.lnudWagesCat.KeyUp += new System.Windows.Forms.KeyEventHandler(this.lnudWork_KeyUp);
-            // 
-            // WorkMonday
-            // 
-            this.WorkMonday.AutoSize = true;
-            this.WorkMonday.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.WorkMonday.Location = new System.Drawing.Point(13, 206);
-            this.WorkMonday.Name = "WorkMonday";
-            this.WorkMonday.Size = new System.Drawing.Size(49, 17);
-            this.WorkMonday.TabIndex = 1;
-            this.WorkMonday.Text = "Mon";
-            this.WorkMonday.CheckedChanged += new System.EventHandler(this.Workday_CheckedChanged);
-            // 
-            // WorkTuesday
-            // 
-            this.WorkTuesday.AutoSize = true;
-            this.WorkTuesday.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.WorkTuesday.Location = new System.Drawing.Point(77, 206);
-            this.WorkTuesday.Name = "WorkTuesday";
-            this.WorkTuesday.Size = new System.Drawing.Size(46, 17);
-            this.WorkTuesday.TabIndex = 2;
-            this.WorkTuesday.Text = "Tue";
-            this.WorkTuesday.CheckedChanged += new System.EventHandler(this.Workday_CheckedChanged);
-            // 
-            // WorkWednesday
-            // 
-            this.WorkWednesday.AutoSize = true;
-            this.WorkWednesday.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.WorkWednesday.Location = new System.Drawing.Point(138, 206);
-            this.WorkWednesday.Name = "WorkWednesday";
-            this.WorkWednesday.Size = new System.Drawing.Size(50, 17);
-            this.WorkWednesday.TabIndex = 3;
-            this.WorkWednesday.Text = "Wed";
-            this.WorkWednesday.CheckedChanged += new System.EventHandler(this.Workday_CheckedChanged);
-            // 
-            // WorkThursday
-            // 
-            this.WorkThursday.AutoSize = true;
-            this.WorkThursday.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.WorkThursday.Location = new System.Drawing.Point(203, 206);
-            this.WorkThursday.Name = "WorkThursday";
-            this.WorkThursday.Size = new System.Drawing.Size(47, 17);
-            this.WorkThursday.TabIndex = 4;
-            this.WorkThursday.Text = "Thu";
-            this.WorkThursday.CheckedChanged += new System.EventHandler(this.Workday_CheckedChanged);
-            // 
-            // WorkFriday
-            // 
-            this.WorkFriday.AutoSize = true;
-            this.WorkFriday.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.WorkFriday.Location = new System.Drawing.Point(265, 206);
-            this.WorkFriday.Name = "WorkFriday";
-            this.WorkFriday.Size = new System.Drawing.Size(40, 17);
-            this.WorkFriday.TabIndex = 5;
-            this.WorkFriday.Text = "Fri";
-            this.WorkFriday.CheckedChanged += new System.EventHandler(this.Workday_CheckedChanged);
-            // 
-            // WorkSaturday
-            // 
-            this.WorkSaturday.AutoSize = true;
-            this.WorkSaturday.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.WorkSaturday.Location = new System.Drawing.Point(320, 206);
-            this.WorkSaturday.Name = "WorkSaturday";
-            this.WorkSaturday.Size = new System.Drawing.Size(45, 17);
-            this.WorkSaturday.TabIndex = 6;
-            this.WorkSaturday.Text = "Sat";
-            this.WorkSaturday.CheckedChanged += new System.EventHandler(this.Workday_CheckedChanged);
-            // 
-            // WorkSunday
-            // 
-            this.WorkSunday.AutoSize = true;
-            this.WorkSunday.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.WorkSunday.Location = new System.Drawing.Point(380, 206);
-            this.WorkSunday.Name = "WorkSunday";
-            this.WorkSunday.Size = new System.Drawing.Size(48, 17);
-            this.WorkSunday.TabIndex = 7;
-            this.WorkSunday.Text = "Sun";
-            this.WorkSunday.CheckedChanged += new System.EventHandler(this.Workday_CheckedChanged);
-            // 
-            // gbHWMotives
-            // 
-            this.gbHWMotives.Controls.Add(this.label27);
-            this.gbHWMotives.Controls.Add(this.label24);
-            this.gbHWMotives.Controls.Add(this.ComfortHours);
-            this.gbHWMotives.Controls.Add(this.HygieneTotal);
-            this.gbHWMotives.Controls.Add(this.BladderTotal);
-            this.gbHWMotives.Controls.Add(this.label21);
-            this.gbHWMotives.Controls.Add(this.WorkBladder);
-            this.gbHWMotives.Controls.Add(this.label23);
-            this.gbHWMotives.Controls.Add(this.label19);
-            this.gbHWMotives.Controls.Add(this.WorkComfort);
-            this.gbHWMotives.Controls.Add(this.HungerHours);
-            this.gbHWMotives.Controls.Add(this.EnergyHours);
-            this.gbHWMotives.Controls.Add(this.label25);
-            this.gbHWMotives.Controls.Add(this.WorkPublic);
-            this.gbHWMotives.Controls.Add(this.WorkHunger);
-            this.gbHWMotives.Controls.Add(this.BladderHours);
-            this.gbHWMotives.Controls.Add(this.ComfortTotal);
-            this.gbHWMotives.Controls.Add(this.label22);
-            this.gbHWMotives.Controls.Add(this.HungerTotal);
-            this.gbHWMotives.Controls.Add(this.HygieneHours);
-            this.gbHWMotives.Controls.Add(this.WorkEnergy);
-            this.gbHWMotives.Controls.Add(this.WorkFun);
-            this.gbHWMotives.Controls.Add(this.WorkSunshine);
-            this.gbHWMotives.Controls.Add(this.PublicHours);
-            this.gbHWMotives.Controls.Add(this.label20);
-            this.gbHWMotives.Controls.Add(this.SunshineTotal);
-            this.gbHWMotives.Controls.Add(this.EnergyTotal);
-            this.gbHWMotives.Controls.Add(this.FunTotal);
-            this.gbHWMotives.Controls.Add(this.PublicTotal);
-            this.gbHWMotives.Controls.Add(this.label33);
-            this.gbHWMotives.Controls.Add(this.label32);
-            this.gbHWMotives.Controls.Add(this.label31);
-            this.gbHWMotives.Controls.Add(this.label30);
-            this.gbHWMotives.Controls.Add(this.label28);
-            this.gbHWMotives.Controls.Add(this.label26);
-            this.gbHWMotives.Controls.Add(this.FunHours);
-            this.gbHWMotives.Controls.Add(this.WorkHygiene);
-            this.gbHWMotives.Controls.Add(this.SunshineHours);
-            this.gbHWMotives.Controls.Add(this.label18);
-            this.gbHWMotives.Controls.Add(this.AmorousHours);
-            this.gbHWMotives.Controls.Add(this.WorkAmorous);
-            this.gbHWMotives.Controls.Add(this.AmorousTotal);
-            this.gbHWMotives.Location = new System.Drawing.Point(453, 20);
-            this.gbHWMotives.Name = "gbHWMotives";
-            this.gbHWMotives.Size = new System.Drawing.Size(594, 174);
-            this.gbHWMotives.TabIndex = 4;
-            this.gbHWMotives.TabStop = false;
-            this.gbHWMotives.Text = "Motives";
-            // 
-            // label27
-            // 
-            this.label27.AutoSize = true;
-            this.label27.Location = new System.Drawing.Point(432, 14);
-            this.label27.Name = "label27";
-            this.label27.Size = new System.Drawing.Size(75, 13);
-            this.label27.TabIndex = 64;
-            this.label27.Text = "times Hours";
-            // 
-            // label24
-            // 
-            this.label24.AutoSize = true;
-            this.label24.Location = new System.Drawing.Point(129, 14);
-            this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(75, 13);
-            this.label24.TabIndex = 41;
-            this.label24.Text = "times Hours";
-            // 
-            // ComfortHours
-            // 
-            this.ComfortHours.AutoSize = true;
-            this.ComfortHours.Enabled = false;
-            this.ComfortHours.Location = new System.Drawing.Point(142, 61);
-            this.ComfortHours.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.ComfortHours.Minimum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            -2147483648});
-            this.ComfortHours.Name = "ComfortHours";
-            this.ComfortHours.ReadOnly = true;
-            this.ComfortHours.Size = new System.Drawing.Size(60, 21);
-            this.ComfortHours.TabIndex = 0;
-            this.ComfortHours.TabStop = false;
-            // 
-            // HygieneTotal
-            // 
-            this.HygieneTotal.AutoSize = true;
-            this.HygieneTotal.Enabled = false;
-            this.HygieneTotal.Location = new System.Drawing.Point(208, 89);
-            this.HygieneTotal.Maximum = new decimal(new int[] {
-            20000,
-            0,
-            0,
-            0});
-            this.HygieneTotal.Minimum = new decimal(new int[] {
-            20000,
-            0,
-            0,
-            -2147483648});
-            this.HygieneTotal.Name = "HygieneTotal";
-            this.HygieneTotal.ReadOnly = true;
-            this.HygieneTotal.Size = new System.Drawing.Size(68, 21);
-            this.HygieneTotal.TabIndex = 0;
-            this.HygieneTotal.TabStop = false;
-            // 
-            // BladderTotal
-            // 
-            this.BladderTotal.AutoSize = true;
-            this.BladderTotal.Enabled = false;
-            this.BladderTotal.Location = new System.Drawing.Point(208, 116);
-            this.BladderTotal.Maximum = new decimal(new int[] {
-            20000,
-            0,
-            0,
-            0});
-            this.BladderTotal.Minimum = new decimal(new int[] {
-            20000,
-            0,
-            0,
-            -2147483648});
-            this.BladderTotal.Name = "BladderTotal";
-            this.BladderTotal.ReadOnly = true;
-            this.BladderTotal.Size = new System.Drawing.Size(68, 21);
-            this.BladderTotal.TabIndex = 0;
-            this.BladderTotal.TabStop = false;
-            // 
-            // label21
-            // 
-            this.label21.AutoSize = true;
-            this.label21.Location = new System.Drawing.Point(9, 93);
-            this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(53, 13);
-            this.label21.TabIndex = 7;
-            this.label21.Text = "Hygiene";
-            // 
-            // WorkBladder
-            // 
-            this.WorkBladder.AutoSize = true;
-            this.WorkBladder.Location = new System.Drawing.Point(75, 116);
-            this.WorkBladder.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.WorkBladder.Minimum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            -2147483648});
-            this.WorkBladder.Name = "WorkBladder";
-            this.WorkBladder.Size = new System.Drawing.Size(60, 21);
-            this.WorkBladder.TabIndex = 10;
-            this.WorkBladder.ValueChanged += new System.EventHandler(this.nudMotive_ValueChanged);
-            this.WorkBladder.KeyUp += new System.Windows.Forms.KeyEventHandler(this.nudMotive_KeyUp);
-            // 
-            // label23
-            // 
-            this.label23.AutoSize = true;
-            this.label23.Location = new System.Drawing.Point(72, 14);
-            this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(53, 13);
-            this.label23.TabIndex = 40;
-            this.label23.Text = "PerHour";
-            // 
-            // label19
-            // 
-            this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(9, 38);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(48, 13);
-            this.label19.TabIndex = 1;
-            this.label19.Text = "Hunger";
-            // 
-            // WorkComfort
-            // 
-            this.WorkComfort.AutoSize = true;
-            this.WorkComfort.Location = new System.Drawing.Point(75, 61);
-            this.WorkComfort.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.WorkComfort.Minimum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            -2147483648});
-            this.WorkComfort.Name = "WorkComfort";
-            this.WorkComfort.Size = new System.Drawing.Size(60, 21);
-            this.WorkComfort.TabIndex = 6;
-            this.WorkComfort.ValueChanged += new System.EventHandler(this.nudMotive_ValueChanged);
-            this.WorkComfort.KeyUp += new System.Windows.Forms.KeyEventHandler(this.nudMotive_KeyUp);
-            // 
-            // HungerHours
-            // 
-            this.HungerHours.AutoSize = true;
-            this.HungerHours.Enabled = false;
-            this.HungerHours.Location = new System.Drawing.Point(142, 34);
-            this.HungerHours.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.HungerHours.Minimum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            -2147483648});
-            this.HungerHours.Name = "HungerHours";
-            this.HungerHours.ReadOnly = true;
-            this.HungerHours.Size = new System.Drawing.Size(60, 21);
-            this.HungerHours.TabIndex = 0;
-            this.HungerHours.TabStop = false;
-            // 
-            // EnergyHours
-            // 
-            this.EnergyHours.AutoSize = true;
-            this.EnergyHours.Enabled = false;
-            this.EnergyHours.Location = new System.Drawing.Point(445, 34);
-            this.EnergyHours.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.EnergyHours.Minimum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            -2147483648});
-            this.EnergyHours.Name = "EnergyHours";
-            this.EnergyHours.ReadOnly = true;
-            this.EnergyHours.Size = new System.Drawing.Size(60, 21);
-            this.EnergyHours.TabIndex = 0;
-            this.EnergyHours.TabStop = false;
-            // 
-            // label25
-            // 
-            this.label25.AutoSize = true;
-            this.label25.Location = new System.Drawing.Point(205, 14);
-            this.label25.Name = "label25";
-            this.label25.Size = new System.Drawing.Size(47, 13);
-            this.label25.TabIndex = 42;
-            this.label25.Text = "= Total";
-            // 
-            // WorkPublic
-            // 
-            this.WorkPublic.AutoSize = true;
-            this.WorkPublic.Location = new System.Drawing.Point(378, 89);
-            this.WorkPublic.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.WorkPublic.Minimum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            -2147483648});
-            this.WorkPublic.Name = "WorkPublic";
-            this.WorkPublic.Size = new System.Drawing.Size(60, 21);
-            this.WorkPublic.TabIndex = 16;
-            this.WorkPublic.ValueChanged += new System.EventHandler(this.nudMotive_ValueChanged);
-            this.WorkPublic.KeyUp += new System.Windows.Forms.KeyEventHandler(this.nudMotive_KeyUp);
-            // 
-            // WorkHunger
-            // 
-            this.WorkHunger.AutoSize = true;
-            this.WorkHunger.Location = new System.Drawing.Point(75, 34);
-            this.WorkHunger.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.WorkHunger.Minimum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            -2147483648});
-            this.WorkHunger.Name = "WorkHunger";
-            this.WorkHunger.Size = new System.Drawing.Size(60, 21);
-            this.WorkHunger.TabIndex = 2;
-            this.WorkHunger.ValueChanged += new System.EventHandler(this.nudMotive_ValueChanged);
-            this.WorkHunger.KeyUp += new System.Windows.Forms.KeyEventHandler(this.nudMotive_KeyUp);
-            // 
-            // BladderHours
-            // 
-            this.BladderHours.AutoSize = true;
-            this.BladderHours.Enabled = false;
-            this.BladderHours.Location = new System.Drawing.Point(142, 116);
-            this.BladderHours.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.BladderHours.Minimum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            -2147483648});
-            this.BladderHours.Name = "BladderHours";
-            this.BladderHours.ReadOnly = true;
-            this.BladderHours.Size = new System.Drawing.Size(60, 21);
-            this.BladderHours.TabIndex = 0;
-            this.BladderHours.TabStop = false;
-            // 
-            // ComfortTotal
-            // 
-            this.ComfortTotal.AutoSize = true;
-            this.ComfortTotal.Enabled = false;
-            this.ComfortTotal.Location = new System.Drawing.Point(208, 62);
-            this.ComfortTotal.Maximum = new decimal(new int[] {
-            20000,
-            0,
-            0,
-            0});
-            this.ComfortTotal.Minimum = new decimal(new int[] {
-            20000,
-            0,
-            0,
-            -2147483648});
-            this.ComfortTotal.Name = "ComfortTotal";
-            this.ComfortTotal.ReadOnly = true;
-            this.ComfortTotal.Size = new System.Drawing.Size(68, 21);
-            this.ComfortTotal.TabIndex = 0;
-            this.ComfortTotal.TabStop = false;
-            // 
-            // label22
-            // 
-            this.label22.AutoSize = true;
-            this.label22.Location = new System.Drawing.Point(9, 120);
-            this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(51, 13);
-            this.label22.TabIndex = 9;
-            this.label22.Text = "Bladder";
-            // 
-            // HungerTotal
-            // 
-            this.HungerTotal.AutoSize = true;
-            this.HungerTotal.Enabled = false;
-            this.HungerTotal.Location = new System.Drawing.Point(208, 34);
-            this.HungerTotal.Maximum = new decimal(new int[] {
-            20000,
-            0,
-            0,
-            0});
-            this.HungerTotal.Minimum = new decimal(new int[] {
-            20000,
-            0,
-            0,
-            -2147483648});
-            this.HungerTotal.Name = "HungerTotal";
-            this.HungerTotal.ReadOnly = true;
-            this.HungerTotal.Size = new System.Drawing.Size(68, 21);
-            this.HungerTotal.TabIndex = 0;
-            this.HungerTotal.TabStop = false;
-            // 
-            // HygieneHours
-            // 
-            this.HygieneHours.AutoSize = true;
-            this.HygieneHours.Enabled = false;
-            this.HygieneHours.Location = new System.Drawing.Point(142, 89);
-            this.HygieneHours.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.HygieneHours.Minimum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            -2147483648});
-            this.HygieneHours.Name = "HygieneHours";
-            this.HygieneHours.ReadOnly = true;
-            this.HygieneHours.Size = new System.Drawing.Size(60, 21);
-            this.HygieneHours.TabIndex = 0;
-            this.HygieneHours.TabStop = false;
-            // 
-            // WorkEnergy
-            // 
-            this.WorkEnergy.AutoSize = true;
-            this.WorkEnergy.Location = new System.Drawing.Point(378, 34);
-            this.WorkEnergy.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.WorkEnergy.Minimum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            -2147483648});
-            this.WorkEnergy.Name = "WorkEnergy";
-            this.WorkEnergy.Size = new System.Drawing.Size(60, 21);
-            this.WorkEnergy.TabIndex = 12;
-            this.WorkEnergy.ValueChanged += new System.EventHandler(this.nudMotive_ValueChanged);
-            this.WorkEnergy.KeyUp += new System.Windows.Forms.KeyEventHandler(this.nudMotive_KeyUp);
-            // 
-            // WorkFun
-            // 
-            this.WorkFun.AutoSize = true;
-            this.WorkFun.Location = new System.Drawing.Point(378, 61);
-            this.WorkFun.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.WorkFun.Minimum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            -2147483648});
-            this.WorkFun.Name = "WorkFun";
-            this.WorkFun.Size = new System.Drawing.Size(60, 21);
-            this.WorkFun.TabIndex = 14;
-            this.WorkFun.ValueChanged += new System.EventHandler(this.nudMotive_ValueChanged);
-            this.WorkFun.KeyUp += new System.Windows.Forms.KeyEventHandler(this.nudMotive_KeyUp);
-            // 
-            // WorkSunshine
-            // 
-            this.WorkSunshine.AutoSize = true;
-            this.WorkSunshine.Location = new System.Drawing.Point(378, 116);
-            this.WorkSunshine.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.WorkSunshine.Minimum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            -2147483648});
-            this.WorkSunshine.Name = "WorkSunshine";
-            this.WorkSunshine.Size = new System.Drawing.Size(60, 21);
-            this.WorkSunshine.TabIndex = 18;
-            this.WorkSunshine.ValueChanged += new System.EventHandler(this.nudMotive_ValueChanged);
-            this.WorkSunshine.KeyUp += new System.Windows.Forms.KeyEventHandler(this.nudMotive_KeyUp);
-            // 
-            // PublicHours
-            // 
-            this.PublicHours.AutoSize = true;
-            this.PublicHours.Enabled = false;
-            this.PublicHours.Location = new System.Drawing.Point(445, 89);
-            this.PublicHours.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.PublicHours.Minimum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            -2147483648});
-            this.PublicHours.Name = "PublicHours";
-            this.PublicHours.ReadOnly = true;
-            this.PublicHours.Size = new System.Drawing.Size(60, 21);
-            this.PublicHours.TabIndex = 0;
-            this.PublicHours.TabStop = false;
-            // 
-            // label20
-            // 
-            this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(9, 65);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(54, 13);
-            this.label20.TabIndex = 5;
-            this.label20.Text = "Comfort";
-            // 
-            // SunshineTotal
-            // 
-            this.SunshineTotal.AutoSize = true;
-            this.SunshineTotal.Enabled = false;
-            this.SunshineTotal.Location = new System.Drawing.Point(512, 116);
-            this.SunshineTotal.Maximum = new decimal(new int[] {
-            20000,
-            0,
-            0,
-            0});
-            this.SunshineTotal.Minimum = new decimal(new int[] {
-            20000,
-            0,
-            0,
-            -2147483648});
-            this.SunshineTotal.Name = "SunshineTotal";
-            this.SunshineTotal.ReadOnly = true;
-            this.SunshineTotal.Size = new System.Drawing.Size(68, 21);
-            this.SunshineTotal.TabIndex = 0;
-            this.SunshineTotal.TabStop = false;
-            // 
-            // EnergyTotal
-            // 
-            this.EnergyTotal.AutoSize = true;
-            this.EnergyTotal.Enabled = false;
-            this.EnergyTotal.Location = new System.Drawing.Point(512, 34);
-            this.EnergyTotal.Maximum = new decimal(new int[] {
-            20000,
-            0,
-            0,
-            0});
-            this.EnergyTotal.Minimum = new decimal(new int[] {
-            20000,
-            0,
-            0,
-            -2147483648});
-            this.EnergyTotal.Name = "EnergyTotal";
-            this.EnergyTotal.ReadOnly = true;
-            this.EnergyTotal.Size = new System.Drawing.Size(68, 21);
-            this.EnergyTotal.TabIndex = 0;
-            this.EnergyTotal.TabStop = false;
-            // 
-            // FunTotal
-            // 
-            this.FunTotal.AutoSize = true;
-            this.FunTotal.Enabled = false;
-            this.FunTotal.Location = new System.Drawing.Point(512, 61);
-            this.FunTotal.Maximum = new decimal(new int[] {
-            20000,
-            0,
-            0,
-            0});
-            this.FunTotal.Minimum = new decimal(new int[] {
-            20000,
-            0,
-            0,
-            -2147483648});
-            this.FunTotal.Name = "FunTotal";
-            this.FunTotal.ReadOnly = true;
-            this.FunTotal.Size = new System.Drawing.Size(68, 21);
-            this.FunTotal.TabIndex = 0;
-            this.FunTotal.TabStop = false;
-            // 
-            // PublicTotal
-            // 
-            this.PublicTotal.AutoSize = true;
-            this.PublicTotal.Enabled = false;
-            this.PublicTotal.Location = new System.Drawing.Point(512, 89);
-            this.PublicTotal.Maximum = new decimal(new int[] {
-            20000,
-            0,
-            0,
-            0});
-            this.PublicTotal.Minimum = new decimal(new int[] {
-            20000,
-            0,
-            0,
-            -2147483648});
-            this.PublicTotal.Name = "PublicTotal";
-            this.PublicTotal.ReadOnly = true;
-            this.PublicTotal.Size = new System.Drawing.Size(68, 21);
-            this.PublicTotal.TabIndex = 0;
-            this.PublicTotal.TabStop = false;
-            // 
-            // label33
-            // 
-            this.label33.AutoSize = true;
-            this.label33.Location = new System.Drawing.Point(312, 65);
-            this.label33.Name = "label33";
-            this.label33.Size = new System.Drawing.Size(27, 13);
-            this.label33.TabIndex = 13;
-            this.label33.Text = "Fun";
-            // 
-            // label32
-            // 
-            this.label32.AutoSize = true;
-            this.label32.Location = new System.Drawing.Point(312, 38);
-            this.label32.Name = "label32";
-            this.label32.Size = new System.Drawing.Size(47, 13);
-            this.label32.TabIndex = 11;
-            this.label32.Text = "Energy";
-            // 
-            // label31
-            // 
-            this.label31.AutoSize = true;
-            this.label31.Location = new System.Drawing.Point(312, 93);
-            this.label31.Name = "label31";
-            this.label31.Size = new System.Drawing.Size(41, 13);
-            this.label31.TabIndex = 15;
-            this.label31.Text = "Social";
-            // 
-            // label30
-            // 
-            this.label30.AutoSize = true;
-            this.label30.Location = new System.Drawing.Point(312, 120);
-            this.label30.Name = "label30";
-            this.label30.Size = new System.Drawing.Size(59, 13);
-            this.label30.TabIndex = 17;
-            this.label30.Text = "Sunshine";
-            // 
-            // label28
-            // 
-            this.label28.AutoSize = true;
-            this.label28.Location = new System.Drawing.Point(375, 14);
-            this.label28.Name = "label28";
-            this.label28.Size = new System.Drawing.Size(53, 13);
-            this.label28.TabIndex = 63;
-            this.label28.Text = "PerHour";
-            // 
-            // label26
-            // 
-            this.label26.AutoSize = true;
-            this.label26.Location = new System.Drawing.Point(509, 14);
-            this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(47, 13);
-            this.label26.TabIndex = 65;
-            this.label26.Text = "= Total";
-            // 
-            // FunHours
-            // 
-            this.FunHours.AutoSize = true;
-            this.FunHours.Enabled = false;
-            this.FunHours.Location = new System.Drawing.Point(445, 61);
-            this.FunHours.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.FunHours.Minimum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            -2147483648});
-            this.FunHours.Name = "FunHours";
-            this.FunHours.ReadOnly = true;
-            this.FunHours.Size = new System.Drawing.Size(60, 21);
-            this.FunHours.TabIndex = 0;
-            this.FunHours.TabStop = false;
-            // 
-            // WorkHygiene
-            // 
-            this.WorkHygiene.AutoSize = true;
-            this.WorkHygiene.Location = new System.Drawing.Point(75, 89);
-            this.WorkHygiene.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.WorkHygiene.Minimum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            -2147483648});
-            this.WorkHygiene.Name = "WorkHygiene";
-            this.WorkHygiene.Size = new System.Drawing.Size(60, 21);
-            this.WorkHygiene.TabIndex = 8;
-            this.WorkHygiene.ValueChanged += new System.EventHandler(this.nudMotive_ValueChanged);
-            this.WorkHygiene.KeyUp += new System.Windows.Forms.KeyEventHandler(this.nudMotive_KeyUp);
-            // 
-            // SunshineHours
-            // 
-            this.SunshineHours.AutoSize = true;
-            this.SunshineHours.Enabled = false;
-            this.SunshineHours.Location = new System.Drawing.Point(445, 116);
-            this.SunshineHours.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.SunshineHours.Minimum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            -2147483648});
-            this.SunshineHours.Name = "SunshineHours";
-            this.SunshineHours.ReadOnly = true;
-            this.SunshineHours.Size = new System.Drawing.Size(60, 21);
-            this.SunshineHours.TabIndex = 0;
-            this.SunshineHours.TabStop = false;
-            // 
-            // label18
-            // 
-            this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(9, 143);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(58, 13);
-            this.label18.TabIndex = 3;
-            this.label18.Text = "Amorous";
-            // 
-            // AmorousHours
-            // 
-            this.AmorousHours.AutoSize = true;
-            this.AmorousHours.Enabled = false;
-            this.AmorousHours.Location = new System.Drawing.Point(142, 143);
-            this.AmorousHours.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.AmorousHours.Minimum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            -2147483648});
-            this.AmorousHours.Name = "AmorousHours";
-            this.AmorousHours.ReadOnly = true;
-            this.AmorousHours.Size = new System.Drawing.Size(60, 21);
-            this.AmorousHours.TabIndex = 0;
-            this.AmorousHours.TabStop = false;
-            // 
-            // WorkAmorous
-            // 
-            this.WorkAmorous.AutoSize = true;
-            this.WorkAmorous.Location = new System.Drawing.Point(75, 143);
-            this.WorkAmorous.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.WorkAmorous.Minimum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            -2147483648});
-            this.WorkAmorous.Name = "WorkAmorous";
-            this.WorkAmorous.Size = new System.Drawing.Size(60, 21);
-            this.WorkAmorous.TabIndex = 4;
-            this.WorkAmorous.ValueChanged += new System.EventHandler(this.nudMotive_ValueChanged);
-            this.WorkAmorous.KeyUp += new System.Windows.Forms.KeyEventHandler(this.nudMotive_KeyUp);
-            // 
-            // AmorousTotal
-            // 
-            this.AmorousTotal.AutoSize = true;
-            this.AmorousTotal.Enabled = false;
-            this.AmorousTotal.Location = new System.Drawing.Point(208, 143);
-            this.AmorousTotal.Maximum = new decimal(new int[] {
-            20000,
-            0,
-            0,
-            0});
-            this.AmorousTotal.Minimum = new decimal(new int[] {
-            20000,
-            0,
-            0,
-            -2147483648});
-            this.AmorousTotal.Name = "AmorousTotal";
-            this.AmorousTotal.ReadOnly = true;
-            this.AmorousTotal.Size = new System.Drawing.Size(68, 21);
-            this.AmorousTotal.TabIndex = 0;
-            this.AmorousTotal.TabStop = false;
-            // 
-            // lbLscore
-            // 
-            this.lbLscore.AutoSize = true;
-            this.lbLscore.Location = new System.Drawing.Point(790, 207);
-            this.lbLscore.Name = "lbLscore";
-            this.lbLscore.Size = new System.Drawing.Size(64, 13);
-            this.lbLscore.TabIndex = 3;
-            this.lbLscore.Text = "Life Score";
-            this.lbLscore.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // numLscore
-            // 
-            this.numLscore.AutoSize = true;
-            this.numLscore.Location = new System.Drawing.Point(860, 204);
-            this.numLscore.Maximum = new decimal(new int[] {
-            200,
-            0,
-            0,
-            0});
-            this.numLscore.Name = "numLscore";
-            this.numLscore.Size = new System.Drawing.Size(60, 21);
-            this.numLscore.TabIndex = 5;
-            this.numLscore.ValueChanged += new System.EventHandler(this.numLscore_ValueChanged);
-            // 
-            // numPTO
-            // 
-            this.numPTO.AutoSize = true;
-            this.numPTO.Location = new System.Drawing.Point(694, 204);
-            this.numPTO.Name = "numPTO";
-            this.numPTO.Size = new System.Drawing.Size(60, 21);
-            this.numPTO.TabIndex = 6;
-            this.toolTip1.SetToolTip(this.numPTO, "It takes 100 of these points for\r\none day off.");
-            this.numPTO.ValueChanged += new System.EventHandler(this.numPTO_ValueChanged);
-            // 
-            // gbJLHoursWages
-            // 
-            this.gbJLHoursWages.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.gbJLHoursWages.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.gbJLHoursWages.BackColor = System.Drawing.Color.Transparent;
-            this.gbJLHoursWages.Controls.Add(this.HoursWagesList);
-            this.gbJLHoursWages.Location = new System.Drawing.Point(10, 6);
-            this.gbJLHoursWages.Name = "gbJLHoursWages";
-            this.gbJLHoursWages.Size = new System.Drawing.Size(1069, 262);
-            this.gbJLHoursWages.TabIndex = 1;
-            this.gbJLHoursWages.TabStop = false;
-            this.gbJLHoursWages.Text = "Job Levels";
-            // 
-            // HoursWagesList
-            // 
-            this.HoursWagesList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.HoursWagesList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.HwLvl,
-            this.HwStart,
-            this.HwHours,
-            this.HwEnd,
-            this.HwWages,
-            this.HwDogWages,
-            this.HwCatWages,
-            this.HwMon,
-            this.HwTue,
-            this.HwWed,
-            this.HwThu,
-            this.HwFri,
-            this.HwSat,
-            this.HwSun});
-            this.HoursWagesList.Font = new System.Drawing.Font("Verdana", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.HoursWagesList.FullRowSelect = true;
-            this.HoursWagesList.GridLines = true;
-            this.HoursWagesList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-            this.HoursWagesList.HideSelection = false;
-            this.HoursWagesList.Location = new System.Drawing.Point(10, 18);
-            this.HoursWagesList.MultiSelect = false;
-            this.HoursWagesList.Name = "HoursWagesList";
-            this.HoursWagesList.Size = new System.Drawing.Size(1048, 232);
-            this.HoursWagesList.TabIndex = 1;
-            this.HoursWagesList.UseCompatibleStateImageBehavior = false;
-            this.HoursWagesList.View = System.Windows.Forms.View.Details;
-            this.HoursWagesList.SelectedIndexChanged += new System.EventHandler(this.HoursWagesList_SelectedIndexChanged);
-            // 
-            // HwLvl
-            // 
-            this.HwLvl.Text = "Lvl";
-            this.HwLvl.Width = 49;
-            // 
-            // HwStart
-            // 
-            this.HwStart.Text = "Start";
-            this.HwStart.Width = 74;
-            // 
-            // HwHours
-            // 
-            this.HwHours.Text = "Hours";
-            this.HwHours.Width = 77;
-            // 
-            // HwEnd
-            // 
-            this.HwEnd.Text = "End";
-            this.HwEnd.Width = 73;
-            // 
-            // HwWages
-            // 
-            this.HwWages.Text = "Wages";
-            this.HwWages.Width = 75;
-            // 
-            // HwDogWages
-            // 
-            this.HwDogWages.Text = "Wages (Dog)";
-            this.HwDogWages.Width = 106;
-            // 
-            // HwCatWages
-            // 
-            this.HwCatWages.Text = "Wages (Cat)";
-            this.HwCatWages.Width = 106;
-            // 
-            // HwMon
-            // 
-            this.HwMon.Text = "Mon";
-            this.HwMon.Width = 63;
-            // 
-            // HwTue
-            // 
-            this.HwTue.Text = "Tue";
-            this.HwTue.Width = 62;
-            // 
-            // HwWed
-            // 
-            this.HwWed.Text = "Wed";
-            this.HwWed.Width = 63;
-            // 
-            // HwThu
-            // 
-            this.HwThu.Text = "Thu";
-            this.HwThu.Width = 63;
-            // 
-            // HwFri
-            // 
-            this.HwFri.Text = "Fri";
-            this.HwFri.Width = 62;
-            // 
-            // HwSat
-            // 
-            this.HwSat.Text = "Sat";
-            this.HwSat.Width = 62;
-            // 
-            // HwSun
-            // 
-            this.HwSun.Text = "Sun";
-            this.HwSun.Width = 56;
-            // 
-            // tabControl1
-            // 
-            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Controls.Add(this.tabPage3);
-            this.tabControl1.Controls.Add(this.tabPage4);
-            this.tabControl1.Controls.Add(this.tabPagMajor);
-            this.tabControl1.Controls.Add(this.tabPage9);
-            this.tabControl1.ItemSize = new System.Drawing.Size(64, 18);
-            this.tabControl1.Location = new System.Drawing.Point(1, 100);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(1100, 560);
-            this.tabControl1.TabIndex = 9;
-            // 
-            // tabPage1
-            // 
-            this.tabPage1.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPage1.Controls.Add(this.gbJobDetails);
-            this.tabPage1.Controls.Add(this.gbJLDetails);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Size = new System.Drawing.Size(1092, 534);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "Job Details";
-            // 
-            // gbJobDetails
-            // 
-            this.gbJobDetails.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.gbJobDetails.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.gbJobDetails.BackColor = System.Drawing.Color.Transparent;
-            this.gbJobDetails.Controls.Add(this.gcVehicle);
-            this.gbJobDetails.Controls.Add(this.gcOutfit);
-            this.gbJobDetails.Controls.Add(this.JobDetailsCopy);
-            this.gbJobDetails.Controls.Add(this.jdpFemale);
-            this.gbJobDetails.Controls.Add(this.jdpMale);
-            this.gbJobDetails.Location = new System.Drawing.Point(10, 285);
-            this.gbJobDetails.Name = "gbJobDetails";
-            this.gbJobDetails.Size = new System.Drawing.Size(1069, 240);
-            this.gbJobDetails.TabIndex = 2;
-            this.gbJobDetails.TabStop = false;
-            this.gbJobDetails.Text = "Current Level";
-            // 
-            // gcVehicle
-            // 
-            this.gcVehicle.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.gcVehicle.AutoSize = true;
-            this.gcVehicle.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.gcVehicle.ComboBoxWidth = 300;
-            this.gcVehicle.DropDownHeight = 250;
-            this.gcVehicle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDown;
-            this.gcVehicle.DropDownWidth = 300;
-            this.gcVehicle.Label = "Vehicle";
-            this.gcVehicle.Location = new System.Drawing.Point(620, 208);
-            this.gcVehicle.Margin = new System.Windows.Forms.Padding(0);
-            this.gcVehicle.Name = "gcVehicle";
-            this.gcVehicle.Size = new System.Drawing.Size(442, 21);
-            this.gcVehicle.TabIndex = 5;
-            this.gcVehicle.Value = ((uint)(3722304989u));
-            this.gcVehicle.GUIDChooserValueChanged += new System.EventHandler(this.gcVehicle_GUIDChooserValueChanged);
-            // 
-            // gcOutfit
-            // 
-            this.gcOutfit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.gcOutfit.AutoSize = true;
-            this.gcOutfit.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.gcOutfit.ComboBoxWidth = 300;
-            this.gcOutfit.DropDownHeight = 250;
-            this.gcOutfit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDown;
-            this.gcOutfit.DropDownWidth = 300;
-            this.gcOutfit.Label = "Outfit";
-            this.gcOutfit.Location = new System.Drawing.Point(81, 208);
-            this.gcOutfit.Margin = new System.Windows.Forms.Padding(0);
-            this.gcOutfit.Name = "gcOutfit";
-            this.gcOutfit.Size = new System.Drawing.Size(433, 21);
-            this.gcOutfit.TabIndex = 4;
-            this.gcOutfit.Value = ((uint)(3722304989u));
-            this.gcOutfit.GUIDChooserValueChanged += new System.EventHandler(this.gcOutfit_GUIDChooserValueChanged);
-            // 
-            // JobDetailsCopy
-            // 
-            this.JobDetailsCopy.AutoSize = true;
-            this.JobDetailsCopy.Location = new System.Drawing.Point(584, 100);
-            this.JobDetailsCopy.Name = "JobDetailsCopy";
-            this.JobDetailsCopy.Size = new System.Drawing.Size(50, 13);
-            this.JobDetailsCopy.TabIndex = 3;
-            this.JobDetailsCopy.TabStop = true;
-            this.JobDetailsCopy.Text = "Copy >";
-            this.JobDetailsCopy.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.JobDetailsCopy_LinkClicked);
-            // 
-            // jdpFemale
-            // 
-            this.jdpFemale.AutoSize = true;
-            this.jdpFemale.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.jdpFemale.BackColor = System.Drawing.Color.Transparent;
-            this.jdpFemale.DescLabel = "Desc Female";
-            this.jdpFemale.DescValue = "JobDescFemale";
-            this.jdpFemale.Font = new System.Drawing.Font("Verdana", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.jdpFemale.Location = new System.Drawing.Point(2, 18);
-            this.jdpFemale.Margin = new System.Windows.Forms.Padding(2);
-            this.jdpFemale.Name = "jdpFemale";
-            this.jdpFemale.Size = new System.Drawing.Size(573, 181);
-            this.jdpFemale.TabIndex = 2;
-            this.jdpFemale.TitleLabel = "Title Female";
-            this.jdpFemale.TitleValue = "JobTitleFemale";
-            this.jdpFemale.TitleValueChanged += new System.EventHandler(this.jdpFemale_TitleValueChanged);
-            this.jdpFemale.DescValueChanged += new System.EventHandler(this.jdpFemale_DescValueChanged);
-            // 
-            // jdpMale
-            // 
-            this.jdpMale.AutoSize = true;
-            this.jdpMale.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.jdpMale.BackColor = System.Drawing.Color.Transparent;
-            this.jdpMale.DescLabel = "Desc Male";
-            this.jdpMale.DescValue = "JobDescMale";
-            this.jdpMale.Location = new System.Drawing.Point(561, 18);
-            this.jdpMale.Margin = new System.Windows.Forms.Padding(2);
-            this.jdpMale.Name = "jdpMale";
-            this.jdpMale.Size = new System.Drawing.Size(505, 179);
-            this.jdpMale.TabIndex = 1;
-            this.jdpMale.TitleLabel = "Title Male";
-            this.jdpMale.TitleValue = "JobTitleMale";
-            this.jdpMale.TitleValueChanged += new System.EventHandler(this.jdpMale_TitleValueChanged);
-            this.jdpMale.DescValueChanged += new System.EventHandler(this.jdpMale_DescValueChanged);
-            // 
-            // gbJLDetails
-            // 
-            this.gbJLDetails.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.gbJLDetails.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.gbJLDetails.BackColor = System.Drawing.Color.Transparent;
-            this.gbJLDetails.Controls.Add(this.JobDetailList);
-            this.gbJLDetails.Location = new System.Drawing.Point(10, 6);
-            this.gbJLDetails.Name = "gbJLDetails";
-            this.gbJLDetails.Size = new System.Drawing.Size(1069, 262);
-            this.gbJLDetails.TabIndex = 1;
-            this.gbJLDetails.TabStop = false;
-            this.gbJLDetails.Text = "Job Levels";
-            // 
-            // JobDetailList
-            // 
-            this.JobDetailList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.JobDetailList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.JdLvl,
-            this.JdJobTitle,
-            this.JdDesc,
-            this.JdOutfit,
-            this.JdVehicle});
-            this.JobDetailList.Font = new System.Drawing.Font("Verdana", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.JobDetailList.FullRowSelect = true;
-            this.JobDetailList.GridLines = true;
-            this.JobDetailList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-            this.JobDetailList.HideSelection = false;
-            this.JobDetailList.Location = new System.Drawing.Point(10, 18);
-            this.JobDetailList.MultiSelect = false;
-            this.JobDetailList.Name = "JobDetailList";
-            this.JobDetailList.Size = new System.Drawing.Size(1056, 232);
-            this.JobDetailList.TabIndex = 1;
-            this.JobDetailList.UseCompatibleStateImageBehavior = false;
-            this.JobDetailList.View = System.Windows.Forms.View.Details;
-            this.JobDetailList.SelectedIndexChanged += new System.EventHandler(this.JobDetailList_SelectedIndexChanged);
-            // 
-            // JdLvl
-            // 
-            this.JdLvl.Text = "Lvl";
-            this.JdLvl.Width = 43;
-            // 
-            // JdJobTitle
-            // 
-            this.JdJobTitle.Text = "Job Title (female)";
-            this.JdJobTitle.Width = 205;
-            // 
-            // JdDesc
-            // 
-            this.JdDesc.Text = "Job Description (female)";
-            this.JdDesc.Width = 473;
-            // 
-            // JdOutfit
-            // 
-            this.JdOutfit.Text = "Outfit";
-            this.JdOutfit.Width = 160;
-            // 
-            // JdVehicle
-            // 
-            this.JdVehicle.Text = "Vehicle";
-            this.JdVehicle.Width = 160;
-            // 
-            // tabPagMajor
-            // 
-            this.tabPagMajor.Controls.Add(this.gpmajors);
-            this.tabPagMajor.Location = new System.Drawing.Point(4, 22);
-            this.tabPagMajor.Name = "tabPagMajor";
-            this.tabPagMajor.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPagMajor.Size = new System.Drawing.Size(1092, 534);
-            this.tabPagMajor.TabIndex = 5;
-            this.tabPagMajor.Text = "Majors";
-            this.tabPagMajor.UseVisualStyleBackColor = true;
-            // 
-            // gpmajors
-            // 
-            this.gpmajors.BackColor = System.Drawing.Color.Transparent;
-            
-            this.gpmajors.Controls.Add(this.btmajApply);
-            this.gpmajors.Controls.Add(this.gbmajaffil);
-            this.gpmajors.Controls.Add(this.gbrequir);
-            this.gpmajors.Dock = System.Windows.Forms.DockStyle.Fill;
-            
-            this.gpmajors.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            
-            this.gpmajors.Location = new System.Drawing.Point(3, 3);
-            
-            this.gpmajors.Name = "gpmajors";
-            this.gpmajors.Size = new System.Drawing.Size(1086, 528);
-            
-            this.gpmajors.TabIndex = 0;
-            // 
-            // btmajApply
-            // 
-            this.btmajApply.Font = new System.Drawing.Font("Verdana", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btmajApply.Location = new System.Drawing.Point(972, 12);
-            this.btmajApply.Name = "btmajApply";
-            this.btmajApply.Size = new System.Drawing.Size(87, 23);
-            this.btmajApply.TabIndex = 2;
-            this.btmajApply.Text = "Apply";
-            this.btmajApply.UseVisualStyleBackColor = true;
-            this.btmajApply.Click += new System.EventHandler(this.btmajApply_Click);
-            // 
-            // gbmajaffil
-            // 
-            this.gbmajaffil.Controls.Add(this.label47);
-            this.gbmajaffil.Controls.Add(this.cbaphyco);
-            this.gbmajaffil.Controls.Add(this.cbapolit);
-            this.gbmajaffil.Controls.Add(this.cbaphysi);
-            this.gbmajaffil.Controls.Add(this.cbrahilo);
-            this.gbmajaffil.Controls.Add(this.cbamaths);
-            this.gbmajaffil.Controls.Add(this.cbaliter);
-            this.gbmajaffil.Controls.Add(this.cbahisto);
-            this.gbmajaffil.Controls.Add(this.cbaecon);
-            this.gbmajaffil.Controls.Add(this.cbadrama);
-            this.gbmajaffil.Controls.Add(this.cbabiol);
-            this.gbmajaffil.Controls.Add(this.cbaArt);
-            this.gbmajaffil.Font = new System.Drawing.Font("Verdana", 9.75F, System.Drawing.FontStyle.Bold);
-            this.gbmajaffil.Location = new System.Drawing.Point(596, 27);
-            this.gbmajaffil.Name = "gbmajaffil";
-            this.gbmajaffil.Size = new System.Drawing.Size(341, 449);
-            this.gbmajaffil.TabIndex = 1;
-            this.gbmajaffil.TabStop = false;
-            this.gbmajaffil.Text = "Majors Affiliated";
-            // 
-            // label47
-            // 
-            this.label47.AutoSize = true;
-            this.label47.Font = new System.Drawing.Font("Verdana", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label47.Location = new System.Drawing.Point(8, 37);
-            this.label47.Name = "label47";
-            this.label47.Size = new System.Drawing.Size(317, 32);
-            this.label47.TabIndex = 22;
-            this.label47.Text = "A sim that has graduated one of these majors\r\nwiil get a level boost when startin" +
-                "g this career";
-            // 
-            // cbaphyco
-            // 
-            this.cbaphyco.AutoSize = true;
-            this.cbaphyco.Location = new System.Drawing.Point(27, 408);
-            this.cbaphyco.Name = "cbaphyco";
-            this.cbaphyco.Size = new System.Drawing.Size(110, 20);
-            this.cbaphyco.TabIndex = 21;
-            this.cbaphyco.Text = "Psychology";
-            this.cbaphyco.UseVisualStyleBackColor = true;
-            // 
-            // cbapolit
-            // 
-            this.cbapolit.AutoSize = true;
-            this.cbapolit.Location = new System.Drawing.Point(27, 376);
-            this.cbapolit.Name = "cbapolit";
-            this.cbapolit.Size = new System.Drawing.Size(79, 20);
-            this.cbapolit.TabIndex = 20;
-            this.cbapolit.Text = "Politics";
-            this.cbapolit.UseVisualStyleBackColor = true;
-            // 
-            // cbaphysi
-            // 
-            this.cbaphysi.AutoSize = true;
-            this.cbaphysi.Location = new System.Drawing.Point(27, 344);
-            this.cbaphysi.Name = "cbaphysi";
-            this.cbaphysi.Size = new System.Drawing.Size(82, 20);
-            this.cbaphysi.TabIndex = 19;
-            this.cbaphysi.Text = "Physics";
-            this.cbaphysi.UseVisualStyleBackColor = true;
-            // 
-            // cbrahilo
-            // 
-            this.cbrahilo.AutoSize = true;
-            this.cbrahilo.Location = new System.Drawing.Point(27, 312);
-            this.cbrahilo.Name = "cbrahilo";
-            this.cbrahilo.Size = new System.Drawing.Size(106, 20);
-            this.cbrahilo.TabIndex = 18;
-            this.cbrahilo.Text = "Philosophy";
-            this.cbrahilo.UseVisualStyleBackColor = true;
-            // 
-            // cbamaths
-            // 
-            this.cbamaths.AutoSize = true;
-            this.cbamaths.Location = new System.Drawing.Point(27, 280);
-            this.cbamaths.Name = "cbamaths";
-            this.cbamaths.Size = new System.Drawing.Size(121, 20);
-            this.cbamaths.TabIndex = 17;
-            this.cbamaths.Text = "Mathematics";
-            this.cbamaths.UseVisualStyleBackColor = true;
-            // 
-            // cbaliter
-            // 
-            this.cbaliter.AutoSize = true;
-            this.cbaliter.Location = new System.Drawing.Point(27, 248);
-            this.cbaliter.Name = "cbaliter";
-            this.cbaliter.Size = new System.Drawing.Size(99, 20);
-            this.cbaliter.TabIndex = 16;
-            this.cbaliter.Text = "Literature";
-            this.cbaliter.UseVisualStyleBackColor = true;
-            // 
-            // cbahisto
-            // 
-            this.cbahisto.AutoSize = true;
-            this.cbahisto.Location = new System.Drawing.Point(27, 216);
-            this.cbahisto.Name = "cbahisto";
-            this.cbahisto.Size = new System.Drawing.Size(80, 20);
-            this.cbahisto.TabIndex = 15;
-            this.cbahisto.Text = "History";
-            this.cbahisto.UseVisualStyleBackColor = true;
-            // 
-            // cbaecon
-            // 
-            this.cbaecon.AutoSize = true;
-            this.cbaecon.Location = new System.Drawing.Point(27, 184);
-            this.cbaecon.Name = "cbaecon";
-            this.cbaecon.Size = new System.Drawing.Size(105, 20);
-            this.cbaecon.TabIndex = 14;
-            this.cbaecon.Text = "Economics";
-            this.cbaecon.UseVisualStyleBackColor = true;
-            // 
-            // cbadrama
-            // 
-            this.cbadrama.AutoSize = true;
-            this.cbadrama.Location = new System.Drawing.Point(27, 152);
-            this.cbadrama.Name = "cbadrama";
-            this.cbadrama.Size = new System.Drawing.Size(75, 20);
-            this.cbadrama.TabIndex = 13;
-            this.cbadrama.Text = "Drama";
-            this.cbadrama.UseVisualStyleBackColor = true;
-            // 
-            // cbabiol
-            // 
-            this.cbabiol.AutoSize = true;
-            this.cbabiol.Location = new System.Drawing.Point(27, 120);
-            this.cbabiol.Name = "cbabiol";
-            this.cbabiol.Size = new System.Drawing.Size(81, 20);
-            this.cbabiol.TabIndex = 12;
-            this.cbabiol.Text = "Biology";
-            this.cbabiol.UseVisualStyleBackColor = true;
-            // 
-            // cbaArt
-            // 
-            this.cbaArt.AutoSize = true;
-            this.cbaArt.Location = new System.Drawing.Point(27, 88);
-            this.cbaArt.Name = "cbaArt";
-            this.cbaArt.Size = new System.Drawing.Size(49, 20);
-            this.cbaArt.TabIndex = 11;
-            this.cbaArt.Text = "Art";
-            this.cbaArt.UseVisualStyleBackColor = true;
-            // 
-            // gbrequir
-            // 
-            this.gbrequir.Controls.Add(this.label29);
-            this.gbrequir.Controls.Add(this.cbrphyco);
-            this.gbrequir.Controls.Add(this.cbrpolit);
-            this.gbrequir.Controls.Add(this.cbrphysi);
-            this.gbrequir.Controls.Add(this.cbrphilo);
-            this.gbrequir.Controls.Add(this.cbrmaths);
-            this.gbrequir.Controls.Add(this.cbrliter);
-            this.gbrequir.Controls.Add(this.cbrhisto);
-            this.gbrequir.Controls.Add(this.cbrecon);
-            this.gbrequir.Controls.Add(this.cbrdrama);
-            this.gbrequir.Controls.Add(this.cbrbiol);
-            this.gbrequir.Controls.Add(this.cbrArt);
-            this.gbrequir.Font = new System.Drawing.Font("Verdana", 9.75F, System.Drawing.FontStyle.Bold);
-            this.gbrequir.Location = new System.Drawing.Point(44, 27);
-            this.gbrequir.Name = "gbrequir";
-            this.gbrequir.Size = new System.Drawing.Size(341, 449);
-            this.gbrequir.TabIndex = 0;
-            this.gbrequir.TabStop = false;
-            this.gbrequir.Text = "Major Required";
-            // 
-            // label29
-            // 
-            this.label29.AutoSize = true;
-            this.label29.Font = new System.Drawing.Font("Verdana", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label29.Location = new System.Drawing.Point(18, 37);
-            this.label29.Name = "label29";
-            this.label29.Size = new System.Drawing.Size(307, 32);
-            this.label29.TabIndex = 11;
-            this.label29.Text = "A sim needs to have graduated from any one\r\nof these majors to be offered this ca" +
-                "reer.";
-            // 
-            // cbrphyco
-            // 
-            this.cbrphyco.AutoSize = true;
-            this.cbrphyco.Location = new System.Drawing.Point(24, 408);
-            this.cbrphyco.Name = "cbrphyco";
-            this.cbrphyco.Size = new System.Drawing.Size(110, 20);
-            this.cbrphyco.TabIndex = 10;
-            this.cbrphyco.Text = "Psychology";
-            this.cbrphyco.UseVisualStyleBackColor = true;
-            // 
-            // cbrpolit
-            // 
-            this.cbrpolit.AutoSize = true;
-            this.cbrpolit.Location = new System.Drawing.Point(24, 376);
-            this.cbrpolit.Name = "cbrpolit";
-            this.cbrpolit.Size = new System.Drawing.Size(79, 20);
-            this.cbrpolit.TabIndex = 9;
-            this.cbrpolit.Text = "Politics";
-            this.cbrpolit.UseVisualStyleBackColor = true;
-            // 
-            // cbrphysi
-            // 
-            this.cbrphysi.AutoSize = true;
-            this.cbrphysi.Location = new System.Drawing.Point(24, 344);
-            this.cbrphysi.Name = "cbrphysi";
-            this.cbrphysi.Size = new System.Drawing.Size(82, 20);
-            this.cbrphysi.TabIndex = 8;
-            this.cbrphysi.Text = "Physics";
-            this.cbrphysi.UseVisualStyleBackColor = true;
-            // 
-            // cbrphilo
-            // 
-            this.cbrphilo.AutoSize = true;
-            this.cbrphilo.Location = new System.Drawing.Point(24, 312);
-            this.cbrphilo.Name = "cbrphilo";
-            this.cbrphilo.Size = new System.Drawing.Size(106, 20);
-            this.cbrphilo.TabIndex = 7;
-            this.cbrphilo.Text = "Philosophy";
-            this.cbrphilo.UseVisualStyleBackColor = true;
-            // 
-            // cbrmaths
-            // 
-            this.cbrmaths.AutoSize = true;
-            this.cbrmaths.Location = new System.Drawing.Point(24, 280);
-            this.cbrmaths.Name = "cbrmaths";
-            this.cbrmaths.Size = new System.Drawing.Size(121, 20);
-            this.cbrmaths.TabIndex = 6;
-            this.cbrmaths.Text = "Mathematics";
-            this.cbrmaths.UseVisualStyleBackColor = true;
-            // 
-            // cbrliter
-            // 
-            this.cbrliter.AutoSize = true;
-            this.cbrliter.Location = new System.Drawing.Point(24, 248);
-            this.cbrliter.Name = "cbrliter";
-            this.cbrliter.Size = new System.Drawing.Size(99, 20);
-            this.cbrliter.TabIndex = 5;
-            this.cbrliter.Text = "Literature";
-            this.cbrliter.UseVisualStyleBackColor = true;
-            // 
-            // cbrhisto
-            // 
-            this.cbrhisto.AutoSize = true;
-            this.cbrhisto.Location = new System.Drawing.Point(24, 216);
-            this.cbrhisto.Name = "cbrhisto";
-            this.cbrhisto.Size = new System.Drawing.Size(80, 20);
-            this.cbrhisto.TabIndex = 4;
-            this.cbrhisto.Text = "History";
-            this.cbrhisto.UseVisualStyleBackColor = true;
-            // 
-            // cbrecon
-            // 
-            this.cbrecon.AutoSize = true;
-            this.cbrecon.Location = new System.Drawing.Point(24, 184);
-            this.cbrecon.Name = "cbrecon";
-            this.cbrecon.Size = new System.Drawing.Size(105, 20);
-            this.cbrecon.TabIndex = 3;
-            this.cbrecon.Text = "Economics";
-            this.cbrecon.UseVisualStyleBackColor = true;
-            // 
-            // cbrdrama
-            // 
-            this.cbrdrama.AutoSize = true;
-            this.cbrdrama.Location = new System.Drawing.Point(24, 152);
-            this.cbrdrama.Name = "cbrdrama";
-            this.cbrdrama.Size = new System.Drawing.Size(75, 20);
-            this.cbrdrama.TabIndex = 2;
-            this.cbrdrama.Text = "Drama";
-            this.cbrdrama.UseVisualStyleBackColor = true;
-            // 
-            // cbrbiol
-            // 
-            this.cbrbiol.AutoSize = true;
-            this.cbrbiol.Location = new System.Drawing.Point(24, 120);
-            this.cbrbiol.Name = "cbrbiol";
-            this.cbrbiol.Size = new System.Drawing.Size(81, 20);
-            this.cbrbiol.TabIndex = 1;
-            this.cbrbiol.Text = "Biology";
-            this.cbrbiol.UseVisualStyleBackColor = true;
-            // 
-            // cbrArt
-            // 
-            this.cbrArt.AutoSize = true;
-            this.cbrArt.Location = new System.Drawing.Point(24, 88);
-            this.cbrArt.Name = "cbrArt";
-            this.cbrArt.Size = new System.Drawing.Size(49, 20);
-            this.cbrArt.TabIndex = 0;
-            this.cbrArt.Text = "Art";
-            this.cbrArt.UseVisualStyleBackColor = true;
-            // 
-            // tabPage9
-            // 
-            this.tabPage9.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPage9.Controls.Add(this.thmepanel1);
-            this.tabPage9.Location = new System.Drawing.Point(4, 22);
-            this.tabPage9.Name = "tabPage9";
-            this.tabPage9.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage9.Size = new System.Drawing.Size(1092, 534);
-            this.tabPage9.TabIndex = 4;
-            this.tabPage9.Text = "Extra Reward Items";
-            // 
-            // thmepanel1
-            // 
-            this.thmepanel1.BackColor = System.Drawing.Color.Transparent;
-            
-            this.thmepanel1.Controls.Add(this.checkBox2);
-            this.thmepanel1.Controls.Add(this.checkBox1);
-            this.thmepanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            
-            this.thmepanel1.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            
-            this.thmepanel1.Location = new System.Drawing.Point(3, 3);
-            
-            this.thmepanel1.Name = "thmepanel1";
-            this.thmepanel1.Size = new System.Drawing.Size(1086, 528);
-            
-            this.thmepanel1.TabIndex = 0;
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label13.Location = new System.Drawing.Point(29, 24);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(104, 26);
-            this.label13.TabIndex = 15;
-            this.label13.Text = "Outfit Override\r\n(female only)";
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label11.Location = new System.Drawing.Point(364, 37);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(43, 13);
-            this.label11.TabIndex = 14;
-            this.label11.Text = "Fail B";
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label12.Location = new System.Drawing.Point(270, 37);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(44, 13);
-            this.label12.TabIndex = 13;
-            this.label12.Text = "Fail A";
-            
-            
-            
-            
-            
-            // 
-            // lbrewguid
-            // 
-            this.lbrewguid.AutoSize = true;
-            this.lbrewguid.Location = new System.Drawing.Point(37, 456);
-            this.lbrewguid.Name = "lbrewguid";
-            this.lbrewguid.Size = new System.Drawing.Size(44, 16);
-            this.lbrewguid.TabIndex = 76;
-            this.lbrewguid.Text = "none";
-            // 
-            // checkBox42
-            // 
-            this.checkBox42.AutoSize = true;
-            this.checkBox42.Location = new System.Drawing.Point(536, 416);
-            this.checkBox42.Name = "checkBox42";
-            this.checkBox42.Size = new System.Drawing.Size(53, 20);
-            this.checkBox42.TabIndex = 75;
-            this.checkBox42.Tag = "10";
-            this.checkBox42.Text = "use";
-            this.checkBox42.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox42.UseVisualStyleBackColor = true;
-            this.checkBox42.CheckedChanged += new System.EventHandler(this.checkBchanceBox_checkup);
-            // 
-            // checkBox43
-            // 
-            this.checkBox43.AutoSize = true;
-            this.checkBox43.Location = new System.Drawing.Point(466, 416);
-            this.checkBox43.Name = "checkBox43";
-            this.checkBox43.Size = new System.Drawing.Size(53, 20);
-            this.checkBox43.TabIndex = 74;
-            this.checkBox43.Tag = "10";
-            this.checkBox43.Text = "use";
-            this.checkBox43.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox43.UseVisualStyleBackColor = true;
-            this.checkBox43.CheckedChanged += new System.EventHandler(this.chanceBcheckBox_checkup);
-            // 
-            // checkBox44
-            // 
-            this.checkBox44.AutoSize = true;
-            this.checkBox44.Location = new System.Drawing.Point(396, 416);
-            this.checkBox44.Name = "checkBox44";
-            this.checkBox44.Size = new System.Drawing.Size(53, 20);
-            this.checkBox44.TabIndex = 73;
-            this.checkBox44.Tag = "10";
-            this.checkBox44.Text = "use";
-            this.checkBox44.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox44.UseVisualStyleBackColor = true;
-            this.checkBox44.CheckedChanged += new System.EventHandler(this.boxCheckBchance_checkup);
-            // 
-            // checkBox45
-            // 
-            this.checkBox45.AutoSize = true;
-            this.checkBox45.Location = new System.Drawing.Point(326, 416);
-            this.checkBox45.Name = "checkBox45";
-            this.checkBox45.Size = new System.Drawing.Size(53, 20);
-            this.checkBox45.TabIndex = 72;
-            this.checkBox45.Tag = "10";
-            this.checkBox45.Text = "use";
-            this.checkBox45.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox45.UseVisualStyleBackColor = true;
-            this.checkBox45.CheckedChanged += new System.EventHandler(this.chanceAcheckBox_checkup);
-            // 
-            // textBox17
-            // 
-            this.textBox17.Location = new System.Drawing.Point(208, 415);
-            this.textBox17.Name = "textBox17";
-            this.textBox17.Size = new System.Drawing.Size(98, 23);
-            this.textBox17.TabIndex = 71;
-            this.textBox17.Tag = "10";
-            this.textBox17.Text = "0X00000000";
-            this.textBox17.TextChanged += new System.EventHandler(this.textBox1g_TextChanged);
-            // 
-            // textBox18
-            // 
-            this.textBox18.Location = new System.Drawing.Point(91, 415);
-            this.textBox18.Name = "textBox18";
-            this.textBox18.Size = new System.Drawing.Size(104, 23);
-            this.textBox18.TabIndex = 70;
-            this.textBox18.Tag = "10";
-            this.textBox18.Text = "0X00000000";
-            this.textBox18.TextChanged += new System.EventHandler(this.textBox1g_TextChanged);
-            // 
-            // label46
-            // 
-            this.label46.AutoSize = true;
-            this.label46.Font = new System.Drawing.Font("Verdana", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label46.ForeColor = System.Drawing.Color.MidnightBlue;
-            this.label46.Location = new System.Drawing.Point(0, 417);
-            this.label46.Name = "label46";
-            this.label46.Size = new System.Drawing.Size(81, 18);
-            this.label46.TabIndex = 69;
-            this.label46.Tag = "10";
-            this.label46.Text = "Level 10";
-            // 
-            // checkBox38
-            // 
-            this.checkBox38.AutoSize = true;
-            this.checkBox38.Location = new System.Drawing.Point(536, 377);
-            this.checkBox38.Name = "checkBox38";
-            this.checkBox38.Size = new System.Drawing.Size(53, 20);
-            this.checkBox38.TabIndex = 68;
-            this.checkBox38.Tag = "9";
-            this.checkBox38.Text = "use";
-            this.checkBox38.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox38.UseVisualStyleBackColor = true;
-            this.checkBox38.CheckedChanged += new System.EventHandler(this.checkBchanceBox_checkup);
-            // 
-            // checkBox39
-            // 
-            this.checkBox39.AutoSize = true;
-            this.checkBox39.Location = new System.Drawing.Point(466, 377);
-            this.checkBox39.Name = "checkBox39";
-            this.checkBox39.Size = new System.Drawing.Size(53, 20);
-            this.checkBox39.TabIndex = 67;
-            this.checkBox39.Tag = "9";
-            this.checkBox39.Text = "use";
-            this.checkBox39.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox39.UseVisualStyleBackColor = true;
-            this.checkBox39.CheckedChanged += new System.EventHandler(this.chanceBcheckBox_checkup);
-            // 
-            // checkBox40
-            // 
-            this.checkBox40.AutoSize = true;
-            this.checkBox40.Location = new System.Drawing.Point(396, 377);
-            this.checkBox40.Name = "checkBox40";
-            this.checkBox40.Size = new System.Drawing.Size(53, 20);
-            this.checkBox40.TabIndex = 66;
-            this.checkBox40.Tag = "9";
-            this.checkBox40.Text = "use";
-            this.checkBox40.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox40.UseVisualStyleBackColor = true;
-            this.checkBox40.CheckedChanged += new System.EventHandler(this.boxCheckBchance_checkup);
-            // 
-            // checkBox41
-            // 
-            this.checkBox41.AutoSize = true;
-            this.checkBox41.Location = new System.Drawing.Point(326, 377);
-            this.checkBox41.Name = "checkBox41";
-            this.checkBox41.Size = new System.Drawing.Size(53, 20);
-            this.checkBox41.TabIndex = 65;
-            this.checkBox41.Tag = "9";
-            this.checkBox41.Text = "use";
-            this.checkBox41.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox41.UseVisualStyleBackColor = true;
-            this.checkBox41.CheckedChanged += new System.EventHandler(this.chanceAcheckBox_checkup);
-            // 
-            // textBox15
-            // 
-            this.textBox15.Location = new System.Drawing.Point(208, 376);
-            this.textBox15.Name = "textBox15";
-            this.textBox15.Size = new System.Drawing.Size(98, 23);
-            this.textBox15.TabIndex = 64;
-            this.textBox15.Tag = "9";
-            this.textBox15.Text = "0X00000000";
-            this.textBox15.TextChanged += new System.EventHandler(this.textBox1g_TextChanged);
-            // 
-            // textBox16
-            // 
-            this.textBox16.Location = new System.Drawing.Point(91, 376);
-            this.textBox16.Name = "textBox16";
-            this.textBox16.Size = new System.Drawing.Size(104, 23);
-            this.textBox16.TabIndex = 63;
-            this.textBox16.Tag = "9";
-            this.textBox16.Text = "0X00000000";
-            this.textBox16.TextChanged += new System.EventHandler(this.textBox1g_TextChanged);
-            // 
-            // label45
-            // 
-            this.label45.AutoSize = true;
-            this.label45.Font = new System.Drawing.Font("Verdana", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label45.ForeColor = System.Drawing.Color.MidnightBlue;
-            this.label45.Location = new System.Drawing.Point(11, 378);
-            this.label45.Name = "label45";
-            this.label45.Size = new System.Drawing.Size(70, 18);
-            this.label45.TabIndex = 62;
-            this.label45.Tag = "9";
-            this.label45.Text = "Level 9";
-            // 
-            // checkBox34
-            // 
-            this.checkBox34.AutoSize = true;
-            this.checkBox34.Location = new System.Drawing.Point(536, 338);
-            this.checkBox34.Name = "checkBox34";
-            this.checkBox34.Size = new System.Drawing.Size(53, 20);
-            this.checkBox34.TabIndex = 61;
-            this.checkBox34.Tag = "8";
-            this.checkBox34.Text = "use";
-            this.checkBox34.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox34.UseVisualStyleBackColor = true;
-            this.checkBox34.CheckedChanged += new System.EventHandler(this.checkBchanceBox_checkup);
-            // 
-            // checkBox35
-            // 
-            this.checkBox35.AutoSize = true;
-            this.checkBox35.Location = new System.Drawing.Point(466, 338);
-            this.checkBox35.Name = "checkBox35";
-            this.checkBox35.Size = new System.Drawing.Size(53, 20);
-            this.checkBox35.TabIndex = 60;
-            this.checkBox35.Tag = "8";
-            this.checkBox35.Text = "use";
-            this.checkBox35.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox35.UseVisualStyleBackColor = true;
-            this.checkBox35.CheckedChanged += new System.EventHandler(this.chanceBcheckBox_checkup);
-            // 
-            // checkBox36
-            // 
-            this.checkBox36.AutoSize = true;
-            this.checkBox36.Location = new System.Drawing.Point(396, 338);
-            this.checkBox36.Name = "checkBox36";
-            this.checkBox36.Size = new System.Drawing.Size(53, 20);
-            this.checkBox36.TabIndex = 59;
-            this.checkBox36.Tag = "8";
-            this.checkBox36.Text = "use";
-            this.checkBox36.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox36.UseVisualStyleBackColor = true;
-            this.checkBox36.CheckedChanged += new System.EventHandler(this.boxCheckBchance_checkup);
-            // 
-            // checkBox37
-            // 
-            this.checkBox37.AutoSize = true;
-            this.checkBox37.Location = new System.Drawing.Point(326, 338);
-            this.checkBox37.Name = "checkBox37";
-            this.checkBox37.Size = new System.Drawing.Size(53, 20);
-            this.checkBox37.TabIndex = 58;
-            this.checkBox37.Tag = "8";
-            this.checkBox37.Text = "use";
-            this.checkBox37.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox37.UseVisualStyleBackColor = true;
-            this.checkBox37.CheckedChanged += new System.EventHandler(this.chanceAcheckBox_checkup);
-            // 
-            // textBox13
-            // 
-            this.textBox13.Location = new System.Drawing.Point(208, 337);
-            this.textBox13.Name = "textBox13";
-            this.textBox13.Size = new System.Drawing.Size(98, 23);
-            this.textBox13.TabIndex = 57;
-            this.textBox13.Tag = "8";
-            this.textBox13.Text = "0X00000000";
-            this.textBox13.TextChanged += new System.EventHandler(this.textBox1g_TextChanged);
-            // 
-            // textBox14
-            // 
-            this.textBox14.Location = new System.Drawing.Point(91, 337);
-            this.textBox14.Name = "textBox14";
-            this.textBox14.Size = new System.Drawing.Size(104, 23);
-            this.textBox14.TabIndex = 56;
-            this.textBox14.Tag = "8";
-            this.textBox14.Text = "0X00000000";
-            this.textBox14.TextChanged += new System.EventHandler(this.textBox1g_TextChanged);
-            // 
-            // label44
-            // 
-            this.label44.AutoSize = true;
-            this.label44.Font = new System.Drawing.Font("Verdana", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label44.ForeColor = System.Drawing.Color.MidnightBlue;
-            this.label44.Location = new System.Drawing.Point(11, 339);
-            this.label44.Name = "label44";
-            this.label44.Size = new System.Drawing.Size(70, 18);
-            this.label44.TabIndex = 55;
-            this.label44.Tag = "8";
-            this.label44.Text = "Level 8";
-            // 
-            // checkBox30
-            // 
-            this.checkBox30.AutoSize = true;
-            this.checkBox30.Location = new System.Drawing.Point(537, 299);
-            this.checkBox30.Name = "checkBox30";
-            this.checkBox30.Size = new System.Drawing.Size(53, 20);
-            this.checkBox30.TabIndex = 54;
-            this.checkBox30.Tag = "7";
-            this.checkBox30.Text = "use";
-            this.checkBox30.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox30.UseVisualStyleBackColor = true;
-            this.checkBox30.CheckedChanged += new System.EventHandler(this.checkBchanceBox_checkup);
-            // 
-            // checkBox31
-            // 
-            this.checkBox31.AutoSize = true;
-            this.checkBox31.Location = new System.Drawing.Point(467, 299);
-            this.checkBox31.Name = "checkBox31";
-            this.checkBox31.Size = new System.Drawing.Size(53, 20);
-            this.checkBox31.TabIndex = 53;
-            this.checkBox31.Tag = "7";
-            this.checkBox31.Text = "use";
-            this.checkBox31.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox31.UseVisualStyleBackColor = true;
-            this.checkBox31.CheckedChanged += new System.EventHandler(this.chanceBcheckBox_checkup);
-            // 
-            // checkBox32
-            // 
-            this.checkBox32.AutoSize = true;
-            this.checkBox32.Location = new System.Drawing.Point(397, 299);
-            this.checkBox32.Name = "checkBox32";
-            this.checkBox32.Size = new System.Drawing.Size(53, 20);
-            this.checkBox32.TabIndex = 52;
-            this.checkBox32.Tag = "7";
-            this.checkBox32.Text = "use";
-            this.checkBox32.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox32.UseVisualStyleBackColor = true;
-            this.checkBox32.CheckedChanged += new System.EventHandler(this.boxCheckBchance_checkup);
-            // 
-            // checkBox33
-            // 
-            this.checkBox33.AutoSize = true;
-            this.checkBox33.Location = new System.Drawing.Point(327, 299);
-            this.checkBox33.Name = "checkBox33";
-            this.checkBox33.Size = new System.Drawing.Size(53, 20);
-            this.checkBox33.TabIndex = 51;
-            this.checkBox33.Tag = "7";
-            this.checkBox33.Text = "use";
-            this.checkBox33.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox33.UseVisualStyleBackColor = true;
-            this.checkBox33.CheckedChanged += new System.EventHandler(this.chanceAcheckBox_checkup);
-            // 
-            // textBox11
-            // 
-            this.textBox11.Location = new System.Drawing.Point(209, 298);
-            this.textBox11.Name = "textBox11";
-            this.textBox11.Size = new System.Drawing.Size(98, 23);
-            this.textBox11.TabIndex = 50;
-            this.textBox11.Tag = "7";
-            this.textBox11.Text = "0X00000000";
-            this.textBox11.TextChanged += new System.EventHandler(this.textBox1g_TextChanged);
-            // 
-            // textBox12
-            // 
-            this.textBox12.Location = new System.Drawing.Point(91, 298);
-            this.textBox12.Name = "textBox12";
-            this.textBox12.Size = new System.Drawing.Size(104, 23);
-            this.textBox12.TabIndex = 49;
-            this.textBox12.Tag = "7";
-            this.textBox12.Text = "0X00000000";
-            this.textBox12.TextChanged += new System.EventHandler(this.textBox1g_TextChanged);
-            // 
-            // label43
-            // 
-            this.label43.AutoSize = true;
-            this.label43.Font = new System.Drawing.Font("Verdana", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label43.ForeColor = System.Drawing.Color.MidnightBlue;
-            this.label43.Location = new System.Drawing.Point(11, 300);
-            this.label43.Name = "label43";
-            this.label43.Size = new System.Drawing.Size(70, 18);
-            this.label43.TabIndex = 48;
-            this.label43.Tag = "7";
-            this.label43.Text = "Level 7";
-            // 
-            // checkBox26
-            // 
-            this.checkBox26.AutoSize = true;
-            this.checkBox26.Location = new System.Drawing.Point(536, 260);
-            this.checkBox26.Name = "checkBox26";
-            this.checkBox26.Size = new System.Drawing.Size(53, 20);
-            this.checkBox26.TabIndex = 47;
-            this.checkBox26.Tag = "6";
-            this.checkBox26.Text = "use";
-            this.checkBox26.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox26.UseVisualStyleBackColor = true;
-            this.checkBox26.CheckedChanged += new System.EventHandler(this.checkBchanceBox_checkup);
-            // 
-            // checkBox27
-            // 
-            this.checkBox27.AutoSize = true;
-            this.checkBox27.Location = new System.Drawing.Point(466, 260);
-            this.checkBox27.Name = "checkBox27";
-            this.checkBox27.Size = new System.Drawing.Size(53, 20);
-            this.checkBox27.TabIndex = 46;
-            this.checkBox27.Tag = "6";
-            this.checkBox27.Text = "use";
-            this.checkBox27.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox27.UseVisualStyleBackColor = true;
-            this.checkBox27.CheckedChanged += new System.EventHandler(this.chanceBcheckBox_checkup);
-            // 
-            // checkBox28
-            // 
-            this.checkBox28.AutoSize = true;
-            this.checkBox28.Location = new System.Drawing.Point(396, 260);
-            this.checkBox28.Name = "checkBox28";
-            this.checkBox28.Size = new System.Drawing.Size(53, 20);
-            this.checkBox28.TabIndex = 45;
-            this.checkBox28.Tag = "6";
-            this.checkBox28.Text = "use";
-            this.checkBox28.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox28.UseVisualStyleBackColor = true;
-            this.checkBox28.CheckedChanged += new System.EventHandler(this.boxCheckBchance_checkup);
-            // 
-            // checkBox29
-            // 
-            this.checkBox29.AutoSize = true;
-            this.checkBox29.Location = new System.Drawing.Point(326, 260);
-            this.checkBox29.Name = "checkBox29";
-            this.checkBox29.Size = new System.Drawing.Size(53, 20);
-            this.checkBox29.TabIndex = 44;
-            this.checkBox29.Tag = "6";
-            this.checkBox29.Text = "use";
-            this.checkBox29.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox29.UseVisualStyleBackColor = true;
-            this.checkBox29.CheckedChanged += new System.EventHandler(this.chanceAcheckBox_checkup);
-            // 
-            // textBox9
-            // 
-            this.textBox9.Location = new System.Drawing.Point(208, 259);
-            this.textBox9.Name = "textBox9";
-            this.textBox9.Size = new System.Drawing.Size(98, 23);
-            this.textBox9.TabIndex = 43;
-            this.textBox9.Tag = "6";
-            this.textBox9.Text = "0X00000000";
-            this.textBox9.TextChanged += new System.EventHandler(this.textBox1g_TextChanged);
-            // 
-            // textBox10
-            // 
-            this.textBox10.Location = new System.Drawing.Point(91, 259);
-            this.textBox10.Name = "textBox10";
-            this.textBox10.Size = new System.Drawing.Size(104, 23);
-            this.textBox10.TabIndex = 42;
-            this.textBox10.Tag = "6";
-            this.textBox10.Text = "0X00000000";
-            this.textBox10.TextChanged += new System.EventHandler(this.textBox1g_TextChanged);
-            // 
-            // label42
-            // 
-            this.label42.AutoSize = true;
-            this.label42.Font = new System.Drawing.Font("Verdana", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label42.ForeColor = System.Drawing.Color.MidnightBlue;
-            this.label42.Location = new System.Drawing.Point(11, 261);
-            this.label42.Name = "label42";
-            this.label42.Size = new System.Drawing.Size(70, 18);
-            this.label42.TabIndex = 41;
-            this.label42.Tag = "6";
-            this.label42.Text = "Level 6";
-            // 
-            // checkBox22
-            // 
-            this.checkBox22.AutoSize = true;
-            this.checkBox22.Location = new System.Drawing.Point(536, 221);
-            this.checkBox22.Name = "checkBox22";
-            this.checkBox22.Size = new System.Drawing.Size(53, 20);
-            this.checkBox22.TabIndex = 40;
-            this.checkBox22.Tag = "5";
-            this.checkBox22.Text = "use";
-            this.checkBox22.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox22.UseVisualStyleBackColor = true;
-            this.checkBox22.CheckedChanged += new System.EventHandler(this.checkBchanceBox_checkup);
-            // 
-            // checkBox23
-            // 
-            this.checkBox23.AutoSize = true;
-            this.checkBox23.Location = new System.Drawing.Point(466, 221);
-            this.checkBox23.Name = "checkBox23";
-            this.checkBox23.Size = new System.Drawing.Size(53, 20);
-            this.checkBox23.TabIndex = 39;
-            this.checkBox23.Tag = "5";
-            this.checkBox23.Text = "use";
-            this.checkBox23.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox23.UseVisualStyleBackColor = true;
-            this.checkBox23.CheckedChanged += new System.EventHandler(this.chanceBcheckBox_checkup);
-            // 
-            // checkBox24
-            // 
-            this.checkBox24.AutoSize = true;
-            this.checkBox24.Location = new System.Drawing.Point(396, 221);
-            this.checkBox24.Name = "checkBox24";
-            this.checkBox24.Size = new System.Drawing.Size(53, 20);
-            this.checkBox24.TabIndex = 38;
-            this.checkBox24.Tag = "5";
-            this.checkBox24.Text = "use";
-            this.checkBox24.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox24.UseVisualStyleBackColor = true;
-            this.checkBox24.CheckedChanged += new System.EventHandler(this.boxCheckBchance_checkup);
-            // 
-            // checkBox25
-            // 
-            this.checkBox25.AutoSize = true;
-            this.checkBox25.Location = new System.Drawing.Point(326, 221);
-            this.checkBox25.Name = "checkBox25";
-            this.checkBox25.Size = new System.Drawing.Size(53, 20);
-            this.checkBox25.TabIndex = 37;
-            this.checkBox25.Tag = "5";
-            this.checkBox25.Text = "use";
-            this.checkBox25.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox25.UseVisualStyleBackColor = true;
-            this.checkBox25.CheckedChanged += new System.EventHandler(this.chanceAcheckBox_checkup);
-            // 
-            // textBox7
-            // 
-            this.textBox7.Location = new System.Drawing.Point(208, 220);
-            this.textBox7.Name = "textBox7";
-            this.textBox7.Size = new System.Drawing.Size(98, 23);
-            this.textBox7.TabIndex = 36;
-            this.textBox7.Tag = "5";
-            this.textBox7.Text = "0X00000000";
-            this.textBox7.TextChanged += new System.EventHandler(this.textBox1g_TextChanged);
-            // 
-            // textBox8
-            // 
-            this.textBox8.Location = new System.Drawing.Point(91, 220);
-            this.textBox8.Name = "textBox8";
-            this.textBox8.Size = new System.Drawing.Size(104, 23);
-            this.textBox8.TabIndex = 35;
-            this.textBox8.Tag = "5";
-            this.textBox8.Text = "0X00000000";
-            this.textBox8.TextChanged += new System.EventHandler(this.textBox1g_TextChanged);
-            // 
-            // label17
-            // 
-            this.label17.AutoSize = true;
-            this.label17.Font = new System.Drawing.Font("Verdana", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label17.ForeColor = System.Drawing.Color.MidnightBlue;
-            this.label17.Location = new System.Drawing.Point(11, 222);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(70, 18);
-            this.label17.TabIndex = 34;
-            this.label17.Tag = "5";
-            this.label17.Text = "Level 5";
-            // 
-            // checkBox18
-            // 
-            this.checkBox18.AutoSize = true;
-            this.checkBox18.Location = new System.Drawing.Point(536, 182);
-            this.checkBox18.Name = "checkBox18";
-            this.checkBox18.Size = new System.Drawing.Size(53, 20);
-            this.checkBox18.TabIndex = 33;
-            this.checkBox18.Tag = "4";
-            this.checkBox18.Text = "use";
-            this.checkBox18.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox18.UseVisualStyleBackColor = true;
-            this.checkBox18.CheckedChanged += new System.EventHandler(this.checkBchanceBox_checkup);
-            // 
-            // checkBox19
-            // 
-            this.checkBox19.AutoSize = true;
-            this.checkBox19.Location = new System.Drawing.Point(466, 182);
-            this.checkBox19.Name = "checkBox19";
-            this.checkBox19.Size = new System.Drawing.Size(53, 20);
-            this.checkBox19.TabIndex = 32;
-            this.checkBox19.Tag = "4";
-            this.checkBox19.Text = "use";
-            this.checkBox19.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox19.UseVisualStyleBackColor = true;
-            this.checkBox19.CheckedChanged += new System.EventHandler(this.chanceBcheckBox_checkup);
-            // 
-            // checkBox20
-            // 
-            this.checkBox20.AutoSize = true;
-            this.checkBox20.Location = new System.Drawing.Point(396, 182);
-            this.checkBox20.Name = "checkBox20";
-            this.checkBox20.Size = new System.Drawing.Size(53, 20);
-            this.checkBox20.TabIndex = 31;
-            this.checkBox20.Tag = "4";
-            this.checkBox20.Text = "use";
-            this.checkBox20.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox20.UseVisualStyleBackColor = true;
-            this.checkBox20.CheckedChanged += new System.EventHandler(this.boxCheckBchance_checkup);
-            // 
-            // checkBox21
-            // 
-            this.checkBox21.AutoSize = true;
-            this.checkBox21.Location = new System.Drawing.Point(326, 182);
-            this.checkBox21.Name = "checkBox21";
-            this.checkBox21.Size = new System.Drawing.Size(53, 20);
-            this.checkBox21.TabIndex = 30;
-            this.checkBox21.Tag = "4";
-            this.checkBox21.Text = "use";
-            this.checkBox21.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox21.UseVisualStyleBackColor = true;
-            this.checkBox21.CheckedChanged += new System.EventHandler(this.chanceAcheckBox_checkup);
-            // 
-            // textBox5
-            // 
-            this.textBox5.Location = new System.Drawing.Point(208, 181);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(98, 23);
-            this.textBox5.TabIndex = 29;
-            this.textBox5.Tag = "4";
-            this.textBox5.Text = "0X00000000";
-            this.textBox5.TextChanged += new System.EventHandler(this.textBox1g_TextChanged);
-            // 
-            // textBox6
-            // 
-            this.textBox6.Location = new System.Drawing.Point(91, 181);
-            this.textBox6.Name = "textBox6";
-            this.textBox6.Size = new System.Drawing.Size(104, 23);
-            this.textBox6.TabIndex = 28;
-            this.textBox6.Tag = "4";
-            this.textBox6.Text = "0X00000000";
-            this.textBox6.TextChanged += new System.EventHandler(this.textBox1g_TextChanged);
-            // 
-            // label16
-            // 
-            this.label16.AutoSize = true;
-            this.label16.Font = new System.Drawing.Font("Verdana", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label16.ForeColor = System.Drawing.Color.MidnightBlue;
-            this.label16.Location = new System.Drawing.Point(11, 183);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(70, 18);
-            this.label16.TabIndex = 27;
-            this.label16.Tag = "4";
-            this.label16.Text = "Level 4";
-            // 
-            // checkBox14
-            // 
-            this.checkBox14.AutoSize = true;
-            this.checkBox14.Location = new System.Drawing.Point(537, 143);
-            this.checkBox14.Name = "checkBox14";
-            this.checkBox14.Size = new System.Drawing.Size(53, 20);
-            this.checkBox14.TabIndex = 26;
-            this.checkBox14.Tag = "3";
-            this.checkBox14.Text = "use";
-            this.checkBox14.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox14.UseVisualStyleBackColor = true;
-            this.checkBox14.CheckedChanged += new System.EventHandler(this.checkBchanceBox_checkup);
-            // 
-            // checkBox15
-            // 
-            this.checkBox15.AutoSize = true;
-            this.checkBox15.Location = new System.Drawing.Point(467, 143);
-            this.checkBox15.Name = "checkBox15";
-            this.checkBox15.Size = new System.Drawing.Size(53, 20);
-            this.checkBox15.TabIndex = 25;
-            this.checkBox15.Tag = "3";
-            this.checkBox15.Text = "use";
-            this.checkBox15.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox15.UseVisualStyleBackColor = true;
-            this.checkBox15.CheckedChanged += new System.EventHandler(this.chanceBcheckBox_checkup);
-            // 
-            // checkBox16
-            // 
-            this.checkBox16.AutoSize = true;
-            this.checkBox16.Location = new System.Drawing.Point(397, 143);
-            this.checkBox16.Name = "checkBox16";
-            this.checkBox16.Size = new System.Drawing.Size(53, 20);
-            this.checkBox16.TabIndex = 24;
-            this.checkBox16.Tag = "3";
-            this.checkBox16.Text = "use";
-            this.checkBox16.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox16.UseVisualStyleBackColor = true;
-            this.checkBox16.CheckedChanged += new System.EventHandler(this.boxCheckBchance_checkup);
-            // 
-            // checkBox17
-            // 
-            this.checkBox17.AutoSize = true;
-            this.checkBox17.Location = new System.Drawing.Point(327, 143);
-            this.checkBox17.Name = "checkBox17";
-            this.checkBox17.Size = new System.Drawing.Size(53, 20);
-            this.checkBox17.TabIndex = 23;
-            this.checkBox17.Tag = "3";
-            this.checkBox17.Text = "use";
-            this.checkBox17.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox17.UseVisualStyleBackColor = true;
-            this.checkBox17.CheckedChanged += new System.EventHandler(this.chanceAcheckBox_checkup);
-            // 
-            // textBox3
-            // 
-            this.textBox3.Location = new System.Drawing.Point(209, 142);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(98, 23);
-            this.textBox3.TabIndex = 22;
-            this.textBox3.Tag = "3";
-            this.textBox3.Text = "0X00000000";
-            this.textBox3.TextChanged += new System.EventHandler(this.textBox1g_TextChanged);
-            // 
-            // textBox4
-            // 
-            this.textBox4.Location = new System.Drawing.Point(91, 142);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(104, 23);
-            this.textBox4.TabIndex = 21;
-            this.textBox4.Tag = "3";
-            this.textBox4.Text = "0X00000000";
-            this.textBox4.TextChanged += new System.EventHandler(this.textBox1g_TextChanged);
-            // 
-            // label15
-            // 
-            this.label15.AutoSize = true;
-            this.label15.Font = new System.Drawing.Font("Verdana", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label15.ForeColor = System.Drawing.Color.MidnightBlue;
-            this.label15.Location = new System.Drawing.Point(11, 144);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(70, 18);
-            this.label15.TabIndex = 20;
-            this.label15.Tag = "3";
-            this.label15.Text = "Level 3";
-            // 
-            // checkBox10
-            // 
-            this.checkBox10.AutoSize = true;
-            this.checkBox10.Location = new System.Drawing.Point(537, 104);
-            this.checkBox10.Name = "checkBox10";
-            this.checkBox10.Size = new System.Drawing.Size(53, 20);
-            this.checkBox10.TabIndex = 19;
-            this.checkBox10.Tag = "2";
-            this.checkBox10.Text = "use";
-            this.checkBox10.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox10.UseVisualStyleBackColor = true;
-            this.checkBox10.CheckedChanged += new System.EventHandler(this.checkBchanceBox_checkup);
-            // 
-            // checkBox11
-            // 
-            this.checkBox11.AutoSize = true;
-            this.checkBox11.Location = new System.Drawing.Point(467, 104);
-            this.checkBox11.Name = "checkBox11";
-            this.checkBox11.Size = new System.Drawing.Size(53, 20);
-            this.checkBox11.TabIndex = 18;
-            this.checkBox11.Tag = "2";
-            this.checkBox11.Text = "use";
-            this.checkBox11.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox11.UseVisualStyleBackColor = true;
-            this.checkBox11.CheckedChanged += new System.EventHandler(this.chanceBcheckBox_checkup);
-            // 
-            // checkBox12
-            // 
-            this.checkBox12.AutoSize = true;
-            this.checkBox12.Location = new System.Drawing.Point(397, 104);
-            this.checkBox12.Name = "checkBox12";
-            this.checkBox12.Size = new System.Drawing.Size(53, 20);
-            this.checkBox12.TabIndex = 17;
-            this.checkBox12.Tag = "2";
-            this.checkBox12.Text = "use";
-            this.checkBox12.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox12.UseVisualStyleBackColor = true;
-            this.checkBox12.CheckedChanged += new System.EventHandler(this.boxCheckBchance_checkup);
-            // 
-            // checkBox13
-            // 
-            this.checkBox13.AutoSize = true;
-            this.checkBox13.Location = new System.Drawing.Point(327, 104);
-            this.checkBox13.Name = "checkBox13";
-            this.checkBox13.Size = new System.Drawing.Size(53, 20);
-            this.checkBox13.TabIndex = 16;
-            this.checkBox13.Tag = "2";
-            this.checkBox13.Text = "use";
-            this.checkBox13.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox13.UseVisualStyleBackColor = true;
-            this.checkBox13.CheckedChanged += new System.EventHandler(this.chanceAcheckBox_checkup);
-            // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(209, 103);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(98, 23);
-            this.textBox1.TabIndex = 15;
-            this.textBox1.Tag = "2";
-            this.textBox1.Text = "0X00000000";
-            this.textBox1.TextChanged += new System.EventHandler(this.textBox1g_TextChanged);
-            // 
-            // textBox2
-            // 
-            this.textBox2.Location = new System.Drawing.Point(91, 103);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(104, 23);
-            this.textBox2.TabIndex = 14;
-            this.textBox2.Tag = "2";
-            this.textBox2.Text = "0X00000000";
-            this.textBox2.TextChanged += new System.EventHandler(this.textBox1g_TextChanged);
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Font = new System.Drawing.Font("Verdana", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label14.ForeColor = System.Drawing.Color.MidnightBlue;
-            this.label14.Location = new System.Drawing.Point(11, 105);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(70, 18);
-            this.label14.TabIndex = 13;
-            this.label14.Tag = "2";
-            this.label14.Text = "Level 2";
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.Location = new System.Drawing.Point(537, 37);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(43, 13);
-            this.label9.TabIndex = 12;
-            this.label9.Text = "Fail B";
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.Location = new System.Drawing.Point(467, 37);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(49, 13);
-            this.label8.TabIndex = 11;
-            this.label8.Text = "Pass B";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label7.Location = new System.Drawing.Point(397, 37);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(44, 13);
-            this.label7.TabIndex = 10;
-            this.label7.Text = "Fail A";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(327, 37);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(50, 13);
-            this.label6.TabIndex = 9;
-            this.label6.Text = "Pass A";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(209, 37);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(68, 13);
-            this.label5.TabIndex = 8;
-            this.label5.Text = "Bad GUID";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(87, 37);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(77, 13);
-            this.label4.TabIndex = 7;
-            this.label4.Text = "Good GUID";
-            // 
-            // checkBox6
-            // 
-            this.checkBox6.AutoSize = true;
-            this.checkBox6.Location = new System.Drawing.Point(537, 64);
-            this.checkBox6.Name = "checkBox6";
-            this.checkBox6.Size = new System.Drawing.Size(53, 20);
-            this.checkBox6.TabIndex = 6;
-            this.checkBox6.Tag = "1";
-            this.checkBox6.Text = "use";
-            this.checkBox6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox6.UseVisualStyleBackColor = true;
-            this.checkBox6.CheckedChanged += new System.EventHandler(this.checkBchanceBox_checkup);
-            // 
-            // checkBox5
-            // 
-            this.checkBox5.AutoSize = true;
-            this.checkBox5.Location = new System.Drawing.Point(467, 64);
-            this.checkBox5.Name = "checkBox5";
-            this.checkBox5.Size = new System.Drawing.Size(53, 20);
-            this.checkBox5.TabIndex = 5;
-            this.checkBox5.Tag = "1";
-            this.checkBox5.Text = "use";
-            this.checkBox5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox5.UseVisualStyleBackColor = true;
-            this.checkBox5.CheckedChanged += new System.EventHandler(this.chanceBcheckBox_checkup);
-            // 
-            // checkBox4
-            // 
-            this.checkBox4.AutoSize = true;
-            this.checkBox4.Location = new System.Drawing.Point(397, 64);
-            this.checkBox4.Name = "checkBox4";
-            this.checkBox4.Size = new System.Drawing.Size(53, 20);
-            this.checkBox4.TabIndex = 4;
-            this.checkBox4.Tag = "1";
-            this.checkBox4.Text = "use";
-            this.checkBox4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox4.UseVisualStyleBackColor = true;
-            this.checkBox4.CheckedChanged += new System.EventHandler(this.boxCheckBchance_checkup);
-            // 
-            // checkBox3
-            // 
-            this.checkBox3.AutoSize = true;
-            this.checkBox3.Location = new System.Drawing.Point(327, 64);
-            this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(53, 20);
-            this.checkBox3.TabIndex = 3;
-            this.checkBox3.Tag = "1";
-            this.checkBox3.Text = "use";
-            this.checkBox3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox3.UseVisualStyleBackColor = true;
-            this.checkBox3.CheckedChanged += new System.EventHandler(this.chanceAcheckBox_checkup);
-            // 
-            // textBox1b
-            // 
-            this.textBox1b.Location = new System.Drawing.Point(209, 63);
-            this.textBox1b.Name = "textBox1b";
-            this.textBox1b.Size = new System.Drawing.Size(98, 23);
-            this.textBox1b.TabIndex = 2;
-            this.textBox1b.Tag = "1";
-            this.textBox1b.Text = "0X00000000";
-            this.textBox1b.TextChanged += new System.EventHandler(this.textBox1g_TextChanged);
-            // 
-            // textBox1g
-            // 
-            this.textBox1g.Location = new System.Drawing.Point(91, 63);
-            this.textBox1g.Name = "textBox1g";
-            this.textBox1g.Size = new System.Drawing.Size(104, 23);
-            this.textBox1g.TabIndex = 1;
-            this.textBox1g.Tag = "1";
-            this.textBox1g.Text = "0X00000000";
-            this.textBox1g.TextChanged += new System.EventHandler(this.textBox1g_TextChanged);
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Verdana", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.ForeColor = System.Drawing.Color.MidnightBlue;
-            this.label2.Location = new System.Drawing.Point(11, 66);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(70, 18);
-            this.label2.TabIndex = 0;
-            this.label2.Tag = "1";
-            this.label2.Text = "Level 1";
-            // 
-            // checkBox2
-            // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Checked = true;
-            this.checkBox2.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox2.Location = new System.Drawing.Point(220, 16);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(159, 17);
-            this.checkBox2.TabIndex = 1;
-            this.checkBox2.Text = "Enable Outfit Overrides";
-            this.checkBox2.UseVisualStyleBackColor = true;
-            this.checkBox2.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
-            // 
-            // checkBox1
-            // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Checked = true;
-            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox1.Location = new System.Drawing.Point(14, 16);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(151, 17);
-            this.checkBox1.TabIndex = 0;
-            this.checkBox1.Text = "Enable Extra Rewards";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
-            // 
-            // CareerLvls
-            // 
-            this.CareerLvls.BackColor = System.Drawing.SystemColors.Window;
-            this.CareerLvls.Location = new System.Drawing.Point(430, 35);
-            this.CareerLvls.Name = "CareerLvls";
-            this.CareerLvls.ReadOnly = true;
-            this.CareerLvls.Size = new System.Drawing.Size(30, 21);
-            this.CareerLvls.TabIndex = 25;
-            this.CareerLvls.Text = "00";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(354, 39);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(72, 13);
-            this.label1.TabIndex = 3;
-            this.label1.Text = "Career Lvls";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // CareerTitle
-            // 
-            this.CareerTitle.Location = new System.Drawing.Point(157, 35);
-            this.CareerTitle.Name = "CareerTitle";
-            this.CareerTitle.Size = new System.Drawing.Size(181, 21);
-            this.CareerTitle.TabIndex = 2;
-            this.CareerTitle.TextChanged += new System.EventHandler(this.CareerTitle_TextChanged);
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(79, 39);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(75, 13);
-            this.label3.TabIndex = 1;
-            this.label3.Text = "Career Title";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // Language
-            // 
-            this.Language.Location = new System.Drawing.Point(565, 35);
-            this.Language.Name = "Language";
-            this.Language.Size = new System.Drawing.Size(188, 21);
-            this.Language.TabIndex = 6;
-            this.Language.SelectedIndexChanged += new System.EventHandler(this.Language_SelectedIndexChanged);
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(503, 39);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(62, 13);
-            this.label10.TabIndex = 5;
-            this.label10.Text = "Language";
-            // 
-            // mainMenu1
-            // 
-            this.mainMenu1.BackColor = System.Drawing.SystemColors.Control;
-            this.mainMenu1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.menuItem6,
-            this.menuItem1});
-            this.mainMenu1.Location = new System.Drawing.Point(0, 0);
-            this.mainMenu1.Name = "mainMenu1";
-            this.mainMenu1.Size = new System.Drawing.Size(1104, 24);
-            this.mainMenu1.TabIndex = 0;
-            this.mainMenu1.Text = "mainMenu1";
-            // 
-            // menuItem6
-            // 
-            this.menuItem6.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.miAddLvl,
-            this.miRemoveLvl});
-            this.menuItem6.Name = "menuItem6";
-            this.menuItem6.Size = new System.Drawing.Size(51, 20);
-            this.menuItem6.Text = "&Levels";
-            // 
-            // miAddLvl
-            // 
-            this.miAddLvl.Name = "miAddLvl";
-            this.miAddLvl.Size = new System.Drawing.Size(147, 22);
-            this.miAddLvl.Text = "&Add Level";
-            this.miAddLvl.Click += new System.EventHandler(this.miAddLvl_Click);
-            // 
-            // miRemoveLvl
-            // 
-            this.miRemoveLvl.Name = "miRemoveLvl";
-            this.miRemoveLvl.Size = new System.Drawing.Size(147, 22);
-            this.miRemoveLvl.Text = "&Remove Level";
-            this.miRemoveLvl.Click += new System.EventHandler(this.miRemoveLvl_Click);
-            // 
-            // menuItem1
-            // 
-            this.menuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.miEnglishOnly});
-            this.menuItem1.Name = "menuItem1";
-            this.menuItem1.Size = new System.Drawing.Size(76, 20);
-            this.menuItem1.Text = "L&anguages";
-            // 
-            // miEnglishOnly
-            // 
-            this.miEnglishOnly.Name = "miEnglishOnly";
-            this.miEnglishOnly.Size = new System.Drawing.Size(155, 22);
-            this.miEnglishOnly.Text = "US English only";
-            this.miEnglishOnly.Click += new System.EventHandler(this.miEnglishOnly_Click);
-            // 
-            // gcUpgrade
-            // 
-            this.gcUpgrade.AutoSize = true;
-            this.gcUpgrade.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.gcUpgrade.ComboBoxWidth = 220;
-            this.gcUpgrade.DropDownHeight = 250;
-            this.gcUpgrade.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDown;
-            this.gcUpgrade.DropDownWidth = 220;
-            this.gcUpgrade.Label = "Upgrade";
-            this.gcUpgrade.Location = new System.Drawing.Point(449, 68);
-            this.gcUpgrade.Margin = new System.Windows.Forms.Padding(0);
-            this.gcUpgrade.Name = "gcUpgrade";
-            this.gcUpgrade.Size = new System.Drawing.Size(370, 21);
-            this.gcUpgrade.TabIndex = 13;
-            this.gcUpgrade.Value = ((uint)(3722304989u));
-            // 
-            // gcReward
-            // 
-            this.gcReward.AutoSize = true;
-            this.gcReward.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.gcReward.ComboBoxWidth = 220;
-            this.gcReward.DropDownHeight = 250;
-            this.gcReward.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDown;
-            this.gcReward.DropDownWidth = 220;
-            this.gcReward.Label = "Reward";
-            this.gcReward.Location = new System.Drawing.Point(76, 68);
-            this.gcReward.Margin = new System.Windows.Forms.Padding(0);
-            this.gcReward.Name = "gcReward";
-            this.gcReward.Size = new System.Drawing.Size(365, 21);
-            this.gcReward.TabIndex = 12;
-            this.gcReward.Value = ((uint)(3722304989u));
-            // 
-            // lbcrap
-            // 
-            this.lbcrap.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lbcrap.AutoSize = true;
-            this.lbcrap.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbcrap.ForeColor = System.Drawing.Color.DarkRed;
-            this.lbcrap.Location = new System.Drawing.Point(823, 62);
-            this.lbcrap.Name = "lbcrap";
-            this.lbcrap.Size = new System.Drawing.Size(274, 30);
-            this.lbcrap.TabIndex = 14;
-            this.lbcrap.Text = "Old Career Type!\r\nNot compatible with Seasons EP or above";
-            this.lbcrap.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.lbcrap.Visible = false;
-            // 
-            // pntheme
-            // 
-            this.pntheme.BackColor = System.Drawing.Color.Transparent;
-            this.pntheme.Controls.Add(this.btUgrade);
-            this.pntheme.Controls.Add(this.pictureBox1);
-            this.pntheme.Controls.Add(this.lbcrap);
-            this.pntheme.Controls.Add(this.gcUpgrade);
-            this.pntheme.Controls.Add(this.gcReward);
-            this.pntheme.Controls.Add(this.CareerTitle);
-            this.pntheme.Controls.Add(this.label10);
-            this.pntheme.Controls.Add(this.Language);
-            this.pntheme.Controls.Add(this.tabControl1);
-            this.pntheme.Controls.Add(this.label3);
-            this.pntheme.Controls.Add(this.label1);
-            this.pntheme.Controls.Add(this.CareerLvls);
-            this.pntheme.Controls.Add(this.mainMenu1);
-            this.pntheme.Dock = System.Windows.Forms.DockStyle.Fill;
-           
-            this.pntheme.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            
-            this.pntheme.Location = new System.Drawing.Point(0, 0);
-            
-            this.pntheme.Name = "pntheme";
-            this.pntheme.Size = new System.Drawing.Size(1104, 661);
-            
-            this.pntheme.TabIndex = 15;
-            // 
-            // btUgrade
-            // 
-            this.btUgrade.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btUgrade.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btUgrade.Location = new System.Drawing.Point(936, 30);
-            this.btUgrade.Name = "btUgrade";
-            this.btUgrade.Size = new System.Drawing.Size(162, 23);
-            this.btUgrade.TabIndex = 24;
-            this.btUgrade.Text = "Upgrade to Latest EP";
-            this.btUgrade.UseVisualStyleBackColor = true;
-            this.btUgrade.Visible = false;
-            this.btUgrade.Click += new System.EventHandler(this.btUgrade_Click);
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Location = new System.Drawing.Point(8, 30);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(64, 64);
-            this.pictureBox1.TabIndex = 3;
-            this.pictureBox1.TabStop = false;
-            // 
-            // toolTip1
-            // 
-            this.toolTip1.AutoPopDelay = 20000;
-            this.toolTip1.InitialDelay = 500;
-            this.toolTip1.ReshowDelay = 100;
-            this.toolTip1.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.toolTip1.ToolTipTitle = "Note";
-            // 
-            // CareerEditor
-            // 
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
-            this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(1104, 661);
-            this.Controls.Add(this.pntheme);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MainMenuStrip = this.mainMenu1;
-            this.MinimumSize = new System.Drawing.Size(1120, 700);
-            this.Name = "CareerEditor";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Career Editor (by Bidou)";
-            this.tabPage4.ResumeLayout(false);
-            this.tabPage4.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
-            this.tcChanceOutcome.ResumeLayout(false);
-            this.tabPage5.ResumeLayout(false);
-            this.tabPage5.PerformLayout();
-            this.tabPage6.ResumeLayout(false);
-            this.tabPage6.PerformLayout();
-            this.tabPage7.ResumeLayout(false);
-            this.tabPage7.PerformLayout();
-            this.tabPage8.ResumeLayout(false);
-            this.tabPage8.PerformLayout();
-            this.tabPage3.ResumeLayout(false);
-            this.gbJLPromo.ResumeLayout(false);
-            this.gbPromo.ResumeLayout(false);
-            this.gbPromo.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.PromoFriends)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PromoCleaning)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PromoLogic)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PromoCreativity)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PromoCharisma)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PromoBody)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PromoMechanical)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PromoCooking)).EndInit();
-            this.tabPage2.ResumeLayout(false);
-            this.gbHoursWages.ResumeLayout(false);
-            this.gbHoursWages.PerformLayout();
-            this.gbHWMotives.ResumeLayout(false);
-            this.gbHWMotives.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ComfortHours)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.HygieneTotal)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.BladderTotal)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.WorkBladder)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.WorkComfort)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.HungerHours)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.EnergyHours)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.WorkPublic)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.WorkHunger)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.BladderHours)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ComfortTotal)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.HungerTotal)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.HygieneHours)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.WorkEnergy)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.WorkFun)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.WorkSunshine)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PublicHours)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.SunshineTotal)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.EnergyTotal)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.FunTotal)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PublicTotal)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.FunHours)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.WorkHygiene)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.SunshineHours)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.AmorousHours)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.WorkAmorous)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.AmorousTotal)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numLscore)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numPTO)).EndInit();
-            this.gbJLHoursWages.ResumeLayout(false);
-            this.tabControl1.ResumeLayout(false);
-            this.tabPage1.ResumeLayout(false);
-            this.gbJobDetails.ResumeLayout(false);
-            this.gbJobDetails.PerformLayout();
-            this.gbJLDetails.ResumeLayout(false);
-            this.tabPagMajor.ResumeLayout(false);
-            this.gpmajors.ResumeLayout(false);
-            this.gbmajaffil.ResumeLayout(false);
-            this.gbmajaffil.PerformLayout();
-            this.gbrequir.ResumeLayout(false);
-            this.gbrequir.PerformLayout();
-            this.tabPage9.ResumeLayout(false);
-            this.thmepanel1.ResumeLayout(false);
-            this.thmepanel1.PerformLayout();
-            this.mainMenu1.ResumeLayout(false);
-            this.mainMenu1.PerformLayout();
-            this.pntheme.ResumeLayout(false);
-            this.pntheme.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            this.ResumeLayout(false);
+            this.lbcrap = new Avalonia.Controls.TextBlock();
+            this.pntheme = new Avalonia.Controls.Panel();
+            this.btUgrade = new Avalonia.Controls.Button();
+            this.pictureBox1 = new PictureBox();
+            this.cbischance.IsCheckedChanged += (s,e) => this.cbischance_CheckedChanged(s, EventArgs.Empty);
+            this.lnudChanceCurrentLevel.ValueChanged += (s,e) => this.lnudChanceCurrentLevel_ValueChanged(s, EventArgs.Empty);
+            this.lnudChancePercent.ValueChanged += (s,e) => this.lnudChancePercent_ValueChanged(s, EventArgs.Empty);
+            this.ChanceCopy.Click += (s,e) => this.ChanceCopy_LinkClicked(s, EventArgs.Empty);
+            this.PromoList.SelectionChanged += (s,e) => this.PromoList_SelectedIndexChanged(s, EventArgs.Empty);
+            this.cbTrick.SelectionChanged += (s,e) => this.cbTrick_SelectedIndexChanged(s, EventArgs.Empty);
+            this.PromoFriends.ValueChanged += (s,e) => this.Promo_ValueChanged(s, EventArgs.Empty);
+            this.PromoFriends.KeyUp += new System.EventHandler<Avalonia.Input.KeyEventArgs>(this.Promo_KeyUp);
+            this.PromoCleaning.ValueChanged += (s,e) => this.Promo_ValueChanged(s, EventArgs.Empty);
+            this.PromoCleaning.KeyUp += new System.EventHandler<Avalonia.Input.KeyEventArgs>(this.Promo_KeyUp);
+            this.PromoLogic.ValueChanged += (s,e) => this.Promo_ValueChanged(s, EventArgs.Empty);
+            this.PromoLogic.KeyUp += new System.EventHandler<Avalonia.Input.KeyEventArgs>(this.Promo_KeyUp);
+            this.PromoCreativity.ValueChanged += (s,e) => this.Promo_ValueChanged(s, EventArgs.Empty);
+            this.PromoCreativity.KeyUp += new System.EventHandler<Avalonia.Input.KeyEventArgs>(this.Promo_KeyUp);
+            this.PromoCharisma.ValueChanged += (s,e) => this.Promo_ValueChanged(s, EventArgs.Empty);
+            this.PromoCharisma.KeyUp += new System.EventHandler<Avalonia.Input.KeyEventArgs>(this.Promo_KeyUp);
+            this.PromoBody.ValueChanged += (s,e) => this.Promo_ValueChanged(s, EventArgs.Empty);
+            this.PromoBody.KeyUp += new System.EventHandler<Avalonia.Input.KeyEventArgs>(this.Promo_KeyUp);
+            this.PromoMechanical.ValueChanged += (s,e) => this.Promo_ValueChanged(s, EventArgs.Empty);
+            this.PromoMechanical.KeyUp += new System.EventHandler<Avalonia.Input.KeyEventArgs>(this.Promo_KeyUp);
+            this.PromoCooking.ValueChanged += (s,e) => this.Promo_ValueChanged(s, EventArgs.Empty);
+            this.PromoCooking.KeyUp += new System.EventHandler<Avalonia.Input.KeyEventArgs>(this.Promo_KeyUp);
+            this.lnudFoods.ValueChanged += (s,e) => this.lnudFoods_ValueChanged(s, EventArgs.Empty);
+            this.lnudWorkStart.ValueChanged += (s,e) => this.lnudWork_ValueChanged(s, EventArgs.Empty);
+            this.lnudWorkStart.KeyUp += new System.EventHandler<Avalonia.Input.KeyEventArgs>(this.lnudWork_KeyUp);
+            this.lnudWorkHours.ValueChanged += (s,e) => this.lnudWork_ValueChanged(s, EventArgs.Empty);
+            this.lnudWorkHours.KeyUp += new System.EventHandler<Avalonia.Input.KeyEventArgs>(this.lnudWork_KeyUp);
+            this.lnudWages.ValueChanged += (s,e) => this.lnudWork_ValueChanged(s, EventArgs.Empty);
+            this.lnudWages.KeyUp += new System.EventHandler<Avalonia.Input.KeyEventArgs>(this.lnudWork_KeyUp);
+            this.lnudWagesDog.ValueChanged += (s,e) => this.lnudWork_ValueChanged(s, EventArgs.Empty);
+            this.lnudWagesDog.KeyUp += new System.EventHandler<Avalonia.Input.KeyEventArgs>(this.lnudWork_KeyUp);
+            this.lnudWagesCat.ValueChanged += (s,e) => this.lnudWork_ValueChanged(s, EventArgs.Empty);
+            this.lnudWagesCat.KeyUp += new System.EventHandler<Avalonia.Input.KeyEventArgs>(this.lnudWork_KeyUp);
+            this.WorkMonday.IsCheckedChanged += (s,e) => this.Workday_CheckedChanged(s, EventArgs.Empty);
+            this.WorkTuesday.IsCheckedChanged += (s,e) => this.Workday_CheckedChanged(s, EventArgs.Empty);
+            this.WorkWednesday.IsCheckedChanged += (s,e) => this.Workday_CheckedChanged(s, EventArgs.Empty);
+            this.WorkThursday.IsCheckedChanged += (s,e) => this.Workday_CheckedChanged(s, EventArgs.Empty);
+            this.WorkFriday.IsCheckedChanged += (s,e) => this.Workday_CheckedChanged(s, EventArgs.Empty);
+            this.WorkSaturday.IsCheckedChanged += (s,e) => this.Workday_CheckedChanged(s, EventArgs.Empty);
+            this.WorkSunday.IsCheckedChanged += (s,e) => this.Workday_CheckedChanged(s, EventArgs.Empty);
+            this.WorkBladder.ValueChanged += (s,e) => this.nudMotive_ValueChanged(s, EventArgs.Empty);
+            this.WorkBladder.KeyUp += new System.EventHandler<Avalonia.Input.KeyEventArgs>(this.nudMotive_KeyUp);
+            this.WorkComfort.ValueChanged += (s,e) => this.nudMotive_ValueChanged(s, EventArgs.Empty);
+            this.WorkComfort.KeyUp += new System.EventHandler<Avalonia.Input.KeyEventArgs>(this.nudMotive_KeyUp);
+            this.WorkPublic.ValueChanged += (s,e) => this.nudMotive_ValueChanged(s, EventArgs.Empty);
+            this.WorkPublic.KeyUp += new System.EventHandler<Avalonia.Input.KeyEventArgs>(this.nudMotive_KeyUp);
+            this.WorkHunger.ValueChanged += (s,e) => this.nudMotive_ValueChanged(s, EventArgs.Empty);
+            this.WorkHunger.KeyUp += new System.EventHandler<Avalonia.Input.KeyEventArgs>(this.nudMotive_KeyUp);
+            this.WorkEnergy.ValueChanged += (s,e) => this.nudMotive_ValueChanged(s, EventArgs.Empty);
+            this.WorkEnergy.KeyUp += new System.EventHandler<Avalonia.Input.KeyEventArgs>(this.nudMotive_KeyUp);
+            this.WorkFun.ValueChanged += (s,e) => this.nudMotive_ValueChanged(s, EventArgs.Empty);
+            this.WorkFun.KeyUp += new System.EventHandler<Avalonia.Input.KeyEventArgs>(this.nudMotive_KeyUp);
+            this.WorkSunshine.ValueChanged += (s,e) => this.nudMotive_ValueChanged(s, EventArgs.Empty);
+            this.WorkSunshine.KeyUp += new System.EventHandler<Avalonia.Input.KeyEventArgs>(this.nudMotive_KeyUp);
+            this.WorkHygiene.ValueChanged += (s,e) => this.nudMotive_ValueChanged(s, EventArgs.Empty);
+            this.WorkHygiene.KeyUp += new System.EventHandler<Avalonia.Input.KeyEventArgs>(this.nudMotive_KeyUp);
+            this.WorkAmorous.ValueChanged += (s,e) => this.nudMotive_ValueChanged(s, EventArgs.Empty);
+            this.WorkAmorous.KeyUp += new System.EventHandler<Avalonia.Input.KeyEventArgs>(this.nudMotive_KeyUp);
+            this.numLscore.ValueChanged += (s,e) => this.numLscore_ValueChanged(s, EventArgs.Empty);
+            this.numPTO.ValueChanged += (s,e) => this.numPTO_ValueChanged(s, EventArgs.Empty);
+            this.HoursWagesList.SelectionChanged += (s,e) => this.HoursWagesList_SelectedIndexChanged(s, EventArgs.Empty);
+            this.gcVehicle.GUIDChooserValueChanged += (s,e) => this.gcVehicle_GUIDChooserValueChanged(s, EventArgs.Empty);
+            this.gcOutfit.GUIDChooserValueChanged += (s,e) => this.gcOutfit_GUIDChooserValueChanged(s, EventArgs.Empty);
+            this.JobDetailsCopy.Click += (s,e) => this.JobDetailsCopy_LinkClicked(s, EventArgs.Empty);
+            this.jdpFemale.TitleValueChanged += (s,e) => this.jdpFemale_TitleValueChanged(s, EventArgs.Empty);
+            this.jdpFemale.DescValueChanged += (s,e) => this.jdpFemale_DescValueChanged(s, EventArgs.Empty);
+            this.jdpMale.TitleValueChanged += (s,e) => this.jdpMale_TitleValueChanged(s, EventArgs.Empty);
+            this.jdpMale.DescValueChanged += (s,e) => this.jdpMale_DescValueChanged(s, EventArgs.Empty);
+            this.JobDetailList.SelectionChanged += (s,e) => this.JobDetailList_SelectedIndexChanged(s, EventArgs.Empty);
+            this.btmajApply.Click += (s,e) => this.btmajApply_Click(s, EventArgs.Empty);
+            this.checkBox42.IsCheckedChanged += (s,e) => this.checkBchanceBox_checkup(s, EventArgs.Empty);
+            this.checkBox43.IsCheckedChanged += (s,e) => this.chanceBcheckBox_checkup(s, EventArgs.Empty);
+            this.checkBox44.IsCheckedChanged += (s,e) => this.boxCheckBchance_checkup(s, EventArgs.Empty);
+            this.checkBox45.IsCheckedChanged += (s,e) => this.chanceAcheckBox_checkup(s, EventArgs.Empty);
+            this.textBox17.TextChanged += (s,e) => this.textBox1g_TextChanged(s, EventArgs.Empty);
+            this.textBox18.TextChanged += (s,e) => this.textBox1g_TextChanged(s, EventArgs.Empty);
+            this.checkBox38.IsCheckedChanged += (s,e) => this.checkBchanceBox_checkup(s, EventArgs.Empty);
+            this.checkBox39.IsCheckedChanged += (s,e) => this.chanceBcheckBox_checkup(s, EventArgs.Empty);
+            this.checkBox40.IsCheckedChanged += (s,e) => this.boxCheckBchance_checkup(s, EventArgs.Empty);
+            this.checkBox41.IsCheckedChanged += (s,e) => this.chanceAcheckBox_checkup(s, EventArgs.Empty);
+            this.textBox15.TextChanged += (s,e) => this.textBox1g_TextChanged(s, EventArgs.Empty);
+            this.textBox16.TextChanged += (s,e) => this.textBox1g_TextChanged(s, EventArgs.Empty);
+            this.checkBox34.IsCheckedChanged += (s,e) => this.checkBchanceBox_checkup(s, EventArgs.Empty);
+            this.checkBox35.IsCheckedChanged += (s,e) => this.chanceBcheckBox_checkup(s, EventArgs.Empty);
+            this.checkBox36.IsCheckedChanged += (s,e) => this.boxCheckBchance_checkup(s, EventArgs.Empty);
+            this.checkBox37.IsCheckedChanged += (s,e) => this.chanceAcheckBox_checkup(s, EventArgs.Empty);
+            this.textBox13.TextChanged += (s,e) => this.textBox1g_TextChanged(s, EventArgs.Empty);
+            this.textBox14.TextChanged += (s,e) => this.textBox1g_TextChanged(s, EventArgs.Empty);
+            this.checkBox30.IsCheckedChanged += (s,e) => this.checkBchanceBox_checkup(s, EventArgs.Empty);
+            this.checkBox31.IsCheckedChanged += (s,e) => this.chanceBcheckBox_checkup(s, EventArgs.Empty);
+            this.checkBox32.IsCheckedChanged += (s,e) => this.boxCheckBchance_checkup(s, EventArgs.Empty);
+            this.checkBox33.IsCheckedChanged += (s,e) => this.chanceAcheckBox_checkup(s, EventArgs.Empty);
+            this.textBox11.TextChanged += (s,e) => this.textBox1g_TextChanged(s, EventArgs.Empty);
+            this.textBox12.TextChanged += (s,e) => this.textBox1g_TextChanged(s, EventArgs.Empty);
+            this.checkBox26.IsCheckedChanged += (s,e) => this.checkBchanceBox_checkup(s, EventArgs.Empty);
+            this.checkBox27.IsCheckedChanged += (s,e) => this.chanceBcheckBox_checkup(s, EventArgs.Empty);
+            this.checkBox28.IsCheckedChanged += (s,e) => this.boxCheckBchance_checkup(s, EventArgs.Empty);
+            this.checkBox29.IsCheckedChanged += (s,e) => this.chanceAcheckBox_checkup(s, EventArgs.Empty);
+            this.textBox9.TextChanged += (s,e) => this.textBox1g_TextChanged(s, EventArgs.Empty);
+            this.textBox10.TextChanged += (s,e) => this.textBox1g_TextChanged(s, EventArgs.Empty);
+            this.checkBox22.IsCheckedChanged += (s,e) => this.checkBchanceBox_checkup(s, EventArgs.Empty);
+            this.checkBox23.IsCheckedChanged += (s,e) => this.chanceBcheckBox_checkup(s, EventArgs.Empty);
+            this.checkBox24.IsCheckedChanged += (s,e) => this.boxCheckBchance_checkup(s, EventArgs.Empty);
+            this.checkBox25.IsCheckedChanged += (s,e) => this.chanceAcheckBox_checkup(s, EventArgs.Empty);
+            this.textBox7.TextChanged += (s,e) => this.textBox1g_TextChanged(s, EventArgs.Empty);
+            this.textBox8.TextChanged += (s,e) => this.textBox1g_TextChanged(s, EventArgs.Empty);
+            this.checkBox18.IsCheckedChanged += (s,e) => this.checkBchanceBox_checkup(s, EventArgs.Empty);
+            this.checkBox19.IsCheckedChanged += (s,e) => this.chanceBcheckBox_checkup(s, EventArgs.Empty);
+            this.checkBox20.IsCheckedChanged += (s,e) => this.boxCheckBchance_checkup(s, EventArgs.Empty);
+            this.checkBox21.IsCheckedChanged += (s,e) => this.chanceAcheckBox_checkup(s, EventArgs.Empty);
+            this.textBox5.TextChanged += (s,e) => this.textBox1g_TextChanged(s, EventArgs.Empty);
+            this.textBox6.TextChanged += (s,e) => this.textBox1g_TextChanged(s, EventArgs.Empty);
+            this.checkBox14.IsCheckedChanged += (s,e) => this.checkBchanceBox_checkup(s, EventArgs.Empty);
+            this.checkBox15.IsCheckedChanged += (s,e) => this.chanceBcheckBox_checkup(s, EventArgs.Empty);
+            this.checkBox16.IsCheckedChanged += (s,e) => this.boxCheckBchance_checkup(s, EventArgs.Empty);
+            this.checkBox17.IsCheckedChanged += (s,e) => this.chanceAcheckBox_checkup(s, EventArgs.Empty);
+            this.textBox3.TextChanged += (s,e) => this.textBox1g_TextChanged(s, EventArgs.Empty);
+            this.textBox4.TextChanged += (s,e) => this.textBox1g_TextChanged(s, EventArgs.Empty);
+            this.checkBox10.IsCheckedChanged += (s,e) => this.checkBchanceBox_checkup(s, EventArgs.Empty);
+            this.checkBox11.IsCheckedChanged += (s,e) => this.chanceBcheckBox_checkup(s, EventArgs.Empty);
+            this.checkBox12.IsCheckedChanged += (s,e) => this.boxCheckBchance_checkup(s, EventArgs.Empty);
+            this.checkBox13.IsCheckedChanged += (s,e) => this.chanceAcheckBox_checkup(s, EventArgs.Empty);
+            this.textBox1.TextChanged += (s,e) => this.textBox1g_TextChanged(s, EventArgs.Empty);
+            this.textBox2.TextChanged += (s,e) => this.textBox1g_TextChanged(s, EventArgs.Empty);
+            this.checkBox6.IsCheckedChanged += (s,e) => this.checkBchanceBox_checkup(s, EventArgs.Empty);
+            this.checkBox5.IsCheckedChanged += (s,e) => this.chanceBcheckBox_checkup(s, EventArgs.Empty);
+            this.checkBox4.IsCheckedChanged += (s,e) => this.boxCheckBchance_checkup(s, EventArgs.Empty);
+            this.checkBox3.IsCheckedChanged += (s,e) => this.chanceAcheckBox_checkup(s, EventArgs.Empty);
+            this.textBox1b.TextChanged += (s,e) => this.textBox1g_TextChanged(s, EventArgs.Empty);
+            this.textBox1g.TextChanged += (s,e) => this.textBox1g_TextChanged(s, EventArgs.Empty);
+            this.checkBox2.IsCheckedChanged += (s,e) => this.checkBox2_CheckedChanged(s, EventArgs.Empty);
+            this.checkBox1.IsCheckedChanged += (s,e) => this.checkBox1_CheckedChanged(s, EventArgs.Empty);
+            this.CareerTitle.TextChanged += (s,e) => this.CareerTitle_TextChanged(s, EventArgs.Empty);
+            this.Language.SelectionChanged += (s,e) => this.Language_SelectedIndexChanged(s, EventArgs.Empty);
+            this.miAddLvl.Click += (s,e) => this.miAddLvl_Click(s, EventArgs.Empty);
+            this.miRemoveLvl.Click += (s,e) => this.miRemoveLvl_Click(s, EventArgs.Empty);
+            this.miEnglishOnly.Click += (s,e) => this.miEnglishOnly_Click(s, EventArgs.Empty);
+            this.btUgrade.Click += (s,e) => this.btUgrade_Click(s, EventArgs.Empty);
+            // this.ClientSize = new System.Drawing.Size(1104, 661); // not applicable for Avalonia Window
+            // this.MinimumSize = new System.Drawing.Size(1120, 700); // not applicable
 
+            // === Layout ===
+
+            // --- Set label/button text content ---
+            label1.Text = "Career Lvls";
+            label3.Text = "Career Title";
+            label10.Text = "Language";
+            label34.Text = "Cooking"; label35.Text = "Mechanical"; label36.Text = "Body";
+            label37.Text = "Charisma"; label38.Text = "Creativity"; label39.Text = "Logic";
+            label40.Text = "Cleaning"; label41.Text = "Family Friends"; label101.Text = "Trick";
+            label51.Text = "Text Male"; label52.Text = "Text Female";
+            label48.Text = "Finish";
+            label18.Text = "Amorous";
+            label19.Text = "Hunger"; label20.Text = "Comfort"; label21.Text = "Hygiene";
+            label22.Text = "Bladder"; label23.Text = "PerHour"; label24.Text = "times Hours";
+            label25.Text = "= Total"; label26.Text = "= Total"; label27.Text = "times Hours";
+            label28.Text = "PerHour"; label30.Text = "Sunshine"; label31.Text = "Social";
+            label32.Text = "Energy"; label33.Text = "Fun";
+            label2.Text = "Level 1"; label14.Text = "Level 2"; label15.Text = "Level 3";
+            label16.Text = "Level 4"; label17.Text = "Level 5"; label42.Text = "Level 6";
+            label43.Text = "Level 7"; label44.Text = "Level 8"; label45.Text = "Level 9"; label46.Text = "Level 10";
+            label4.Text = "Good GUID"; label5.Text = "Bad GUID";
+            label6.Text = "Pass A"; label7.Text = "Fail A"; label8.Text = "Pass B"; label9.Text = "Fail B";
+            label11.Text = "Fail B"; label12.Text = "Fail A"; label13.Text = "Outfit Override\n(female only)";
+            label29.Text = "A sim needs to have graduated from any one\nof these majors to be offered this career.";
+            label47.Text = "A sim that has graduated one of these majors\nwill get a level boost when starting this career.";
+            lbcrap.Text = "Old Career Type!\nNot compatible with Seasons EP or above";
+            lbPTO.Text = "Paid Time Off (PTO) Daily Accruement";
+            lbLscore.Text = "Life Score";
+            lbrewguid.Text = "none";
+
+            // --- CheckBox content ---
+            cbischance.Content = "Is Available at this Level?";
+            WorkMonday.Content = "Mon"; WorkTuesday.Content = "Tue"; WorkWednesday.Content = "Wed";
+            WorkThursday.Content = "Thu"; WorkFriday.Content = "Fri";
+            WorkSaturday.Content = "Sat"; WorkSunday.Content = "Sun";
+            checkBox1.Content = "Enable Extra Rewards"; checkBox2.Content = "Enable Outfit Overrides";
+            checkBox3.Content = "use"; checkBox4.Content = "use"; checkBox5.Content = "use"; checkBox6.Content = "use";
+            checkBox7.Content = "use"; checkBox8.Content = "use"; checkBox9.Content = "use";
+            checkBox10.Content = "use"; checkBox11.Content = "use"; checkBox12.Content = "use"; checkBox13.Content = "use";
+            checkBox14.Content = "use"; checkBox15.Content = "use"; checkBox16.Content = "use"; checkBox17.Content = "use";
+            checkBox18.Content = "use"; checkBox19.Content = "use"; checkBox20.Content = "use"; checkBox21.Content = "use";
+            checkBox22.Content = "use"; checkBox23.Content = "use"; checkBox24.Content = "use"; checkBox25.Content = "use";
+            checkBox26.Content = "use"; checkBox27.Content = "use"; checkBox28.Content = "use"; checkBox29.Content = "use";
+            checkBox30.Content = "use"; checkBox31.Content = "use"; checkBox32.Content = "use"; checkBox33.Content = "use";
+            checkBox34.Content = "use"; checkBox35.Content = "use"; checkBox36.Content = "use"; checkBox37.Content = "use";
+            checkBox38.Content = "use"; checkBox39.Content = "use"; checkBox40.Content = "use"; checkBox41.Content = "use";
+            checkBox42.Content = "use"; checkBox43.Content = "use"; checkBox44.Content = "use"; checkBox45.Content = "use";
+            checkBox46.Content = "use"; checkBox47.Content = "use"; checkBox48.Content = "use";
+            checkBox49.Content = "use"; checkBox50.Content = "use"; checkBox51.Content = "use";
+            checkBox52.Content = "use"; checkBox53.Content = "use"; checkBox54.Content = "use";
+            checkBox55.Content = "use"; checkBox56.Content = "use"; checkBox57.Content = "use";
+            checkBox58.Content = "use"; checkBox59.Content = "use"; checkBox60.Content = "use";
+            checkBox61.Content = "use"; checkBox62.Content = "use"; checkBox63.Content = "use";
+            checkBox64.Content = "use"; checkBox65.Content = "use"; checkBox66.Content = "use";
+            checkBox67.Content = "use"; checkBox68.Content = "use"; checkBox69.Content = "use";
+            checkBox70.Content = "use"; checkBox71.Content = "use"; checkBox72.Content = "use";
+
+            // --- Majors affiliation checkboxes ---
+            cbaArt.Content = "Art"; cbabiol.Content = "Biology"; cbadrama.Content = "Drama";
+            cbaecon.Content = "Economics"; cbahisto.Content = "History"; cbaliter.Content = "Literature";
+            cbamaths.Content = "Mathematics"; cbaphysi.Content = "Physics";
+            cbaphyco.Content = "Psychology"; cbapolit.Content = "Political Science";
+
+            // --- Majors required checkboxes ---
+            cbrArt.Content = "Art"; cbrbiol.Content = "Biology"; cbrdrama.Content = "Drama";
+            cbrecon.Content = "Economics"; cbrhisto.Content = "History"; cbrliter.Content = "Literature";
+            cbrmaths.Content = "Mathematics"; cbrphysi.Content = "Physics";
+            cbrphyco.Content = "Psychology"; cbrpolit.Content = "Political Science";
+
+            // --- Button content ---
+            btUgrade.Content = "Upgrade to Latest EP";
+            btexApply.Content = "Apply";
+            btmajApply.Content = "Apply";
+            JobDetailsCopy.Content = "Copy >";
+            ChanceCopy.Content = "Copy >";
+
+            // --- LabelledNumericUpDown labels ---
+            lnudWorkStart.Label = "Start"; lnudWorkHours.Label = "Hours";
+            lnudWages.Label = "Wages"; lnudWagesDog.Label = "Dog Wages"; lnudWagesCat.Label = "Cat Wages";
+            lnudFoods.Label = "Food Inc.";
+            lnudChanceCurrentLevel.Label = "Career Level"; lnudChancePercent.Label = "% Chance";
+            lnudPetChancePercent.Label = "% Pet Chance";
+
+            // --- Menu hierarchy ---
+            menuItem6.Header = "&Levels";
+            miAddLvl.Header = "&Add Level";
+            miRemoveLvl.Header = "&Remove Level";
+            menuItem1.Header = "L&anguages";
+            miEnglishOnly.Header = "US English only";
+            miEnglishOnly.ToggleType = Avalonia.Controls.MenuItemToggleType.CheckBox;
+            menuItem6.Items.Add(miAddLvl);
+            menuItem6.Items.Add(miRemoveLvl);
+            menuItem1.Items.Add(miEnglishOnly);
+            mainMenu1.Items.Add(menuItem6);
+            mainMenu1.Items.Add(menuItem1);
+
+            // --- tabPage1: Job Details ---
+            var jdRightStack = new Avalonia.Controls.StackPanel { Orientation = Avalonia.Layout.Orientation.Vertical, Spacing = 4 };
+            jdRightStack.Children.Add(jdpMale);
+            jdRightStack.Children.Add(jdpFemale);
+            jdRightStack.Children.Add(JobDetailsCopy);
+            jdRightStack.Children.Add(gcOutfit);
+            jdRightStack.Children.Add(gcVehicle);
+            gbJobDetails.Content = jdRightStack;
+
+            gbJLDetails.Content = JobDetailList;
+
+            var jdGrid = new Avalonia.Controls.Grid();
+            jdGrid.ColumnDefinitions.Add(new Avalonia.Controls.ColumnDefinition { Width = new Avalonia.Controls.GridLength(1, Avalonia.Controls.GridUnitType.Star) });
+            jdGrid.ColumnDefinitions.Add(new Avalonia.Controls.ColumnDefinition { Width = new Avalonia.Controls.GridLength(1, Avalonia.Controls.GridUnitType.Star) });
+            Avalonia.Controls.Grid.SetColumn(gbJLDetails, 0);
+            Avalonia.Controls.Grid.SetColumn(gbJobDetails, 1);
+            jdGrid.Children.Add(gbJLDetails);
+            jdGrid.Children.Add(gbJobDetails);
+
+            tabPage1.Header = "Job Details";
+            tabPage1.Content = jdGrid;
+
+            // --- tabPage2: Hours & Wages ---
+            // Motive deltas grid (9 rows, 6 columns: label | work NUD | × | hours NUD | = | total NUD)
+            var motiveGrid = new Avalonia.Controls.Grid();
+            for (int r = 0; r < 9; r++)
+                motiveGrid.RowDefinitions.Add(new Avalonia.Controls.RowDefinition { Height = Avalonia.Controls.GridLength.Auto });
+            motiveGrid.ColumnDefinitions.Add(new Avalonia.Controls.ColumnDefinition { Width = new Avalonia.Controls.GridLength(80, Avalonia.Controls.GridUnitType.Pixel) });
+            motiveGrid.ColumnDefinitions.Add(new Avalonia.Controls.ColumnDefinition { Width = Avalonia.Controls.GridLength.Auto });
+            motiveGrid.ColumnDefinitions.Add(new Avalonia.Controls.ColumnDefinition { Width = Avalonia.Controls.GridLength.Auto });
+            motiveGrid.ColumnDefinitions.Add(new Avalonia.Controls.ColumnDefinition { Width = Avalonia.Controls.GridLength.Auto });
+            motiveGrid.ColumnDefinitions.Add(new Avalonia.Controls.ColumnDefinition { Width = Avalonia.Controls.GridLength.Auto });
+            motiveGrid.ColumnDefinitions.Add(new Avalonia.Controls.ColumnDefinition { Width = Avalonia.Controls.GridLength.Auto });
+
+            var motiveRows = new (Avalonia.Controls.TextBlock lbl, Avalonia.Controls.NumericUpDown work, Avalonia.Controls.TextBlock perHour, Avalonia.Controls.NumericUpDown hours, Avalonia.Controls.TextBlock eq, Avalonia.Controls.NumericUpDown total)[]
+            {
+                (label19, WorkHunger,   label23, HungerHours,   label25, HungerTotal),
+                (label20, WorkComfort,  label23, ComfortHours,  label25, ComfortTotal),
+                (label21, WorkHygiene,  label23, HygieneHours,  label25, HygieneTotal),
+                (label22, WorkBladder,  label23, BladderHours,  label25, BladderTotal),
+                (label32, WorkEnergy,   label28, EnergyHours,   label26, EnergyTotal),
+                (label33, WorkFun,      label28, FunHours,      label26, FunTotal),
+                (label31, WorkPublic,   label28, PublicHours,   label26, PublicTotal),
+                (label30, WorkSunshine, label28, SunshineHours, label26, SunshineTotal),
+                (label18, WorkAmorous,  label28, AmorousHours,  label26, AmorousTotal),
+            };
+
+            // We need fresh TextBlock instances for the repeated × and = labels per row
+            var perHourLabels = new[] { "×", "×", "×", "×", "×", "×", "×", "×", "×" };
+            var eqLabels      = new[] { "=", "=", "=", "=", "=", "=", "=", "=", "=" };
+
+            for (int row = 0; row < motiveRows.Length; row++)
+            {
+                var (lbl, work, _, hours, __, total) = motiveRows[row];
+
+                var rowLbl = new Avalonia.Controls.TextBlock { Text = lbl.Text, VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center };
+                var mulLbl = new Avalonia.Controls.TextBlock { Text = perHourLabels[row], VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center, Margin = new Avalonia.Thickness(4, 0) };
+                var eqLbl  = new Avalonia.Controls.TextBlock { Text = eqLabels[row],      VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center, Margin = new Avalonia.Thickness(4, 0) };
+
+                // Transfer IsVisible from the original hidden label18 row
+                bool visible = lbl != label18;
+                rowLbl.IsVisible = work.IsVisible = mulLbl.IsVisible = hours.IsVisible = eqLbl.IsVisible = total.IsVisible = visible;
+
+                Avalonia.Controls.Grid.SetRow(rowLbl, row); Avalonia.Controls.Grid.SetColumn(rowLbl, 0);
+                Avalonia.Controls.Grid.SetRow(work,   row); Avalonia.Controls.Grid.SetColumn(work,   1);
+                Avalonia.Controls.Grid.SetRow(mulLbl, row); Avalonia.Controls.Grid.SetColumn(mulLbl, 2);
+                Avalonia.Controls.Grid.SetRow(hours,  row); Avalonia.Controls.Grid.SetColumn(hours,  3);
+                Avalonia.Controls.Grid.SetRow(eqLbl,  row); Avalonia.Controls.Grid.SetColumn(eqLbl,  4);
+                Avalonia.Controls.Grid.SetRow(total,  row); Avalonia.Controls.Grid.SetColumn(total,  5);
+
+                motiveGrid.Children.Add(rowLbl);
+                motiveGrid.Children.Add(work);
+                motiveGrid.Children.Add(mulLbl);
+                motiveGrid.Children.Add(hours);
+                motiveGrid.Children.Add(eqLbl);
+                motiveGrid.Children.Add(total);
+            }
+            gbHWMotives.Text = "Motives";
+            gbHWMotives.Content = motiveGrid;
+
+            var daysStack = new Avalonia.Controls.StackPanel { Orientation = Avalonia.Layout.Orientation.Horizontal, Spacing = 4 };
+            daysStack.Children.Add(WorkMonday); daysStack.Children.Add(WorkTuesday);
+            daysStack.Children.Add(WorkWednesday); daysStack.Children.Add(WorkThursday);
+            daysStack.Children.Add(WorkFriday); daysStack.Children.Add(WorkSaturday);
+            daysStack.Children.Add(WorkSunday);
+
+            var hwFinishRow = new Avalonia.Controls.StackPanel { Orientation = Avalonia.Layout.Orientation.Horizontal, Spacing = 4 };
+            hwFinishRow.Children.Add(label48); hwFinishRow.Children.Add(tbWorkFinish);
+
+            var hwRightStack = new Avalonia.Controls.StackPanel { Orientation = Avalonia.Layout.Orientation.Vertical, Spacing = 4 };
+            hwRightStack.Children.Add(lnudWorkStart);
+            hwRightStack.Children.Add(lnudWorkHours);
+            hwRightStack.Children.Add(hwFinishRow);
+            hwRightStack.Children.Add(lnudWages);
+            hwRightStack.Children.Add(lnudWagesDog);
+            hwRightStack.Children.Add(lnudWagesCat);
+            hwRightStack.Children.Add(lnudFoods);
+            hwRightStack.Children.Add(daysStack);
+            var lscoreRow = new Avalonia.Controls.StackPanel { Orientation = Avalonia.Layout.Orientation.Horizontal, Spacing = 4 };
+            lscoreRow.Children.Add(lbLscore); lscoreRow.Children.Add(numLscore);
+            var ptoRow = new Avalonia.Controls.StackPanel { Orientation = Avalonia.Layout.Orientation.Horizontal, Spacing = 4 };
+            ptoRow.Children.Add(lbPTO); ptoRow.Children.Add(numPTO);
+            hwRightStack.Children.Add(lscoreRow);
+            hwRightStack.Children.Add(ptoRow);
+            gbHoursWages.Content = hwRightStack;
+
+            gbJLHoursWages.Content = HoursWagesList;
+
+            var hwGrid = new Avalonia.Controls.Grid();
+            hwGrid.ColumnDefinitions.Add(new Avalonia.Controls.ColumnDefinition { Width = new Avalonia.Controls.GridLength(1, Avalonia.Controls.GridUnitType.Star) });
+            hwGrid.ColumnDefinitions.Add(new Avalonia.Controls.ColumnDefinition { Width = new Avalonia.Controls.GridLength(1, Avalonia.Controls.GridUnitType.Star) });
+            Avalonia.Controls.Grid.SetColumn(gbJLHoursWages, 0);
+            Avalonia.Controls.Grid.SetColumn(gbHoursWages, 1);
+            hwGrid.Children.Add(gbJLHoursWages);
+            hwGrid.Children.Add(gbHoursWages);
+
+            var hwOuter = new Avalonia.Controls.StackPanel { Orientation = Avalonia.Layout.Orientation.Vertical, Spacing = 4 };
+            hwOuter.Children.Add(hwGrid);
+            hwOuter.Children.Add(gbHWMotives);
+
+            tabPage2.Header = "Hours & Wages";
+            tabPage2.Content = hwOuter;
+
+            // --- tabPage3: Promotion ---
+            var promoSkillGrid = new Avalonia.Controls.Grid();
+            promoSkillGrid.ColumnDefinitions.Add(new Avalonia.Controls.ColumnDefinition { Width = Avalonia.Controls.GridLength.Auto });
+            promoSkillGrid.ColumnDefinitions.Add(new Avalonia.Controls.ColumnDefinition { Width = Avalonia.Controls.GridLength.Auto });
+            var promoSkillRows = new (Avalonia.Controls.TextBlock lbl, Avalonia.Controls.NumericUpDown nud)[]
+            {
+                (label34, PromoCooking), (label35, PromoMechanical), (label36, PromoBody),
+                (label37, PromoCharisma), (label38, PromoCreativity), (label39, PromoLogic),
+                (label40, PromoCleaning), (label41, PromoFriends),
+            };
+            for (int i = 0; i < promoSkillRows.Length; i++)
+            {
+                promoSkillGrid.RowDefinitions.Add(new Avalonia.Controls.RowDefinition { Height = Avalonia.Controls.GridLength.Auto });
+                Avalonia.Controls.Grid.SetRow(promoSkillRows[i].lbl, i); Avalonia.Controls.Grid.SetColumn(promoSkillRows[i].lbl, 0);
+                Avalonia.Controls.Grid.SetRow(promoSkillRows[i].nud, i); Avalonia.Controls.Grid.SetColumn(promoSkillRows[i].nud, 1);
+                promoSkillGrid.Children.Add(promoSkillRows[i].lbl);
+                promoSkillGrid.Children.Add(promoSkillRows[i].nud);
+            }
+            // Trick row
+            promoSkillGrid.RowDefinitions.Add(new Avalonia.Controls.RowDefinition { Height = Avalonia.Controls.GridLength.Auto });
+            Avalonia.Controls.Grid.SetRow(label101, promoSkillRows.Length); Avalonia.Controls.Grid.SetColumn(label101, 0);
+            Avalonia.Controls.Grid.SetRow(cbTrick,  promoSkillRows.Length); Avalonia.Controls.Grid.SetColumn(cbTrick,  1);
+            promoSkillGrid.Children.Add(label101);
+            promoSkillGrid.Children.Add(cbTrick);
+
+            gbPromo.Content = promoSkillGrid;
+            gbJLPromo.Content = PromoList;
+
+            var promoGrid = new Avalonia.Controls.Grid();
+            promoGrid.ColumnDefinitions.Add(new Avalonia.Controls.ColumnDefinition { Width = new Avalonia.Controls.GridLength(1, Avalonia.Controls.GridUnitType.Star) });
+            promoGrid.ColumnDefinitions.Add(new Avalonia.Controls.ColumnDefinition { Width = new Avalonia.Controls.GridLength(1, Avalonia.Controls.GridUnitType.Star) });
+            Avalonia.Controls.Grid.SetColumn(gbJLPromo, 0);
+            Avalonia.Controls.Grid.SetColumn(gbPromo, 1);
+            promoGrid.Children.Add(gbJLPromo);
+            promoGrid.Children.Add(gbPromo);
+
+            tabPage3.Header = "Promotion";
+            tabPage3.Content = promoGrid;
+
+            // --- tabPage4: Chance Cards ---
+            tabPage5.Header = "Pass A"; tabPage5.Content = epPassA;
+            tabPage6.Header = "Fail A"; tabPage6.Content = epFailA;
+            tabPage7.Header = "Pass B"; tabPage7.Content = epPassB;
+            tabPage8.Header = "Fail B"; tabPage8.Content = epFailB;
+            tcChanceOutcome.Items.Add(tabPage5);
+            tcChanceOutcome.Items.Add(tabPage6);
+            tcChanceOutcome.Items.Add(tabPage7);
+            tcChanceOutcome.Items.Add(tabPage8);
+
+            var chanceMaleRow = new Avalonia.Controls.StackPanel { Orientation = Avalonia.Layout.Orientation.Horizontal, Spacing = 4 };
+            chanceMaleRow.Children.Add(label51); chanceMaleRow.Children.Add(ChanceTextMale); chanceMaleRow.Children.Add(ChanceCopy);
+            var chanceFemaleRow = new Avalonia.Controls.StackPanel { Orientation = Avalonia.Layout.Orientation.Horizontal, Spacing = 4 };
+            chanceFemaleRow.Children.Add(label52); chanceFemaleRow.Children.Add(ChanceTextFemale);
+
+            var chanceStack = new Avalonia.Controls.StackPanel { Orientation = Avalonia.Layout.Orientation.Vertical, Spacing = 4 };
+            chanceStack.Children.Add(cbischance);
+            chanceStack.Children.Add(lnudChanceCurrentLevel);
+            chanceStack.Children.Add(lnudChancePercent);
+            chanceStack.Children.Add(lnudPetChancePercent);
+            chanceStack.Children.Add(cpChoiceA);
+            chanceStack.Children.Add(chanceMaleRow);
+            chanceStack.Children.Add(chanceFemaleRow);
+            chanceStack.Children.Add(tcChanceOutcome);
+
+            tabPage4.Header = "Chance Cards";
+            tabPage4.Content = chanceStack;
+
+            // --- tabPagMajor: Majors ---
+            var majAffilStack = new Avalonia.Controls.StackPanel { Orientation = Avalonia.Layout.Orientation.Vertical, Spacing = 2 };
+            majAffilStack.Children.Add(label47);
+            majAffilStack.Children.Add(cbaArt); majAffilStack.Children.Add(cbabiol);
+            majAffilStack.Children.Add(cbadrama); majAffilStack.Children.Add(cbaecon);
+            majAffilStack.Children.Add(cbahisto); majAffilStack.Children.Add(cbaliter);
+            majAffilStack.Children.Add(cbamaths); majAffilStack.Children.Add(cbaphysi);
+            majAffilStack.Children.Add(cbaphyco); majAffilStack.Children.Add(cbapolit);
+            gbmajaffil.Text = "Level Boost (Affiliated)";
+            gbmajaffil.Content = majAffilStack;
+
+            var majRequirStack = new Avalonia.Controls.StackPanel { Orientation = Avalonia.Layout.Orientation.Vertical, Spacing = 2 };
+            majRequirStack.Children.Add(label29);
+            majRequirStack.Children.Add(cbrArt); majRequirStack.Children.Add(cbrbiol);
+            majRequirStack.Children.Add(cbrdrama); majRequirStack.Children.Add(cbrecon);
+            majRequirStack.Children.Add(cbrhisto); majRequirStack.Children.Add(cbrliter);
+            majRequirStack.Children.Add(cbrmaths); majRequirStack.Children.Add(cbrphysi);
+            majRequirStack.Children.Add(cbrphyco); majRequirStack.Children.Add(cbrpolit);
+            gbrequir.Text = "Required to Enter";
+            gbrequir.Content = majRequirStack;
+
+            var majorsGrid = new Avalonia.Controls.Grid();
+            majorsGrid.ColumnDefinitions.Add(new Avalonia.Controls.ColumnDefinition { Width = new Avalonia.Controls.GridLength(1, Avalonia.Controls.GridUnitType.Star) });
+            majorsGrid.ColumnDefinitions.Add(new Avalonia.Controls.ColumnDefinition { Width = new Avalonia.Controls.GridLength(1, Avalonia.Controls.GridUnitType.Star) });
+            Avalonia.Controls.Grid.SetColumn(gbmajaffil, 0);
+            Avalonia.Controls.Grid.SetColumn(gbrequir, 1);
+            majorsGrid.Children.Add(gbmajaffil);
+            majorsGrid.Children.Add(gbrequir);
+
+            gpmajors.Children.Add(majorsGrid);
+            gpmajors.Children.Add(btmajApply);
+
+            tabPagMajor.Header = "Majors";
+            tabPagMajor.Content = gpmajors;
+
+            // --- tabPage9: Extra Reward Items (always removed at runtime; simple layout) ---
+            var extrasScroll = new Avalonia.Controls.StackPanel { Orientation = Avalonia.Layout.Orientation.Vertical, Spacing = 4 };
+
+            // Header controls
+            var extrasTopRow = new Avalonia.Controls.StackPanel { Orientation = Avalonia.Layout.Orientation.Horizontal, Spacing = 8 };
+            extrasTopRow.Children.Add(checkBox1); extrasTopRow.Children.Add(checkBox2);
+            extrasScroll.Children.Add(extrasTopRow);
+
+            var extrasHeaderRow = new Avalonia.Controls.StackPanel { Orientation = Avalonia.Layout.Orientation.Horizontal, Spacing = 8 };
+            extrasHeaderRow.Children.Add(label4); extrasHeaderRow.Children.Add(label5);
+            extrasHeaderRow.Children.Add(label6); extrasHeaderRow.Children.Add(label7);
+            extrasHeaderRow.Children.Add(label8); extrasHeaderRow.Children.Add(label9);
+            extrasHeaderRow.Children.Add(label13);
+            extrasScroll.Children.Add(extrasHeaderRow);
+
+            // Level sections: label, combobox, 4 checkboxes, 2 textboxes per level
+            var levelLabels   = new Avalonia.Controls.TextBlock[] { label2, label14, label15, label16, label17, label42, label43, label44, label45, label46 };
+            var levelCombos   = new Avalonia.Controls.ComboBox[]  { comboBox1, comboBox2, comboBox3, comboBox4, comboBox5, comboBox6, comboBox7, comboBox8, comboBox9, comboBox10 };
+            var levelChecksA  = new Avalonia.Controls.CheckBox[]  { checkBox3,  checkBox46, checkBox49, checkBox52, checkBox55, checkBox58, checkBox61, checkBox64, checkBox67, checkBox70 };
+            var levelChecksB  = new Avalonia.Controls.CheckBox[]  { checkBox4,  checkBox47, checkBox50, checkBox53, checkBox56, checkBox59, checkBox62, checkBox65, checkBox68, checkBox71 };
+            var levelChecksC  = new Avalonia.Controls.CheckBox[]  { checkBox5,  checkBox48, checkBox51, checkBox54, checkBox57, checkBox60, checkBox63, checkBox66, checkBox69, checkBox72 };
+            var levelChecksD  = new Avalonia.Controls.CheckBox[]  { checkBox6,  checkBox7,  checkBox8,  checkBox9,  checkBox10, checkBox11, checkBox12, checkBox13, checkBox14, checkBox15 };
+            var levelTextsG   = new Avalonia.Controls.TextBox[]   { textBox1g,  textBox1,   textBox3,   textBox5,   textBox7,   textBox9,   textBox11,  textBox13,  textBox15,  textBox17  };
+            var levelTextsB   = new Avalonia.Controls.TextBox[]   { textBox1b,  textBox2,   textBox4,   textBox6,   textBox8,   textBox10,  textBox12,  textBox14,  textBox16,  textBox18  };
+
+            for (int lvl = 0; lvl < 10; lvl++)
+            {
+                var lvlRow = new Avalonia.Controls.StackPanel { Orientation = Avalonia.Layout.Orientation.Horizontal, Spacing = 4 };
+                lvlRow.Children.Add(levelLabels[lvl]);
+                lvlRow.Children.Add(levelCombos[lvl]);
+                lvlRow.Children.Add(levelChecksA[lvl]);
+                lvlRow.Children.Add(levelChecksB[lvl]);
+                lvlRow.Children.Add(levelChecksC[lvl]);
+                lvlRow.Children.Add(levelChecksD[lvl]);
+                lvlRow.Children.Add(levelTextsG[lvl]);
+                lvlRow.Children.Add(levelTextsB[lvl]);
+                extrasScroll.Children.Add(lvlRow);
+            }
+
+            var extrasBottomRow = new Avalonia.Controls.StackPanel { Orientation = Avalonia.Layout.Orientation.Horizontal, Spacing = 4 };
+            extrasBottomRow.Children.Add(lbrewguid);
+            extrasBottomRow.Children.Add(btexApply);
+            extrasBottomRow.Children.Add(pictureBox2);
+            extrasScroll.Children.Add(extrasBottomRow);
+
+            gbExtras.Content = extrasScroll;
+
+            tabPage9.Header = "Extra Reward Items";
+            tabPage9.Content = gbExtras;
+
+            // --- Assemble tabControl1 ---
+            tabControl1.Items.Add(tabPage1);
+            tabControl1.Items.Add(tabPage2);
+            tabControl1.Items.Add(tabPage3);
+            tabControl1.Items.Add(tabPage4);
+            tabControl1.Items.Add(tabPagMajor);
+            tabControl1.Items.Add(tabPage9);
+
+            // --- Window root: DockPanel ---
+            var rootDock = new Avalonia.Controls.DockPanel { LastChildFill = true };
+
+            // Menu bar (Dock.Top)
+            Avalonia.Controls.DockPanel.SetDock(mainMenu1, Avalonia.Controls.Dock.Top);
+            rootDock.Children.Add(mainMenu1);
+
+            // Top info bar (Dock.Top)
+            var topBar = new Avalonia.Controls.StackPanel { Orientation = Avalonia.Layout.Orientation.Horizontal, Spacing = 6 };
+            topBar.Children.Add(label3);  topBar.Children.Add(CareerTitle);
+            topBar.Children.Add(label1);  topBar.Children.Add(CareerLvls);
+            topBar.Children.Add(label10); topBar.Children.Add(Language);
+            topBar.Children.Add(pictureBox1);
+            topBar.Children.Add(lbcrap);
+            topBar.Children.Add(btUgrade);
+            Avalonia.Controls.DockPanel.SetDock(topBar, Avalonia.Controls.Dock.Top);
+            rootDock.Children.Add(topBar);
+
+            // TabControl fills remaining space (LastChildFill = true)
+            rootDock.Children.Add(tabControl1);
+
+            this.Content = rootDock;
 		}
 		#endregion
 
@@ -4975,7 +1432,7 @@ namespace SimPe.Plugin
             if (ins == null)
             {
                 gc.Value = 0;
-                gc.Enabled = false;
+                gc.IsEnabled = false;
                 return;
             }
             byte[] o = new byte[16];
@@ -5012,8 +1469,8 @@ namespace SimPe.Plugin
             noLevels = l;
             femaleOffset = (ushort)(2 * noLevels);
 
-            miAddLvl.Enabled = (noLevels < 100);
-            miRemoveLvl.Enabled = (noLevels > 1);
+            miAddLvl.IsEnabled = (noLevels < 100);
+            miRemoveLvl.IsEnabled = (noLevels > 1);
 
             CareerLvls.Text = Convert.ToString(noLevels);
             //CareerLvls.Value = noLevels;
@@ -5038,7 +1495,7 @@ namespace SimPe.Plugin
             numPTO.Value = PTO[newLevel];
 
             if (lifeScore != null) numLscore.Value = lifeScore[newLevel];
-            else lbLscore.Visible = numLscore.Visible = false;
+            else lbLscore.IsVisible = numLscore.IsVisible = false;
 
             #region job details
             JobDetailList.SelectedIndices.Clear();
@@ -5072,11 +1529,11 @@ namespace SimPe.Plugin
                 else
                     lnudWages.Value = wages[newLevel];
 
-                lnudWagesDog.Visible = lnudWagesCat.Visible = false;
+                lnudWagesDog.IsVisible = lnudWagesCat.IsVisible = false;
             }
             else
             {
-                lnudWages.Enabled = false;
+                lnudWages.IsEnabled = false;
                 if (wagesDog[newLevel] > lnudWagesDog.Maximum)
                     lnudWagesDog.Value = lnudWagesDog.Maximum;
                 else
@@ -5089,13 +1546,13 @@ namespace SimPe.Plugin
             }
 
             Boolset dw = getDaysArray(daysWorked[newLevel]);
-            WorkMonday.Checked = dw[MONDAY];
-            WorkTuesday.Checked = dw[TUESDAY];
-            WorkWednesday.Checked = dw[WEDNESDAY];
-            WorkThursday.Checked = dw[THURSDAY];
-            WorkFriday.Checked = dw[FRIDAY];
-            WorkSaturday.Checked = dw[SATURDAY];
-            WorkSunday.Checked = dw[SUNDAY];
+            WorkMonday.IsChecked = dw[MONDAY];
+            WorkTuesday.IsChecked = dw[TUESDAY];
+            WorkWednesday.IsChecked = dw[WEDNESDAY];
+            WorkThursday.IsChecked = dw[THURSDAY];
+            WorkFriday.IsChecked = dw[FRIDAY];
+            WorkSaturday.IsChecked = dw[SATURDAY];
+            WorkSunday.IsChecked = dw[SUNDAY];
 
             WorkHunger.Value = motiveDeltas[HUNGER][newLevel];
             WorkAmorous.Value = motiveDeltas[AMOROUS][newLevel];
@@ -5123,18 +1580,11 @@ namespace SimPe.Plugin
                 PromoCreativity.Value = skillReq[CREATIVITY][newLevel] / 100;
                 PromoLogic.Value = skillReq[LOGIC][newLevel] / 100;
                 PromoCleaning.Value = skillReq[CLEANING][newLevel] / 100;
-                cbTrick.Enabled = false;
+                cbTrick.IsEnabled = false;
             }
             else // pets
             {
-                PromoCooking.Enabled =
-                PromoMechanical.Enabled =
-                PromoBody.Enabled =
-                PromoCharisma.Enabled =
-                PromoCreativity.Enabled =
-                PromoLogic.Enabled =
-                PromoCleaning.Enabled =
-                false;
+                PromoCooking.IsEnabled = PromoMechanical.IsEnabled = PromoBody.IsEnabled = PromoCharisma.IsEnabled = PromoCreativity.IsEnabled = PromoLogic.IsEnabled = PromoCleaning.IsEnabled = false;
                 cbTrick.SelectedIndex = 0;
                 for (int i = 0; i * 2 < trick.Count; i++)
                     if (trick[i * 2 + 1] == newLevel)
@@ -5543,7 +1993,7 @@ namespace SimPe.Plugin
             if (isPetCareer)
             {
                 lnudPetChancePercent.Value = chanceAchance[newLevel];
-                lnudPetChancePercent.Visible = true;
+                lnudPetChancePercent.IsVisible = true;
                 lnudChancePercent.Value = chanceBchance[newLevel];
             }
             else
@@ -5552,9 +2002,9 @@ namespace SimPe.Plugin
             cpChoiceA.HaveSkills = cpChoiceB.HaveSkills = (chanceChance[newLevel] < 0 && !isPetCareer);
 
             if (preuniv)
-                cbischance.Visible = false;
+                cbischance.IsVisible = false;
             else 
-                cbischance.Checked = cclevels[newLevel] > 0;
+                cbischance.IsChecked = cclevels[newLevel] > 0;
 
             for (int i = chanceCardsText[currentLanguage].Count; i < newLevel * 12 + 19; i++)
                 chanceCardsText.Add(currentLanguage, "", "");
@@ -5672,18 +2122,18 @@ namespace SimPe.Plugin
                     gcReward.KnownObjects = new object[] { new List<String>(CSrewardName), new List<UInt32>(CSrewardGUID) };
                     gcUpgrade.KnownObjects = new object[] { new List<String>(CSupgradeName), new List<UInt32>(CSupgradeGUID) };
                     gcOutfit.KnownObjects = new object[] { new List<String>(CSoutfitName), new List<UInt32>(CSoutfitGUID) };
-                    this.tabControl1.Controls.Remove(this.tabPage9);
-                    this.tabControl1.Controls.Remove(this.tabPagMajor);
-                    this.gcVehicle.Visible = false;
+                    this.tabControl1.Items.Remove(this.tabPage9);
+                    this.tabControl1.Items.Remove(this.tabPagMajor);
+                    this.gcVehicle.IsVisible = false;
                     if (isTeenCareer)
                     {
-                        if (tuning[0] == 4) this.Text = "Career Editor (by Bidou) - Castaway Orangutan Career";
-                        else this.Text = "Career Editor (by Bidou) - Castaway Teen, Elder Career";
+                        if (tuning[0] == 4) this.Title = "Career Editor (by Bidou) - Castaway Orangutan Career";
+                        else this.Title = "Career Editor (by Bidou) - Castaway Teen, Elder Career";
                     }
-                    else this.Text = "Career Editor (by Bidou) - Castaway Stories Adult Career";
+                    else this.Title = "Career Editor (by Bidou) - Castaway Stories Adult Career";
                     this.lnudWages.Label = "Resource";
-                    this.lnudWages.Location = new System.Drawing.Point(39, 71);
-                    this.lnudFoods.Visible = true;
+                    // this.lnudWages.Location = new System.Drawing.Point(39, 71); // no .Location in Avalonia
+                    this.lnudFoods.IsVisible = true;
                     this.HwWages.Text = "Resource";
                     this.HwDogWages.Text = "Food";
                 }
@@ -5691,21 +2141,21 @@ namespace SimPe.Plugin
                 {
                     // Chris Hatch "extras" (T&A panels, overrides) removed.
                     // Always hide the extras tab in the clean version.
-                    this.tabControl1.Controls.Remove(this.tabPage9);
+                    this.tabControl1.Items.Remove(this.tabPage9);
 
                     // Keep the original majors logic.
                     if (preuniv || isPetCareer || isTeenCareer)
-                        this.tabControl1.Controls.Remove(this.tabPagMajor);
+                        this.tabControl1.Items.Remove(this.tabPagMajor);
                     else
                         setmajors();
 
                     // Set the window title based on career type (unchanged).
                     if (isPetCareer)
-                        this.Text = "Career Editor (by Bidou) - Pet Career";
+                        this.Title = "Career Editor (by Bidou) - Pet Career";
                     else if (isTeenCareer)
-                        this.Text = "Career Editor (by Bidou) - Teen, Elder Career";
+                        this.Title = "Career Editor (by Bidou) - Teen, Elder Career";
                     else
-                        this.Text = "Career Editor (by Bidou) - Adult Career";
+                        this.Title = "Career Editor (by Bidou) - Adult Career";
                 }
 
                 SimPe.Interfaces.Files.IPackedFileDescriptor bfd = this.package.FindFile(0x856DDBAC, 0, groupId, 1);
@@ -5717,9 +2167,9 @@ namespace SimPe.Plugin
                 }
                 else pictureBox1.Image = null;
 
-                //menuItem6.Enabled = !isPetCareer;
-                WorkAmorous.Enabled = !isPetCareer;
-				miEnglishOnly.Checked = englishOnly;
+                //menuItem6.IsEnabled = !isPetCareer;
+                WorkAmorous.IsEnabled = !isPetCareer;
+				miEnglishOnly.IsChecked = englishOnly;
 
                 if (catalogueDesc.Languages.Length <= 1) currentLanguage = 1;
                 else currentLanguage = (byte)Helper.XmlRegistry.LanguageCode; // CJH
@@ -5729,7 +2179,7 @@ namespace SimPe.Plugin
                 setRewardFromGUID();
                 setUpgradeFromGUID();
 
-                Language.DataSource = languageString;
+                Language.ItemsSource = languageString;
                 int langIdx = currentLanguage - 1;
                 if (langIdx >= 0 && langIdx < languageString.Count)
                     Language.SelectedIndex = langIdx;
@@ -5738,8 +2188,8 @@ namespace SimPe.Plugin
 
                 // englishOnly = (catalogueDesc.Languages.Length <= 1);
                 englishOnly = false;
-                miEnglishOnly.Checked = englishOnly;
-                Language.Enabled = !englishOnly;
+                miEnglishOnly.IsChecked = englishOnly;
+                Language.IsEnabled = !englishOnly;
                 
                 internalchg = false;
                 noLevelsChanged((ushort)tuning[0]);
@@ -5755,7 +2205,7 @@ namespace SimPe.Plugin
 				WaitingScreen.Stop(this);
 			}
 
-			ShowDialog();
+			ShowDialog(null).GetAwaiter().GetResult();
 
             getGUIDFromReward();
             getGUIDFromUpgrade();
@@ -5941,39 +2391,39 @@ namespace SimPe.Plugin
             {
                 isCastaway = true;
                 motiveDeltas[SUNSHINE] = getBcon(0x1059);
-                menuItem6.Enabled = false;                
-                this.lbcrap.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
-                this.lbcrap.ForeColor = System.Drawing.Color.DarkMagenta;
+                menuItem6.IsEnabled = false;                
+                // this.lbcrap.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold); // no .Font on Avalonia controls
+                // this.lbcrap.ForeColor = System.Drawing.Color.DarkMagenta; // no .ForeColor on Avalonia controls
                 this.lbcrap.Text = "Castaway Stories Career";
-                this.lbcrap.Visible = true;
+                this.lbcrap.IsVisible = true;
             }
             else
             {
                 if (getBcon(0x1059) == null)
                 {
                     motiveDeltas[SUNSHINE] = getBcon(0x100F); // CJH
-                    this.WorkSunshine.Enabled = false;
-                    this.lbcrap.Visible = this.btUgrade.Visible = !isPetCareer;
+                    this.WorkSunshine.IsEnabled = false;
+                    this.lbcrap.IsVisible = this.btUgrade.IsVisible = !isPetCareer;
                 }
                 else
                 {
                     motiveDeltas[SUNSHINE] = getBcon(0x1059);
-                    this.WorkSunshine.Enabled = true;
-                    if (getBcon(0x105B) == null) this.lbcrap.Visible = false;
+                    this.WorkSunshine.IsEnabled = true;
+                    if (getBcon(0x105B) == null) this.lbcrap.IsVisible = false;
                     else
                     {
                         if (getBcon(0x105B).Count > 21)
                         {
-                            this.lbcrap.ForeColor = System.Drawing.Color.RoyalBlue;
+                            // this.lbcrap.ForeColor = System.Drawing.Color.RoyalBlue; // no .ForeColor on Avalonia controls
                             this.lbcrap.Text = "New Career Type!\r\nSupports the extra Reward Feature";
-                            this.lbcrap.Visible = true;
+                            this.lbcrap.IsVisible = true;
                             rewenabled = true;
                         }
                     }
                 }
                 if (getBcon(0x1056) == null)
                 {
-                    this.btUgrade.Visible = true;
+                    this.btUgrade.IsVisible = true;
                     this.lbcrap.Text = "Really Old Career Type!\r\nIncompatible with University EP or above";
                     preuniv = true;
                 }
@@ -6340,11 +2790,11 @@ namespace SimPe.Plugin
         {
             if (internalchg) return;
             internalchg = true;
-            this.tabControl1.Enabled = menuItem6.Enabled = false;
-            this.lbcrap.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
-            this.lbcrap.ForeColor = System.Drawing.Color.HotPink;
+            this.tabControl1.IsEnabled = menuItem6.IsEnabled = false;
+            // this.lbcrap.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold); // no .Font on Avalonia controls
+            // this.lbcrap.ForeColor = System.Drawing.Color.HotPink; // no .ForeColor on Avalonia controls
             this.lbcrap.Text = "You now need to close\r\nCareer Editor then restart it";
-            this.lbcrap.Visible = true;
+            this.lbcrap.IsVisible = true;
 
             ushort newNoLevels = (ushort)(noLevels - 1);
 
@@ -6669,16 +3119,15 @@ namespace SimPe.Plugin
         private void miEnglishOnly_Click(object sender, System.EventArgs e)
         {
             englishOnly = !englishOnly;
-            // System.InvalidCastException: Unable to cast object of type 'System.Windows.Forms.ToolStripMenuItem' to type 'System.Windows.Forms.ToolStripMenuItem'.
-            ((System.Windows.Forms.ToolStripMenuItem)sender).Checked = englishOnly;
+            miEnglishOnly.IsChecked = englishOnly;
             if (englishOnly) Language.SelectedIndex = 0;
-            Language.Enabled = !englishOnly;
+            Language.IsEnabled = !englishOnly;
         }
 
 		private void CareerTitle_TextChanged(object sender, System.EventArgs e)
 		{
             if (internalchg) return;
-			string text = ((System.Windows.Forms.TextBox)sender).Text;
+			string text = ((Avalonia.Controls.TextBox)sender).Text;
             if (((List<StrItem>)catalogueDesc[currentLanguage]).Count == 0)
                 ((List<StrItem>)catalogueDesc[currentLanguage]).Add(new StrItem(catalogueDesc));
             catalogueDesc[currentLanguage][0].Title = text;
@@ -6688,7 +3137,7 @@ namespace SimPe.Plugin
             if (internalchg) return;
             internalchg = true;
 
-            int index = ((System.Windows.Forms.ComboBox)sender).SelectedIndex;
+            int index = ((Avalonia.Controls.ComboBox)sender).SelectedIndex;
             currentLanguage = (byte)(index + 1);
             JobDetailList.Items.Clear();
             fillJobDetails();
@@ -6704,11 +3153,11 @@ namespace SimPe.Plugin
         private void JobDetailList_SelectedIndexChanged(object sender, System.EventArgs e)
 		{
             if (levelChanging) return;
-            System.Windows.Forms.ListView.SelectedIndexCollection indices = ((System.Windows.Forms.ListView)sender).SelectedIndices;
+            ListView.SelectedIndexCollection indices = ((ListView)sender).SelectedIndices;
 			if ((indices.Count > 0) && (indices[0] < noLevels))
                 levelChanged((ushort)(indices[0] + 1));
         }
-        private void JobDetailsCopy_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void JobDetailsCopy_LinkClicked(object sender, EventArgs e)
         {
             jdpMale.DescValue = jdpFemale.DescValue;
         }
@@ -6776,7 +3225,7 @@ namespace SimPe.Plugin
         private void HoursWagesList_SelectedIndexChanged(object sender, System.EventArgs e)
 		{
             if (levelChanging) return;
-            System.Windows.Forms.ListView.SelectedIndexCollection indices = ((System.Windows.Forms.ListView)sender).SelectedIndices;
+            ListView.SelectedIndexCollection indices = ((ListView)sender).SelectedIndices;
 			if ((indices.Count > 0) && (indices[0] < noLevels))
                 levelChanged((ushort)(indices[0] + 1));
         }
@@ -6837,7 +3286,7 @@ namespace SimPe.Plugin
 
             #endregion
         }
-        private void lnudWork_KeyUp(object sender, System.Windows.Forms.KeyEventArgs e)
+        private void lnudWork_KeyUp(object sender, Avalonia.Input.KeyEventArgs e)
         {
             lnudWork_ValueChanged(sender, new EventArgs());
         }
@@ -6853,11 +3302,11 @@ namespace SimPe.Plugin
             if (index < 0 || index > 6) return; // crash!
 
             Boolset dw = new Boolset((byte)daysWorked[currentLevel]);
-            dw[index] = ((CheckBox)sender).Checked;
+            dw[index] = ((CheckBox)sender).IsChecked == true;
             daysWorked[currentLevel] = (byte)dw;
 
             ListViewItem item = HoursWagesList.Items[currentLevel - 1];
-            item.SubItems[index + 7].Text = "" + ((CheckBox)sender).Checked;
+            item.SubItems[index + 7].Text = ((CheckBox)sender).IsChecked.GetValueOrDefault().ToString();
         }
         private void numPTO_ValueChanged(object sender, System.EventArgs e)
         {
@@ -6894,7 +3343,7 @@ namespace SimPe.Plugin
             }
             #endregion
         }
-        private void nudMotive_KeyUp(object sender, System.Windows.Forms.KeyEventArgs e)
+        private void nudMotive_KeyUp(object sender, Avalonia.Input.KeyEventArgs e)
 		{
             nudMotive_ValueChanged(sender, new EventArgs());
 		}
@@ -6902,7 +3351,7 @@ namespace SimPe.Plugin
         private void PromoList_SelectedIndexChanged(object sender, System.EventArgs e)
         {
             if (levelChanging) return;
-            System.Windows.Forms.ListView.SelectedIndexCollection indices = ((System.Windows.Forms.ListView)sender).SelectedIndices;
+            ListView.SelectedIndexCollection indices = ((ListView)sender).SelectedIndices;
             if ((indices.Count > 0) && (indices[0] < noLevels))
                 levelChanged((ushort)(indices[0] + 1));
         }
@@ -6936,7 +3385,7 @@ namespace SimPe.Plugin
                         break;
                 }
         }
-		private void Promo_KeyUp(object sender, System.Windows.Forms.KeyEventArgs e)
+		private void Promo_KeyUp(object sender, Avalonia.Input.KeyEventArgs e)
 		{
             Promo_ValueChanged(sender, e);		
 		}
@@ -6979,7 +3428,7 @@ namespace SimPe.Plugin
             if (levelChanging || internalchg) return;
             levelChanged((ushort)lnudChanceCurrentLevel.Value);
         }
-        private void ChanceCopy_LinkClicked(object sender, System.Windows.Forms.LinkLabelLinkClickedEventArgs e)
+        private void ChanceCopy_LinkClicked(object sender, EventArgs e)
 		{
             ChanceTextFemale.Text = ChanceTextMale.Text;
         }
@@ -6998,10 +3447,8 @@ namespace SimPe.Plugin
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
-            foreach (Control ct in gbExtras.Controls)
-            {
-                ct.Enabled = checkBox1.Checked;
-            }
+            // foreach disabled — extras tab is removed at runtime
+            // foreach (object ct in gbExtras.Controls) { ct.IsEnabled = checkBox1.IsChecked.GetValueOrDefault(); }
         }
 
         private void checkBox2_CheckedChanged(object sender, EventArgs e)
@@ -7012,101 +3459,101 @@ namespace SimPe.Plugin
         
         private void boxCheckAchance_checkup(object sender, EventArgs e)
         {
-            if (checkBox8.Checked) checkBox4.Checked = false;
-            if (checkBox47.Checked) checkBox12.Checked = false;
-            if (checkBox50.Checked) checkBox16.Checked = false;
-            if (checkBox53.Checked) checkBox20.Checked = false;
-            if (checkBox56.Checked) checkBox24.Checked = false;
-            if (checkBox59.Checked) checkBox28.Checked = false;
-            if (checkBox62.Checked) checkBox32.Checked = false;
-            if (checkBox65.Checked) checkBox36.Checked = false;
-            if (checkBox68.Checked) checkBox40.Checked = false;
-            if (checkBox71.Checked) checkBox44.Checked = false;
+            if (checkBox8.IsChecked.GetValueOrDefault()) checkBox4.IsChecked = false;
+            if (checkBox47.IsChecked.GetValueOrDefault()) checkBox12.IsChecked = false;
+            if (checkBox50.IsChecked.GetValueOrDefault()) checkBox16.IsChecked = false;
+            if (checkBox53.IsChecked.GetValueOrDefault()) checkBox20.IsChecked = false;
+            if (checkBox56.IsChecked.GetValueOrDefault()) checkBox24.IsChecked = false;
+            if (checkBox59.IsChecked.GetValueOrDefault()) checkBox28.IsChecked = false;
+            if (checkBox62.IsChecked.GetValueOrDefault()) checkBox32.IsChecked = false;
+            if (checkBox65.IsChecked.GetValueOrDefault()) checkBox36.IsChecked = false;
+            if (checkBox68.IsChecked.GetValueOrDefault()) checkBox40.IsChecked = false;
+            if (checkBox71.IsChecked.GetValueOrDefault()) checkBox44.IsChecked = false;
         }
 
         private void boxCheckBchance_checkup(object sender, EventArgs e)
         {
-            if (checkBox4.Checked) checkBox8.Checked = false;
-            if (checkBox12.Checked) checkBox47.Checked = false;
-            if (checkBox16.Checked) checkBox50.Checked = false;
-            if (checkBox20.Checked) checkBox53.Checked = false;
-            if (checkBox24.Checked) checkBox56.Checked = false;
-            if (checkBox28.Checked) checkBox59.Checked = false;
-            if (checkBox32.Checked) checkBox62.Checked = false;
-            if (checkBox36.Checked) checkBox65.Checked = false;
-            if (checkBox40.Checked) checkBox68.Checked = false;
-            if (checkBox44.Checked) checkBox71.Checked = false;
+            if (checkBox4.IsChecked.GetValueOrDefault()) checkBox8.IsChecked = false;
+            if (checkBox12.IsChecked.GetValueOrDefault()) checkBox47.IsChecked = false;
+            if (checkBox16.IsChecked.GetValueOrDefault()) checkBox50.IsChecked = false;
+            if (checkBox20.IsChecked.GetValueOrDefault()) checkBox53.IsChecked = false;
+            if (checkBox24.IsChecked.GetValueOrDefault()) checkBox56.IsChecked = false;
+            if (checkBox28.IsChecked.GetValueOrDefault()) checkBox59.IsChecked = false;
+            if (checkBox32.IsChecked.GetValueOrDefault()) checkBox62.IsChecked = false;
+            if (checkBox36.IsChecked.GetValueOrDefault()) checkBox65.IsChecked = false;
+            if (checkBox40.IsChecked.GetValueOrDefault()) checkBox68.IsChecked = false;
+            if (checkBox44.IsChecked.GetValueOrDefault()) checkBox71.IsChecked = false;
         }
 
         private void checkAchanceBox_checkup(object sender, EventArgs e)
         {
-            if (checkBox9.Checked) checkBox6.Checked = false;
-            if (checkBox46.Checked) checkBox10.Checked = false;
-            if (checkBox49.Checked) checkBox14.Checked = false;
-            if (checkBox52.Checked) checkBox18.Checked = false;
-            if (checkBox55.Checked) checkBox22.Checked = false;
-            if (checkBox58.Checked) checkBox26.Checked = false;
-            if (checkBox61.Checked) checkBox30.Checked = false;
-            if (checkBox64.Checked) checkBox34.Checked = false;
-            if (checkBox67.Checked) checkBox38.Checked = false;
-            if (checkBox70.Checked) checkBox42.Checked = false;
+            if (checkBox9.IsChecked.GetValueOrDefault()) checkBox6.IsChecked = false;
+            if (checkBox46.IsChecked.GetValueOrDefault()) checkBox10.IsChecked = false;
+            if (checkBox49.IsChecked.GetValueOrDefault()) checkBox14.IsChecked = false;
+            if (checkBox52.IsChecked.GetValueOrDefault()) checkBox18.IsChecked = false;
+            if (checkBox55.IsChecked.GetValueOrDefault()) checkBox22.IsChecked = false;
+            if (checkBox58.IsChecked.GetValueOrDefault()) checkBox26.IsChecked = false;
+            if (checkBox61.IsChecked.GetValueOrDefault()) checkBox30.IsChecked = false;
+            if (checkBox64.IsChecked.GetValueOrDefault()) checkBox34.IsChecked = false;
+            if (checkBox67.IsChecked.GetValueOrDefault()) checkBox38.IsChecked = false;
+            if (checkBox70.IsChecked.GetValueOrDefault()) checkBox42.IsChecked = false;
         }
 
         private void checkBchanceBox_checkup(object sender, EventArgs e)
         {
-            if (checkBox6.Checked) checkBox9.Checked = false;
-            if (checkBox10.Checked) checkBox46.Checked = false;
-            if (checkBox14.Checked) checkBox49.Checked = false;
-            if (checkBox18.Checked) checkBox52.Checked = false;
-            if (checkBox22.Checked) checkBox55.Checked = false;
-            if (checkBox26.Checked) checkBox58.Checked = false;
-            if (checkBox30.Checked) checkBox61.Checked = false;
-            if (checkBox34.Checked) checkBox64.Checked = false;
-            if (checkBox38.Checked) checkBox67.Checked = false;
-            if (checkBox42.Checked) checkBox70.Checked = false;
+            if (checkBox6.IsChecked.GetValueOrDefault()) checkBox9.IsChecked = false;
+            if (checkBox10.IsChecked.GetValueOrDefault()) checkBox46.IsChecked = false;
+            if (checkBox14.IsChecked.GetValueOrDefault()) checkBox49.IsChecked = false;
+            if (checkBox18.IsChecked.GetValueOrDefault()) checkBox52.IsChecked = false;
+            if (checkBox22.IsChecked.GetValueOrDefault()) checkBox55.IsChecked = false;
+            if (checkBox26.IsChecked.GetValueOrDefault()) checkBox58.IsChecked = false;
+            if (checkBox30.IsChecked.GetValueOrDefault()) checkBox61.IsChecked = false;
+            if (checkBox34.IsChecked.GetValueOrDefault()) checkBox64.IsChecked = false;
+            if (checkBox38.IsChecked.GetValueOrDefault()) checkBox67.IsChecked = false;
+            if (checkBox42.IsChecked.GetValueOrDefault()) checkBox70.IsChecked = false;
         }
 
         private void chanceBcheckBox_checkup(object sender, EventArgs e)
         {
-            comboBox1.Enabled = (!checkBox5.Checked && checkBox2.Checked);
-            comboBox2.Enabled = (!checkBox11.Checked && checkBox2.Checked);
-            comboBox3.Enabled = (!checkBox15.Checked && checkBox2.Checked);
-            comboBox4.Enabled = (!checkBox19.Checked && checkBox2.Checked);
-            comboBox5.Enabled = (!checkBox23.Checked && checkBox2.Checked);
-            comboBox6.Enabled = (!checkBox27.Checked && checkBox2.Checked);
-            comboBox7.Enabled = (!checkBox31.Checked && checkBox2.Checked);
-            comboBox8.Enabled = (!checkBox35.Checked && checkBox2.Checked);
-            comboBox9.Enabled = (!checkBox39.Checked && checkBox2.Checked);
-            comboBox10.Enabled = (!checkBox43.Checked && checkBox2.Checked);
+            comboBox1.IsEnabled = (!checkBox5.IsChecked.GetValueOrDefault() && checkBox2.IsChecked.GetValueOrDefault());
+            comboBox2.IsEnabled = (!checkBox11.IsChecked.GetValueOrDefault() && checkBox2.IsChecked.GetValueOrDefault());
+            comboBox3.IsEnabled = (!checkBox15.IsChecked.GetValueOrDefault() && checkBox2.IsChecked.GetValueOrDefault());
+            comboBox4.IsEnabled = (!checkBox19.IsChecked.GetValueOrDefault() && checkBox2.IsChecked.GetValueOrDefault());
+            comboBox5.IsEnabled = (!checkBox23.IsChecked.GetValueOrDefault() && checkBox2.IsChecked.GetValueOrDefault());
+            comboBox6.IsEnabled = (!checkBox27.IsChecked.GetValueOrDefault() && checkBox2.IsChecked.GetValueOrDefault());
+            comboBox7.IsEnabled = (!checkBox31.IsChecked.GetValueOrDefault() && checkBox2.IsChecked.GetValueOrDefault());
+            comboBox8.IsEnabled = (!checkBox35.IsChecked.GetValueOrDefault() && checkBox2.IsChecked.GetValueOrDefault());
+            comboBox9.IsEnabled = (!checkBox39.IsChecked.GetValueOrDefault() && checkBox2.IsChecked.GetValueOrDefault());
+            comboBox10.IsEnabled = (!checkBox43.IsChecked.GetValueOrDefault() && checkBox2.IsChecked.GetValueOrDefault());
         }
 
         private void woohoocheckBox_checkup(object sender, EventArgs e)
         {
             if (!rewenabled) return;
-            if (checkBox7.Checked) checkBox3.Checked = false;
-            if (checkBox48.Checked) checkBox13.Checked = false;
-            if (checkBox51.Checked) checkBox17.Checked = false;
-            if (checkBox54.Checked) checkBox21.Checked = false;
-            if (checkBox57.Checked) checkBox25.Checked = false;
-            if (checkBox60.Checked) checkBox29.Checked = false;
-            if (checkBox63.Checked) checkBox33.Checked = false;
-            if (checkBox66.Checked) checkBox37.Checked = false;
-            if (checkBox69.Checked) checkBox41.Checked = false;
-            if (checkBox72.Checked) checkBox45.Checked = false;
+            if (checkBox7.IsChecked.GetValueOrDefault()) checkBox3.IsChecked = false;
+            if (checkBox48.IsChecked.GetValueOrDefault()) checkBox13.IsChecked = false;
+            if (checkBox51.IsChecked.GetValueOrDefault()) checkBox17.IsChecked = false;
+            if (checkBox54.IsChecked.GetValueOrDefault()) checkBox21.IsChecked = false;
+            if (checkBox57.IsChecked.GetValueOrDefault()) checkBox25.IsChecked = false;
+            if (checkBox60.IsChecked.GetValueOrDefault()) checkBox29.IsChecked = false;
+            if (checkBox63.IsChecked.GetValueOrDefault()) checkBox33.IsChecked = false;
+            if (checkBox66.IsChecked.GetValueOrDefault()) checkBox37.IsChecked = false;
+            if (checkBox69.IsChecked.GetValueOrDefault()) checkBox41.IsChecked = false;
+            if (checkBox72.IsChecked.GetValueOrDefault()) checkBox45.IsChecked = false;
         }
 
         private void chanceAcheckBox_checkup(object sender, EventArgs e)
         {
-            if (checkBox3.Checked) checkBox7.Checked = false;
-            if (checkBox13.Checked) checkBox48.Checked = false;
-            if (checkBox17.Checked) checkBox51.Checked = false;
-            if (checkBox21.Checked) checkBox54.Checked = false;
-            if (checkBox25.Checked) checkBox57.Checked = false;
-            if (checkBox29.Checked) checkBox60.Checked = false;
-            if (checkBox33.Checked) checkBox63.Checked = false;
-            if (checkBox37.Checked) checkBox66.Checked = false;
-            if (checkBox41.Checked) checkBox69.Checked = false;
-            if (checkBox45.Checked) checkBox72.Checked = false;
+            if (checkBox3.IsChecked.GetValueOrDefault()) checkBox7.IsChecked = false;
+            if (checkBox13.IsChecked.GetValueOrDefault()) checkBox48.IsChecked = false;
+            if (checkBox17.IsChecked.GetValueOrDefault()) checkBox51.IsChecked = false;
+            if (checkBox21.IsChecked.GetValueOrDefault()) checkBox54.IsChecked = false;
+            if (checkBox25.IsChecked.GetValueOrDefault()) checkBox57.IsChecked = false;
+            if (checkBox29.IsChecked.GetValueOrDefault()) checkBox60.IsChecked = false;
+            if (checkBox33.IsChecked.GetValueOrDefault()) checkBox63.IsChecked = false;
+            if (checkBox37.IsChecked.GetValueOrDefault()) checkBox66.IsChecked = false;
+            if (checkBox41.IsChecked.GetValueOrDefault()) checkBox69.IsChecked = false;
+            if (checkBox45.IsChecked.GetValueOrDefault()) checkBox72.IsChecked = false;
         }
 
         private void setmajors()
@@ -7117,17 +3564,17 @@ namespace SimPe.Plugin
             if (requiredmajor >= 8192) requiredmajor -= 8192;
             if (requiredmajor >= 4096) requiredmajor -= 4096;
             if (requiredmajor >= 2048) requiredmajor -= 2048;
-            if (requiredmajor >= 1024) { requiredmajor -= 1024; this.cbrphyco.Checked = true; } else this.cbrphyco.Checked = false;
-            if (requiredmajor >= 512) { requiredmajor -= 512; this.cbrpolit.Checked = true; } else this.cbrpolit.Checked = false;
-            if (requiredmajor >= 256) { requiredmajor -= 256; this.cbrphysi.Checked = true; } else this.cbrphysi.Checked = false;
-            if (requiredmajor >= 128) { requiredmajor -= 128; this.cbrphilo.Checked = true; } else this.cbrphilo.Checked = false;
-            if (requiredmajor >= 64) { requiredmajor -= 64; this.cbrmaths.Checked = true; } else this.cbrmaths.Checked = false;
-            if (requiredmajor >= 32) { requiredmajor -= 32; this.cbrliter.Checked = true; } else this.cbrliter.Checked = false;
-            if (requiredmajor >= 16) { requiredmajor -= 16; this.cbrhisto.Checked = true; } else this.cbrhisto.Checked = false;
-            if (requiredmajor >= 8) { requiredmajor -= 8; this.cbrecon.Checked = true; } else this.cbrecon.Checked = false;
-            if (requiredmajor >= 4) { requiredmajor -= 4; this.cbrdrama.Checked = true; } else this.cbrdrama.Checked = false;
-            if (requiredmajor >= 2) { requiredmajor -= 2; this.cbrbiol.Checked = true; } else this.cbrbiol.Checked = false;
-            if (requiredmajor >= 1) this.cbrArt.Checked = true; else this.cbrArt.Checked = false;
+            if (requiredmajor >= 1024) { requiredmajor -= 1024; this.cbrphyco.IsChecked = true; } else this.cbrphyco.IsChecked = false;
+            if (requiredmajor >= 512) { requiredmajor -= 512; this.cbrpolit.IsChecked = true; } else this.cbrpolit.IsChecked = false;
+            if (requiredmajor >= 256) { requiredmajor -= 256; this.cbrphysi.IsChecked = true; } else this.cbrphysi.IsChecked = false;
+            if (requiredmajor >= 128) { requiredmajor -= 128; this.cbrphilo.IsChecked = true; } else this.cbrphilo.IsChecked = false;
+            if (requiredmajor >= 64) { requiredmajor -= 64; this.cbrmaths.IsChecked = true; } else this.cbrmaths.IsChecked = false;
+            if (requiredmajor >= 32) { requiredmajor -= 32; this.cbrliter.IsChecked = true; } else this.cbrliter.IsChecked = false;
+            if (requiredmajor >= 16) { requiredmajor -= 16; this.cbrhisto.IsChecked = true; } else this.cbrhisto.IsChecked = false;
+            if (requiredmajor >= 8) { requiredmajor -= 8; this.cbrecon.IsChecked = true; } else this.cbrecon.IsChecked = false;
+            if (requiredmajor >= 4) { requiredmajor -= 4; this.cbrdrama.IsChecked = true; } else this.cbrdrama.IsChecked = false;
+            if (requiredmajor >= 2) { requiredmajor -= 2; this.cbrbiol.IsChecked = true; } else this.cbrbiol.IsChecked = false;
+            if (requiredmajor >= 1) this.cbrArt.IsChecked = true; else this.cbrArt.IsChecked = false;
 
             int allowedmajor = getBcon(0x1056)[2];
             if (allowedmajor >= 32768) allowedmajor -= 32768;
@@ -7135,45 +3582,45 @@ namespace SimPe.Plugin
             if (allowedmajor >= 8192) allowedmajor -= 8192;
             if (allowedmajor >= 4096) allowedmajor -= 4096;
             if (allowedmajor >= 2048) allowedmajor -= 2048;
-            if (allowedmajor >= 1024) { allowedmajor -= 1024; this.cbaphyco.Checked = true; } else this.cbaphyco.Checked = false;
-            if (allowedmajor >= 512) { allowedmajor -= 512; this.cbapolit.Checked = true; } else this.cbapolit.Checked = false;
-            if (allowedmajor >= 256) { allowedmajor -= 256; this.cbaphysi.Checked = true; } else this.cbaphysi.Checked = false;
-            if (allowedmajor >= 128) { allowedmajor -= 128; this.cbrahilo.Checked = true; } else this.cbrahilo.Checked = false;
-            if (allowedmajor >= 64) { allowedmajor -= 64; this.cbamaths.Checked = true; } else this.cbamaths.Checked = false;
-            if (allowedmajor >= 32) { allowedmajor -= 32; this.cbaliter.Checked = true; } else this.cbaliter.Checked = false;
-            if (allowedmajor >= 16) { allowedmajor -= 16; this.cbahisto.Checked = true; } else this.cbahisto.Checked = false;
-            if (allowedmajor >= 8) { allowedmajor -= 8; this.cbaecon.Checked = true; } else this.cbaecon.Checked = false;
-            if (allowedmajor >= 4) { allowedmajor -= 4; this.cbadrama.Checked = true; } else this.cbadrama.Checked = false;
-            if (allowedmajor >= 2) { allowedmajor -= 2; this.cbabiol.Checked = true; } else this.cbabiol.Checked = false;
-            if (allowedmajor >= 1) this.cbaArt.Checked = true; else this.cbaArt.Checked = false;
+            if (allowedmajor >= 1024) { allowedmajor -= 1024; this.cbaphyco.IsChecked = true; } else this.cbaphyco.IsChecked = false;
+            if (allowedmajor >= 512) { allowedmajor -= 512; this.cbapolit.IsChecked = true; } else this.cbapolit.IsChecked = false;
+            if (allowedmajor >= 256) { allowedmajor -= 256; this.cbaphysi.IsChecked = true; } else this.cbaphysi.IsChecked = false;
+            if (allowedmajor >= 128) { allowedmajor -= 128; this.cbrahilo.IsChecked = true; } else this.cbrahilo.IsChecked = false;
+            if (allowedmajor >= 64) { allowedmajor -= 64; this.cbamaths.IsChecked = true; } else this.cbamaths.IsChecked = false;
+            if (allowedmajor >= 32) { allowedmajor -= 32; this.cbaliter.IsChecked = true; } else this.cbaliter.IsChecked = false;
+            if (allowedmajor >= 16) { allowedmajor -= 16; this.cbahisto.IsChecked = true; } else this.cbahisto.IsChecked = false;
+            if (allowedmajor >= 8) { allowedmajor -= 8; this.cbaecon.IsChecked = true; } else this.cbaecon.IsChecked = false;
+            if (allowedmajor >= 4) { allowedmajor -= 4; this.cbadrama.IsChecked = true; } else this.cbadrama.IsChecked = false;
+            if (allowedmajor >= 2) { allowedmajor -= 2; this.cbabiol.IsChecked = true; } else this.cbabiol.IsChecked = false;
+            if (allowedmajor >= 1) this.cbaArt.IsChecked = true; else this.cbaArt.IsChecked = false;
         }
 
         private void btmajApply_Click(object sender, EventArgs e)
         {
             majors[1] = majors[2] = 0;
-            if (cbrArt.Checked) majors[1] = 1;
-            if (cbrbiol.Checked) majors[1] += 2;
-            if (cbrdrama.Checked) majors[1] += 4;
-            if (cbrecon.Checked) majors[1] += 8;
-            if (cbrhisto.Checked) majors[1] += 16;
-            if (cbrliter.Checked) majors[1] += 32;
-            if (cbrmaths.Checked) majors[1] += 64;
-            if (cbrhisto.Checked) majors[1] += 128;
-            if (cbrphysi.Checked) majors[1] += 256;
-            if (cbrpolit.Checked) majors[1] += 512;
-            if (cbrphyco.Checked) majors[1] += 1024;
+            if (cbrArt.IsChecked.GetValueOrDefault()) majors[1] = 1;
+            if (cbrbiol.IsChecked.GetValueOrDefault()) majors[1] += 2;
+            if (cbrdrama.IsChecked.GetValueOrDefault()) majors[1] += 4;
+            if (cbrecon.IsChecked.GetValueOrDefault()) majors[1] += 8;
+            if (cbrhisto.IsChecked.GetValueOrDefault()) majors[1] += 16;
+            if (cbrliter.IsChecked.GetValueOrDefault()) majors[1] += 32;
+            if (cbrmaths.IsChecked.GetValueOrDefault()) majors[1] += 64;
+            if (cbrhisto.IsChecked.GetValueOrDefault()) majors[1] += 128;
+            if (cbrphysi.IsChecked.GetValueOrDefault()) majors[1] += 256;
+            if (cbrpolit.IsChecked.GetValueOrDefault()) majors[1] += 512;
+            if (cbrphyco.IsChecked.GetValueOrDefault()) majors[1] += 1024;
 
-            if (cbaArt.Checked) majors[2] = 1;
-            if (cbabiol.Checked) majors[2] += 2;
-            if (cbadrama.Checked) majors[2] += 4;
-            if (cbaecon.Checked) majors[2] += 8;
-            if (cbahisto.Checked) majors[2] += 16;
-            if (cbaliter.Checked) majors[2] += 32;
-            if (cbamaths.Checked) majors[2] += 64;
-            if (cbrahilo.Checked) majors[2] += 128;
-            if (cbaphysi.Checked) majors[2] += 256;
-            if (cbapolit.Checked) majors[2] += 512;
-            if (cbaphyco.Checked) majors[2] += 1024;
+            if (cbaArt.IsChecked.GetValueOrDefault()) majors[2] = 1;
+            if (cbabiol.IsChecked.GetValueOrDefault()) majors[2] += 2;
+            if (cbadrama.IsChecked.GetValueOrDefault()) majors[2] += 4;
+            if (cbaecon.IsChecked.GetValueOrDefault()) majors[2] += 8;
+            if (cbahisto.IsChecked.GetValueOrDefault()) majors[2] += 16;
+            if (cbaliter.IsChecked.GetValueOrDefault()) majors[2] += 32;
+            if (cbamaths.IsChecked.GetValueOrDefault()) majors[2] += 64;
+            if (cbrahilo.IsChecked.GetValueOrDefault()) majors[2] += 128;
+            if (cbaphysi.IsChecked.GetValueOrDefault()) majors[2] += 256;
+            if (cbapolit.IsChecked.GetValueOrDefault()) majors[2] += 512;
+            if (cbaphyco.IsChecked.GetValueOrDefault()) majors[2] += 1024;
 
             majors.SynchronizeUserData();
         }
@@ -7197,14 +3644,13 @@ namespace SimPe.Plugin
 
             if (ok)
             {
-                this.btUgrade.Visible = false;
-                this.tabControl1.Enabled = menuItem6.Enabled = false;
+                this.btUgrade.IsVisible = false;
+                this.tabControl1.IsEnabled = menuItem6.IsEnabled = false;
 
-                this.lbcrap.Font = new System.Drawing.Font(
-                    "Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
-                this.lbcrap.ForeColor = System.Drawing.Color.HotPink;
+                // this.lbcrap.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold); // no .Font on Avalonia controls
+                // this.lbcrap.ForeColor = System.Drawing.Color.HotPink; // no .ForeColor on Avalonia controls
                 this.lbcrap.Text = "You now need to close\r\nCareer Editor then restart it";
-                this.lbcrap.Visible = true;
+                this.lbcrap.IsVisible = true;
             }
         }
 
@@ -7212,7 +3658,7 @@ namespace SimPe.Plugin
         private void cbischance_CheckedChanged(object sender, EventArgs e)
         {
             if (internalchg) return;
-            if (cbischance.Checked) cclevels[currentLevel] = (short)1;
+            if (cbischance.IsChecked.GetValueOrDefault()) cclevels[currentLevel] = (short)1;
             else cclevels[currentLevel] = (short)0;
         }
 

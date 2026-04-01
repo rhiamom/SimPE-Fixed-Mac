@@ -75,7 +75,7 @@ namespace SimPe.Plugin
                 glob.ProcessData(globals[0], package);
                 if (glob.SemiGlobalName == "JobDataGlobals") return true;
             }
-            System.Windows.Forms.MessageBox.Show("This package does not contain a career.");
+            SimPe.Scenegraph.Compat.MessageBox.ShowAsync("This package does not contain a career.").GetAwaiter().GetResult();
             return false;
         }
 
