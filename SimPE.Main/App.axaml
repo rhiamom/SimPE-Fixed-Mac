@@ -11,10 +11,86 @@
         <FluentTheme />
         <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
         <StyleInclude Source="avares://AvaloniaHex/Themes/Simple/AvaloniaHex.axaml"/>
-        <!-- Compact tab strip — Fluent theme ignores inherited FontSize on headers -->
+        <!-- Classic raised Windows-style tabs -->
+        <Style Selector="TabControl">
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <DockPanel>
+                        <ItemsPresenter Name="PART_ItemsPresenter"
+                                        DockPanel.Dock="{TemplateBinding TabStripPlacement}"
+                                        ItemsPanel="{TemplateBinding ItemsPanel}" />
+                        <Border Background="White"
+                                BorderBrush="#7A7A7A"
+                                BorderThickness="1">
+                            <ContentPresenter Name="PART_SelectedContentHost"
+                                              Content="{TemplateBinding SelectedContent}"
+                                              ContentTemplate="{TemplateBinding SelectedContentTemplate}"
+                                              Margin="4" />
+                        </Border>
+                    </DockPanel>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+
         <Style Selector="TabItem">
             <Setter Property="FontSize" Value="11" />
-            <Setter Property="Padding"  Value="8,4" />
+            <Setter Property="MinHeight" Value="0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Name="Bd"
+                            Background="#E0E0E0"
+                            BorderBrush="#7A7A7A"
+                            BorderThickness="1,1,1,0"
+                            CornerRadius="4,4,0,0"
+                            Margin="2,2,2,0"
+                            Padding="8,3">
+                        <TextBlock Text="{TemplateBinding Header}"
+                                   FontSize="11"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+
+        <Style Selector="TabItem:selected">
+            <Setter Property="Panel.ZIndex" Value="10" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Background="White"
+                            BorderBrush="#7A7A7A"
+                            BorderThickness="1,1,1,0"
+                            CornerRadius="4,4,0,0"
+                            Margin="2,0,2,-1"
+                            Padding="8,3">
+                        <TextBlock Text="{TemplateBinding Header}"
+                                   FontSize="11"
+                                   FontWeight="SemiBold"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+
+        <Style Selector="TabItem:pointerover:not(:selected)">
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Background="#CDCDCD"
+                            BorderBrush="#7A7A7A"
+                            BorderThickness="1,1,1,0"
+                            CornerRadius="4,4,0,0"
+                            Margin="2,2,2,0"
+                            Padding="8,3">
+                        <TextBlock Text="{TemplateBinding Header}"
+                                   FontSize="11"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Setter>
         </Style>
         <!-- TreeView selection — match DataGrid row selection colour -->
         <Style Selector="TreeViewItem:selected /template/ Border#PART_LayoutRoot">
