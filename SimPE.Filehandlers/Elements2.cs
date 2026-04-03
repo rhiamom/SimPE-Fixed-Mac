@@ -38,51 +38,139 @@ namespace SimPe.PackedFiles.Wrapper
 	/// </summary>
 	public class Elements2 : UserControl
 	{
-		internal Button btprev = new Button { Content = "Preview", IsVisible = false };
-		internal ComboBox cbtype = new ComboBox();
-		private TextBlock label8 = new TextBlock();
-		internal TextBox rtbcpfname = new TextBox { AcceptsReturn = true };
-		private TextBlock label7 = new TextBlock();
-		internal TextBox rtbcpf = new TextBox { AcceptsReturn = true };
-		private TextBlock label6 = new TextBlock();
-		private Button btcpfcommit = new Button { Content = "Commit" };
-		internal ListBox lbcpf = new ListBox();
-		private SimPe.Windows.Forms.WrapperBaseControl panel5 = new SimPe.Windows.Forms.WrapperBaseControl();
-		private TextBlock label5 = new TextBlock();
-		internal TextBox tbNref = new TextBox();
-		private TextBlock label10 = new TextBlock();
-		internal TextBox tbnrefhash = new TextBox { IsReadOnly = true };
-		private TextBlock label9 = new TextBlock();
-		private Button button2 = new Button { Content = "Delete" };
-		internal Panel NrefPanel = new Panel();
-		private SimPe.Windows.Forms.WrapperBaseControl panel4 = new SimPe.Windows.Forms.WrapperBaseControl();
-		private TextBlock label12 = new TextBlock();
-		internal Panel CpfPanel = new Panel();
-		internal Button llcpfadd = new Button { Content = "Add" };
-		internal Button llcpfchange = new Button { Content = "Change", IsEnabled = false };
-		internal Button linkLabel1 = new Button { Content = "Commit" };
+		internal Button   btprev      = new Button { Content = "Preview", IsVisible = false };
+		internal ComboBox cbtype      = new ComboBox();
+		internal TextBox  rtbcpfname  = new TextBox { Background = Avalonia.Media.Brushes.White, MinHeight = 0, Padding = new Avalonia.Thickness(4, 2) };
+		internal TextBox  rtbcpf      = new TextBox { Background = Avalonia.Media.Brushes.White, AcceptsReturn = true, MinHeight = 0, Padding = new Avalonia.Thickness(4, 2), Height = 120 };
+		private  Button   btcpfcommit = new Button { Content = "Commit", Padding = new Avalonia.Thickness(6, 2) };
+		internal ListBox  lbcpf       = new ListBox();
+		internal TextBox  tbNref      = new TextBox { Background = Avalonia.Media.Brushes.White };
+		internal TextBox  tbnrefhash  = new TextBox { IsReadOnly = true, Background = Avalonia.Media.Brushes.White };
+		private  Button   deleteButton = new Button { Content = "delete", Padding = new Avalonia.Thickness(0), Background = Avalonia.Media.Brushes.Transparent, BorderThickness = new Avalonia.Thickness(0), Foreground = new Avalonia.Media.SolidColorBrush(Avalonia.Media.Color.FromRgb(0, 80, 180)), Cursor = new Avalonia.Input.Cursor(Avalonia.Input.StandardCursorType.Hand) };
+		internal Panel    NrefPanel   = new Panel();
+		internal Panel    CpfPanel    = new Panel();
+		internal Button   llcpfadd    = new Button { Content = "add", Padding = new Avalonia.Thickness(0), Background = Avalonia.Media.Brushes.Transparent, BorderThickness = new Avalonia.Thickness(0), Foreground = new Avalonia.Media.SolidColorBrush(Avalonia.Media.Color.FromRgb(0, 80, 180)), Cursor = new Avalonia.Input.Cursor(Avalonia.Input.StandardCursorType.Hand) };
+		internal Button   llcpfchange = new Button { Content = "Change", IsVisible = false };
+		internal Button   linkLabel1  = new Button { Content = "Commit" };
 
 		internal IFileWrapperSaveExtension wrapper;
 
 		public Elements2()
 		{
-            btprev.IsEnabled = true;
+			btprev.IsEnabled = true;
+			btprev.Padding   = new Avalonia.Thickness(6, 2);
 
-            ThemeManager tm = ThemeManager.Global.CreateChild();
-			tm.AddControl(this.NrefPanel);
-			tm.AddControl(this.CpfPanel);
+			// Compact ListBox items
+			var compactTheme = new Avalonia.Styling.ControlTheme(typeof(ListBoxItem));
+			compactTheme.Setters.Add(new Avalonia.Styling.Setter(ListBoxItem.PaddingProperty, new Avalonia.Thickness(4, 1)));
+			lbcpf.ItemContainerTheme = compactTheme;
+
+			cbtype.MinHeight = 0;
+			cbtype.Padding   = new Avalonia.Thickness(6, 2);
+			cbtype.Background = Avalonia.Media.Brushes.White;
+
+			// Right-side editor: Name, Type, Value fields + add/delete + buttons
+			var nameLabel  = new TextBlock { Text = "Name:",  VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center, Margin = new Avalonia.Thickness(0, 0, 0, 2) };
+			var typeLabel  = new TextBlock { Text = "Type:",  VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center, Margin = new Avalonia.Thickness(0, 4, 0, 2) };
+			var valueLabel = new TextBlock { Text = "Value:", VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center, Margin = new Avalonia.Thickness(0, 4, 0, 2) };
+
+			var addDelRow = new Avalonia.Controls.StackPanel {
+				Orientation = Avalonia.Layout.Orientation.Horizontal,
+				Spacing = 8,
+				HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right,
+				Margin = new Avalonia.Thickness(0, 4, 0, 0)
+			};
+			addDelRow.Children.Add(llcpfadd);
+			addDelRow.Children.Add(deleteButton);
+
+			var buttonRow = new Avalonia.Controls.StackPanel {
+				Orientation = Avalonia.Layout.Orientation.Horizontal,
+				Spacing = 4,
+				HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right,
+				Margin = new Avalonia.Thickness(0, 6, 0, 0)
+			};
+			buttonRow.Children.Add(btprev);
+			buttonRow.Children.Add(btcpfcommit);
+
+			var editorInner = new Avalonia.Controls.StackPanel {
+				Margin = new Avalonia.Thickness(6),
+				Spacing = 0,
+				Children = { nameLabel, rtbcpfname, typeLabel, cbtype, valueLabel, rtbcpf, addDelRow, buttonRow }
+			};
+
+			var editorHeader = new Avalonia.Controls.Border {
+				Background = new Avalonia.Media.LinearGradientBrush {
+					StartPoint = new Avalonia.RelativePoint(0, 0.5, Avalonia.RelativeUnit.Relative),
+					EndPoint   = new Avalonia.RelativePoint(1, 0.5, Avalonia.RelativeUnit.Relative),
+					GradientStops = { new Avalonia.Media.GradientStop(Avalonia.Media.Color.FromArgb(220, 60, 60, 80), 0.0), new Avalonia.Media.GradientStop(Avalonia.Media.Color.FromArgb(200, 80, 80, 110), 1.0) }
+				},
+				Child = new TextBlock { Text = "Property", Foreground = Avalonia.Media.Brushes.White, FontSize = 11, FontWeight = Avalonia.Media.FontWeight.SemiBold, Margin = new Avalonia.Thickness(6, 3) }
+			};
+
+			var editor = new Avalonia.Controls.Border {
+				VerticalAlignment   = Avalonia.Layout.VerticalAlignment.Top,
+				Background          = new Avalonia.Media.SolidColorBrush(Avalonia.Media.Color.FromRgb(220, 228, 238)),
+				BorderBrush         = new Avalonia.Media.SolidColorBrush(Avalonia.Media.Color.FromRgb(170, 185, 205)),
+				BorderThickness     = new Avalonia.Thickness(1),
+				CornerRadius        = new Avalonia.CornerRadius(3),
+				Margin              = new Avalonia.Thickness(6, 0, 0, 0),
+				MinWidth            = 240,
+				ClipToBounds        = true,
+				Child = new Avalonia.Controls.StackPanel { Children = { editorHeader, editorInner } }
+			};
+
+			// 2-column grid: listbox fills left, editor auto-sizes right
+			var grid = new Avalonia.Controls.Grid();
+			grid.ColumnDefinitions.Add(new ColumnDefinition(new Avalonia.Controls.GridLength(1, Avalonia.Controls.GridUnitType.Star)));
+			grid.ColumnDefinitions.Add(new ColumnDefinition(Avalonia.Controls.GridLength.Auto));
+			Grid.SetColumn(lbcpf,  0);
+			Grid.SetColumn(editor, 1);
+			grid.Children.Add(lbcpf);
+			grid.Children.Add(editor);
+
+			// Dark gradient header bar — "CPF Editor" left, Commit button right
+			var headerLabel = new TextBlock {
+				Text = "CPF Editor",
+				Foreground = Avalonia.Media.Brushes.White,
+				FontWeight = Avalonia.Media.FontWeight.SemiBold,
+				FontSize = 12,
+				VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+				Margin = new Avalonia.Thickness(8, 0)
+			};
+			var headerContent = new Avalonia.Controls.DockPanel { LastChildFill = true };
+			headerContent.Children.Add(headerLabel);
+
+			var headerBar = new Avalonia.Controls.Border {
+				Background = new Avalonia.Media.LinearGradientBrush {
+					StartPoint = new Avalonia.RelativePoint(0, 0, Avalonia.RelativeUnit.Relative),
+					EndPoint   = new Avalonia.RelativePoint(1, 0, Avalonia.RelativeUnit.Relative),
+					GradientStops = {
+						new Avalonia.Media.GradientStop(Avalonia.Media.Color.FromRgb(74, 84, 100), 0.0),
+						new Avalonia.Media.GradientStop(Avalonia.Media.Color.FromRgb(54, 64, 80),  1.0)
+					}
+				},
+				MinHeight = 28,
+				Child = headerContent
+			};
+
+			var dock = new Avalonia.Controls.DockPanel();
+			Avalonia.Controls.DockPanel.SetDock(headerBar, Avalonia.Controls.Dock.Top);
+			dock.Children.Add(headerBar);
+			dock.Children.Add(grid);
+
+			CpfPanel.Children.Add(dock);
 
 			// Wire events
-			btcpfcommit.Click += CpfCommit;
-			lbcpf.SelectionChanged += CpfItemSelect;
-			llcpfadd.Click += AddCpf;
-			llcpfchange.Click += CpfChange;
-			button2.Click += DeleteCpf;
-			tbNref.TextChanged += tbnref_TextChanged;
-			linkLabel1.Click += NrefCommit;
-			btprev.Click += btprev_Click;
-			rtbcpfname.TextChanged += CpfAutoChange;
-			rtbcpf.TextChanged += CpfAutoChange;
+			btcpfcommit.Click       += CpfCommit;
+			lbcpf.SelectionChanged  += CpfItemSelect;
+			llcpfadd.Click          += AddCpf;
+			llcpfchange.Click       += CpfChange;
+			deleteButton.Click      += DeleteCpf;
+			tbNref.TextChanged      += tbnref_TextChanged;
+			linkLabel1.Click        += NrefCommit;
+			btprev.Click            += btprev_Click;
+			rtbcpfname.TextChanged  += CpfAutoChange;
+			rtbcpf.TextChanged      += CpfAutoChange;
 			cbtype.SelectionChanged += CpfAutoChange;
 		}
 
