@@ -117,28 +117,48 @@ namespace SimPe
 
 
 
-            // Populate the bottom tab strip with each registered IDockableTool panel.
-            // LoadDocks (called inside PluginManager constructor) added each DockPanel to
-            // dockBottom.Controls with its TabText set.  We turn each into a TabItem here.
+            // Right-side panel toggle button icons.
+            imgObjectWorkshopIcon.Source  = SimPe.LoadIcon.LoadAvaloniaBitmap("OWDockForm_dcObjectWorkshop.TabImage.png");
+            imgFilterResourcesIcon.Source = SimPe.LoadIcon.LoadAvaloniaBitmap("Main_dcFilter.TabImage.png");
+
+            // Plugin View — first tab; dc is the per-resource editor inner TabControl.
+            var pvIcon = SimPe.LoadIcon.LoadAvaloniaBitmap("Main_dcPlugin.TabImage.png");
+            var pvTab = new Avalonia.Controls.TabItem
+            {
+                Header  = MakeTabHeader("Plugin View", pvIcon),
+                Content = dc,
+            };
+            bottomViewTabs.Items.Add(pvTab);
+            _bottomTabDefs.Add(("Plugin View", pvIcon, pvTab));
+
+            // One tab per registered dock panel.
+            string logPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "pluginlog.txt");
+            System.IO.File.AppendAllText(logPath, $"[TabBuild] dockBottom.Controls.Count = {dockBottom.Controls.Count}\n");
             foreach (object item in dockBottom.Controls)
             {
                 if (item is Ambertation.Windows.Forms.DockPanel dp)
                 {
                     string label = dp.TabText?.ToString() ?? "";
+                    System.IO.File.AppendAllText(logPath,
+                        $"[TabBuild] dp={dp.GetType().Name} TabText='{label}' AvaloniaContent={dp.AvaloniaContent?.GetType().Name ?? "null"} Controls.Count={dp.Controls.Count}\n");
                     if (string.IsNullOrWhiteSpace(label)) continue;
 
-                    var tabItem = new Avalonia.Controls.TabItem { Header = label };
+                    // Prefer the explicit AvaloniaContent set by the dock constructor;
+                    // fall back to scanning Controls for the first Avalonia control.
+                    Avalonia.Controls.Control content = dp.AvaloniaContent;
+                    if (content == null)
+                        foreach (object child in dp.Controls)
+                            if (child is Avalonia.Controls.Control ac) { content = ac; break; }
+                    System.IO.File.AppendAllText(logPath,
+                        $"[TabBuild]   → content={content?.GetType().Name ?? "null"}\n");
 
-                    // Use the first Avalonia Control child as content, or fall back to the
-                    // DockPanel itself (visible but empty until panel layouts are fully ported).
-                    Avalonia.Controls.Control content = null;
-                    foreach (object child in dp.Controls)
+                    var tab = new Avalonia.Controls.TabItem
                     {
-                        if (child is Avalonia.Controls.Control ac) { content = ac; break; }
-                    }
-                    tabItem.Content = (object)content ?? dp;
-
-                    bottomViewTabs.Items.Add(tabItem);
+                        Header  = MakeTabHeader(label, dp.TabIconBitmap),
+                        Content = (object)content,
+                    };
+                    bottomViewTabs.Items.Add(tab);
+                    _bottomTabDefs.Add((label, dp.TabIconBitmap, tab));
                 }
             }
 
@@ -212,6 +232,30 @@ namespace SimPe
 
             //if (Helper.XmlRegistry.CheckForUpdates)
                 //About.ShowUpdate();
+        }
+
+        /// <summary>Builds an icon + label StackPanel for use as a TabItem Header.</summary>
+        static Avalonia.Controls.Control MakeTabHeader(string label, Avalonia.Media.Imaging.Bitmap icon)
+        {
+            var sp = new Avalonia.Controls.StackPanel
+            {
+                Orientation = Avalonia.Layout.Orientation.Horizontal,
+                Spacing = 3,
+            };
+            if (icon != null)
+                sp.Children.Add(new Avalonia.Controls.Image
+                {
+                    Source = icon,
+                    Width = 16,
+                    Height = 16,
+                    VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                });
+            sp.Children.Add(new Avalonia.Controls.TextBlock
+            {
+                Text = label,
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+            });
+            return sp;
         }
     }
 }

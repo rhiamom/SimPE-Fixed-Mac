@@ -42,6 +42,23 @@ namespace SimPe
         // Fallback icon file name
         const string defaultIconFileName = "unk.png";
 
+        public static Avalonia.Media.Imaging.Bitmap LoadAvaloniaBitmap(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName)) return null;
+            string key = fileName.ToLowerInvariant();
+            string resourceName;
+            if (!resourceCache.TryGetValue(key, out resourceName))
+            {
+                resourceName = findResourceName(fileName);
+                resourceCache[key] = resourceName;
+            }
+            if (string.IsNullOrEmpty(resourceName)) return null;
+            using var stream = iconAssembly.GetManifestResourceStream(resourceName);
+            if (stream == null) return null;
+            try { return new Avalonia.Media.Imaging.Bitmap(stream); }
+            catch { return null; }
+        }
+
         public static Image load(string fileName)
         {
             if (string.IsNullOrEmpty(fileName))

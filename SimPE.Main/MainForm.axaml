@@ -141,7 +141,10 @@
                                                   Background="Transparent"
                                                   BorderThickness="0,0,0,1" BorderBrush="Gray"
                                                   CornerRadius="0" MinWidth="0">
-                                        <TextBlock Text="Object Workshop" />
+                                        <StackPanel Orientation="Horizontal" Spacing="3">
+                                            <Image x:Name="imgObjectWorkshopIcon" Width="16" Height="16" VerticalAlignment="Center" />
+                                            <TextBlock Text="Object Workshop" VerticalAlignment="Center" />
+                                        </StackPanel>
                                     </ToggleButton>
                                 </LayoutTransformControl>
                                 <LayoutTransformControl>
@@ -153,7 +156,10 @@
                                                   Background="Transparent"
                                                   BorderThickness="0,0,0,1" BorderBrush="Gray"
                                                   CornerRadius="0" MinWidth="0">
-                                        <TextBlock Text="Filter Resources" />
+                                        <StackPanel Orientation="Horizontal" Spacing="3">
+                                            <Image x:Name="imgFilterResourcesIcon" Width="16" Height="16" VerticalAlignment="Center" />
+                                            <TextBlock Text="Filter Resources" VerticalAlignment="Center" />
+                                        </StackPanel>
                                     </ToggleButton>
                                 </LayoutTransformControl>
                             </StackPanel>
@@ -169,12 +175,8 @@
             <!-- Bottom view tabs: Plugin View | Package | Resource | Wrapper | Converter | Hex | Finder | Details -->
             <!-- Tab strip is at the bottom (matches original SimPE layout). -->
             <!-- "Plugin View" is hardcoded here; the other tabs are added in code-behind after plugins load. -->
-            <TabControl x:Name="bottomViewTabs" Grid.Row="2" TabStripPlacement="Bottom" FontSize="11">
-                <TabItem Header="Plugin View">
-                    <!-- dc holds the per-resource editor tabs (one tab per open resource) -->
-                    <TabControl x:Name="dc" FontSize="11" />
-                </TabItem>
-            </TabControl>
+            <!-- All tabs (including Plugin View) are built in code-behind SetupMainForm. -->
+            <TabControl x:Name="bottomViewTabs" Grid.Row="2" TabStripPlacement="Bottom" FontSize="11" />
 
         </Grid>
     </DockPanel>

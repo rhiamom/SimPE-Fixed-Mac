@@ -67,22 +67,8 @@ namespace SimPe
             avlnAbout.Click          += Activate_miAbout;
             avlnKBase.Click          += miKBase_Clicked;
 
-            tabBtnObjectWorkshop.Click += (s, e) =>
-            {
-                tabBtnObjectWorkshop.IsChecked  = true;
-                tabBtnFilterResources.IsChecked = false;
-                pnlObjectWorkshop.IsVisible    = true;
-                pnlFilterResources.IsVisible   = false;
-                lblRightPanelTitle.Text        = "Object Workshop";
-            };
-            tabBtnFilterResources.Click += (s, e) =>
-            {
-                tabBtnFilterResources.IsChecked = true;
-                tabBtnObjectWorkshop.IsChecked  = false;
-                pnlFilterResources.IsVisible    = true;
-                pnlObjectWorkshop.IsVisible     = false;
-                lblRightPanelTitle.Text         = "Filter Resources";
-            };
+            tabBtnObjectWorkshop.Click  += (_, _) => ActivateRightPanel("Object Workshop");
+            tabBtnFilterResources.Click += (_, _) => ActivateRightPanel("Filter Resources");
 
             SetupMainForm();
             this.Opened += LoadForm;

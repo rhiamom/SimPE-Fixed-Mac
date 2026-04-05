@@ -45,7 +45,9 @@ namespace SimPe
     partial class MainForm
     {
         // InitializeComponent() is generated from MainForm.axaml — do NOT declare it here.
-        // lv, tv, dc, tbInst, tbGrp, cbsemig, waitControl1 are declared by the AXAML source
+        // lv, tv, tbInst, tbGrp, cbsemig, waitControl1 are declared by the AXAML source
+        // dc was previously declared by AXAML; now a code-behind field so it can be used as tab content
+        private Avalonia.Controls.TabControl dc = new Avalonia.Controls.TabControl { FontSize = 11 };
         // generator from x:Name attributes in MainForm.axaml — do NOT re-declare them here.
         private Ambertation.Windows.Forms.DockPanel tbContainer = new Ambertation.Windows.Forms.DockPanel();
         private string ofdInitialDirectory = "";

@@ -42,7 +42,7 @@ namespace SimPe.Plugin.Tool.Dockable
         public DockboxFactory()
     : base()
         {
-            // ResourceDock is WinForms — not constructed on this platform
+            rd = new ResourceDock();
         }
         #endregion
 
@@ -86,7 +86,7 @@ namespace SimPe.Plugin.Tool.Dockable
                 tools.Add(new FinderDock());
                 tools.Add(new ActionCheckFiletable());
                 tools.Add(new ActionBuildPhpGuidList());
-                tools.Add(new DebugDock());
+                if (Helper.XmlRegistry.HiddenMode) tools.Add(new DebugDock());
                 return tools.ToArray();
             }
         }

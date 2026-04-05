@@ -53,6 +53,12 @@ namespace SimPe.Plugin.Tool.Dockable
             // This call is required by the Windows.Forms Form Designer.
             InitializeComponent();
 
+            // Designer.cs is excluded from compilation; set identity strings here (like DebugDock does).
+            this.TabText     = "Finder";
+            this.ButtonText  = "Finder";
+            this.CaptionText = "Scenegraph Resource Finder";
+            this.TabIconBitmap = SimPe.LoadIcon.LoadAvaloniaBitmap("FinderDockTabImage.png");
+
             tm = ThemeManager.Global.CreateChild();
             tm.AddControl(this.xpGradientPanel1);
             tm.AddControl(this.tbResult);

@@ -92,11 +92,13 @@ namespace SimPe.Plugin.Tool.Dockable
             //
             // dcPackageDetails
             //
+            this.AvaloniaContent = this.xpGradientPanel1;
             this.Controls.Add(this.xpGradientPanel1);
             this.FloatingSize = new System.Drawing.Size(592, 376);
             this.Image = null;
             this.TabImage = null;
             this.TabText = "Details";
+            this.TabIconBitmap = SimPe.LoadIcon.LoadAvaloniaBitmap("PackageDetailDock_$this.TabImage.png");
             this.VisibleChanged += new System.EventHandler(this.dcPackageDetails_VisibleChanged);
 		}
 		#endregion

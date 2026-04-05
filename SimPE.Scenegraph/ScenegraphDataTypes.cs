@@ -346,10 +346,101 @@ namespace SimPe.Scenegraph.Compat
 
     // ── PropertyGridStub ─────────────────────────────────────────────────────
 
-    /// <summary>Placeholder for WinForms PropertyGrid — renders nothing on Mac.</summary>
-    public class PropertyGridStub : Avalonia.Controls.Control
+    /// <summary>
+    /// Replacement for WinForms PropertyGrid.
+    /// Reflects over the assigned object and displays properties in a two-column
+    /// table (gray name column | white value column) matching the original WinForms look.
+    /// </summary>
+    public class PropertyGridStub : Avalonia.Controls.ContentControl
     {
-        public object SelectedObject { get; set; }
+        private readonly Avalonia.Controls.Grid _grid;
+
+        static readonly Avalonia.Media.IBrush _nameBg =
+            new Avalonia.Media.SolidColorBrush(Avalonia.Media.Color.FromRgb(235, 240, 245));
+        static readonly Avalonia.Media.IBrush _valueBg = Avalonia.Media.Brushes.White;
+        static readonly Avalonia.Media.IBrush _borderBrush =
+            new Avalonia.Media.SolidColorBrush(Avalonia.Media.Color.FromRgb(200, 210, 220));
+
+        public PropertyGridStub()
+        {
+            _grid = new Avalonia.Controls.Grid();
+            _grid.ColumnDefinitions.Add(new Avalonia.Controls.ColumnDefinition(
+                new Avalonia.Controls.GridLength(1, Avalonia.Controls.GridUnitType.Star)));
+            _grid.ColumnDefinitions.Add(new Avalonia.Controls.ColumnDefinition(
+                new Avalonia.Controls.GridLength(1.5, Avalonia.Controls.GridUnitType.Star)));
+
+            var tableBorder = new Avalonia.Controls.Border
+            {
+                BorderBrush     = _borderBrush,
+                BorderThickness = new Avalonia.Thickness(1),
+                Child           = _grid,
+            };
+            var scroll = new Avalonia.Controls.ScrollViewer
+            {
+                VerticalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Auto,
+                Content = tableBorder,
+            };
+            Content = scroll;
+        }
+
+        private object _selectedObject;
+        public object SelectedObject
+        {
+            get => _selectedObject;
+            set { _selectedObject = value; Rebuild(value); }
+        }
+
+        void Rebuild(object obj)
+        {
+            _grid.Children.Clear();
+            _grid.RowDefinitions.Clear();
+            if (obj == null) return;
+
+            int row = 0;
+            foreach (var prop in obj.GetType().GetProperties())
+            {
+                string name, val;
+                try   { name = prop.Name; val = prop.GetValue(obj)?.ToString() ?? ""; }
+                catch { continue; }
+
+                _grid.RowDefinitions.Add(new Avalonia.Controls.RowDefinition(Avalonia.Controls.GridLength.Auto));
+
+                var nameBorder = new Avalonia.Controls.Border
+                {
+                    Background      = _nameBg,
+                    BorderBrush     = _borderBrush,
+                    BorderThickness = new Avalonia.Thickness(0, 0, 1, 1),
+                    Padding         = new Avalonia.Thickness(4, 2),
+                    Child           = new Avalonia.Controls.TextBlock
+                    {
+                        Text = name,
+                        VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                    },
+                };
+                Avalonia.Controls.Grid.SetRow(nameBorder, row);
+                Avalonia.Controls.Grid.SetColumn(nameBorder, 0);
+                _grid.Children.Add(nameBorder);
+
+                var valueBorder = new Avalonia.Controls.Border
+                {
+                    Background      = _valueBg,
+                    BorderBrush     = _borderBrush,
+                    BorderThickness = new Avalonia.Thickness(0, 0, 0, 1),
+                    Padding         = new Avalonia.Thickness(4, 2),
+                    Child           = new Avalonia.Controls.TextBlock
+                    {
+                        Text          = val,
+                        TextWrapping  = Avalonia.Media.TextWrapping.NoWrap,
+                        VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                    },
+                };
+                Avalonia.Controls.Grid.SetRow(valueBorder, row);
+                Avalonia.Controls.Grid.SetColumn(valueBorder, 1);
+                _grid.Children.Add(valueBorder);
+
+                row++;
+            }
+        }
     }
 
     // ── Panel compat ──────────────────────────────────────────────────────────

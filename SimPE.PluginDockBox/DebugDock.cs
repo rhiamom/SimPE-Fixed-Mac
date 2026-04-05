@@ -65,6 +65,7 @@ namespace SimPe.Plugin.Tool.Dockable
             this.ButtonText = "Debug";
             this.CaptionText = "Debug Dock";
             this.TabText = "Debug";
+            this.TabIconBitmap = SimPe.LoadIcon.LoadAvaloniaBitmap("DebugDock_$this.TabImage.png");
         }
         #endregion
 

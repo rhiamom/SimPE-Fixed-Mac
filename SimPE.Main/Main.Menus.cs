@@ -34,7 +34,175 @@ namespace SimPe
 {
     partial class MainForm
     {
-        
+        // Maps the short TabText set by each dock panel to the full name used in the Window menu.
+        static readonly System.Collections.Generic.Dictionary<string, string> _tabMenuNames =
+            new System.Collections.Generic.Dictionary<string, string>(System.StringComparer.OrdinalIgnoreCase)
+            {
+                { "Hex",        "HexEditor" },
+                { "Package",    "Package Information" },
+                { "Wrapper",    "Wrapper Information" },
+                { "Resource",   "Resource Information" },
+                { "Converter",  "Number Converter" },
+                { "Finder",     "Scenegraph Resource Finder" },
+                { "Details",    "Package Details" },
+                { "Plugin View","Plugin View" },
+            };
+
+        // Window-menu item tracking (for checked-state sync).
+        private System.Collections.Generic.List<(string Label, Avalonia.Media.Imaging.Bitmap Icon, Avalonia.Controls.TabItem Tab)>
+            _bottomTabDefs = new System.Collections.Generic.List<(string, Avalonia.Media.Imaging.Bitmap, Avalonia.Controls.TabItem)>();
+        private Avalonia.Controls.MenuItem _miResourceList;
+        private Avalonia.Controls.MenuItem _miResourceTree;
+        private Avalonia.Controls.MenuItem _miObjectWorkshop;
+        private Avalonia.Controls.MenuItem _miFilterResources;
+
+        /// <summary>
+        /// Builds the Window-menu items to match the original SimPE layout.
+        ///
+        /// TOP SECTION — navigation panels (replaced the icon toolbar):
+        ///   Resource List · Resource Tree · Resource Actions · Plugin View
+        ///
+        /// BOTTOM SECTION — content / editor panels:
+        ///   Filter Resources · [dock-derived bottom tabs] · Object Workshop
+        ///
+        /// Must be called after SetupMainForm (_bottomTabDefs already populated).
+        /// </summary>
+        void AddTabMenus()
+        {
+            // ── TOP SECTION ─────────────────────────────────────────────────
+            AddNavItem("Resource List",
+                "Main_dcResourceList.TabImage.png",
+                () =>
+                {
+                    lv.IsVisible = !lv.IsVisible;
+                    if (_miResourceList != null) _miResourceList.IsChecked = lv.IsVisible;
+                },
+                out _miResourceList, isChecked: true);
+
+            AddNavItem("Resource Tree",
+                "Main_dcResource.TabImage.png",
+                () =>
+                {
+                    tv.IsVisible = !tv.IsVisible;
+                    if (_miResourceTree != null) _miResourceTree.IsChecked = tv.IsVisible;
+                },
+                out _miResourceTree, isChecked: true);
+
+            // Resource Actions — present in original toolbar; not yet implemented on Mac.
+            var miActions = new Avalonia.Controls.MenuItem
+            {
+                Header    = "Resource Actions",
+                IsChecked = false,
+                IsEnabled = false,
+            };
+            var actIcon = SimPe.LoadIcon.LoadAvaloniaBitmap("Main_dcAction.TabImage.png");
+            if (actIcon != null)
+                miActions.Icon = new Avalonia.Controls.Image { Source = actIcon, Width = 16, Height = 16 };
+            avlnWindow.Items.Add(miActions);
+
+            // Plugin View — the first entry in _bottomTabDefs.
+            var pvDef = _bottomTabDefs.Count > 0 ? _bottomTabDefs[0] : default;
+            if (pvDef.Tab != null)
+                avlnWindow.Items.Add(MakeTabMenuItem(pvDef.Label, pvDef.Icon, pvDef.Tab));
+
+            // ── BOTTOM SECTION ───────────────────────────────────────────────
+            avlnWindow.Items.Add(new Avalonia.Controls.Separator());
+
+            // Filter Resources — right-side toggle panel.
+            _miFilterResources = new Avalonia.Controls.MenuItem
+            {
+                Header    = "Filter Resources",
+                IsChecked = false,
+            };
+            var filterIcon = SimPe.LoadIcon.LoadAvaloniaBitmap("Main_dcFilter.TabImage.png");
+            if (filterIcon != null)
+                _miFilterResources.Icon = new Avalonia.Controls.Image { Source = filterIcon, Width = 16, Height = 16 };
+            _miFilterResources.Click += (_, _) => ActivateRightPanel("Filter Resources");
+            avlnWindow.Items.Add(_miFilterResources);
+
+            // All dock-derived bottom tabs (skip Plugin View at index 0 — already in top section).
+            for (int i = 1; i < _bottomTabDefs.Count; i++)
+            {
+                var (label, icon, tab) = _bottomTabDefs[i];
+                avlnWindow.Items.Add(MakeTabMenuItem(label, icon, tab));
+            }
+
+            // Object Workshop — right-side toggle panel.
+            _miObjectWorkshop = new Avalonia.Controls.MenuItem
+            {
+                Header    = "Object Workshop",
+                IsChecked = true,
+            };
+            var owIcon = SimPe.LoadIcon.LoadAvaloniaBitmap("OWDockForm_dcObjectWorkshop.TabImage.png");
+            if (owIcon != null)
+                _miObjectWorkshop.Icon = new Avalonia.Controls.Image { Source = owIcon, Width = 16, Height = 16 };
+            _miObjectWorkshop.Click += (_, _) => ActivateRightPanel("Object Workshop");
+            avlnWindow.Items.Add(_miObjectWorkshop);
+        }
+
+        /// <summary>Adds one navigation-panel item to the top section of avlnWindow.</summary>
+        void AddNavItem(string label, string iconFile, System.Action onClick,
+                        out Avalonia.Controls.MenuItem miOut, bool isChecked)
+        {
+            var mi = new Avalonia.Controls.MenuItem { Header = label, IsChecked = isChecked };
+            var icon = SimPe.LoadIcon.LoadAvaloniaBitmap(iconFile);
+            if (icon != null)
+                mi.Icon = new Avalonia.Controls.Image { Source = icon, Width = 16, Height = 16 };
+            mi.Click += (_, _) => onClick();
+            avlnWindow.Items.Add(mi);
+            miOut = mi;
+        }
+
+        /// <summary>Creates a checked menu item that toggles a bottom tab in/out of the strip.</summary>
+        Avalonia.Controls.MenuItem MakeTabMenuItem(string label, Avalonia.Media.Imaging.Bitmap icon,
+                                                   Avalonia.Controls.TabItem tab)
+        {
+            // Use the full Window-menu name if we have one; fall back to the raw tab label.
+            string menuLabel = _tabMenuNames.TryGetValue(label, out var mapped) ? mapped : label;
+            var mi = new Avalonia.Controls.MenuItem { Header = menuLabel, IsChecked = true };
+            if (icon != null)
+                mi.Icon = new Avalonia.Controls.Image { Source = icon, Width = 16, Height = 16 };
+
+            mi.Click += (_, _) =>
+            {
+                if (bottomViewTabs.Items.Contains(tab))
+                {
+                    bottomViewTabs.Items.Remove(tab);
+                    mi.IsChecked = false;
+                }
+                else
+                {
+                    // Re-insert at original relative position.
+                    int origIdx = _bottomTabDefs.FindIndex(d => d.Tab == tab);
+                    int insertAt = 0;
+                    for (int i = 0; i < origIdx; i++)
+                        if (bottomViewTabs.Items.Contains(_bottomTabDefs[i].Tab))
+                            insertAt++;
+                    if (insertAt >= bottomViewTabs.Items.Count)
+                        bottomViewTabs.Items.Add(tab);
+                    else
+                        bottomViewTabs.Items.Insert(insertAt, tab);
+                    mi.IsChecked = true;
+                }
+            };
+            return mi;
+        }
+
+        /// <summary>
+        /// Switches the right-side panel and keeps toggle buttons + Window-menu items in sync.
+        /// </summary>
+        internal void ActivateRightPanel(string which)
+        {
+            bool showOW = which == "Object Workshop";
+            tabBtnObjectWorkshop.IsChecked  = showOW;
+            tabBtnFilterResources.IsChecked = !showOW;
+            pnlObjectWorkshop.IsVisible     = showOW;
+            pnlFilterResources.IsVisible    = !showOW;
+            lblRightPanelTitle.Text         = which;
+            if (_miObjectWorkshop  != null) _miObjectWorkshop.IsChecked  = showOW;
+            if (_miFilterResources != null) _miFilterResources.IsChecked = !showOW;
+        }
+
         /// <summary>
         /// Add one Dock to the List
         /// </summary>
@@ -160,6 +328,7 @@ namespace SimPe
             this.miFileNames.Checked = Helper.XmlRegistry.DecodeFilenamesState;
 
             AddDockMenus();
+            AddTabMenus();
             UpdateMenuItems();
 
             tbAction.Visible = true;

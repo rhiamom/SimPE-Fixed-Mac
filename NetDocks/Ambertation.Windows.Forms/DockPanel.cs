@@ -112,6 +112,9 @@ public class DockPanel : NCUserControl
     public System.Drawing.Image Image    { get; set; }
     public System.Drawing.Image TabImage { get; set; }
 
+    /// <summary>Avalonia bitmap shown in the tab strip header (16×16).</summary>
+    public Avalonia.Media.Imaging.Bitmap TabIconBitmap { get; set; }
+
     public bool IsOpen
     {
         get => _isOpen;
@@ -220,6 +223,12 @@ public class DockPanel : NCUserControl
 
     // Controls collection — holds child controls (actual Avalonia children in full port).
     public DockPanelControlCollection Controls { get; } = new DockPanelControlCollection();
+
+    /// <summary>
+    /// The single Avalonia control that represents this panel's content.
+    /// Set this alongside Controls.Add() so SetupMainForm can find it directly.
+    /// </summary>
+    public Avalonia.Controls.Control? AvaloniaContent { get; set; }
 
     // ── Constructors ──────────────────────────────────────────────────────
 
