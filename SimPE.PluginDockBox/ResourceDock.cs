@@ -144,8 +144,8 @@ namespace SimPe.Plugin.Tool.Dockable
                     EndPoint   = new Avalonia.RelativePoint(0, 1, Avalonia.RelativeUnit.Relative),
                     GradientStops =
                     {
-                        new Avalonia.Media.GradientStop(Avalonia.Media.Color.FromRgb(74, 84, 100), 0.0),
-                        new Avalonia.Media.GradientStop(Avalonia.Media.Color.FromRgb(54, 64,  80), 1.0),
+                        new Avalonia.Media.GradientStop(Avalonia.Media.Color.FromRgb(100, 116, 140), 0.0),
+                        new Avalonia.Media.GradientStop(Avalonia.Media.Color.FromRgb( 80,  96, 120), 1.0),
                     },
                 },
                 MinHeight = 28,

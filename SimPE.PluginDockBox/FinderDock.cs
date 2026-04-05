@@ -34,6 +34,16 @@ using System.Media;
 
 namespace SimPe.Plugin.Tool.Dockable
 {
+    // Plain wrapper so AFinderTool UserControls are never stored directly as ComboBox items.
+    // Avalonia bypasses ItemTemplate for Control-typed items and tries to render them in-place,
+    // which breaks both display (wrong visuals) and mouse interaction (clicks swallowed).
+    internal sealed class FinderToolEntry
+    {
+        public readonly SimPe.Interfaces.AFinderTool Tool;
+        public FinderToolEntry(SimPe.Interfaces.AFinderTool tool) => Tool = tool;
+        public override string ToString() => Tool.Title;
+    }
+
     /// <summary>
     /// Summary description for DockableWindow1.
     /// </summary>
@@ -78,9 +88,7 @@ namespace SimPe.Plugin.Tool.Dockable
             CreateThreads(false);
 
             foreach (SimPe.Interfaces.AFinderTool tl in Finder.FinderToolRegistry.Global.CreateToolInstances(this))
-            {
-                this.cbTask.Items.Add(tl);
-            }
+                this.cbTask.Items.Add(new FinderToolEntry(tl));
             if (cbTask.Items.Count > 0) this.cbTask.SelectedIndex = 0;
         }
 
@@ -118,9 +126,9 @@ namespace SimPe.Plugin.Tool.Dockable
         private void cbTask_SelectedIndexChanged(object sender, System.EventArgs e)
         {
             pnContainer?.Children.Clear();
-            if (cbTask.SelectedItem == null) return;
+            if (cbTask.SelectedItem is not FinderToolEntry entry) return;
 
-            Avalonia.Controls.Control c = ((SimPe.Interfaces.AFinderTool)cbTask.SelectedItem).SearchGui;
+            Avalonia.Controls.Control c = entry.Tool.SearchGui;
             pnContainer?.Children.Add(c);
             c.IsVisible = true;
         }
