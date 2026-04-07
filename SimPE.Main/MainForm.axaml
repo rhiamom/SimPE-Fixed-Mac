@@ -53,7 +53,7 @@
         <Border DockPanel.Dock="Top" Height="1" Background="#AAAAAA" />
 
         <!-- ── Status / wait bar ── -->
-        <simpe:WaitControl x:Name="waitControl1" DockPanel.Dock="Bottom" />
+        <simpe:WaitControl x:Name="waitControl1" DockPanel.Dock="Bottom" MinHeight="22" />
 
         <!-- ── Main content ── -->
         <Grid>

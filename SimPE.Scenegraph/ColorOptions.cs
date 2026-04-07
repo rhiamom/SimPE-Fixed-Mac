@@ -360,39 +360,21 @@ namespace SimPe.Plugin
 		/// user decide which Subsets to recolor</param>
 		public void Create(IPackageFile newpkg)
 		{
+			CreateAsync(newpkg).GetAwaiter().GetResult();
+		}
+
+		public async System.Threading.Tasks.Task CreateAsync(IPackageFile newpkg)
+		{
 			WaitingScreen.Wait();
 			try
 			{
-				//this.newpkg = newpkg;
-
 				WaitingScreen.UpdateMessage("Loading available Colour Options");
 				Hashtable fullmap = Scenegraph.GetMMATMap(package);
 				Hashtable map = fullmap;
 
-                // DEBUG: dump MMAT map for inspection
-                foreach (DictionaryEntry de in fullmap)
-                {
-                    string subset = (string)de.Key;
-                    Hashtable families = (Hashtable)de.Value;
-
-                    foreach (DictionaryEntry de2 in families)
-                    {
-                        string family = (string)de2.Key;
-                        ArrayList mmats = (ArrayList)de2.Value;
-
-                        foreach (SimPe.Plugin.MmatWrapper m in mmats)
-                        {
-                            Debug.WriteLine(
-                                $"[MMAT] subset={subset}, family={family}, model={m.ModelName}, name={m.Name}"
-                            );
-                        }
-                    }
-                }
-
-                // original code resumes here
                 ArrayList allowedSubsets = Scenegraph.GetRecolorableSubsets(package);
 
-				// FIX: ensure allowedSubsets covers all actual subsets in map
+				// Ensure allowedSubsets covers all actual subsets in map
 				if (allowedSubsets == null || allowedSubsets.Count == 0)
 				{
 					allowedSubsets = new ArrayList(map.Keys);
@@ -421,11 +403,9 @@ namespace SimPe.Plugin
 					}
 				}
 
-				//let the user Select now					
+				//let the user Select now
 				if (userselect)
-					map = SubsetSelectForm.Execute(map, allowedSubsets);
-
-
+					map = await SubsetSelectForm.ExecuteAsync(map, allowedSubsets);
 
 				ProcessMmatMap(newpkg, map, fullmap);
 
@@ -456,7 +436,7 @@ namespace SimPe.Plugin
 				// FIX: ensure allowedSubsets covers all actual subsets present in map
 				if (allowedSubsets == null || allowedSubsets.Count == 0)
 				{
-					// Scenegraph couldn’t determine anything – fall back to “all subsets that have MMATs”
+					// Scenegraph couldnï¿½t determine anything ï¿½ fall back to ï¿½all subsets that have MMATsï¿½
 					allowedSubsets = new ArrayList(map.Keys);
 				}
 				else

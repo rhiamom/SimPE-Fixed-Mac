@@ -309,7 +309,7 @@ namespace SimPe.Plugin.Tool.Dockable
 
             UpdateScreen();
             if (oci.Thumbnail == null) pb.Image = defimg;
-            else pb.Image = GenerateImage(pb.Size, oci.Thumbnail, true);
+            else pb.Image = oci.Thumbnail;
             lbName.Text = oci.Name;
             lbVert.Text = "---";
         }
@@ -371,8 +371,7 @@ namespace SimPe.Plugin.Tool.Dockable
             string[] mn = GetModelnames();
             if (mn.Length > 0)
             {
-                uint grp = objd.FileDescriptor.Group;
-                pb.Image = GenerateImage(pb.Size, GetThumbnail(objd.FileDescriptor.Group, mn[0]), true);
+                pb.Image = GetThumbnail(objd.FileDescriptor.Group, mn[0]);
             }
             else pb.Image = null;
 

@@ -72,18 +72,31 @@ namespace SimPe.PackedFiles.Wrapper
 		/// Unserializes a BinaryStream into the Attributes of this Instance
 		/// </summary>
 		/// <param name="reader">The Stream that contains the FileData</param>
-		internal void Unserialize(System.IO.BinaryReader reader)
+		internal bool Unserialize(System.IO.BinaryReader reader)
 		{
+			long remaining = reader.BaseStream.Length - reader.BaseStream.Position;
+			if (remaining < 4) return false;
+
 			int ct = reader.ReadInt32();
+			if (ct < 0 || ct > remaining - 4) return false;
+
 			flname = "";
-			/*char[] cs = reader.ReadChars(ct);
-			for (int i=0; i<cs.Length; i++) flname += cs[i];		*/
 			byte[] bs = reader.ReadBytes(ct);
 			flname = Helper.ToString(bs);
+
+			remaining = reader.BaseStream.Length - reader.BaseStream.Position;
+			if (remaining < 12) return false; // need unknown1(4) + localgroup(4) + array count(4)
+
 			unknown1 = reader.ReadUInt32();
-			localgroup = reader.ReadUInt32();			
-			unknown2 = new uint[reader.ReadUInt32()];
+			localgroup = reader.ReadUInt32();
+			uint arrLen = reader.ReadUInt32();
+
+			remaining = reader.BaseStream.Length - reader.BaseStream.Position;
+			if (arrLen > remaining / 4) return false;
+
+			unknown2 = new uint[arrLen];
 			for (int i=0; i<unknown2.Length; i++) unknown2[i]=reader.ReadUInt32();
+			return true;
 		}
 
 		/// <summary>

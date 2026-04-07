@@ -66,10 +66,7 @@ namespace SimPe
             }
             set
             {
-                if (value.IndexOf("Custom") > -1)
-                {
-                    if (bar != null) bar.Message = value;
-                }
+                if (bar != null) bar.Message = value;
             }
         }
 

@@ -69,7 +69,7 @@ namespace SimPe.Plugin.Tool.Dockable
             }
                                    
         }
-        private Avalonia.Controls.StackPanel xpGradientPanel1;
+        private Avalonia.Controls.Grid xpGradientPanel1;
 		private SimPe.Wizards.Wizard wizard1;
 		private SimPe.Wizards.WizardStepPanel wizardStepPanel1;
 		private Avalonia.Controls.Button button2;
@@ -135,19 +135,23 @@ namespace SimPe.Plugin.Tool.Dockable
         private ToolStripButton biFinish;
         private ToolStripButton biAbort;
         private ToolStripButton biCatalog;
+        // Avalonia toolbar buttons (visual counterparts to the ToolStripButton stubs)
+        private Avalonia.Controls.Button _btnPrev, _btnNext, _btnFinish, _btnAbort, _btnCatalog;
+        // Avalonia TreeView for the object catalog (renders compat tv.Nodes data)
+        private Avalonia.Controls.TreeView _avCatalogTree;
         private LinkLabel llCloneDef;
         private ToolTip toolTip1;
 
 		ObjectWorkshopRegistry registry;
 		public dcObjectWorkshop()
 		{
+			this.op1 = new SimPe.Plugin.Tool.Dockable.ObjectPreview();
+			this.op2 = new SimPe.Plugin.Tool.Dockable.ObjectPreview();
 			// This call is required by the Windows.Forms Form Designer.
 			InitializeComponent();
                 // this.wizard1.BackgroundImageLayout = ImageLayout.Zoom; // WinForms-only, skipped
 
-            this.xpAdvanced.IsVisible = UserVerification.HaveUserId; 
-                this.op1 = new SimPe.Plugin.Tool.Dockable.ObjectPreview();
-			this.op2 = new SimPe.Plugin.Tool.Dockable.ObjectPreview();
+            this.xpAdvanced.IsVisible = UserVerification.HaveUserId;
             // op1.SuspendLayout(); - (prevented op1 layout, causung the title to be scrolled and the description to be cut off) Chris Hatch
 			// 
 			// op1
@@ -180,7 +184,11 @@ namespace SimPe.Plugin.Tool.Dockable
 			biFinish.IsVisible = wizard1.FinishEnabled;
 			this.biAbort.IsVisible = wizard1.PrevEnabled;
 			biNext.Enabled = wizard1.NextEnabled;
-			biPrev.Enabled = wizard1.PrevEnabled;						
+			biPrev.Enabled = wizard1.PrevEnabled;
+			if (_btnFinish != null) _btnFinish.IsVisible = wizard1.FinishEnabled;
+			if (_btnAbort != null) _btnAbort.IsVisible = wizard1.PrevEnabled;
+			if (_btnNext != null) _btnNext.IsEnabled = wizard1.NextEnabled;
+			if (_btnPrev != null) _btnPrev.IsEnabled = wizard1.PrevEnabled;						
 			ilist.ImageSize = new Size(Helper.XmlRegistry.OWThumbSize, Helper.XmlRegistry.OWThumbSize);
 			registry = new ObjectWorkshopRegistry(this);
 		}
@@ -219,7 +227,7 @@ namespace SimPe.Plugin.Tool.Dockable
 		private void InitializeComponent()
 		{
             this.components = new System.ComponentModel.Container();
-            this.xpGradientPanel1 = new Avalonia.Controls.StackPanel();
+            this.xpGradientPanel1 = new Avalonia.Controls.Grid();
             this.wizard1 = new SimPe.Wizards.Wizard();
             this.wizardStepPanel1 = new SimPe.Wizards.WizardStepPanel();
             this.xpAdvanced = new Avalonia.Controls.StackPanel();
@@ -352,23 +360,343 @@ namespace SimPe.Plugin.Tool.Dockable
             this.toolStrip1.Items.Add(this.biFinish);
             this.toolStrip1.Items.Add(this.biAbort);
             this.toolStrip1.Items.Add(this.biCatalog);
+
+            // ── Text properties (formerly set by WinForms designer via .resx) ──
+            this.label1.Text = "Welcome to the Object Workshop.";
+            this.label1.FontWeight = Avalonia.Media.FontWeight.Bold;
+            this.label2.Text = "The Object Data is not yet loaded. Please choose \"Start\", to load the Object Browser. Or click \"Open...\", to load a custom Package.";
+            this.label2.TextWrapping = Avalonia.Media.TextWrapping.Wrap;
+            this.label4.Text = "Biggest thanks go to Numenor and RGiles for making the Object Workshop possible in the first place, and their constant help in the developing process.";
+            this.label4.TextWrapping = Avalonia.Media.TextWrapping.Wrap;
+            this.button1.Content = "Start";
+            this.button2.Content = "Open...";
+            this.button3.Content = "Start";
+            this.button4.Content = "Open by Group ID";
+            this.button5.Content = "Open by CRES-Name";
+            this.button6.Content = "Open by GUID";
+            this.tbGroup.Text = "0x7F000000";
+            this.tbGUID.Text = "0x00000000";
+            this.label3.Text = "Task:";
+            this.label3.FontWeight = Avalonia.Media.FontWeight.Bold;
+            this.label5.Text = "Title:";
+            this.label5.FontWeight = Avalonia.Media.FontWeight.Bold;
+            this.label6.Text = "Description:";
+            this.label6.FontWeight = Avalonia.Media.FontWeight.Bold;
+            this.label7.Text = "Price:";
+            this.label7.FontWeight = Avalonia.Media.FontWeight.Bold;
+            this.lbwait.Text = "Please Wait";
+            this.lbwait.FontWeight = Avalonia.Media.FontWeight.Bold;
+            this.lbfinished.Text = "Object was created.";
+            this.lbfinished.FontWeight = Avalonia.Media.FontWeight.Bold;
+            this.lbfinished.IsVisible = false;
+            this.lbfinload.Text = "Object was created and loaded.";
+            this.lbfinload.FontWeight = Avalonia.Media.FontWeight.Bold;
+            this.lbfinload.IsVisible = false;
+            this.lberr.Text = "SimPe was unable to create the Object.\nA possible reason could be that you Interrupted the creation process.\n\nAnother reason might be that the selected Object is not a recolour-able Object.\n\nAnother reason might be that the selected Object \"borrows\" it's Textures from a Parent Object. In that case you would need to work with the Parent Object.\n\nAnother reason might be SimPe's file table has not been configured to load some required parts";
+            this.lberr.TextWrapping = Avalonia.Media.TextWrapping.Wrap;
+            this.lberr.FontWeight = Avalonia.Media.FontWeight.Bold;
+            this.lberr.IsVisible = false;
+            this.cbgid.Content = "Set Custom Group ID (0x1c050000)";
+            this.cbfix.Content = "Fix Cloned Files (by wes_h)";
+            this.cbclean.Content = "Rem. useless Files (by Numenor)";
+            this.cbRemTxt.Content = "Rem. All Languages from References except US";
+            this.cbparent.Content = "Create a stand-alone object";
+            this.cbdefault.Content = "Pull only default Colour";
+            this.cbwallmask.Content = "Pull Wallmasks (by Numenor)";
+            this.cbanim.Content = "Pull Animations";
+            this.cbOrgGmdc.Content = "Reference original Mesh";
+            this.cbDesc.Content = "Change Description";
+            this.cbstrlink.Content = "Pull #STR-Linked Resources";
+            this.cbColorExt.Content = "Create Colour Extension Package";
+            this.cbColorExt.IsEnabled = false;
+            this.cbTask.ItemsSource = new string[] { "Recolour", "Clone" };
+            this.cbTask.SelectedIndex = 0;
+            this.lb.IsVisible = false;
+
+            // ── Avalonia toolbar (replaces WinForms ToolStrip) ──
+            _btnPrev    = new Avalonia.Controls.Button { Content = "Previous",  Margin = new Avalonia.Thickness(0,0,2,0), Background = Avalonia.Media.Brushes.White };
+            _btnNext    = new Avalonia.Controls.Button { Content = "Next",      Margin = new Avalonia.Thickness(0,0,2,0), Background = Avalonia.Media.Brushes.White };
+            _btnFinish  = new Avalonia.Controls.Button { Content = "Finish",    Margin = new Avalonia.Thickness(0,0,2,0), Background = Avalonia.Media.Brushes.White, IsVisible = false };
+            _btnAbort   = new Avalonia.Controls.Button { Content = "Startover", Margin = new Avalonia.Thickness(0,0,2,0), Background = Avalonia.Media.Brushes.White, IsVisible = false };
+            _btnCatalog = new Avalonia.Controls.Button { Content = "Catalogue", Margin = new Avalonia.Thickness(0,0,2,0), Background = Avalonia.Media.Brushes.White, IsVisible = false };
+            _btnPrev.Click    += (s, e) => this.Activate_biPrev(s, e);
+            _btnNext.Click    += (s, e) => this.Activate_biNext(s, e);
+            _btnFinish.Click  += (s, e) => this.ActivateFinish(s, e);
+            _btnAbort.Click   += (s, e) => this.biAbort_Activate(s, e);
+            _btnCatalog.Click += (s, e) => this.Activate_biCatalog(s, e);
+            var toolbar = new Avalonia.Controls.StackPanel
+            {
+                Orientation = Avalonia.Layout.Orientation.Horizontal,
+                Margin = new Avalonia.Thickness(4, 2),
+            };
+            toolbar.Children.Add(_btnPrev);
+            toolbar.Children.Add(_btnNext);
+            toolbar.Children.Add(_btnFinish);
+            toolbar.Children.Add(_btnAbort);
+            toolbar.Children.Add(_btnCatalog);
+
+            // ── Step 1: Welcome ──
+            var advancedGrid = new Avalonia.Controls.Grid();
+            advancedGrid.ColumnDefinitions.Add(new Avalonia.Controls.ColumnDefinition(Avalonia.Controls.GridLength.Star));
+            advancedGrid.ColumnDefinitions.Add(new Avalonia.Controls.ColumnDefinition(Avalonia.Controls.GridLength.Auto));
+            advancedGrid.RowDefinitions.Add(new Avalonia.Controls.RowDefinition(Avalonia.Controls.GridLength.Auto));
+            advancedGrid.RowDefinitions.Add(new Avalonia.Controls.RowDefinition(Avalonia.Controls.GridLength.Auto));
+            advancedGrid.RowDefinitions.Add(new Avalonia.Controls.RowDefinition(Avalonia.Controls.GridLength.Auto));
+            Avalonia.Controls.Grid.SetRow(tbGroup, 0); Avalonia.Controls.Grid.SetColumn(tbGroup, 0);
+            Avalonia.Controls.Grid.SetRow(button4, 0); Avalonia.Controls.Grid.SetColumn(button4, 1);
+            Avalonia.Controls.Grid.SetRow(tbGUID, 1);  Avalonia.Controls.Grid.SetColumn(tbGUID, 0);
+            Avalonia.Controls.Grid.SetRow(button6, 1); Avalonia.Controls.Grid.SetColumn(button6, 1);
+            Avalonia.Controls.Grid.SetRow(tbCresName, 2); Avalonia.Controls.Grid.SetColumn(tbCresName, 0);
+            Avalonia.Controls.Grid.SetRow(button5, 2);    Avalonia.Controls.Grid.SetColumn(button5, 1);
+            tbGroup.Margin = tbGUID.Margin = tbCresName.Margin = new Avalonia.Thickness(0, 2);
+            button4.Margin = button5.Margin = button6.Margin = new Avalonia.Thickness(4, 2, 0, 2);
+            button3.Background = button4.Background = button5.Background = button6.Background = Avalonia.Media.Brushes.White;
+            advancedGrid.Children.Add(tbGroup);
+            advancedGrid.Children.Add(button4);
+            advancedGrid.Children.Add(tbGUID);
+            advancedGrid.Children.Add(button6);
+            advancedGrid.Children.Add(tbCresName);
+            advancedGrid.Children.Add(button5);
+            var advancedExpander = new Avalonia.Controls.Expander
+            {
+                Header = "Advanced",
+                Content = advancedGrid,
+                IsExpanded = UserVerification.HaveUserId,
+                Margin = new Avalonia.Thickness(0, 8, 0, 0),
+            };
+            this.xpAdvanced.Children.Add(advancedExpander);
+
+            // Step 1 uses a Grid so the credits text anchors to the bottom.
+            var step1Grid = new Avalonia.Controls.Grid();
+            step1Grid.RowDefinitions.Add(new Avalonia.Controls.RowDefinition(Avalonia.Controls.GridLength.Auto));
+            step1Grid.RowDefinitions.Add(new Avalonia.Controls.RowDefinition(Avalonia.Controls.GridLength.Auto));
+            step1Grid.RowDefinitions.Add(new Avalonia.Controls.RowDefinition(Avalonia.Controls.GridLength.Auto));
+            step1Grid.RowDefinitions.Add(new Avalonia.Controls.RowDefinition(Avalonia.Controls.GridLength.Auto));
+            step1Grid.RowDefinitions.Add(new Avalonia.Controls.RowDefinition(Avalonia.Controls.GridLength.Star)); // spacer
+            step1Grid.RowDefinitions.Add(new Avalonia.Controls.RowDefinition(Avalonia.Controls.GridLength.Auto)); // credits
+            var step1Desc = new Avalonia.Controls.TextBlock
+            {
+                Text = label2.Text,
+                TextWrapping = Avalonia.Media.TextWrapping.Wrap,
+                Margin = new Avalonia.Thickness(0, 8, 0, 8),
+            };
+            button1.Background = Avalonia.Media.Brushes.White;
+            button2.Background = Avalonia.Media.Brushes.White;
+            var step1Buttons = new Avalonia.Controls.StackPanel { Orientation = Avalonia.Layout.Orientation.Vertical, Spacing = 4, HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left };
+            button1.MinWidth = 80;
+            button2.MinWidth = 80;
+            step1Buttons.Children.Add(button1);
+            step1Buttons.Children.Add(button2);
+            label4.FontSize = 10;
+            label4.Foreground = new Avalonia.Media.SolidColorBrush(Avalonia.Media.Color.Parse("#555555"));
+            label4.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Bottom;
+            Avalonia.Controls.Grid.SetRow(step1Desc, 0);
+            Avalonia.Controls.Grid.SetRow(label1, 1);
+            Avalonia.Controls.Grid.SetRow(step1Buttons, 2);
+            Avalonia.Controls.Grid.SetRow(xpAdvanced, 3);
+            Avalonia.Controls.Grid.SetRow(label4, 5);
+            step1Grid.Children.Add(step1Desc);
+            step1Grid.Children.Add(label1);
+            step1Grid.Children.Add(step1Buttons);
+            step1Grid.Children.Add(xpAdvanced);
+            step1Grid.Children.Add(label4);
+            step1Grid.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
+            step1Grid.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
+            step1Grid.Background = new Avalonia.Media.SolidColorBrush(Avalonia.Media.Color.Parse("#DCE4EE"));
+            step1Grid.Margin = new Avalonia.Thickness(4);
+            wizardStepPanel1.Children.Add(step1Grid);
+
+            // ── Step 2: Select Object (tree/list + preview) ──
+            _avCatalogTree = new Avalonia.Controls.TreeView
+            {
+                IsVisible = false, // shown after loading completes
+                FontSize = 11,
+                Background = new Avalonia.Media.SolidColorBrush(Avalonia.Media.Color.Parse("#DCE4EE")),
+            };
+            _avCatalogTree.SelectionChanged += _avCatalogTree_SelectionChanged;
+
+            var step2Grid = new Avalonia.Controls.Grid();
+            step2Grid.RowDefinitions.Add(new Avalonia.Controls.RowDefinition(Avalonia.Controls.GridLength.Star));
+            step2Grid.RowDefinitions.Add(new Avalonia.Controls.RowDefinition(Avalonia.Controls.GridLength.Auto));
+            step2Grid.RowDefinitions.Add(new Avalonia.Controls.RowDefinition(new Avalonia.Controls.GridLength(200)));
+            Avalonia.Controls.Grid.SetRow(_avCatalogTree, 0);
+            Avalonia.Controls.Grid.SetRow(lb, 0);
+            Avalonia.Controls.Grid.SetRow(splitter1, 1);
+            Avalonia.Controls.Grid.SetRow(panel1, 2);
+            step2Grid.Children.Add(_avCatalogTree);
+            step2Grid.Children.Add(lb);
+            step2Grid.Children.Add(splitter1);
+            // xpTaskBoxSimple2 → "Selected Object" preview area
+            var selectedObjHeader = new Avalonia.Controls.Border
+            {
+                Background = new Avalonia.Media.SolidColorBrush(Avalonia.Media.Color.Parse("#CBD3E4")),
+                Padding = new Avalonia.Thickness(6, 3),
+                Child = new Avalonia.Controls.TextBlock
+                {
+                    Text = "Selected Object",
+                    FontWeight = Avalonia.Media.FontWeight.Bold,
+                    FontSize = 12,
+                },
+            };
+            xpTaskBoxSimple2.Children.Add(selectedObjHeader);
+            xpTaskBoxSimple2.Children.Add(op1);
+            panel1.Children.Add(xpTaskBoxSimple2);
+            step2Grid.Children.Add(panel1);
+            wizardStepPanel2.Children.Add(step2Grid);
+
+            // ── Step 3: Clone/Recolor Settings ──
+            // Task row: "Task:" label + dropdown (full width) + Start button
+            label3.Margin = new Avalonia.Thickness(0, 4, 0, 2);
+            cbTask.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
+            cbTask.Margin = new Avalonia.Thickness(0, 2, 0, 4);
+            button3.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right;
+            button3.Background = Avalonia.Media.Brushes.White;
+            panel2.Children.Add(label3);
+            panel2.Children.Add(cbTask);
+            panel2.Children.Add(button3);
+            panel2.Margin = new Avalonia.Thickness(0, 0, 0, 4);
+
+            // Clone options
+            gbClone.Children.Add(cbgid);
+            gbClone.Children.Add(cbfix);
+            gbClone.Children.Add(cbclean);
+            gbClone.Children.Add(cbRemTxt);
+            gbClone.Children.Add(cbparent);
+            gbClone.Children.Add(cbdefault);
+            gbClone.Children.Add(cbwallmask);
+            gbClone.Children.Add(cbanim);
+            gbClone.Children.Add(cbstrlink);
+            gbClone.Children.Add(cbOrgGmdc);
+            gbClone.Children.Add(cbDesc);
+            gbClone.IsVisible = false;
+            gbClone.Margin = new Avalonia.Thickness(4, 2, 4, 4);
+
+            // Recolor options
+            gbRecolor.Children.Add(cbColorExt);
+            gbRecolor.IsVisible = true;
+            gbRecolor.Margin = new Avalonia.Thickness(4, 2, 4, 4);
+
+            // Section headers with gradient-style background (matching original)
+            var sectionBg = Avalonia.Media.Color.Parse("#CBD3E4");
+            var cloneHeader = new Avalonia.Controls.Border
+            {
+                Background = new Avalonia.Media.SolidColorBrush(sectionBg),
+                Padding = new Avalonia.Thickness(6, 3),
+                Margin = new Avalonia.Thickness(0, 4, 0, 0),
+                Child = new Avalonia.Controls.TextBlock { Text = "Clone", FontWeight = Avalonia.Media.FontWeight.Bold, FontSize = 12 },
+            };
+            var recolorHeader = new Avalonia.Controls.Border
+            {
+                Background = new Avalonia.Media.SolidColorBrush(sectionBg),
+                Padding = new Avalonia.Thickness(6, 3),
+                Margin = new Avalonia.Thickness(0, 4, 0, 0),
+                Child = new Avalonia.Controls.TextBlock { Text = "Recolour", FontWeight = Avalonia.Media.FontWeight.Bold, FontSize = 12 },
+            };
+
+            // Selected Object preview for step 3 (uses op2)
+            var step3ObjHeader = new Avalonia.Controls.Border
+            {
+                Background = new Avalonia.Media.SolidColorBrush(sectionBg),
+                Padding = new Avalonia.Thickness(6, 3),
+                Margin = new Avalonia.Thickness(0, 4, 0, 0),
+                Child = new Avalonia.Controls.TextBlock { Text = "Selected Object", FontWeight = Avalonia.Media.FontWeight.Bold, FontSize = 12 },
+            };
+            xpTaskBoxSimple1.Children.Add(step3ObjHeader);
+            xpTaskBoxSimple1.Children.Add(op2);
+
+            // Assemble step 3 in a ScrollViewer so it doesn't clip
+            var step3Stack = new Avalonia.Controls.StackPanel();
+            step3Stack.Children.Add(panel2);
+            step3Stack.Children.Add(cloneHeader);
+            step3Stack.Children.Add(gbClone);
+            step3Stack.Children.Add(recolorHeader);
+            step3Stack.Children.Add(gbRecolor);
+            step3Stack.Children.Add(xpTaskBoxSimple1);
+            var step3Scroll = new Avalonia.Controls.ScrollViewer
+            {
+                Content = step3Stack,
+                VerticalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Auto,
+            };
+            wizardStepPanel3.Children.Add(step3Scroll);
+
+            // ── Step 5: Description Edit ──
+            var descGrid = new Avalonia.Controls.Grid();
+            descGrid.ColumnDefinitions.Add(new Avalonia.Controls.ColumnDefinition(Avalonia.Controls.GridLength.Auto));
+            descGrid.ColumnDefinitions.Add(new Avalonia.Controls.ColumnDefinition(Avalonia.Controls.GridLength.Star));
+            descGrid.RowDefinitions.Add(new Avalonia.Controls.RowDefinition(Avalonia.Controls.GridLength.Auto));
+            descGrid.RowDefinitions.Add(new Avalonia.Controls.RowDefinition(Avalonia.Controls.GridLength.Auto));
+            descGrid.RowDefinitions.Add(new Avalonia.Controls.RowDefinition(Avalonia.Controls.GridLength.Star));
+            Avalonia.Controls.Grid.SetRow(label5, 0); Avalonia.Controls.Grid.SetColumn(label5, 0);
+            Avalonia.Controls.Grid.SetRow(tbName, 0);  Avalonia.Controls.Grid.SetColumn(tbName, 1);
+            Avalonia.Controls.Grid.SetRow(label7, 1); Avalonia.Controls.Grid.SetColumn(label7, 0);
+            Avalonia.Controls.Grid.SetRow(tbPrice, 1); Avalonia.Controls.Grid.SetColumn(tbPrice, 1);
+            Avalonia.Controls.Grid.SetRow(label6, 2); Avalonia.Controls.Grid.SetColumn(label6, 0);
+            Avalonia.Controls.Grid.SetRow(tbDesc, 2); Avalonia.Controls.Grid.SetColumn(tbDesc, 1);
+            label5.Margin = label6.Margin = label7.Margin = new Avalonia.Thickness(0, 4, 8, 4);
+            label5.VerticalAlignment = label7.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
+            tbName.Margin = tbPrice.Margin = new Avalonia.Thickness(0, 2);
+            tbDesc.Margin = new Avalonia.Thickness(0, 2);
+            tbDesc.AcceptsReturn = true;
+            tbDesc.TextWrapping = Avalonia.Media.TextWrapping.Wrap;
+            descGrid.Children.Add(label5);
+            descGrid.Children.Add(tbName);
+            descGrid.Children.Add(label7);
+            descGrid.Children.Add(tbPrice);
+            descGrid.Children.Add(label6);
+            descGrid.Children.Add(tbDesc);
+            xpTaskBoxSimple3.Children.Add(descGrid);
+            wizardStepPanel5.Children.Add(xpTaskBoxSimple3);
+
+            // ── Step 4: Wait / Progress ──
+            pnWait.Margin = new Avalonia.Thickness(8);
+            pnWait.Children.Add(lbwait);
+            pnWait.Children.Add(lbfinload);
+            pnWait.Children.Add(lberr);
+            pnWait.Children.Add(lbfinished);
+            wizardStepPanel4.Children.Add(pnWait);
+
+            // ── Assemble wizard (add steps in order) ──
+            wizard1.Children.Add(wizardStepPanel1);
+            wizard1.Children.Add(wizardStepPanel2);
+            wizard1.Children.Add(wizardStepPanel3);
+            wizard1.Children.Add(wizardStepPanel5);
+            wizard1.Children.Add(wizardStepPanel4);
+
+            // ── Assemble outer container ──
+            xpGradientPanel1.Background = new Avalonia.Media.SolidColorBrush(Avalonia.Media.Color.Parse("#C8D0DA"));
+            xpGradientPanel1.RowDefinitions.Add(new Avalonia.Controls.RowDefinition(Avalonia.Controls.GridLength.Auto));
+            xpGradientPanel1.RowDefinitions.Add(new Avalonia.Controls.RowDefinition(Avalonia.Controls.GridLength.Star));
+            Avalonia.Controls.Grid.SetRow(toolbar, 0);
+            Avalonia.Controls.Grid.SetRow(wizard1, 1);
+            wizard1.Margin = new Avalonia.Thickness(8);
+            xpGradientPanel1.Children.Add(toolbar);
+            xpGradientPanel1.Children.Add(wizard1);
+
+            // Properties formerly set by the WinForms designer via .resx
+            this.AvaloniaContent = this.xpGradientPanel1;
+            this.TabText = "Object Workshop";
+            this.TabIconBitmap = SimPe.LoadIcon.LoadAvaloniaBitmap("OWDockForm_dcObjectWorkshop.TabImage.png");
 		}
 		#endregion
 
 		private void wizard1_ChangedFinishState(SimPe.Wizards.Wizard sender)
 		{
 			biFinish.Visible = sender.FinishEnabled;
+			if (_btnFinish != null) _btnFinish.IsVisible = sender.FinishEnabled;
 		}
 
 		private void wizard1_ChangedNextState(SimPe.Wizards.Wizard sender)
 		{
 			biNext.Enabled = sender.NextEnabled;
+			if (_btnNext != null) _btnNext.IsEnabled = sender.NextEnabled;
 		}
 
 		private void wizard1_ChangedPrevState(SimPe.Wizards.Wizard sender)
-		{			
+		{
 			biPrev.Enabled = sender.PrevEnabled;
 			this.biAbort.Visible = biPrev.Enabled;
+			if (_btnPrev != null) _btnPrev.IsEnabled = biPrev.Enabled;
+			if (_btnAbort != null) _btnAbort.IsVisible = biPrev.Enabled;
 		}
 
 		private void Activate_biPrev(object sender, System.EventArgs e)
@@ -452,7 +780,7 @@ namespace SimPe.Plugin.Tool.Dockable
 
         private void ol_Finished(object sender, EventArgs e)
         {
-            invoke_ol_Finished(sender, e);
+            Avalonia.Threading.Dispatcher.UIThread.Post(() => invoke_ol_Finished(sender, e));
         }
 
         private void invoke_ol_Finished(object sender, EventArgs e)
@@ -460,27 +788,71 @@ namespace SimPe.Plugin.Tool.Dockable
 			tv.IsEnabled = true;
 
             Wait.SubStart(RootNode.Nodes.Count);
-            Wait.Message = "Building List";
+            Wait.Message = "Building Object List";
             int ct = 0;
-            for (int i = RootNode.Nodes.Count - 1; i >= 0; i--)
+            foreach (TreeNode node in RootNode.Nodes)
             {
                 Wait.Progress = ct++;
-                TreeNode node = RootNode.Nodes[0];
-                // RemoveAt not available on TreeNodeCollection compat stub - skip
                 tv.Nodes.Add(node);
             }
 
             tv.EndUpdate();
+
+            // Populate the Avalonia TreeView from the compat tree data
+            Wait.Message = "Building Catalog View";
+            Wait.MaxProgress = tv.Nodes.Count;
+            PopulateAvaloniaTree();
+
             Wait.SubStop();
 
 			lb.IsEnabled = true;
-
             tv.DoEndUpdate((this.biCatalog.Checked == true));
 		}
+
+        /// <summary>
+        /// Converts compat TreeNodes into Avalonia TreeViewItems and populates _avCatalogTree.
+        /// </summary>
+        private void PopulateAvaloniaTree()
+        {
+            var items = new System.Collections.Generic.List<Avalonia.Controls.TreeViewItem>();
+            int ct = 0;
+            foreach (TreeNode node in tv.Nodes)
+            {
+                Wait.Progress = ct++;
+                items.Add(BuildTreeViewItem(node));
+            }
+
+            _avCatalogTree.ItemsSource = items;
+            _avCatalogTree.IsVisible = (this.biCatalog.Checked == true);
+            lb.IsVisible = !(this.biCatalog.Checked == true);
+        }
+
+        private Avalonia.Controls.TreeViewItem BuildTreeViewItem(TreeNode node)
+        {
+            var tvi = new Avalonia.Controls.TreeViewItem
+            {
+                Header = node.Text ?? "",
+                Tag = node,
+            };
+            foreach (TreeNode child in node.Nodes)
+                tvi.Items.Add(BuildTreeViewItem(child));
+            return tvi;
+        }
+
+        private void _avCatalogTree_SelectionChanged(object sender, Avalonia.Controls.SelectionChangedEventArgs e)
+        {
+            if (_avCatalogTree.SelectedItem is Avalonia.Controls.TreeViewItem tvi
+                && tvi.Tag is TreeNode compatNode)
+            {
+                tv.SelectedNode = compatNode;
+                tv_AfterSelect(tv, new SimPe.Scenegraph.Compat.TreeViewEventArgs(compatNode));
+            }
+        }
 
 		private void Activate_biCatalog(object sender, System.EventArgs e)
 		{
 			this.tv.IsVisible = (this.biCatalog.Checked == true);
+			this._avCatalogTree.IsVisible = (this.biCatalog.Checked == true);
 			this.lb.IsVisible = !(this.biCatalog.Checked == true);
 			
 			lb_SelectedIndexChanged(lb, null);
@@ -490,7 +862,7 @@ namespace SimPe.Plugin.Tool.Dockable
 		private void wizard1_ShowStep(SimPe.Wizards.Wizard sender, SimPe.Wizards.WizardEventArgs e)
 		{
             this.biCatalog.IsVisible = (e.Step.Index == wizardStepPanel2.Index);
-           
+            if (_btnCatalog != null) _btnCatalog.IsVisible = biCatalog.IsVisible;
 		}
 
 		private void button2_Click(object sender, System.EventArgs e)
@@ -517,7 +889,7 @@ namespace SimPe.Plugin.Tool.Dockable
 		Data.Alias lastselected;
 		private void tv_AfterSelect(object sender, SimPe.Scenegraph.Compat.TreeViewEventArgs e)
 		{
-			if (wizard1.CurrentStepNumber==this.wizardStepPanel2.Index && tv.Visible) 
+			if (wizard1.CurrentStepNumber==this.wizardStepPanel2.Index && (tv.Visible || _avCatalogTree.IsVisible))
 			{
 				if (tv.SelectedNode==null) wizard1.NextEnabled = false;
 				else wizard1.NextEnabled = tv.SelectedNode.Tag!=null;
@@ -609,20 +981,20 @@ namespace SimPe.Plugin.Tool.Dockable
 			this.lberr.IsVisible = false;
 		}
 
-        private void wizardStepPanel4_Activated(SimPe.Wizards.Wizard sender, SimPe.Wizards.WizardStepPanel step)
+        private async void wizardStepPanel4_Activated(SimPe.Wizards.Wizard sender, SimPe.Wizards.WizardStepPanel step)
         {
             SimPe.Packages.GeneratableFile package = null;
-			if (lastselected ==null && this.package==null) 
+			if (lastselected ==null && this.package==null)
 			{
 				sender.FinishEnabled = false;
-			} 
-			else 
-			{								
+			}
+			else
+			{
 				SimPe.Interfaces.IAlias a;
 				Interfaces.Files.IPackedFileDescriptor pfd;
 				uint localgroup;
 				ObjectWorkshopHelper.PrepareForClone(this.package, this.lastselected, out a, out localgroup, out pfd);
-				
+
 				ObjectWorkshopSettings settings;
 
 				//Clone an Object
@@ -643,7 +1015,6 @@ namespace SimPe.Plugin.Tool.Dockable
                     cs.ChangeObjectDescription = (this.cbDesc.IsChecked == true);
                     cs.Title = this.tbName.Text;
                     cs.Description = this.tbDesc.Text;
-                    //cs.Price = Helper.StringToInt16(this.tbPrice.Text, 0, 10);
                     short price;
                     if (!short.TryParse(this.tbPrice.Text, out price))
                         price = 0;
@@ -653,25 +1024,52 @@ namespace SimPe.Plugin.Tool.Dockable
                 }
                 else
                 {
-                    //Recolor a Object				
+                    //Recolor a Object
                     settings = new OWRecolorSettings();
                     settings.RemoveNonDefaultTextReferences = false;
                 }
 
-				try 
+                // Show save dialog BEFORE entering sync code (Avalonia can't nest event loops)
+                var mainWindow = (Avalonia.Application.Current?.ApplicationLifetime
+                    as Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+                if (mainWindow != null)
+                {
+                    var result = await mainWindow.StorageProvider.SaveFilePickerAsync(
+                        new Avalonia.Platform.Storage.FilePickerSaveOptions
+                        {
+                            Title = "Save As",
+                            FileTypeChoices = FileDialogHelper.ParseFilter(
+                                ExtensionProvider.BuildFilterString(
+                                    new SimPe.ExtensionType[] {
+                                        SimPe.ExtensionType.Package,
+                                        SimPe.ExtensionType.AllFiles
+                                    })),
+                        });
+                    if (result != null)
+                        SaveFileDialog.PresetFileName = result.Path.LocalPath;
+                    else
+                    {
+                        // User cancelled — don't proceed
+                        this.lbwait.IsVisible = false;
+                        this.lberr.IsVisible = true;
+                        this.lbfinished.IsVisible = false;
+                        return;
+                    }
+                }
+
+				try
 				{
-                    System.Diagnostics.Debug.WriteLine("OW: Start begin");
-                    package = ObjectWorkshopHelper.Start(this.package, a, ref pfd, localgroup, settings, onlybase);
-                    System.Diagnostics.Debug.WriteLine("OW: Start returned");
-                    //package = ObjectWorkshopHelper.Start(this.package, a, ref pfd, localgroup, settings, onlybase);
-                } 
-				catch (Exception ex) 
+                    var result = await ObjectWorkshopHelper.StartAsync(this.package, a, pfd, localgroup, settings, onlybase);
+                    package = result.Package;
+                    pfd = result.Pfd;
+                }
+				catch (Exception ex)
 				{
 					Helper.ExceptionMessage(ex);
-				}                
+				}
 				if (package!=null) this.lbfinload.IsVisible = settings.RemoteResult;
 				else this.lberr.IsVisible = true;
-				
+
 			}
 
 			this.lbwait.IsVisible = false;

@@ -26,6 +26,7 @@ using System.Collections;
 using System.ComponentModel;
 using System.Drawing;
 using System.Diagnostics;
+using Avalonia.Controls.Templates;
 using Avalonia.Interactivity;
 using SimPe.Scenegraph.Compat;
 
@@ -58,14 +59,54 @@ namespace SimPe.Plugin
 			// base.Dispose(disposing); // Avalonia Window does not have Dispose(bool)
 		}
 
-		#region Avalonia AXAML layout placeholder
+			#region Avalonia layout
+		private Avalonia.Controls.StackPanel _subsetStack;
+
 		private void InitializeComponent()
 		{
-			// TODO: Avalonia AXAML layout
+			this.Title = "Select Subsets";
+			this.Width = 500;
+			this.Height = 450;
+			this.WindowStartupLocation = Avalonia.Controls.WindowStartupLocation.CenterOwner;
+
 			panel1 = new Avalonia.Controls.Panel();
-			cbauto = new CheckBoxCompat2();
-			button1 = new ButtonCompat();
 			pnselect = new PanelCompat();
+
+			cbauto = new CheckBoxCompat2();
+			cbauto.Content = "Auto-select matching textures";
+			cbauto.IsChecked = true;
+			cbauto.Margin = new Avalonia.Thickness(4);
+
+			button1 = new ButtonCompat();
+			button1.Content = "Continue";
+			button1.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right;
+			button1.Margin = new Avalonia.Thickness(4);
+			button1.Padding = new Avalonia.Thickness(16, 4);
+			button1.Click += button1_Click;
+
+			_subsetStack = new Avalonia.Controls.StackPanel();
+
+			var scroll = new Avalonia.Controls.ScrollViewer
+			{
+				Content = _subsetStack,
+				VerticalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Auto,
+			};
+
+			var bottomBar = new Avalonia.Controls.StackPanel
+			{
+				Orientation = Avalonia.Layout.Orientation.Horizontal,
+				HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right,
+				Margin = new Avalonia.Thickness(4),
+			};
+			bottomBar.Children.Add(cbauto);
+			bottomBar.Children.Add(button1);
+
+			var root = new Avalonia.Controls.DockPanel { Margin = new Avalonia.Thickness(4) };
+			Avalonia.Controls.DockPanel.SetDock(bottomBar, Avalonia.Controls.Dock.Bottom);
+			root.Children.Add(bottomBar);
+			root.Children.Add(scroll);
+
+			this.Content = root;
 		}
 		#endregion
 
@@ -127,8 +168,16 @@ namespace SimPe.Plugin
 
 				if (mm!=null)
 				{
-					ImageLoader.Preview(mm.Texture, sz); // returns SKBitmap; caller expects System.Drawing.Image
-					return null;
+					SkiaSharp.SKBitmap skBmp = ImageLoader.Preview(mm.Texture, sz);
+					if (skBmp != null)
+					{
+						using var skImage = SkiaSharp.SKImage.FromBitmap(skBmp);
+						using var encoded = skImage.Encode(SkiaSharp.SKEncodedImageFormat.Png, 100);
+						using var ms = new System.IO.MemoryStream();
+						encoded.SaveTo(ms);
+						ms.Position = 0;
+						return new Bitmap(ms);
+					}
 				}
 			}
 
@@ -296,12 +345,103 @@ namespace SimPe.Plugin
 		/// <param name="package">the opened source package</param>
 		/// <param name="subsets">List of all Subsets you want to present</param>
 		/// <returns>the map with all the selected Items</returns>
+		/// <summary>
+		/// Populates the Avalonia visual tree from the compat ListView data.
+		/// </summary>
+		private void BuildVisualTree()
+		{
+			_subsetStack.Children.Clear();
+			foreach (ListView lv in listviews)
+			{
+				string subset = (string)lv.Tag;
+				var cb = new Avalonia.Controls.CheckBox
+				{
+					Content = subset,
+					IsChecked = true,
+					FontWeight = Avalonia.Media.FontWeight.Bold,
+					Margin = new Avalonia.Thickness(0, 4, 0, 2),
+					Tag = lv,
+				};
+				cb.IsCheckedChanged += (s, e) => CheckedChanged(s, EventArgs.Empty);
+
+				var avList = new Avalonia.Controls.ListBox
+				{
+					MinHeight = 100,
+					MaxHeight = 250,
+					Margin = new Avalonia.Thickness(0, 2, 0, 8),
+				};
+				// Use horizontal wrap layout for thumbnail-style display
+				avList.ItemsPanel = new FuncTemplate<Avalonia.Controls.Panel>(() =>
+					new Avalonia.Controls.WrapPanel { Orientation = Avalonia.Layout.Orientation.Horizontal });
+				foreach (object o in (System.Collections.IEnumerable)lv.Items)
+				{
+					var item = (ListViewItem)o;
+					var panel = new Avalonia.Controls.StackPanel
+					{
+						Width = ImageSize.Width + 16,
+						Margin = new Avalonia.Thickness(4),
+					};
+					// Show thumbnail if available from ImageList
+					if (item.ImageIndex >= 0 && lv.LargeImageList != null
+						&& item.ImageIndex < lv.LargeImageList.Images.Count)
+					{
+						var avBmp = SimPe.Helper.ToAvaloniaBitmap(lv.LargeImageList.Images[item.ImageIndex]);
+						if (avBmp != null)
+						{
+							var img = new Avalonia.Controls.Image
+							{
+								Source = avBmp,
+								Width = ImageSize.Width,
+								Height = ImageSize.Height,
+								Stretch = Avalonia.Media.Stretch.Uniform,
+							};
+							panel.Children.Add(img);
+						}
+					}
+					var label = new Avalonia.Controls.TextBlock
+					{
+						Text = item.Text ?? "",
+						TextTrimming = Avalonia.Media.TextTrimming.CharacterEllipsis,
+						FontSize = 10,
+						HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+					};
+					panel.Children.Add(label);
+					var lbi = new Avalonia.Controls.ListBoxItem { Content = panel, Tag = item };
+					avList.Items.Add(lbi);
+				}
+				avList.SelectionChanged += (s, e) =>
+				{
+					// Sync selection back to compat ListView
+					foreach (object o in (System.Collections.IEnumerable)lv.Items)
+						((ListViewItem)o).Selected = false;
+					if (avList.SelectedItem is Avalonia.Controls.ListBoxItem sel && sel.Tag is ListViewItem si)
+						si.Selected = true;
+					SelectedIndexChanged(lv, EventArgs.Empty);
+				};
+				// Pre-select first item
+				if (avList.Items.Count > 0)
+					avList.SelectedIndex = 0;
+
+				_subsetStack.Children.Add(cb);
+				_subsetStack.Children.Add(avList);
+			}
+		}
+
 		public static Hashtable Execute(Hashtable map, ArrayList subsets)
 		{
-			SubsetSelectForm ssf = Prepare(map, subsets);
-			_ = ssf.ShowDialog(null);
-			return Finish(ssf);
+			return ExecuteAsync(map, subsets).GetAwaiter().GetResult();
+		}
 
+		public static async System.Threading.Tasks.Task<Hashtable> ExecuteAsync(Hashtable map, ArrayList subsets)
+		{
+			SubsetSelectForm ssf = Prepare(map, subsets);
+			ssf.BuildVisualTree();
+			var owner = (Avalonia.Application.Current?.ApplicationLifetime
+				as Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+
+			await ssf.ShowDialog(owner);
+
+			return Finish(ssf);
 		}
 
 		private void button1_Click(object sender, RoutedEventArgs e)

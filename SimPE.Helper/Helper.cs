@@ -482,9 +482,20 @@ namespace SimPe
 		/// <summary>
 		/// Cross-platform safe image loader. Returns null (legacy System.Drawing.Image callers remain safe).
 		/// </summary>
-		public static System.Drawing.Image LoadImage(System.IO.Stream stream) => null;
+		public static System.Drawing.Image LoadImage(System.IO.Stream stream)
+		{
+			if (stream == null || !stream.CanRead) return null;
+			try
+			{
+				return new System.Drawing.Bitmap(stream);
+			}
+			catch { return null; }
+		}
 
-		public static System.Drawing.Image LoadImage(System.IO.Stream stream, bool useEmbeddedColorManagement, bool validateImageData) => null;
+		public static System.Drawing.Image LoadImage(System.IO.Stream stream, bool useEmbeddedColorManagement, bool validateImageData)
+		{
+			return LoadImage(stream);
+		}
 
 		/// <summary>
 		/// Cross-platform image loader returning SkiaSharp.SKBitmap.
@@ -1599,9 +1610,36 @@ namespace SimPe
         // }
 
         /// <summary>
-        /// Converts a System.Drawing.Image to an Avalonia Bitmap. Returns null (stub — callers using old GDI+ images won't crash).
+        /// Converts a System.Drawing.Image to an Avalonia Bitmap via SkiaSharp (avoids GDI+ issues).
         /// </summary>
-        public static Avalonia.Media.Imaging.Bitmap ToAvaloniaBitmap(System.Drawing.Image img) => null;
+        public static Avalonia.Media.Imaging.Bitmap ToAvaloniaBitmap(System.Drawing.Image img)
+        {
+            if (img == null) return null;
+            try
+            {
+                var bmp = (System.Drawing.Bitmap)img;
+                int w = bmp.Width, h = bmp.Height;
+                using var skBmp = new SkiaSharp.SKBitmap(w, h, SkiaSharp.SKColorType.Bgra8888, SkiaSharp.SKAlphaType.Premul);
+                var lockBits = bmp.LockBits(
+                    new System.Drawing.Rectangle(0, 0, w, h),
+                    System.Drawing.Imaging.ImageLockMode.ReadOnly,
+                    System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                try
+                {
+                    int byteCount = Math.Min(lockBits.Stride * h, skBmp.ByteCount);
+                    byte[] pixels = new byte[byteCount];
+                    System.Runtime.InteropServices.Marshal.Copy(lockBits.Scan0, pixels, 0, byteCount);
+                    System.Runtime.InteropServices.Marshal.Copy(pixels, 0, skBmp.GetPixels(), byteCount);
+                }
+                finally { bmp.UnlockBits(lockBits); }
+
+                return ToAvaloniaBitmap(skBmp);
+            }
+            catch
+            {
+                return null;
+            }
+        }
 
         /// <summary>
         /// Converts a SkiaSharp.SKBitmap to an Avalonia Bitmap for use in Avalonia Image controls.

@@ -99,7 +99,7 @@ namespace SimPe.Scenegraph.Compat
 
     public class ListView : Avalonia.Controls.Control
     {
-        public class ListViewItemCollection
+        public class ListViewItemCollection : System.Collections.IEnumerable
         {
             private ListView _owner;
             internal ListViewItemCollection(ListView owner) { _owner = owner; }
@@ -602,7 +602,13 @@ namespace SimPe.Scenegraph.Compat
     /// <summary>Minimal PictureBox — replaces System.Windows.Forms.PictureBox.</summary>
     public class PictureBox : Avalonia.Controls.Control
     {
-        public System.Drawing.Image Image { get; set; }
+        private System.Drawing.Image _image;
+        public System.Drawing.Image Image
+        {
+            get => _image;
+            set { _image = value; ImageChanged?.Invoke(this, EventArgs.Empty); }
+        }
+        public event EventHandler ImageChanged;
         public System.Drawing.Size Size { get; set; } = new System.Drawing.Size(100, 100);
         public object SizeMode { get; set; }
         public object BorderStyle { get; set; }

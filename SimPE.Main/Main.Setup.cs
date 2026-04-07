@@ -152,6 +152,14 @@ namespace SimPe
                     System.IO.File.AppendAllText(logPath,
                         $"[TabBuild]   → content={content?.GetType().Name ?? "null"}\n");
 
+                    // Object Workshop goes into the right-side panel, not the bottom tabs.
+                    if (dp is SimPe.Plugin.Tool.Dockable.dcObjectWorkshop)
+                    {
+                        if (content != null)
+                            pnlObjectWorkshop.Child = content;
+                        continue;
+                    }
+
                     var tab = new Avalonia.Controls.TabItem
                     {
                         Header  = MakeTabHeader(label, dp.TabIconBitmap),

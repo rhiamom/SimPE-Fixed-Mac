@@ -478,12 +478,17 @@ namespace SimPe.Plugin.Tool.Dockable
 			return package;
 		}
 
-		protected static SimPe.Packages.GeneratableFile ReColor(CloneSettings.BaseResourceType br, SimPe.Packages.GeneratableFile pkg, Interfaces.Files.IPackedFileDescriptor pfd, uint localgroup, ObjectWorkshopSettings settings, bool pkgcontainsonlybase) 
+		protected static SimPe.Packages.GeneratableFile ReColor(CloneSettings.BaseResourceType br, SimPe.Packages.GeneratableFile pkg, Interfaces.Files.IPackedFileDescriptor pfd, uint localgroup, ObjectWorkshopSettings settings, bool pkgcontainsonlybase)
+		{
+			return ReColorAsync(br, pkg, pfd, localgroup, settings, pkgcontainsonlybase).GetAwaiter().GetResult();
+		}
+
+		protected static async System.Threading.Tasks.Task<SimPe.Packages.GeneratableFile> ReColorAsync(CloneSettings.BaseResourceType br, SimPe.Packages.GeneratableFile pkg, Interfaces.Files.IPackedFileDescriptor pfd, uint localgroup, ObjectWorkshopSettings settings, bool pkgcontainsonlybase)
 		{
 			SimPe.Packages.GeneratableFile package = pkg;
             // Low Eps need packages in the Games and the Download Folder
 
-            if ((!System.IO.File.Exists(ScenegraphHelper.GMND_PACKAGE) || !System.IO.File.Exists(ScenegraphHelper.MMAT_PACKAGE)) && (settings is OWCloneSettings) && (SimPe.PathProvider.Global.EPInstalled < 16)) 
+            if ((!System.IO.File.Exists(ScenegraphHelper.GMND_PACKAGE) || !System.IO.File.Exists(ScenegraphHelper.MMAT_PACKAGE)) && (settings is OWCloneSettings) && (SimPe.PathProvider.Global.EPInstalled < 16))
 			{
 				if (Message.Show(Localization.Manager.GetString("OW_Warning"), "Warning", MessageBoxButtons.YesNo)==DialogResult.No) return package;
 			}
@@ -495,9 +500,9 @@ namespace SimPe.Plugin.Tool.Dockable
 											  SimPe.ExtensionType.AllFiles
 										  }
 				);
-			if (sfd.ShowDialog()!=System.Windows.Forms.DialogResult.OK) return package;			
+			if (sfd.ShowDialog()!=System.Windows.Forms.DialogResult.OK) return package;
 
-			//create a Cloned Object to get all needed Files for the Process			
+			//create a Cloned Object to get all needed Files for the Process
 			WaitingScreen.Wait();
             try
             {
@@ -506,22 +511,22 @@ namespace SimPe.Plugin.Tool.Dockable
 
             }
             finally { WaitingScreen.Stop(); }
-            
-            SimPe.Packages.GeneratableFile npackage = SimPe.Packages.GeneratableFile.CreateNew();//.LoadFromStream((System.IO.BinaryReader)null);
 
-			//Create the Templae for an additional MMAT
-			npackage.FileName = sfd.FileName;	
+            SimPe.Packages.GeneratableFile npackage = SimPe.Packages.GeneratableFile.CreateNew();
+
+			//Create the Template for an additional MMAT
+			npackage.FileName = sfd.FileName;
 
 			ColorOptions cs = new ColorOptions(package);
-			cs.Create(npackage);
+			await cs.CreateAsync(npackage);
 
 			npackage.Save();
-			package = npackage;						
+			package = npackage;
 
 			WaitingScreen.Stop();
 #if DEBUG
 #else
-			if (package!=npackage) package = null;			
+			if (package!=npackage) package = null;
 #endif
 
 			return package;
@@ -533,6 +538,19 @@ namespace SimPe.Plugin.Tool.Dockable
 		}
 
         public static SimPe.Packages.GeneratableFile Start(SimPe.Packages.GeneratableFile pkg, SimPe.Interfaces.IAlias a, ref Interfaces.Files.IPackedFileDescriptor pfd, uint localgroup, ObjectWorkshopSettings settings, bool containsonlybaseclone)
+        {
+            var result = StartAsync(pkg, a, pfd, localgroup, settings, containsonlybaseclone).GetAwaiter().GetResult();
+            pfd = result.Pfd;
+            return result.Package;
+        }
+
+        internal class StartResult
+        {
+            public SimPe.Packages.GeneratableFile Package;
+            public Interfaces.Files.IPackedFileDescriptor Pfd;
+        }
+
+        internal static async System.Threading.Tasks.Task<StartResult> StartAsync(SimPe.Packages.GeneratableFile pkg, SimPe.Interfaces.IAlias a, Interfaces.Files.IPackedFileDescriptor pfd, uint localgroup, ObjectWorkshopSettings settings, bool containsonlybaseclone)
         {
             SimPe.Packages.GeneratableFile package = pkg;
             SimPe.Plugin.CloneSettings.BaseResourceType br = SimPe.Plugin.CloneSettings.BaseResourceType.Objd;
@@ -551,7 +569,7 @@ namespace SimPe.Plugin.Tool.Dockable
                 if (cs.FixResources)
                 {
                     map = fo.GetNameMap(true);
-                    if (map == null) return package;
+                    if (map == null) return new StartResult { Package = package, Pfd = pfd };
 
                     SaveFileDialog sfd = new SaveFileDialog();
                     sfd.Filter = ExtensionProvider.BuildFilterString(
@@ -604,7 +622,7 @@ namespace SimPe.Plugin.Tool.Dockable
             }
             else
             {
-                package = ReColor(br, package, pfd, localgroup, new OWRecolorSettings(), containsonlybaseclone);
+                package = await ReColorAsync(br, package, pfd, localgroup, new OWRecolorSettings(), containsonlybaseclone);
 
                 //select a resource for display in SimPe
                 pfd = null;
@@ -623,8 +641,7 @@ namespace SimPe.Plugin.Tool.Dockable
                         settings.SetRemoteResult(SimPe.RemoteControl.OpenPackedFile(pfd, package));
             }
 
-
-            return package;
+            return new StartResult { Package = package, Pfd = pfd };
         }
 
 		#region Update Object Description

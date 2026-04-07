@@ -217,8 +217,43 @@ namespace System.Windows.Forms
         public string Title { get; set; } = string.Empty;
         public string InitialDirectory { get; set; } = string.Empty;
         public bool OverwritePrompt { get; set; } = true;
-        public DialogResult ShowDialog() => DialogResult.Cancel;
-        public DialogResult ShowDialog(object owner) => DialogResult.Cancel;
+
+        /// <summary>
+        /// Pre-set a filename so the next ShowDialog() returns OK immediately
+        /// without showing a dialog. Used when the caller needs to prompt the user
+        /// before entering a synchronous call chain that creates SaveFileDialog internally.
+        /// </summary>
+        [System.ThreadStatic]
+        public static string PresetFileName;
+
+        public DialogResult ShowDialog() => ShowDialog(null);
+        public DialogResult ShowDialog(object owner)
+        {
+            // If a filename was pre-set by the caller, consume it and return OK
+            if (!string.IsNullOrEmpty(PresetFileName))
+            {
+                FileName = PresetFileName;
+                PresetFileName = null;
+                return DialogResult.OK;
+            }
+
+            return FileDialogHelper.RunOnUIThread(async (window) =>
+            {
+                var result = await window.StorageProvider.SaveFilePickerAsync(
+                    new Avalonia.Platform.Storage.FilePickerSaveOptions
+                    {
+                        Title = string.IsNullOrEmpty(Title) ? "Save As" : Title,
+                        FileTypeChoices = FileDialogHelper.ParseFilter(Filter),
+                    });
+                if (result != null)
+                {
+                    FileName = result.Path.LocalPath;
+                    return DialogResult.OK;
+                }
+                return DialogResult.Cancel;
+            });
+        }
+
         public void Dispose() { }
     }
 
@@ -238,14 +273,102 @@ namespace System.Windows.Forms
     public class OpenFileDialog : IDisposable
     {
         public string FileName { get; set; } = string.Empty;
-        public string[] FileNames => new string[] { FileName };
+        public string[] FileNames { get; private set; } = new string[0];
         public string Filter { get; set; } = string.Empty;
         public string Title { get; set; } = string.Empty;
         public bool Multiselect { get; set; }
         public string InitialDirectory { get; set; } = string.Empty;
-        public DialogResult ShowDialog() => DialogResult.Cancel;
-        public DialogResult ShowDialog(object owner) => DialogResult.Cancel;
+
+        public DialogResult ShowDialog() => ShowDialog(null);
+        public DialogResult ShowDialog(object owner)
+        {
+            return FileDialogHelper.RunOnUIThread(async (window) =>
+            {
+                var results = await window.StorageProvider.OpenFilePickerAsync(
+                    new Avalonia.Platform.Storage.FilePickerOpenOptions
+                    {
+                        Title = string.IsNullOrEmpty(Title) ? "Open" : Title,
+                        AllowMultiple = Multiselect,
+                        FileTypeFilter = FileDialogHelper.ParseFilter(Filter),
+                    });
+                if (results != null && results.Count > 0)
+                {
+                    FileName = results[0].Path.LocalPath;
+                    FileNames = new string[results.Count];
+                    for (int i = 0; i < results.Count; i++)
+                        FileNames[i] = results[i].Path.LocalPath;
+                    return DialogResult.OK;
+                }
+                return DialogResult.Cancel;
+            });
+        }
+
         public void Dispose() { }
+    }
+
+    /// <summary>Helpers for bridging sync WinForms dialog calls to async Avalonia StorageProvider.</summary>
+    public static class FileDialogHelper
+    {
+        public static System.Collections.Generic.List<Avalonia.Platform.Storage.FilePickerFileType> ParseFilter(string filter)
+        {
+            var types = new System.Collections.Generic.List<Avalonia.Platform.Storage.FilePickerFileType>();
+            if (string.IsNullOrEmpty(filter)) return types;
+
+            string[] parts = filter.Split('|');
+            for (int i = 0; i + 1 < parts.Length; i += 2)
+            {
+                string name = parts[i].Trim();
+                string[] patterns = parts[i + 1].Split(';');
+                types.Add(new Avalonia.Platform.Storage.FilePickerFileType(name)
+                {
+                    Patterns = new System.Collections.Generic.List<string>(patterns),
+                });
+            }
+            return types;
+        }
+
+        /// <summary>
+        /// Runs an async dialog callback that needs the main window, blocking the caller
+        /// without deadlocking regardless of which thread we're on.
+        /// </summary>
+        public static DialogResult RunOnUIThread(System.Func<Avalonia.Controls.Window, System.Threading.Tasks.Task<DialogResult>> action)
+        {
+            var window = (Avalonia.Application.Current?.ApplicationLifetime
+                as Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+            if (window == null) return DialogResult.Cancel;
+
+            if (Avalonia.Threading.Dispatcher.UIThread.CheckAccess())
+            {
+                // Already on UI thread — use a ManualResetEventSlim + Post to avoid deadlock.
+                // We run a blocking wait that pumps dispatcher jobs via MainLoop.
+                DialogResult result = DialogResult.Cancel;
+                var tcs = new System.Threading.Tasks.TaskCompletionSource<DialogResult>();
+
+                async void RunDialog()
+                {
+                    try { tcs.SetResult(await action(window)); }
+                    catch { tcs.SetResult(DialogResult.Cancel); }
+                }
+
+                // Post the async work so it starts on the next dispatcher cycle
+                Avalonia.Threading.Dispatcher.UIThread.Post(RunDialog);
+
+                // Block while pumping — use Avalonia's built-in MainLoop
+                // which processes events and avoids deadlock
+                while (!tcs.Task.IsCompleted)
+                {
+                    Avalonia.Threading.Dispatcher.UIThread.RunJobs(Avalonia.Threading.DispatcherPriority.Background);
+                    if (!tcs.Task.IsCompleted)
+                        System.Threading.Thread.Yield();
+                }
+                return tcs.Task.Result;
+            }
+            else
+            {
+                // Background thread — dispatch and wait
+                return Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(async () => await action(window)).GetAwaiter().GetResult();
+            }
+        }
     }
 
     /// <summary>Minimal stub for System.Windows.Forms.Application.</summary>

@@ -62,13 +62,13 @@ namespace SimPe.Plugin.Tool.Dockable
 		
 			if (!Helper.XmlRegistry.UseCache) return;
 			Wait.Message = "Loading Cache";
-			try 
+			try
 			{
 				cachefile.Load(CacheFileName, true);
-			} 
-			catch (Exception ex) 
+			}
+			catch (Exception ex)
 			{
-				Helper.ExceptionMessage("", ex);
+				System.Diagnostics.Debug.WriteLine("OW cache load failed: " + ex.Message);
 			}			
 
 			cachefile.LoadObjects();
@@ -156,6 +156,7 @@ namespace SimPe.Plugin.Tool.Dockable
 
 		protected override void Produce()
 		{
+			FileTable.FileIndex.Load();
 			LoadCachIndex();
 			changedcache = false;
 
@@ -325,7 +326,15 @@ namespace SimPe.Plugin.Tool.Dockable
 
 		protected override bool Consume(Object o)
 		{
-			return DoConsume(o, LoadedItem, deflang);
+			try
+			{
+				return DoConsume(o, LoadedItem, deflang);
+			}
+			catch (Exception ex)
+			{
+				System.Diagnostics.Debug.WriteLine("OW Consume skipped: " + ex.GetType().Name + ": " + ex.Message);
+				return true; // skip this item, keep consuming
+			}
 		}
 
 		internal static bool DoConsume(Object o, ObjectLoader.LoadItemHandler LoadedItem, SimPe.Data.MetaData.Languages deflang)
@@ -481,8 +490,7 @@ namespace SimPe.Plugin.Tool.Dockable
 		public void LoadData()
 		{
 			Wait.SubStart();
-			FileTable.FileIndex.Load();
-			
+
 			ObjectReader erz = new ObjectReader();
 			ObjectConsumer ver1 = new ObjectConsumer(erz);
 			//ObjectConsumer ver2 = new ObjectConsumer(erz);
@@ -506,7 +514,8 @@ namespace SimPe.Plugin.Tool.Dockable
 
 		private void erz_Finished(object sender, EventArgs e)
 		{
-			Wait.SubStop();
+			Wait.Message = "Please Wait";
+			Wait.MaxProgress = 0;
 			if (Finished!=null) Finished(this, new System.EventArgs());
 		}        
 

@@ -164,25 +164,13 @@ namespace SimPe.PackedFiles.Wrapper
 			id = reader.ReadUInt32();
 			uint ct = reader.ReadUInt32();
 			
-			for (int i=0; i<ct; i++) 
+			for (int i=0; i<ct; i++)
 			{
-				try 
-				{					
-					GroupCacheItem gci = new GroupCacheItem();
-					gci.Unserialize(reader);
-					Add(gci);
-				}
-#if DEBUG
-                catch (Exception ex) 
-				{
-					Helper.ExceptionMessage("", ex);
-                }
-#else
-                catch (Exception) 
-				{
-                }
-#endif
-            }
+				GroupCacheItem gci = new GroupCacheItem();
+				if (!gci.Unserialize(reader))
+					break;
+				Add(gci);
+			}
 
 			over = reader.ReadBytes((int)(reader.BaseStream.Length - reader.BaseStream.Position));
 		}

@@ -180,7 +180,9 @@ namespace SimPe.Packages
 		/// Opens the Package File represented by a Stream
 		/// </summary>
 		/// <param name="br">The Stream</param>
-		protected void OpenByStream(BinaryReader br) 
+		const int MIN_DBPF_HEADER = 96;
+
+		protected void OpenByStream(BinaryReader br)
 		{
 			lcs = false;
 			higestoffset = 0;
@@ -188,14 +190,28 @@ namespace SimPe.Packages
 			reader = br;
 			if (header==null) header = new HeaderData();
 
-			if (br!= null) 
+			if (br!= null)
 			{
-				if (br.BaseStream.Length>0) 
+				long streamLen = br.BaseStream.Length;
+				if (streamLen >= MIN_DBPF_HEADER)
 				{
 					this.LockStream();
 					header.Load(reader);
-					LoadFileIndex();
-					LoadHoleIndex();
+
+					// Validate index region fits within the stream
+					long indexEnd = (long)header.index.offset + (long)header.index.Count * (long)header.Index.ItemSize;
+					if (header.index.Count > 0 && indexEnd <= streamLen)
+						LoadFileIndex();
+					else
+						fileindex = new PackedFileDescriptor[0];
+
+					// Validate hole region fits within the stream
+					long holeEnd = (long)header.hole.offset + (long)header.hole.Count * 8L;
+					if (header.hole.Count > 0 && holeEnd <= streamLen)
+						LoadHoleIndex();
+					else
+						holeindex = new HoleIndexItem[0];
+
 					this.UnLockStream();
 				}
 			}
@@ -843,30 +859,32 @@ namespace SimPe.Packages
             PackedFile pf = new PackedFile(data);
             if (reader == null) ReloadReader();
             if (reader == null || reader.BaseStream == null) return pf;
-            try
-            {
-                reader.BaseStream.Seek(pfd.Offset, System.IO.SeekOrigin.Begin);
-				pf.size = reader.ReadInt32();
-				pf.signature = reader.ReadUInt16();			
-				Byte[] dummy = reader.ReadBytes(3);
-				pf.uncsize = (uint)((dummy[0]<< 0x10) | (dummy[1] << 0x08) | + dummy[2]);
-                if (pf.Signature == MetaData.COMPRESS_SIGNATURE) pf.headersize = 9;											
 
-				if ((filelistfile!=null) && (pfd.Type!=File.FILELIST_TYPE))
-				{
-					int pos = filelistfile.FindFile(pfd);
-					if (pos!=-1) 
-					{
-						SimPe.PackedFiles.Wrapper.ClstItem fi = (ClstItem)filelistfile.Items[pos];							
-						if (header.Version==0x100000001) pf.uncsize = fi.UncompressedSize;
-					}
-				}
-			}
-			catch (Exception) 
-			{
-				pf.size = 0;
-				pf.data = new byte[0];
-			}			
+            // Check bounds before reading to avoid EndOfStreamException
+            long streamLen = reader.BaseStream.Length;
+            if (pfd.Offset + 9 > streamLen)
+            {
+                pf.size = 0;
+                pf.data = new byte[0];
+                return pf;
+            }
+
+            reader.BaseStream.Seek(pfd.Offset, System.IO.SeekOrigin.Begin);
+            pf.size = reader.ReadInt32();
+            pf.signature = reader.ReadUInt16();
+            Byte[] dummy = reader.ReadBytes(3);
+            pf.uncsize = (uint)((dummy[0]<< 0x10) | (dummy[1] << 0x08) | + dummy[2]);
+            if (pf.Signature == MetaData.COMPRESS_SIGNATURE) pf.headersize = 9;
+
+            if ((filelistfile!=null) && (pfd.Type!=File.FILELIST_TYPE))
+            {
+                int pos = filelistfile.FindFile(pfd);
+                if (pos!=-1)
+                {
+                    SimPe.PackedFiles.Wrapper.ClstItem fi = (ClstItem)filelistfile.Items[pos];
+                    if (header.Version==0x100000001) pf.uncsize = fi.UncompressedSize;
+                }
+            }
 			return pf;
 		}
 
@@ -878,33 +896,35 @@ namespace SimPe.Packages
         PackedFile GetStreamPackedFile(IPackedFileDescriptor pfd)
         {
             PackedFile pf = new PackedFile(reader.BaseStream);
-            try
-            {
-                pf.datastart = pfd.Offset;
-                pf.datasize = (uint)pfd.Size;
-                reader.BaseStream.Seek(pfd.Offset, System.IO.SeekOrigin.Begin);
-                pf.size = reader.ReadInt32();
-                pf.signature = reader.ReadUInt16();
-                Byte[] dummy = reader.ReadBytes(3);
-                pf.uncsize = (uint)((dummy[0] << 0x10) | (dummy[1] << 0x08) | +dummy[2]);
-                if (/*(pf.Size == pfd.Size) &&*/ (pf.Signature == MetaData.COMPRESS_SIGNATURE)) pf.headersize = 9;
+            pf.datastart = pfd.Offset;
+            pf.datasize = (uint)pfd.Size;
 
-                if ((filelistfile != null) && (pfd.Type != File.FILELIST_TYPE))
-                {
-                    int pos = filelistfile.FindFile(pfd);
-                    if (pos != -1)
-                    {
-                        SimPe.PackedFiles.Wrapper.ClstItem fi = (ClstItem)filelistfile.Items[pos];
-                        if (header.Version == 0x100000001) pf.uncsize = fi.UncompressedSize;
-                    }
-                }
-            }
-            catch (Exception)
+            // Check bounds before reading to avoid EndOfStreamException
+            long streamLen = reader.BaseStream.Length;
+            if (pfd.Offset + 9 > streamLen)
             {
                 pf.size = 0;
                 pf.data = new byte[0];
+                reader.BaseStream.Seek(pfd.Offset, SeekOrigin.Begin);
+                return pf;
             }
 
+            reader.BaseStream.Seek(pfd.Offset, System.IO.SeekOrigin.Begin);
+            pf.size = reader.ReadInt32();
+            pf.signature = reader.ReadUInt16();
+            Byte[] dummy = reader.ReadBytes(3);
+            pf.uncsize = (uint)((dummy[0] << 0x10) | (dummy[1] << 0x08) | +dummy[2]);
+            if (/*(pf.Size == pfd.Size) &&*/ (pf.Signature == MetaData.COMPRESS_SIGNATURE)) pf.headersize = 9;
+
+            if ((filelistfile != null) && (pfd.Type != File.FILELIST_TYPE))
+            {
+                int pos = filelistfile.FindFile(pfd);
+                if (pos != -1)
+                {
+                    SimPe.PackedFiles.Wrapper.ClstItem fi = (ClstItem)filelistfile.Items[pos];
+                    if (header.Version == 0x100000001) pf.uncsize = fi.UncompressedSize;
+                }
+            }
 
             reader.BaseStream.Seek(pfd.Offset, SeekOrigin.Begin);
             return pf;

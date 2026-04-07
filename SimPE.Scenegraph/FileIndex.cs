@@ -497,15 +497,15 @@ namespace SimPe.Plugin
 		{
 			Wait.SubStart(folders.Count);
 			Wait.Message = SimPe.Localization.GetString("Loading")+" Group Cache";
-			ScenegraphWrapperFactory.LoadGroupCache();	
-						
+			ScenegraphWrapperFactory.LoadGroupCache();
+
 			this.Clear();
 			this.LoadIgnoredFiles();
 
 			int ct = 0;
-			foreach (FileTableItem fti in folders) 
+			foreach (FileTableItem fti in folders)
 			{
-				if (HaveToStop) break;				
+				if (HaveToStop) break;
 				Wait.Progress = ct++;
 				AddIndexFromFolder(fti);
 			}
@@ -611,15 +611,15 @@ namespace SimPe.Plugin
             if (this.ignoredfl.Contains(file.Trim().ToLower())) return;
 
 			Wait.Message = SimPe.Localization.GetString("Loading")+" \""+System.IO.Path.GetFileNameWithoutExtension(file)+"\"";
-			try 
+			try
 			{
 				SimPe.Interfaces.Files.IPackageFile package = SimPe.Packages.File.LoadFromFile(file, false);
 				AddIndexFromPackage(package, false);
-			} 
-			catch (Exception ex) 
+			}
+			catch (Exception ex)
 			{
-				Helper.ExceptionMessage("", ex);
-			}			
+				System.Diagnostics.Debug.WriteLine("FileIndex: skipping " + System.IO.Path.GetFileName(file) + ": " + ex.GetType().Name + ": " + ex.Message);
+			}
 		}
 		/// <summary>
 		/// Add all Files stored in the passed package
