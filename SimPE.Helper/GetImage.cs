@@ -41,8 +41,21 @@ namespace SimPe
         /// <summary>Generic "network/lot" placeholder image (null placeholder).</summary>
         public static System.Drawing.Image? Network => null;
 
-        /// <summary>Generic "demo" placeholder image (null placeholder).</summary>
-        public static System.Drawing.Image? Demo => null;
+        /// <summary>Generic "demo" placeholder image.</summary>
+        public static System.Drawing.Image? Demo
+        {
+            get
+            {
+                var bmp = new System.Drawing.Bitmap(64, 64);
+                using (var g = System.Drawing.Graphics.FromImage(bmp))
+                {
+                    g.Clear(System.Drawing.Color.FromArgb(220, 220, 230));
+                    using var font = new System.Drawing.Font("Arial", 8);
+                    g.DrawString("No Preview", font, System.Drawing.Brushes.Gray, 2, 24);
+                }
+                return bmp;
+            }
+        }
 
         /// <summary>Returns a logo image for an expansion pack (null placeholder).</summary>
         public static System.Drawing.Image? GetExpansionLogo(int expansionId) => null;

@@ -153,31 +153,54 @@ namespace SimPe.Plugin
 
                 System.Diagnostics.Debug.WriteLine($"ParesDDS: w={wd} h={hg} firstsize={firstsize} maps={maps.Length}");
 
-				fs.Seek(0x54, System.IO.SeekOrigin.Begin);
+				// Read pixel format flags and FourCC
+				fs.Seek(0x50, System.IO.SeekOrigin.Begin);
+				uint pfFlags = reader.ReadUInt32();
 				string sig = Helper.ToString(reader.ReadBytes(0x04));
 				TxtrFormats format;
-                byte[] sigbytes = System.Text.Encoding.ASCII.GetBytes(sig);
-                System.Diagnostics.Debug.WriteLine("SIG: " + sig + " bytes: " + string.Join(" ", sigbytes.Select(b => b.ToString("X2"))));
-                
+				bool uncompressed = false;
+
 				if (sig=="DXT1") format = TxtrFormats.DXT1Format;
 				else if (sig=="DXT3") format = TxtrFormats.DXT3Format;
 				else if (sig=="DXT5") format = TxtrFormats.DXT5Format;
-
-                else throw new Exception("Unknown DXT Format "+sig);
+				else if ((pfFlags & 0x40) != 0) // DDPF_RGB — uncompressed
+				{
+					uint rgbBitCount = reader.ReadUInt32(); // at offset 0x58
+					if (rgbBitCount == 32) format = TxtrFormats.Raw32Bit;
+					else if (rgbBitCount == 24) format = TxtrFormats.Raw24Bit;
+					else throw new Exception("Unsupported uncompressed DDS bit depth: " + rgbBitCount);
+					uncompressed = true;
+				}
+                else throw new Exception("Unknown DDS Format (FourCC: \"" + sig + "\")");
 
                 fs.Seek(0x80, System.IO.SeekOrigin.Begin);
-                int blocksize = 0x10;
-                if (format == TxtrFormats.DXT1Format) blocksize = 0x8;
-                if (firstsize <= 0)
-                    firstsize = Math.Max(1, sz.Width / 4) * Math.Max(1, sz.Height / 4) * blocksize;
-                for (int i = 0; i<maps.Length; i++)
-                {
-					byte [] d = reader.ReadBytes(firstsize);
-					maps[i] = new DDSData(d, sz, format, (maps.Length-(i+1)), maps.Length);
 
-					sz = new Size(Math.Max(1, sz.Width / 2), Math.Max(1, sz.Height / 2));					
-					firstsize = Math.Max(1, sz.Width / 4) * Math.Max(1, sz.Height / 4) * blocksize;	
-				}
+                if (uncompressed)
+                {
+                    int bytesPerPixel = (format == TxtrFormats.Raw32Bit) ? 4 : 3;
+                    for (int i = 0; i < maps.Length; i++)
+                    {
+                        int dataSize = sz.Width * sz.Height * bytesPerPixel;
+                        byte[] d = reader.ReadBytes(dataSize);
+                        maps[i] = new DDSData(d, sz, format, (maps.Length-(i+1)), maps.Length);
+                        sz = new Size(Math.Max(1, sz.Width / 2), Math.Max(1, sz.Height / 2));
+                    }
+                }
+                else
+                {
+                    int blocksize = 0x10;
+                    if (format == TxtrFormats.DXT1Format) blocksize = 0x8;
+                    if (firstsize <= 0)
+                        firstsize = Math.Max(1, sz.Width / 4) * Math.Max(1, sz.Height / 4) * blocksize;
+                    for (int i = 0; i<maps.Length; i++)
+                    {
+                        byte [] d = reader.ReadBytes(firstsize);
+                        maps[i] = new DDSData(d, sz, format, (maps.Length-(i+1)), maps.Length);
+
+                        sz = new Size(Math.Max(1, sz.Width / 2), Math.Max(1, sz.Height / 2));
+                        firstsize = Math.Max(1, sz.Width / 4) * Math.Max(1, sz.Height / 4) * blocksize;
+                    }
+                }
 			} 
 			finally 
 			{

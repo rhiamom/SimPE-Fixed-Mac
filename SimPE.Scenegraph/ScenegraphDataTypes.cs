@@ -54,13 +54,14 @@ namespace SimPe.Scenegraph.Compat
         public int Index { get; set; } = -1;
         public ListViewSubItemCollection SubItems { get; } = new ListViewSubItemCollection();
 
-        public ListViewItem() { Text = ""; }
-        public ListViewItem(string text) { Text = text; }
-        public ListViewItem(string text, int imageIndex) { Text = text; ImageIndex = imageIndex; }
+        public ListViewItem() { Text = ""; SubItems.Add(""); }
+        public ListViewItem(string text) { Text = text; SubItems.Add(text); }
+        public ListViewItem(string text, int imageIndex) { Text = text; ImageIndex = imageIndex; SubItems.Add(text); }
         public ListViewItem(string[] items)
         {
             Text = items.Length > 0 ? items[0] : "";
-            for (int i = 1; i < items.Length; i++) SubItems.Add(items[i]);
+            // WinForms SubItems[0] = item Text, SubItems[1..N] = extra columns
+            for (int i = 0; i < items.Length; i++) SubItems.Add(items[i]);
         }
 
         public bool Checked { get; set; }

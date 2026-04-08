@@ -112,6 +112,7 @@ namespace SimPe.Plugin.Tool.Dockable
 		{
 			this.op.SetFromPackage(pkg);
             this.np.SetFromPackage(pkg);
+			System.Diagnostics.Debug.WriteLine($"[Details] SetPackage: pkg={(pkg != null ? pkg.FileName ?? "memory" : "null")}, op.Loaded={op.Loaded}, np.Loaded={np.Loaded}");
 			op.IsVisible = op.Loaded;
 			np.IsVisible = np.Loaded;
 		}

@@ -439,9 +439,16 @@ namespace SimPe.Plugin
 		/// </summary>
 		/// <param name="uniquename">true, if you want to create a unique name</param>
 		/// <returns></returns>
-		public Hashtable GetNameMap(bool uniquename) 
+		public Hashtable GetNameMap(bool uniquename)
 		{
-			return RenameForm.Execute(package, uniquename, ref ver);
+			return GetNameMapAsync(uniquename).GetAwaiter().GetResult();
+		}
+
+		public async System.Threading.Tasks.Task<Hashtable> GetNameMapAsync(bool uniquename)
+		{
+			var result = await RenameForm.ExecuteAsync(package, uniquename, ver);
+			ver = result.Ver;
+			return result.Map;
 		}
 
 		string BuildRefString(Interfaces.Files.IPackedFileDescriptor pfd)

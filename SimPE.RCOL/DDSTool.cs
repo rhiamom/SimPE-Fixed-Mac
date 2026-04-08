@@ -306,34 +306,17 @@ namespace SimPe.Plugin
 
         private static byte[] LoadFileAsRgba(string filename, out int w, out int h)
         {
-            using var pfimImage = Pfimage.FromFile(filename);
-            w = pfimImage.Width;
-            h = pfimImage.Height;
-            byte[] src = pfimImage.Data;
-            int stride = pfimImage.Stride;
+            using var bm = SKBitmap.Decode(filename);
+            if (bm == null) throw new Exception("Failed to decode image: " + filename);
+
+            // Ensure RGBA8888 pixel format
+            using var rgba8888 = (bm.ColorType == SKColorType.Rgba8888)
+                ? bm : bm.Copy(SKColorType.Rgba8888);
+
+            w = rgba8888.Width;
+            h = rgba8888.Height;
             byte[] rgba = new byte[w * h * 4];
-            for (int y = 0; y < h; y++)
-            {
-                for (int x = 0; x < w; x++)
-                {
-                    int si = y * stride + x * 4;
-                    int di = (y * w + x) * 4;
-                    if (pfimImage.Format == Pfim.ImageFormat.Rgba32)
-                    {
-                        rgba[di]     = src[si];     // R
-                        rgba[di + 1] = src[si + 1]; // G
-                        rgba[di + 2] = src[si + 2]; // B
-                        rgba[di + 3] = src[si + 3]; // A
-                    }
-                    else // Bgra32
-                    {
-                        rgba[di]     = src[si + 2]; // R
-                        rgba[di + 1] = src[si + 1]; // G
-                        rgba[di + 2] = src[si];     // B
-                        rgba[di + 3] = src[si + 3]; // A
-                    }
-                }
-            }
+            System.Runtime.InteropServices.Marshal.Copy(rgba8888.GetPixels(), rgba, 0, rgba.Length);
             return rgba;
         }
 
@@ -379,6 +362,7 @@ namespace SimPe.Plugin
                 else
                     bcFormat = BCnEncoder.Shared.CompressionFormat.Bc3;
 
+                System.Diagnostics.Debug.WriteLine($"[BuildDDS] Encoding {w}x{h} as {bcFormat}");
                 var encoder = new BCnEncoder.Encoder.BcEncoder(bcFormat);
                 encoder.OutputOptions.GenerateMipMaps = false;
                 encoder.OutputOptions.FileFormat = BCnEncoder.Shared.OutputFileFormat.Dds;
@@ -389,11 +373,15 @@ namespace SimPe.Plugin
                 {
                     ddsData.Write(fs);
                 }
+                System.Diagnostics.Debug.WriteLine($"[BuildDDS] Wrote {new System.IO.FileInfo(ddsfile).Length} bytes to temp DDS");
 
-                return ImageLoader.ParesDDS(ddsfile);
+                var result = ImageLoader.ParesDDS(ddsfile);
+                System.Diagnostics.Debug.WriteLine($"[BuildDDS] ParesDDS returned {result.Length} items");
+                return result;
             }
             catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"[BuildDDS] EXCEPTION: {ex.GetType().Name}: {ex.Message}");
                 Helper.ExceptionMessage("", ex);
                 return new DDSData[0];
             }

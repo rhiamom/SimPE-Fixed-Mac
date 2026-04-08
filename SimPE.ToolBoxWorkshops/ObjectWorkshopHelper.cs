@@ -568,7 +568,7 @@ namespace SimPe.Plugin.Tool.Dockable
 
                 if (cs.FixResources)
                 {
-                    map = fo.GetNameMap(true);
+                    map = await fo.GetNameMapAsync(true);
                     if (map == null) return new StartResult { Package = package, Pfd = pfd };
 
                     SaveFileDialog sfd = new SaveFileDialog();

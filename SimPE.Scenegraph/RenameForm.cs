@@ -65,19 +65,54 @@ namespace SimPe.Plugin
 			// base.Dispose(disposing); // Avalonia Window does not have Dispose(bool)
 		}
 
-		#region Avalonia AXAML layout placeholder
+		#region Avalonia layout
 		private void InitializeComponent()
 		{
-			// TODO: Avalonia AXAML layout
+			this.Title = "Rename";
+			this.Width = 500;
+			this.Height = 400;
+			this.WindowStartupLocation = Avalonia.Controls.WindowStartupLocation.CenterOwner;
+
 			lv = new ListView();
 			columnHeader1 = new ColumnHeader();
 			columnHeader2 = new ColumnHeader();
 			columnHeader3 = new ColumnHeader();
-			label1 = new Avalonia.Controls.TextBlock();
-			tbname = new Avalonia.Controls.TextBox();
-			llname = new Avalonia.Controls.TextBlock();
-			button1 = new Avalonia.Controls.Button();
-			cbv2 = new Avalonia.Controls.CheckBox();
+
+			label1 = new Avalonia.Controls.TextBlock { Text = "Enter a new unique name for the cloned object:", TextWrapping = Avalonia.Media.TextWrapping.Wrap, Margin = new Avalonia.Thickness(0, 0, 0, 4) };
+			tbname = new Avalonia.Controls.TextBox { Margin = new Avalonia.Thickness(0, 0, 0, 4) };
+			llname = new Avalonia.Controls.TextBlock { FontSize = 10, Foreground = Avalonia.Media.Brushes.Gray, Margin = new Avalonia.Thickness(0, 0, 0, 8) };
+			tbname.TextChanged += (s, e) => { llname.Text = tbname.Text; UpdateNames(s, e); };
+
+			button1 = new Avalonia.Controls.Button { Content = "OK", HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right, MinWidth = 80, Background = Avalonia.Media.Brushes.White, Margin = new Avalonia.Thickness(0, 4, 0, 0) };
+			button1.Click += button1_Click;
+
+			cbv2 = new Avalonia.Controls.CheckBox { Content = "University Ready v2", Margin = new Avalonia.Thickness(0, 4, 0, 0) };
+
+			// Build a simple list showing existing resource names
+			var lvList = new Avalonia.Controls.ListBox
+			{
+				MinHeight = 120,
+				FontSize = 11,
+				Margin = new Avalonia.Thickness(0, 4, 0, 4),
+			};
+			lv.Tag = lvList; // store reference for populating later
+
+			var root = new Avalonia.Controls.DockPanel { Margin = new Avalonia.Thickness(8) };
+			var bottomBar = new Avalonia.Controls.StackPanel { Margin = new Avalonia.Thickness(0, 4, 0, 0) };
+			bottomBar.Children.Add(cbv2);
+			bottomBar.Children.Add(button1);
+			Avalonia.Controls.DockPanel.SetDock(bottomBar, Avalonia.Controls.Dock.Bottom);
+			Avalonia.Controls.DockPanel.SetDock(label1, Avalonia.Controls.Dock.Top);
+			Avalonia.Controls.DockPanel.SetDock(tbname, Avalonia.Controls.Dock.Top);
+			Avalonia.Controls.DockPanel.SetDock(llname, Avalonia.Controls.Dock.Top);
+
+			root.Children.Add(bottomBar);
+			root.Children.Add(label1);
+			root.Children.Add(tbname);
+			root.Children.Add(llname);
+			root.Children.Add(lvList);
+
+			this.Content = root;
 		}
 		#endregion
 
@@ -283,6 +318,19 @@ namespace SimPe.Plugin
 		static string current_unique;
 		public static Hashtable Execute(SimPe.Interfaces.Files.IPackageFile package, bool uniquename, ref FixVersion ver)
 		{
+			var result = ExecuteAsync(package, uniquename, ver).GetAwaiter().GetResult();
+			ver = result.Ver;
+			return result.Map;
+		}
+
+		public class ExecuteResult
+		{
+			public Hashtable Map;
+			public FixVersion Ver;
+		}
+
+		public static async System.Threading.Tasks.Task<ExecuteResult> ExecuteAsync(SimPe.Interfaces.Files.IPackageFile package, bool uniquename, FixVersion ver)
+		{
 			RenameForm rf = new RenameForm();
 			rf.ok = false;
 			rf.package = package;
@@ -300,17 +348,27 @@ namespace SimPe.Plugin
 			else rf.tbname.Text = old;
 
 			GetNames(uniquename, package, rf.lv, rf.tbname.Text);
-			_ = rf.ShowDialog(null);
 
+			// Only show the dialog in advanced/hidden mode; otherwise auto-accept
+			if (Helper.XmlRegistry.HiddenMode)
+			{
+				var owner = (Avalonia.Application.Current?.ApplicationLifetime
+					as Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+				await rf.ShowDialog(owner);
+			}
+			else
+			{
+				rf.ok = true;
+			}
 
 			if (rf.ok)
 			{
 				if (rf.cbv2.IsChecked == true) ver = FixVersion.UniversityReady2;
 				else ver = FixVersion.UniversityReady;
-				return rf.GetReplacementMap();
+				return new ExecuteResult { Map = rf.GetReplacementMap(), Ver = ver };
 			}
 			else
-				return null;
+				return new ExecuteResult { Map = null, Ver = ver };
 		}
 
 		private void UpdateNames(object sender, EventArgs e)

@@ -91,6 +91,7 @@ namespace SimPe.Plugin
 			FontSize = 11,
 			Padding = new Thickness(8, 2),
 			Margin = new Thickness(2, 0),
+			Background = Avalonia.Media.Brushes.White,
 		};
 
 		private void InitializeComponent()
@@ -134,15 +135,12 @@ namespace SimPe.Plugin
 			menuItem2 = new MenuItem { Header = "Export Texture" };
 			menuItem3 = new MenuItem { Header = "Import Alpha..." };
 			menuItem4 = new MenuItem { Header = "Export Alpha..." };
-			menuItem5 = new MenuItem { Header = "Import DDS..." };
+			menuItem5 = new MenuItem { Header = "Import DDS File..." };
 			menuItem6 = new MenuItem { Header = "Update All Sizes" };
 			menuItem7 = new MenuItem { Header = "-" };
 			milifo    = new MenuItem { Header = "Import from LIFO" };
-			mibuild   = new MenuItem { Header = "Build DXT" };
+			mibuild   = new MenuItem { Header = "Build DXT from PNG" };
 			contextMenu1 = new ContextMenu();
-			contextMenu1.Items.Add(menuItem1);
-			contextMenu1.Items.Add(menuItem2);
-			contextMenu1.Items.Add(new MenuItem { Header = "-" });
 			contextMenu1.Items.Add(menuItem3);
 			contextMenu1.Items.Add(menuItem4);
 			contextMenu1.Items.Add(new MenuItem { Header = "-" });
@@ -373,6 +371,7 @@ namespace SimPe.Plugin
 			{
 				lbimg.Tag = true;
 				MipMap mm = (MipMap)lbimg.Items[lbimg.SelectedIndex];
+				System.Diagnostics.Debug.WriteLine($"[TxtrForm] PictureSelect: idx={lbimg.SelectedIndex}, mm.Texture={(mm.Texture != null ? mm.Texture.Width + "x" + mm.Texture.Height : "null")}, mm.Data={(mm.Data != null ? mm.Data.Length + " bytes" : "null")}");
 				pb.Image = mm.Texture;
 				if (mm.Texture==null) tblifo.Text = mm.LifoFile;
 				else tblifo.Text = "";
@@ -380,7 +379,10 @@ namespace SimPe.Plugin
 				btex.IsEnabled = (pb.Image!=null);
 				lldel.IsEnabled = true;
 			}
-			catch (Exception) {}
+			catch (Exception ex)
+			{
+				System.Diagnostics.Debug.WriteLine($"[TxtrForm] PictureSelect EXCEPTION: {ex.GetType().Name}: {ex.Message}");
+			}
 			finally
 			{
 				lbimg.Tag = null;
@@ -1159,6 +1161,7 @@ namespace SimPe.Plugin
 			ImageData id = SelectedImageData();
 			DDSData[] dds = await DDSTool.Execute(
 				Convert.ToInt32(this.tblevel.Text), id.TextureSize, id.Format);
+			System.Diagnostics.Debug.WriteLine($"[TxtrForm] BuildDXT returned: dds={(dds != null ? dds.Length + " items" : "null")}");
 			if (dds != null && dds.Length > 0)
 				LoadDDS(dds);
 			id.Refresh();
