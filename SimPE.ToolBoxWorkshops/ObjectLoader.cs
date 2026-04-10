@@ -61,7 +61,7 @@ namespace SimPe.Plugin.Tool.Dockable
 			cachefile = new SimPe.Cache.ObjectLoaderCacheFile();
 		
 			if (!Helper.XmlRegistry.UseCache) return;
-			Wait.Message = "Loading Cache";
+			Wait.Message = "Loading Cache - Please Wait";
 			try
 			{
 				cachefile.Load(CacheFileName, true);
@@ -514,7 +514,7 @@ namespace SimPe.Plugin.Tool.Dockable
 
 		private void erz_Finished(object sender, EventArgs e)
 		{
-			Wait.Message = "Please Wait";
+			Wait.Message = "";
 			Wait.MaxProgress = 0;
 			if (Finished!=null) Finished(this, new System.EventArgs());
 		}        

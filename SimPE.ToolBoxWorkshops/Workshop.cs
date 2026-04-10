@@ -293,7 +293,7 @@ namespace SimPe.Plugin
             cachefile = new SimPe.Cache.ObjectLoaderCacheFile();
 		
 			if (!Helper.XmlRegistry.UseCache) return;
-			WaitingScreen.UpdateMessage("Loading Cache");
+			WaitingScreen.UpdateMessage("Loading Cache - Please Wait");
             try
             {
                 cachefile.Load(CacheFileName);

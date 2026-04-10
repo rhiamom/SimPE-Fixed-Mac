@@ -82,7 +82,62 @@ namespace pjse
         private ButtonCompat btnExtract = new ButtonCompat();
         private ButtonCompat btnRefreshFT = new ButtonCompat();
         private LabelCompat lbLabel = new LabelCompat();
-        private void InitializeComponent() { }
+        private void InitializeComponent()
+        {
+            // Banner label
+            lbLabel.Content = "PJSE: file type Editor";
+            lbLabel.FontWeight = Avalonia.Media.FontWeight.Bold;
+            lbLabel.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
+            lbLabel.Margin = new Avalonia.Thickness(6, 0);
+
+            // Buttons
+            btnTree.Content = "Comments"; btnTree.IsVisible = false;
+            btnTree.Click += (s, e) => this.btnTree_Click(s, e);
+            btnSibling.Content = "{Type}"; btnSibling.IsVisible = false;
+            btnSibling.Click += (s, e) => this.btnSibling_Click(s, e);
+            btnView.Content = "View"; btnView.IsVisible = false;
+            btnView.Click += (s, e) => this.btnView_Click(s, e);
+            btnFloat.Content = "Float"; btnFloat.IsVisible = false;
+            btnFloat.Click += (s, e) => this.btnFloat_Click(s, e);
+            btnExtract.Content = "Extract"; btnExtract.IsVisible = false;
+            btnExtract.Click += (s, e) => this.btnExtract_Click(s, e);
+            btnRefreshFT.Content = "RFT"; btnRefreshFT.IsVisible = true;
+            btnRefreshFT.Click += (s, e) => this.btnRefreshFT_Click(s, e);
+            btnHelp.Content = "Help";
+            btnHelp.Click += (s, e) => this.btnHelp_Click(s, e);
+
+            // Button panel (horizontal)
+            var headerButtonStyle = new Avalonia.Thickness(2, 2);
+            btnTree.Margin = headerButtonStyle; btnTree.Background = Avalonia.Media.Brushes.White;
+            btnSibling.Margin = headerButtonStyle; btnSibling.Background = Avalonia.Media.Brushes.White;
+            btnView.Margin = headerButtonStyle; btnView.Background = Avalonia.Media.Brushes.White;
+            btnFloat.Margin = headerButtonStyle; btnFloat.Background = Avalonia.Media.Brushes.White;
+            btnExtract.Margin = headerButtonStyle; btnExtract.Background = Avalonia.Media.Brushes.White;
+            btnRefreshFT.Margin = headerButtonStyle; btnRefreshFT.Background = Avalonia.Media.Brushes.White;
+            btnHelp.Margin = headerButtonStyle; btnHelp.Background = Avalonia.Media.Brushes.White;
+
+            flpButtons.Orientation = Avalonia.Layout.Orientation.Horizontal;
+            flpButtons.Spacing = 4;
+            flpButtons.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
+            flpButtons.Children.Add(btnTree);
+            flpButtons.Children.Add(btnSibling);
+            flpButtons.Children.Add(btnView);
+            flpButtons.Children.Add(btnFloat);
+            flpButtons.Children.Add(btnExtract);
+            flpButtons.Children.Add(btnRefreshFT);
+            flpButtons.Children.Add(btnHelp);
+
+            // Layout: label on left, buttons on right, gray background
+            var dock = new Avalonia.Controls.DockPanel
+            {
+                Background = new Avalonia.Media.SolidColorBrush(Avalonia.Media.Color.FromRgb(200, 200, 200)),
+                MinHeight = 27
+            };
+            Avalonia.Controls.DockPanel.SetDock(flpButtons, Avalonia.Controls.Dock.Right);
+            dock.Children.Add(flpButtons);
+            dock.Children.Add(lbLabel);
+            this.Content = dock;
+        }
     }
 }
 

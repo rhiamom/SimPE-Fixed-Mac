@@ -66,7 +66,7 @@ namespace SimPe.Scenegraph.Compat
 
         public bool Checked { get; set; }
         public System.Drawing.Color ForeColor { get; set; } = System.Drawing.Color.Empty;
-        public void EnsureVisible() { }
+        public void EnsureVisible() { ListView?.EnsureItemVisible(Index); }
         public ListViewItem Clone() { return (ListViewItem)MemberwiseClone(); }
         /// <summary>Back-reference to the owning ListView (set by ListViewItemCollection.Add).</summary>
         public ListView ListView { get; set; }
@@ -98,7 +98,7 @@ namespace SimPe.Scenegraph.Compat
         public System.Collections.IEnumerator GetEnumerator() => _groups.GetEnumerator();
     }
 
-    public class ListView : Avalonia.Controls.Control
+    public class ListView : Avalonia.Controls.UserControl
     {
         public class ListViewItemCollection : System.Collections.IEnumerable
         {
@@ -107,11 +107,12 @@ namespace SimPe.Scenegraph.Compat
             private readonly List<ListViewItem> _items = new List<ListViewItem>();
             public ListViewItem this[int index] { get => _items[index]; set => _items[index] = value; }
             public int Count => _items.Count;
-            public void Add(ListViewItem item) { item.ListView = _owner; _items.Add(item); }
-            public void AddRange(ListViewItem[] items) { foreach (var item in items) Add(item); }
-            public void Clear() => _items.Clear();
-            public void Remove(ListViewItem item) => _items.Remove(item);
-            public void RemoveAt(int index) => _items.RemoveAt(index);
+            public void Add(ListViewItem item) { item.ListView = _owner; item.Index = _items.Count; _items.Add(item); _owner.ScheduleRebuild(); }
+            public void AddRange(ListViewItem[] items) { foreach (var item in items) { item.ListView = _owner; item.Index = _items.Count; _items.Add(item); } _owner.ScheduleRebuild(); }
+            public void Clear() { _items.Clear(); _owner.ScheduleRebuild(); }
+            public void Remove(ListViewItem item) { _items.Remove(item); ReIndex(); _owner.ScheduleRebuild(); }
+            public void RemoveAt(int index) { _items.RemoveAt(index); ReIndex(); _owner.ScheduleRebuild(); }
+            private void ReIndex() { for (int i = 0; i < _items.Count; i++) _items[i].Index = i; }
             public bool Contains(ListViewItem item) => _items.Contains(item);
             public IEnumerator GetEnumerator() => _items.GetEnumerator();
         }
@@ -198,14 +199,13 @@ namespace SimPe.Scenegraph.Compat
         public bool CheckBoxes { get; set; }
         public System.Drawing.Color BackColor { get; set; }
 
-        // Layout/position properties (no-ops in Avalonia port)
+        // Layout/position properties (compat shims)
         public int Left { get; set; }
         public int Top { get; set; }
         public new int Width { get; set; }
         public new int Height { get; set; }
         public new Avalonia.Controls.Control Parent { get; set; }
-        public bool Visible { get => IsVisible; set => IsVisible = value; }
-        public new bool IsVisible { get; set; } = true;
+        public bool Visible { get => base.IsVisible; set => base.IsVisible = value; }
         public object Anchor { get; set; }
         public ListViewItem FocusedItem => Items.Count > 0 ? Items[0] : null;
 
@@ -223,10 +223,11 @@ namespace SimPe.Scenegraph.Compat
         public SimPe.SortOrder Sorting { get; set; } = SimPe.SortOrder.None;
         public void SelectAll() { foreach (object o in Items) ((ListViewItem)o).Selected = true; }
 
-        // No-ops: update batching has no effect in this compat stub
-        public void BeginUpdate() { }
-        public void EndUpdate() { }
-        public void Refresh() { }
+        private bool _batchUpdate;
+        private bool _needsRebuild;
+        public void BeginUpdate() { _batchUpdate = true; }
+        public void EndUpdate() { _batchUpdate = false; if (_needsRebuild) { _needsRebuild = false; RebuildVisual(); } }
+        public void Refresh() { RebuildVisual(); }
         public void Sort() { }
 
         public bool DoubleBuffering { get; set; }
@@ -235,12 +236,209 @@ namespace SimPe.Scenegraph.Compat
         public int[] TileColumns { get; set; } = new int[0];
         public ListViewGroupCollection Groups { get; } = new ListViewGroupCollection();
 
+        // ── Visual rendering ─────────────────────────────────────────────────
+        private readonly Avalonia.Controls.StackPanel _rowsPanel;
+        private readonly Avalonia.Controls.ScrollViewer _scrollViewer;
+        private readonly Avalonia.Controls.Grid _headerGrid;
+        private readonly Avalonia.Controls.Border _rootBorder;
+
+        private static readonly Avalonia.Media.IBrush SelBrush =
+            new Avalonia.Media.SolidColorBrush(Avalonia.Media.Color.FromRgb(51, 153, 255));
+        private static readonly Avalonia.Media.IBrush SelFore =
+            Avalonia.Media.Brushes.White;
+        private static readonly Avalonia.Media.IBrush NormFore =
+            Avalonia.Media.Brushes.Black;
+        private static readonly Avalonia.Media.IBrush GridBrush =
+            new Avalonia.Media.SolidColorBrush(Avalonia.Media.Color.FromRgb(229, 229, 229));
+        private static readonly Avalonia.Media.IBrush HeaderBg =
+            new Avalonia.Media.SolidColorBrush(Avalonia.Media.Color.FromRgb(240, 240, 240));
+
         public ListView()
         {
             Items = new ListViewItemCollection(this);
             SelectedItems = new SelectedListViewItemCollection(Items);
             SelectedIndices = new SelectedIndexCollection(Items);
             CheckedItems = new CheckedListViewItemCollection(Items);
+
+            _rowsPanel = new Avalonia.Controls.StackPanel();
+            _scrollViewer = new Avalonia.Controls.ScrollViewer
+            {
+                Content = _rowsPanel,
+                HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Auto,
+                VerticalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Auto
+            };
+            _headerGrid = new Avalonia.Controls.Grid
+            {
+                Background = HeaderBg,
+                MinHeight = 22
+            };
+            var outerGrid = new Avalonia.Controls.Grid();
+            outerGrid.RowDefinitions.Add(new Avalonia.Controls.RowDefinition(Avalonia.Controls.GridLength.Auto));
+            outerGrid.RowDefinitions.Add(new Avalonia.Controls.RowDefinition(new Avalonia.Controls.GridLength(1, Avalonia.Controls.GridUnitType.Star)));
+            Avalonia.Controls.Grid.SetRow(_headerGrid, 0);
+            Avalonia.Controls.Grid.SetRow(_scrollViewer, 1);
+            outerGrid.Children.Add(_headerGrid);
+            outerGrid.Children.Add(_scrollViewer);
+
+            _rootBorder = new Avalonia.Controls.Border
+            {
+                BorderBrush = new Avalonia.Media.SolidColorBrush(Avalonia.Media.Color.FromRgb(180, 180, 180)),
+                BorderThickness = new Avalonia.Thickness(1),
+                Child = outerGrid
+            };
+            Content = _rootBorder;
+        }
+
+        internal void ScheduleRebuild()
+        {
+            if (_batchUpdate) { _needsRebuild = true; return; }
+            Avalonia.Threading.Dispatcher.UIThread.Post(RebuildVisual, Avalonia.Threading.DispatcherPriority.Background);
+        }
+
+        private void RebuildVisual()
+        {
+            // Build header columns
+            _headerGrid.ColumnDefinitions.Clear();
+            _headerGrid.Children.Clear();
+            for (int c = 0; c < Columns.Count; c++)
+            {
+                var col = Columns[c];
+                _headerGrid.ColumnDefinitions.Add(
+                    c < Columns.Count - 1
+                        ? new Avalonia.Controls.ColumnDefinition(new Avalonia.Controls.GridLength(col.Width, Avalonia.Controls.GridUnitType.Pixel))
+                        : new Avalonia.Controls.ColumnDefinition(new Avalonia.Controls.GridLength(1, Avalonia.Controls.GridUnitType.Star)));
+                var tb = new Avalonia.Controls.TextBlock
+                {
+                    Text = col.Text ?? "",
+                    FontWeight = Avalonia.Media.FontWeight.Bold,
+                    VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                    Margin = new Avalonia.Thickness(4, 2),
+                    FontSize = 12
+                };
+                Avalonia.Controls.Grid.SetColumn(tb, c);
+                _headerGrid.Children.Add(tb);
+
+                if (c < Columns.Count - 1)
+                {
+                    var sep = new Avalonia.Controls.Border
+                    {
+                        Width = 1,
+                        Background = GridBrush,
+                        HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right
+                    };
+                    Avalonia.Controls.Grid.SetColumn(sep, c);
+                    _headerGrid.Children.Add(sep);
+                }
+            }
+
+            // Build rows
+            _rowsPanel.Children.Clear();
+            for (int r = 0; r < Items.Count; r++)
+            {
+                var item = Items[r];
+                var rowGrid = new Avalonia.Controls.Grid { MinHeight = 20 };
+                for (int c = 0; c < Columns.Count; c++)
+                {
+                    rowGrid.ColumnDefinitions.Add(
+                        c < Columns.Count - 1
+                            ? new Avalonia.Controls.ColumnDefinition(new Avalonia.Controls.GridLength(Columns[c].Width, Avalonia.Controls.GridUnitType.Pixel))
+                            : new Avalonia.Controls.ColumnDefinition(new Avalonia.Controls.GridLength(1, Avalonia.Controls.GridUnitType.Star)));
+                    string text = c < item.SubItems.Count ? item.SubItems[c].Text : (c == 0 ? item.Text : "");
+                    var tb = new Avalonia.Controls.TextBlock
+                    {
+                        Text = text ?? "",
+                        VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                        Margin = new Avalonia.Thickness(4, 1),
+                        FontSize = 12
+                    };
+                    Avalonia.Controls.Grid.SetColumn(tb, c);
+                    rowGrid.Children.Add(tb);
+
+                    if (GridLines && c < Columns.Count - 1)
+                    {
+                        var sep = new Avalonia.Controls.Border
+                        {
+                            Width = 1,
+                            Background = GridBrush,
+                            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right
+                        };
+                        Avalonia.Controls.Grid.SetColumn(sep, c);
+                        rowGrid.Children.Add(sep);
+                    }
+                }
+
+                if (GridLines)
+                {
+                    rowGrid.Children.Add(new Avalonia.Controls.Border
+                    {
+                        Height = 1,
+                        Background = GridBrush,
+                        VerticalAlignment = Avalonia.Layout.VerticalAlignment.Bottom,
+                        [Avalonia.Controls.Grid.ColumnSpanProperty] = Columns.Count
+                    });
+                }
+
+                if (item.Selected)
+                    rowGrid.Background = SelBrush;
+
+                int rowIndex = r;
+                rowGrid.PointerPressed += (s, e) =>
+                {
+                    HandleRowClick(rowIndex);
+                    e.Handled = true;
+                };
+                rowGrid.PointerReleased += (s, e) =>
+                {
+                    if (e.InitialPressMouseButton == Avalonia.Input.MouseButton.Left)
+                    {
+                        ItemActivate?.Invoke(this, EventArgs.Empty);
+                    }
+                };
+
+                _rowsPanel.Children.Add(rowGrid);
+            }
+        }
+
+        private void HandleRowClick(int rowIndex)
+        {
+            if (!MultiSelect)
+            {
+                for (int i = 0; i < Items.Count; i++)
+                    Items[i].Selected = (i == rowIndex);
+            }
+            else
+            {
+                Items[rowIndex].Selected = !Items[rowIndex].Selected;
+            }
+            UpdateRowHighlights();
+            SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
+            SelectionChanged?.Invoke(this, EventArgs.Empty);
+            Click?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void UpdateRowHighlights()
+        {
+            for (int i = 0; i < _rowsPanel.Children.Count && i < Items.Count; i++)
+            {
+                if (_rowsPanel.Children[i] is Avalonia.Controls.Grid rowGrid)
+                {
+                    rowGrid.Background = Items[i].Selected ? SelBrush : Avalonia.Media.Brushes.Transparent;
+                    foreach (var child in rowGrid.Children)
+                    {
+                        if (child is Avalonia.Controls.TextBlock tb)
+                            tb.Foreground = Items[i].Selected ? SelFore : NormFore;
+                    }
+                }
+            }
+        }
+
+        internal void EnsureItemVisible(int index)
+        {
+            if (index >= 0 && index < _rowsPanel.Children.Count)
+            {
+                var element = _rowsPanel.Children[index] as Avalonia.Controls.Control;
+                element?.BringIntoView();
+            }
         }
     }
 
@@ -282,6 +480,7 @@ namespace SimPe.Scenegraph.Compat
     /// </summary>
     public class CheckBoxCompat : Avalonia.Controls.CheckBox
     {
+        protected override Type StyleKeyOverride => typeof(Avalonia.Controls.CheckBox);
         public new bool Checked
         {
             get => IsChecked == true;
@@ -685,6 +884,7 @@ namespace SimPe.Scenegraph.Compat
     /// <summary>Minimal LinkLabel — wraps Avalonia Button, fires LinkClicked on Click.</summary>
     public class LinkLabel : Avalonia.Controls.Button
     {
+        protected override Type StyleKeyOverride => typeof(Avalonia.Controls.Button);
         public bool Visible { get => IsVisible; set => IsVisible = value; }
         public string Text { get => Content?.ToString() ?? ""; set => Content = value; }
         public LinkArea LinkArea { get; set; } = new LinkArea(0, 0);
@@ -1024,6 +1224,7 @@ namespace SimPe.Scenegraph.Compat
     /// <summary>WinForms-compat TextBox — extends Avalonia TextBox.</summary>
     public class TextBoxCompat : Avalonia.Controls.TextBox
     {
+        protected override Type StyleKeyOverride => typeof(Avalonia.Controls.TextBox);
         public bool ReadOnly { get => IsReadOnly; set => IsReadOnly = value; }
         public bool Enabled { get => IsEnabled; set => IsEnabled = value; }
         public bool Visible { get => IsVisible; set => IsVisible = value; }
@@ -1057,6 +1258,7 @@ namespace SimPe.Scenegraph.Compat
     /// <summary>WinForms-compat Label — extends Avalonia Label.</summary>
     public class LabelCompat : Avalonia.Controls.Label
     {
+        protected override Type StyleKeyOverride => typeof(Avalonia.Controls.Label);
         public string Text { get => Content?.ToString() ?? ""; set => Content = value; }
         public bool Enabled { get => IsEnabled; set => IsEnabled = value; }
         public bool Visible { get => IsVisible; set => IsVisible = value; }
@@ -1082,6 +1284,7 @@ namespace SimPe.Scenegraph.Compat
     /// <summary>WinForms-compat Button — extends Avalonia Button.</summary>
     public class ButtonCompat : Avalonia.Controls.Button
     {
+        protected override Type StyleKeyOverride => typeof(Avalonia.Controls.Button);
         public bool Enabled { get => IsEnabled; set => IsEnabled = value; }
         public bool Visible { get => IsVisible; set => IsVisible = value; }
         public string Text { get => Content?.ToString() ?? ""; set => Content = value; }
@@ -1105,6 +1308,7 @@ namespace SimPe.Scenegraph.Compat
     /// <summary>WinForms-compat CheckBox — extends Avalonia CheckBox with WinForms API.</summary>
     public class CheckBoxCompat2 : Avalonia.Controls.CheckBox
     {
+        protected override Type StyleKeyOverride => typeof(Avalonia.Controls.CheckBox);
         public new bool Checked { get => IsChecked == true; set => IsChecked = value; }
         public bool Enabled { get => IsEnabled; set => IsEnabled = value; }
         public bool Visible { get => IsVisible; set => IsVisible = value; }
@@ -1144,6 +1348,7 @@ namespace SimPe.Scenegraph.Compat
     /// <summary>WinForms-compat ComboBox — extends Avalonia ComboBox with WinForms API.</summary>
     public class ComboBoxCompat : Avalonia.Controls.ComboBox
     {
+        protected override Type StyleKeyOverride => typeof(Avalonia.Controls.ComboBox);
         public bool Enabled { get => IsEnabled; set => IsEnabled = value; }
         public bool Visible { get => IsVisible; set => IsVisible = value; }
         public string Text
@@ -1188,6 +1393,7 @@ namespace SimPe.Scenegraph.Compat
     /// <summary>WinForms ListBox compat — wraps Avalonia ListBox with WinForms-compatible API.</summary>
     public class ListBoxCompat : Avalonia.Controls.ListBox
     {
+        protected override Type StyleKeyOverride => typeof(Avalonia.Controls.ListBox);
         public bool Sorted { get; set; }            // no-op: Avalonia has no built-in sort
         public bool Enabled { get => IsEnabled; set => IsEnabled = value; }
         public bool IntegralHeight { get; set; }
@@ -1274,6 +1480,7 @@ namespace SimPe.Scenegraph.Compat
     /// <summary>WinForms-compat TabControl — extends Avalonia TabControl with TabPages.</summary>
     public class TabControlCompat : Avalonia.Controls.TabControl
     {
+        protected override Type StyleKeyOverride => typeof(Avalonia.Controls.TabControl);
         public TabPageCollection TabPages { get; }
         public TabControlCompat() { TabPages = new TabPageCollection(this); }
         public new string Name { get => base.Name; set => base.Name = value; }

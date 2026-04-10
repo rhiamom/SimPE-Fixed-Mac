@@ -505,6 +505,7 @@ namespace SimPe.PackedFiles.UserInterface
 		#region Windows Form Designer generated code
 		private void InitializeComponent()
 		{
+            // Create controls
             this.lbFilename = new LabelCompat();
             this.tbFilename = new TextBoxCompat();
             this.tbValueDec = new TextBoxCompat();
@@ -531,12 +532,191 @@ namespace SimPe.PackedFiles.UserInterface
             this.btnCommit = new ButtonCompat();
             this.btnTRCNMaker = new ButtonCompat();
 
+            // -- pjse_banner1 --
+            this.pjse_banner1.TitleText = "Behaviour Constant";
+            this.pjse_banner1.SiblingText = "TRCN";
+            this.pjse_banner1.SiblingVisible = true;
+
+            // -- Filename row --
+            this.lbFilename.Content = "Filename";
+            this.lbFilename.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
+
+            this.tbFilename.MaxLength = 64;
+            this.tbFilename.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
+            this.tbFilename.Padding = new Avalonia.Thickness(4, 1);
+            this.tbFilename.MinHeight = 0;
+
+            this.cbFlag.Content = "Flag";
+            this.cbFlag.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
+            this.cbFlag.Padding = new Avalonia.Thickness(4, 0);
+
+            this.btnCommit.Content = "Commit File";
+            this.btnCommit.MinWidth = 87;
+            this.btnCommit.Padding = new Avalonia.Thickness(8, 2);
+
+            var filenameRow = new Avalonia.Controls.DockPanel { Margin = new Avalonia.Thickness(4, 2) };
+            Avalonia.Controls.DockPanel.SetDock(this.lbFilename, Avalonia.Controls.Dock.Left);
+            Avalonia.Controls.DockPanel.SetDock(this.btnCommit, Avalonia.Controls.Dock.Right);
+            Avalonia.Controls.DockPanel.SetDock(this.cbFlag, Avalonia.Controls.Dock.Right);
+            filenameRow.Children.Add(this.lbFilename);
+            filenameRow.Children.Add(this.btnCommit);
+            filenameRow.Children.Add(this.cbFlag);
+            filenameRow.Children.Add(this.tbFilename);
+            this.tbFilename.Margin = new Avalonia.Thickness(4, 0);
+            this.cbFlag.Margin = new Avalonia.Thickness(4, 0);
+
+            // -- Add/Delete buttons row --
+            this.btnStrAdd.Content = "Add Value";
+            this.btnStrAdd.MinWidth = 79;
+            this.btnStrDelete.Content = "Delete Value";
+            this.btnStrDelete.MinWidth = 79;
+
+            var addDeleteRow = new Avalonia.Controls.StackPanel
+            {
+                Orientation = Avalonia.Layout.Orientation.Horizontal,
+                Spacing = 4,
+                Margin = new Avalonia.Thickness(4, 2)
+            };
+            addDeleteRow.Children.Add(this.btnStrAdd);
+            addDeleteRow.Children.Add(this.btnStrDelete);
+
+            // -- Value edit area (Hex/Dec/Cancel) --
+            this.label5.Content = "Hex";
+            this.label5.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
+            this.label5.MinWidth = 30;
+            this.label6.Content = "Dec";
+            this.label6.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
+            this.label6.MinWidth = 30;
+            this.tbValueHex.MinWidth = 70;
+            this.tbValueHex.MaxWidth = 80;
+            this.tbValueDec.MinWidth = 70;
+            this.tbValueDec.MaxWidth = 80;
+            this.btnCancel.Content = "Cancel";
+            this.btnCancel.MinWidth = 79;
+
+            var hexRow = new Avalonia.Controls.StackPanel
+            {
+                Orientation = Avalonia.Layout.Orientation.Horizontal,
+                Spacing = 4
+            };
+            hexRow.Children.Add(this.label5);
+            hexRow.Children.Add(this.tbValueHex);
+
+            var decRow = new Avalonia.Controls.StackPanel
+            {
+                Orientation = Avalonia.Layout.Orientation.Horizontal,
+                Spacing = 4
+            };
+            decRow.Children.Add(this.label6);
+            decRow.Children.Add(this.tbValueDec);
+
+            var valuePanel = new Avalonia.Controls.StackPanel { Spacing = 4 };
+            valuePanel.Children.Add(hexRow);
+            valuePanel.Children.Add(decRow);
+
+            // -- Prev/Next arrows --
+            this.btnStrPrev.Content = "\u25B2";
+            this.btnStrPrev.MinWidth = 20;
+            this.btnStrPrev.MaxWidth = 20;
+            this.btnStrPrev.MinHeight = 20;
+            this.btnStrPrev.Padding = new Avalonia.Thickness(0);
+            this.btnStrNext.Content = "\u25BC";
+            this.btnStrNext.MinWidth = 20;
+            this.btnStrNext.MaxWidth = 20;
+            this.btnStrNext.MinHeight = 20;
+            this.btnStrNext.Padding = new Avalonia.Thickness(0);
+
+            var navAndValueRow = new Avalonia.Controls.StackPanel
+            {
+                Orientation = Avalonia.Layout.Orientation.Horizontal,
+                Spacing = 4
+            };
+            var navArrows = new Avalonia.Controls.StackPanel { Spacing = 2 };
+            navArrows.Children.Add(this.btnStrPrev);
+            navArrows.Children.Add(this.btnStrNext);
+
+            navAndValueRow.Children.Add(valuePanel);
+            navAndValueRow.Children.Add(navArrows);
+
+            // -- 2x2 button grid: Cancel | Make Labels / Compare | Update --
+            this.btnTRCNMaker.Content = "Make Labels";
+            this.btnTRCNMaker.MinWidth = 79;
+            this.cmpBCON.Content = "Compare";
+            this.cmpBCON.MinWidth = 79;
+            this.btnUpdateBCON.Content = "Update";
+            this.btnUpdateBCON.MinWidth = 79;
+
+            var cancelMakeLabelsRow = new Avalonia.Controls.StackPanel
+            {
+                Orientation = Avalonia.Layout.Orientation.Horizontal,
+                Spacing = 4
+            };
+            cancelMakeLabelsRow.Children.Add(this.btnCancel);
+            cancelMakeLabelsRow.Children.Add(this.btnTRCNMaker);
+
+            var compareUpdateRow = new Avalonia.Controls.StackPanel
+            {
+                Orientation = Avalonia.Layout.Orientation.Horizontal,
+                Spacing = 4
+            };
+            compareUpdateRow.Children.Add(this.cmpBCON);
+            compareUpdateRow.Children.Add(this.btnUpdateBCON);
+
+            // -- Override link --
+            this.llIsOverride.Text = "This is an override.\nView original.";
+            this.llIsOverride.IsVisible = false;
+
+            // -- Close button (popup only) --
+            this.btnClose.Content = "Close";
+            this.btnClose.MinWidth = 87;
+            this.btnClose.IsVisible = false;
+            this.btnClose.Margin = new Avalonia.Thickness(0, 4, 0, 0);
+
+            // -- Left panel assembly --
+            var leftPanel = new Avalonia.Controls.StackPanel
+            {
+                Spacing = 4,
+                Margin = new Avalonia.Thickness(4, 0),
+                MinWidth = 175,
+                MaxWidth = 175,
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top
+            };
+            leftPanel.Children.Add(addDeleteRow);
+            leftPanel.Children.Add(navAndValueRow);
+            leftPanel.Children.Add(cancelMakeLabelsRow);
+            leftPanel.Children.Add(compareUpdateRow);
+            leftPanel.Children.Add(this.llIsOverride);
+            leftPanel.Children.Add(this.btnClose);
+
+            // -- ListView --
             this.lvConstants.Columns.AddRange(new ColumnHeader[] { this.chID, this.chValue, this.chLabel });
+            this.chID.Text = "Line";
+            this.chID.Width = 89;
+            this.chValue.Text = "Value";
+            this.chValue.Width = 66;
+            this.chLabel.Text = "Label";
+            this.chLabel.Width = 374;
             this.lvConstants.FullRowSelect = true;
             this.lvConstants.GridLines = true;
             this.lvConstants.HideSelection = false;
             this.lvConstants.MultiSelect = false;
             this.lvConstants.View = SimPe.Scenegraph.Compat.View.Details;
+            this.lvConstants.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
+            this.lvConstants.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
+
+            // -- Main content: left panel + ListView side by side --
+            var mainContent = new Avalonia.Controls.DockPanel { Margin = new Avalonia.Thickness(0, 2) };
+            Avalonia.Controls.DockPanel.SetDock(leftPanel, Avalonia.Controls.Dock.Left);
+            mainContent.Children.Add(leftPanel);
+            mainContent.Children.Add(this.lvConstants);
+
+            // -- Root layout --
+            var rootPanel = new Avalonia.Controls.DockPanel();
+            Avalonia.Controls.DockPanel.SetDock(this.pjse_banner1, Avalonia.Controls.Dock.Top);
+            Avalonia.Controls.DockPanel.SetDock(filenameRow, Avalonia.Controls.Dock.Top);
+            rootPanel.Children.Add(this.pjse_banner1);
+            rootPanel.Children.Add(filenameRow);
+            rootPanel.Children.Add(mainContent);
 
             // Event wiring
             this.tbFilename.TextChanged += (s, e) => this.tbFilename_TextChanged(s, e);
@@ -562,7 +742,7 @@ namespace SimPe.PackedFiles.UserInterface
             this.btnTRCNMaker.Click += async (s, e) => await this.TRCNMaker();
             this.cmpBCON.CompareWith += (s, e) => this.cmpBCON_CompareWith(s, e);
 
-            Content = bconPanel;
+            Content = rootPanel;
 		}
 		#endregion
 
