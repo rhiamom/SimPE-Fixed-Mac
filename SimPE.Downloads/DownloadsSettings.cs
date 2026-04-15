@@ -106,7 +106,7 @@ namespace SimPe.Plugin.Downloads
 		}
 
 		[System.ComponentModel.Browsable(false)]
-		public System.Drawing.Image Icon
+		public object Icon
 		{
 			get
 			{

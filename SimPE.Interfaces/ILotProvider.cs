@@ -34,7 +34,7 @@ namespace SimPe.Interfaces.Providers
 			get;
 		}
 
-		System.Drawing.Image Image
+		object Image
 		{
 			get;
 		}

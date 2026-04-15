@@ -22,6 +22,7 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
+using SkiaSharp;
 
 namespace Ambertation.Windows.Forms
 {
@@ -89,14 +90,21 @@ namespace Ambertation.Windows.Forms
             System.Drawing.Image src = list[index];
             if (src == null) return;
 
-            // Scale GDI+ image to control size, then convert to Avalonia Bitmap.
+            // Scale GDI+ image to control size, then convert to Avalonia Bitmap via SkiaSharp.
             using var scaled = Ambertation.Drawing.GraphicRoutines.ScaleImage(src, w, h, true);
-            using var bmp = new System.Drawing.Bitmap(w, h);
-            using var g = System.Drawing.Graphics.FromImage(bmp);
-            g.DrawImage(scaled, 0, 0, w, h);
+            using var skBmp = new SKBitmap(w, h);
+            using var skCanvas = new SKCanvas(skBmp);
+            // Convert scaled System.Drawing.Image to SKBitmap for drawing
+            using var scaledMs = new MemoryStream();
+            ((System.Drawing.Bitmap)scaled).Save(scaledMs, System.Drawing.Imaging.ImageFormat.Png);
+            scaledMs.Position = 0;
+            using var scaledSkBmp = SKBitmap.Decode(scaledMs);
+            skCanvas.DrawBitmap(scaledSkBmp, 0, 0);
 
             using var ms = new MemoryStream();
-            bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+            using var skImage = SKImage.FromBitmap(skBmp);
+            using var encoded = skImage.Encode(SKEncodedImageFormat.Png, 100);
+            encoded.SaveTo(ms);
             ms.Position = 0;
             using var avBmp = new Avalonia.Media.Imaging.Bitmap(ms);
             context.DrawImage(avBmp, new Rect(0, 0, w, h));

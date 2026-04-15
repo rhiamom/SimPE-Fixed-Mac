@@ -30,6 +30,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Data;
+using SkiaSharp;
 using Avalonia.Controls;
 using Image = System.Drawing.Image;
 
@@ -126,7 +127,7 @@ namespace SimPe.Plugin.Tool.Dockable
         /// <param name="group"></param>
         /// <param name="modelname"></param>
         /// <returns>The Thumbnail</returns>
-        public static Image GetThumbnail(uint group, string modelname)
+        public static object GetThumbnail(uint group, string modelname)
         {
             return GetThumbnail(group, modelname, null);
         }
@@ -137,16 +138,16 @@ namespace SimPe.Plugin.Tool.Dockable
         /// <param name="group"></param>
         /// <param name="modelname"></param>
         /// <returns>The Thumbnail</returns>
-        public static Image GetThumbnail(uint group, string modelname, string message)
+        public static object GetThumbnail(uint group, string modelname, string message)
         {
 
             if (thumbs == null)
             {
-                thumbs = SimPe.Packages.File.LoadFromFile(System.IO.Path.Combine(PathProvider.SimSavegameFolder, "Thumbnails\\ObjectThumbnails.package"));
+                thumbs = SimPe.Packages.File.LoadFromFile(System.IO.Path.Combine(PathProvider.SimSavegameFolder, "Thumbnails/ObjectThumbnails.package"));
                 thumbs.Persistent = true;
             }
 
-            Image img = GetThumbnail(group, modelname, message, thumbs);
+            object img = GetThumbnail(group, modelname, message, thumbs);
             return img;
         }
         /// <summary>
@@ -155,10 +156,10 @@ namespace SimPe.Plugin.Tool.Dockable
         /// <param name="group"></param>
         /// <param name="modelname"></param>
         /// <returns>The Thumbnail</returns>
-        public static Image GetThumbnail(uint group, string modelname, string message, SimPe.Packages.File thumbs)
+        public static object GetThumbnail(uint group, string modelname, string message, SimPe.Packages.File thumbs)
         {
             uint inst = ThumbnailHash(group, modelname);
-            Image img = GetThumbnail(message, new uint[] { 0xAC2950C1 }, group, inst, thumbs);
+            object img = GetThumbnail(message, new uint[] { 0xAC2950C1 }, group, inst, thumbs);
 
             //if (img==null) img = GetThumbnail(message, new uint[] { 0xAC2950C1}, Hashes.GetCrc32(Hashes.StripHashFromName(modelname.Trim().ToLower())), thumbs);
 
@@ -171,7 +172,7 @@ namespace SimPe.Plugin.Tool.Dockable
         /// <param name="group"></param>
         /// <param name="modelname"></param>
         /// <returns>The Thumbnail</returns>
-        public static Image GetThumbnail(string message, uint type, uint group, uint inst, SimPe.Packages.File thumbs)
+        public static object GetThumbnail(string message, uint type, uint group, uint inst, SimPe.Packages.File thumbs)
         {
             return GetThumbnail(message, new uint[] { type }, group, inst, thumbs);
         }
@@ -182,7 +183,7 @@ namespace SimPe.Plugin.Tool.Dockable
         /// <param name="group"></param>
         /// <param name="modelname"></param>
         /// <returns>The Thumbnail</returns>
-        public static Image GetThumbnail(string message, uint[] types, uint group, uint inst, SimPe.Packages.File thumbs)
+        public static object GetThumbnail(string message, uint[] types, uint group, uint inst, SimPe.Packages.File thumbs)
         {
             /*ArrayList types = new ArrayList();
             types.Add(0xAC2950C1); // Objects
@@ -209,7 +210,7 @@ namespace SimPe.Plugin.Tool.Dockable
                         SimPe.PackedFiles.Wrapper.Picture pic = new SimPe.PackedFiles.Wrapper.Picture();
                         pic.ProcessData(pfd, thumbs);
                         SkiaSharp.SKBitmap bm = ImageLoader.Preview(pic.Image, WaitingScreen.ImageSize);
-                        if (WaitingScreen.Running) WaitingScreen.Update((System.Drawing.Bitmap)null, message);
+                        if (WaitingScreen.Running) WaitingScreen.Update((SkiaSharp.SKBitmap)null, message);
                         return pic.Image;
                     }
                     catch (Exception) { }
@@ -452,10 +453,10 @@ namespace SimPe.Plugin.Tool.Dockable
             return GetCtssItems(ctss, objd.Package);
         }
 
-        protected Image defimg;
+        protected object defimg;
         protected void BuildDefaultImage()
         {
-            defimg = SimPe.GetImage.Demo;
+            defimg = new SKBitmap(1, 1);
         }
     }
 }

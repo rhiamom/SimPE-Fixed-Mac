@@ -28,6 +28,7 @@ using System.ComponentModel;
 using Avalonia.Controls;
 using Image = System.Drawing.Image;
 using Avalonia.Layout;
+using SkiaSharp;
 using SimPe.Scenegraph.Compat;
 using ListView  = SimPe.Scenegraph.Compat.ListView;
 using ImageList = SimPe.Scenegraph.Compat.ImageList;
@@ -236,42 +237,51 @@ namespace SimPe.Plugin
 			{
 				if ((sdesc.Unlinked!=0x00) || (!sdesc.AvailableCharacterData) || sdesc.IsNPC)
 				{
-					Image img = (Image)sdesc.Image.Clone();
-					System.Drawing.Graphics g = Graphics.FromImage(img);
-					g.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
-					g.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
-
-					Pen pen = new Pen(Data.MetaData.SpecialSimColor, 3);
-
-					g.FillRectangle(pen.Brush, 0, 0, img.Width, img.Height);
-
-					int pos = 2;
-					if (sdesc.Unlinked!=0x00) 
+					SKBitmap skBmp;
+					if (sdesc.Image is SKBitmap existingBmp)
+						skBmp = existingBmp.Copy();
+					else
+						skBmp = new SKBitmap(1, 1);
+					using (var canvas = new SKCanvas(skBmp))
 					{
-						g.FillRectangle(new SolidBrush(Data.MetaData.UnlinkedSim), pos, 2, 25, 25);
-						pos += 28;
-					}
-					if (!sdesc.AvailableCharacterData) 
-					{
-						g.FillRectangle(new SolidBrush(Data.MetaData.InactiveSim), pos, 2, 25, 25);
-						pos += 28;
-					}
-					if (sdesc.IsNPC) 
-					{
-						g.FillRectangle(new SolidBrush(Data.MetaData.NPCSim), pos, 2, 25, 25);
-						pos += 28;
+						var sc = Data.MetaData.SpecialSimColor;
+						using (var bgPaint = new SKPaint { Color = new SKColor(sc.R, sc.G, sc.B, sc.A), Style = SKPaintStyle.Fill })
+							canvas.DrawRect(0, 0, skBmp.Width, skBmp.Height, bgPaint);
+
+						int pos = 2;
+						if (sdesc.Unlinked!=0x00)
+						{
+							var c = Data.MetaData.UnlinkedSim;
+							using (var paint = new SKPaint { Color = new SKColor(c.R, c.G, c.B, c.A), Style = SKPaintStyle.Fill })
+								canvas.DrawRect(new SKRect(pos, 2, pos + 25, 27), paint);
+							pos += 28;
+						}
+						if (!sdesc.AvailableCharacterData)
+						{
+							var c = Data.MetaData.InactiveSim;
+							using (var paint = new SKPaint { Color = new SKColor(c.R, c.G, c.B, c.A), Style = SKPaintStyle.Fill })
+								canvas.DrawRect(new SKRect(pos, 2, pos + 25, 27), paint);
+							pos += 28;
+						}
+						if (sdesc.IsNPC)
+						{
+							var c = Data.MetaData.NPCSim;
+							using (var paint = new SKPaint { Color = new SKColor(c.R, c.G, c.B, c.A), Style = SKPaintStyle.Fill })
+								canvas.DrawRect(new SKRect(pos, 2, pos + 25, 27), paint);
+							pos += 28;
+						}
 					}
 
-					this.ilist.Images.Add(img);
+					this.ilist.Images.Add(skBmp);
 				} 
 				else 
 				{
-					this.ilist.Images.Add(sdesc.Image);
+					this.ilist.Images.Add(sdesc.Image as SkiaSharp.SKBitmap);
 				}
 			} 
 			else 
 			{
-				this.ilist.Images.Add(new Bitmap(this.GetType().Assembly.GetManifestResourceStream("SimPe.Plugin.Network.png")));
+				this.ilist.Images.Add(SKBitmap.Decode(this.GetType().Assembly.GetManifestResourceStream("SimPe.Plugin.Network.png")));
 			}
 		}
 
@@ -302,7 +312,7 @@ namespace SimPe.Plugin
 			{
 				skinfiles = new Hashtable();
 				ArrayList tones = new ArrayList();
-				iskin.Images.Add(new Bitmap(iskin.ImageSize.Width, iskin.ImageSize.Height));
+				iskin.Images.Add(new SKBitmap(iskin.ImageSize.Width, iskin.ImageSize.Height));
 				ListViewItem lvia = new ListViewItem("* from Archetype");
 				lvia.ImageIndex = 0;
 				this.lvskin.Items.Add(lvia);
@@ -370,7 +380,7 @@ namespace SimPe.Plugin
 											if (mm!=null) 
 											{
 												// mm.Texture is SKBitmap; iskin.Images.Add takes System.Drawing.Image — skip preview
-											iskin.Images.Add((System.Drawing.Image)null);
+											iskin.Images.Add((SkiaSharp.SKBitmap)null);
 												lvi.ImageIndex = iskin.Images.Count-1;
 											}
 										}
@@ -537,7 +547,7 @@ namespace SimPe.Plugin
 			if (lv.SelectedItems[0].ImageIndex>=0) this.pbarche.Image = ilist.Images[lv.SelectedItems[0].ImageIndex];
 
 			// pbarche.Image is System.Drawing.Image; Preview returns SKBitmap — skip preview
-			iskin.Images[0] = pbarche.Image;
+			iskin.Images[0] = pbarche.Image as SkiaSharp.SKBitmap;
 			lvskin.Refresh();
 
 			this.lbarchname.Text = lv.SelectedItems[0].Text;

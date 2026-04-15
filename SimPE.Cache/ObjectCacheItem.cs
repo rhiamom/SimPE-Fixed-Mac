@@ -23,6 +23,7 @@
 
 using System;
 using System.Drawing;
+using SkiaSharp;
 using System.IO;
 using SimPe;
 
@@ -81,7 +82,7 @@ namespace SimPe.Cache
 		string modelname;
 		Interfaces.Files.IPackedFileDescriptor pfd;
 		uint localgroup;
-		Image thumb;
+		object thumb;
 		Data.ObjectTypes objtype;
 		string objname;
 		uint objfuncsort;
@@ -323,7 +324,7 @@ namespace SimPe.Cache
 		/// <summary>
 		/// Returns the Thumbnail
 		/// </summary>
-		public Image Thumbnail 
+		public object Thumbnail
 		{
 			get { return thumb; }
 			set { thumb = value; }
@@ -404,10 +405,15 @@ namespace SimPe.Cache
 				try 
 				{
 					MemoryStream ms = new MemoryStream();
-					thumb.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
+					if (thumb is SKBitmap skBmp)
+					{
+						using var skImg = SKImage.FromBitmap(skBmp);
+						using var enc = skImg.Encode(SKEncodedImageFormat.Png, 100);
+						enc.SaveTo(ms);
+					}
 					byte[] data = ms.ToArray();
 					writer.Write(data.Length);
-					writer.Write(data);			
+					writer.Write(data);
 					ms.Close();
 				} 
 				catch 

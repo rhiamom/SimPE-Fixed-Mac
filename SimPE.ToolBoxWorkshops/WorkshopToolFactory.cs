@@ -128,7 +128,7 @@ namespace SimPe.Plugin
 
         class obwHelp : IHelp
         {
-            public System.Drawing.Image Icon { get { return null; } }
+            public object Icon { get { return null; } }
             public override string ToString() { return "Object Workshop"; }
             public void ShowHelp(ShowHelpEventArgs e) { SimPe.RemoteControl.ShowHelp("file://" + SimPe.Helper.SimPePath + "/Doc/OWoptions.htm"); }
         }

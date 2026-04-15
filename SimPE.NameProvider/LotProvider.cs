@@ -42,12 +42,12 @@ namespace SimPe.Providers
 		public class LotItem : SimPe.Interfaces.Providers.ILotItem, System.IDisposable
 		{
 			string name;
-			System.Drawing.Image img;
+			object img;
 			uint inst, owner;
 			
 			System.Collections.ArrayList tags;
 			SimPe.Interfaces.Scenegraph.IScenegraphFileIndexItem fii;
-			internal LotItem(uint inst, string name, System.Drawing.Image img, SimPe.Interfaces.Scenegraph.IScenegraphFileIndexItem fii)
+			internal LotItem(uint inst, string name, object img, SimPe.Interfaces.Scenegraph.IScenegraphFileIndexItem fii)
 			{
 				this.name = name;
 				this.img = img;
@@ -84,7 +84,7 @@ namespace SimPe.Providers
 				get {return inst;}
 			}
 
-			public System.Drawing.Image Image
+			public object Image
 			{
 				get {return img;}
 			}

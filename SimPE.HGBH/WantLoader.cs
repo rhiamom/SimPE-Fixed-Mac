@@ -76,8 +76,8 @@ namespace SimPe.Plugin
 			return ret;
 		}
 
-		System.Drawing.Image icon;
-		public override System.Drawing.Image Icon
+		object icon;
+		public override object Icon
 		{
 			get
 			{
@@ -219,7 +219,7 @@ namespace SimPe.Plugin
 		/// <summary>
 		/// Returns Icon for this want or null
 		/// </summary>
-		public virtual System.Drawing.Image Icon
+		public virtual object Icon
 		{
 			get 
 			{
@@ -283,15 +283,15 @@ namespace SimPe.Plugin
 		static void LoadTextPackage()
 		{
             Wait.SubStart();
-            txtpkg = SimPe.Packages.File.LoadFromFile(System.IO.Path.Combine(SimPe.PathProvider.Global.Latest.InstallFolder, "TSData\\Res\\Text\\Wants.package"));
+            txtpkg = SimPe.Packages.File.LoadFromFile(System.IO.Path.Combine(SimPe.PathProvider.Global.Latest.InstallFolder, "TSData", "Res", "Text/Wants.package"));
 
-            string img = (System.IO.Path.Combine(SimPe.PathProvider.Global[Expansions.BaseGame].InstallFolder, "TSData\\Res\\UI\\ui.package"));
+            string img = (System.IO.Path.Combine(SimPe.PathProvider.Global[Expansions.BaseGame].InstallFolder, "TSData", "Res", "UI/ui.package"));
             FileTable.FileIndex.AddIndexFromPackage(img);
             foreach (ExpansionItem ei in PathProvider.Global.Expansions)
             {
                 if (ei.Exists)
                 {
-                    img = (System.IO.Path.Combine(ei.InstallFolder, "TSData\\Res\\UI\\ui.package"));
+                    img = (System.IO.Path.Combine(ei.InstallFolder, "TSData", "Res", "UI/ui.package"));
                     FileTable.FileIndex.AddIndexFromPackage(img);
                 }
             }

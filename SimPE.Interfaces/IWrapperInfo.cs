@@ -77,7 +77,7 @@ namespace SimPe.Interfaces.Plugin
 		/// <summary>
 		/// Returns a Icon that should be presented for that resource
 		/// </summary>
-		System.Drawing.Image Icon
+		object Icon
 		{
 			get;
 		}

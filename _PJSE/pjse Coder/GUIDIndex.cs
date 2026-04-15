@@ -42,7 +42,7 @@ namespace pjse
         private Dictionary<uint, IndexItem> guidIndex = null;
 
         public static GUIDIndex TheGUIDIndex = new GUIDIndex();
-        public static String DefaultGUIDFile = Path.Combine(SimPe.Helper.SimPePluginDataPath, "pjse.coder.plugin\\guidindex.txt");
+        public static String DefaultGUIDFile = Path.Combine(SimPe.Helper.SimPePluginDataPath, "pjse.coder.plugin/guidindex.txt");
         static GUIDIndex()
         {
             if (Settings.PJSE.LoadGUIDIndexAtStartup) TheGUIDIndex.Load();

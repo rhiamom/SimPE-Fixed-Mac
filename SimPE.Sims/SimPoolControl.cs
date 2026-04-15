@@ -301,15 +301,17 @@ namespace SimPe.PackedFiles.Wrapper
             {
                 eip.Text = sdesc.SimName + " " + sdesc.SimFamilyName;
 
-                System.Drawing.Image img = sdesc.Image;
+                System.Drawing.Image img = sdesc.Image as System.Drawing.Image;
 
                 // Reject invalid thumbnails
                 if (img == null || img.Width < 8)
                 {
                     // Fallback: use generic "no sim" icon
-                    img = Helper.LoadImage(
-                        typeof(SDesc).Assembly.GetManifestResourceStream(
-                            "SimPe.PackedFiles.Wrapper.noone.png"
+                    img = Ambertation.Drawing.GraphicRoutines.SKBitmapToGdiImage(
+                        Helper.LoadImage(
+                            typeof(SDesc).Assembly.GetManifestResourceStream(
+                                "SimPe.PackedFiles.Wrapper.noone.png"
+                            )
                         )
                     );
                 }
@@ -404,7 +406,7 @@ namespace SimPe.PackedFiles.Wrapper
 		}
 
 		#region Events
-		public delegate void SelectedSimHandler(object sender, System.Drawing.Image thumb, Wrapper.SDesc sdesc);
+		public delegate void SelectedSimHandler(object sender, object thumb, Wrapper.SDesc sdesc);
 		public event SelectedSimHandler SelectedSimChanged;
 		public event SelectedSimHandler ClickOverSim;
 		public event SelectedSimHandler DoubleClickSim;

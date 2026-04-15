@@ -20,12 +20,11 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
- 
+
  using System;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using OpenTK.Graphics.OpenGL4;
+using SkiaSharp;
 
 namespace Ambertation.Graphics;
 
@@ -45,30 +44,48 @@ public class GlTexture : IDisposable
     public static GlTexture FromStream(Stream stream)
     {
         stream.Seek(0, SeekOrigin.Begin);
-        using var bmp = new Bitmap(stream);
-        return FromBitmap(bmp);
+        using var skBmp = SKBitmap.Decode(stream);
+        if (skBmp == null) return null;
+        return FromSKBitmap(skBmp);
     }
 
-    public static GlTexture FromBitmap(Bitmap bmp)
+    public static GlTexture FromBitmap(System.Drawing.Bitmap bmp)
     {
+        // Convert System.Drawing.Bitmap to SKBitmap via PNG round-trip
+        using var ms = new MemoryStream();
+        bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+        ms.Position = 0;
+        using var skBmp = SKBitmap.Decode(ms);
+        if (skBmp == null) return null;
+        return FromSKBitmap(skBmp);
+    }
+
+    public static GlTexture FromSKBitmap(SKBitmap skBmp)
+    {
+        // Ensure BGRA8888 format for GL upload
+        SKBitmap bgraBmp;
+        if (skBmp.ColorType != SKColorType.Bgra8888)
+        {
+            bgraBmp = new SKBitmap(skBmp.Width, skBmp.Height, SKColorType.Bgra8888, SKAlphaType.Premul);
+            using var canvas = new SKCanvas(bgraBmp);
+            canvas.DrawBitmap(skBmp, 0, 0);
+        }
+        else
+        {
+            bgraBmp = skBmp;
+        }
+
         int id = GL.GenTexture();
         GL.BindTexture(TextureTarget.Texture2D, id);
 
-        var data = bmp.LockBits(
-            new Rectangle(0, 0, bmp.Width, bmp.Height),
-            ImageLockMode.ReadOnly,
-            System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-        try
-        {
-            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba,
-                bmp.Width, bmp.Height, 0,
-                OpenTK.Graphics.OpenGL4.PixelFormat.Bgra,
-                PixelType.UnsignedByte, data.Scan0);
-        }
-        finally
-        {
-            bmp.UnlockBits(data);
-        }
+        IntPtr pixels = bgraBmp.GetPixels();
+        GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba,
+            bgraBmp.Width, bgraBmp.Height, 0,
+            OpenTK.Graphics.OpenGL4.PixelFormat.Bgra,
+            PixelType.UnsignedByte, pixels);
+
+        if (bgraBmp != skBmp)
+            bgraBmp.Dispose();
 
         GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
         GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);

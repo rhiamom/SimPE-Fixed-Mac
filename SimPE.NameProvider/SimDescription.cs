@@ -377,18 +377,39 @@ namespace SimPe.Providers
         */
         private static System.Drawing.Image LoadCollectibleIcon(SimPe.PackedFiles.Wrapper.Picture pic, UInt32 g, UInt32 i)
         {
-            SimPe.Packages.File pkg = SimPe.Packages.File.LoadFromFile(System.IO.Path.Combine(PathProvider.Global.GetExpansion(10).InstallFolder, "TSData\\Res\\UI\\ui.package"));
+            SimPe.Packages.File pkg = SimPe.Packages.File.LoadFromFile(System.IO.Path.Combine(PathProvider.Global.GetExpansion(10).InstallFolder, "TSData/Res/UI/ui.package"));
             if (pkg != null)
             {
                 SimPe.Interfaces.Files.IPackedFileDescriptor pfd = pkg.FindFile(0x856DDBAC, 0, g, i);
                 if (pfd != null)
                 {
                     pic.ProcessData(pfd, pkg);
-                    System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(pic.Image.Width / 4, pic.Image.Height);
-                    System.Drawing.Graphics gr = System.Drawing.Graphics.FromImage(bmp);
-                    gr.DrawImage(pic.Image, new System.Drawing.Rectangle(0, 0, bmp.Width, bmp.Height), new System.Drawing.Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.GraphicsUnit.Pixel);
-                    gr.Dispose();
-                    return bmp;
+                    int w = pic.Image.Width / 4;
+                    int h = pic.Image.Height;
+
+                    // pic.Image is already SKBitmap — use directly
+                    SkiaSharp.SKBitmap srcSk = pic.Image;
+                    if (srcSk == null) return null;
+
+                    // Draw cropped region onto new SKBitmap
+                    var dstSk = new SkiaSharp.SKBitmap(w, h, SkiaSharp.SKColorType.Bgra8888, SkiaSharp.SKAlphaType.Premul);
+                    using (var canvas = new SkiaSharp.SKCanvas(dstSk))
+                    {
+                        canvas.Clear(SkiaSharp.SKColors.Transparent);
+                        canvas.DrawBitmap(srcSk,
+                            new SkiaSharp.SKRect(0, 0, w, h),
+                            new SkiaSharp.SKRect(0, 0, w, h));
+                    }
+                    srcSk.Dispose();
+
+                    // Convert back to System.Drawing.Image
+                    using var skImage = SkiaSharp.SKImage.FromBitmap(dstSk);
+                    using var encoded = skImage.Encode(SkiaSharp.SKEncodedImageFormat.Png, 100);
+                    dstSk.Dispose();
+                    var resultMs = new System.IO.MemoryStream();
+                    encoded.SaveTo(resultMs);
+                    resultMs.Position = 0;
+                    return System.Drawing.Image.FromStream(resultMs);
                 }
             }
             return null;

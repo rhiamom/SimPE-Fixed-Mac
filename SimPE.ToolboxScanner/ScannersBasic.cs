@@ -439,7 +439,7 @@ namespace SimPe.Plugin.Scanner
 
 				foreach (string modelname in modelnames) 
 				{                    
-                    System.Drawing.Image img = GetThumbnail(group, modelname);
+                    object img = GetThumbnail(group, modelname);
 					if (img!=null) 
 					{
 						si.PackageCacheItem.Thumbnail = img;
@@ -514,7 +514,7 @@ namespace SimPe.Plugin.Scanner
 			//Add the Thumbnail if available
 			if (si.PackageCacheItem.Thumbnail!=null) 
 			{
-				ListView.SmallImageList.Images.Add(si.PackageCacheItem.Thumbnail);
+				ListView.SmallImageList.Images.Add(si.PackageCacheItem.Thumbnail as SkiaSharp.SKBitmap);
 				lvi.ImageIndex = ListView.SmallImageList.Images.Count-1;
 			}
 		}
@@ -543,12 +543,12 @@ namespace SimPe.Plugin.Scanner
 
         static SimPe.Packages.File thumbs = null;
 
-        public static Image GetThumbnail(uint group, string modelname)
+        public static object GetThumbnail(uint group, string modelname)
         {
 
             if (thumbs == null)
             {
-                thumbs = SimPe.Packages.File.LoadFromFile(System.IO.Path.Combine(PathProvider.SimSavegameFolder, "Thumbnails\\ObjectThumbnails.package"));
+                thumbs = SimPe.Packages.File.LoadFromFile(System.IO.Path.Combine(PathProvider.SimSavegameFolder, "Thumbnails/ObjectThumbnails.package"));
                 thumbs.Persistent = true;
             }
 

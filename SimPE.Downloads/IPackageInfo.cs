@@ -55,15 +55,15 @@ namespace SimPe.Plugin.Downloads
             get;
         }		
 
-		Image GetThumbnail();
-		Image GetThumbnail(System.Drawing.Size sz);
+		object GetThumbnail();
+		object GetThumbnail(System.Drawing.Size sz);
 
 		/// <summary>
 		/// Returns the gameThumbnail or a SimPe Created 3D Preview, or null
 		/// </summary>
-		Image Image
+		object Image
 		{
-			get;		
+			get;
 		}
 
 		/// <summary>

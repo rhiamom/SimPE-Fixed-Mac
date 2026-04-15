@@ -41,7 +41,7 @@ namespace SimPe
         /// <summary>Generic "network/lot" placeholder image (null placeholder).</summary>
         public static System.Drawing.Image? Network => null;
 
-        /// <summary>Generic "demo" placeholder image (null on non-Windows — GDI+ unavailable).</summary>
+        /// <summary>Generic "demo" placeholder image (null placeholder — GDI+ unavailable on macOS).</summary>
         public static System.Drawing.Image? Demo => null;
 
         /// <summary>Returns a logo image for an expansion pack (null placeholder).</summary>

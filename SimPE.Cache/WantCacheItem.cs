@@ -23,6 +23,7 @@
 
 using System;
 using System.Drawing;
+using SkiaSharp;
 using System.IO;
 using SimPe;
 
@@ -105,8 +106,8 @@ namespace SimPe.Cache
 			set { name = value; }
 		}
 
-		Image thumb;
-		public Image Icon
+		object thumb;
+		public object Icon
 		{
 			get { return thumb; }
 			set { thumb = value; }
@@ -171,7 +172,12 @@ namespace SimPe.Cache
 			else 
 			{
 				MemoryStream ms = new MemoryStream();
-				thumb.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+				if (thumb is SKBitmap skBmp)
+				{
+					using var skImg = SKImage.FromBitmap(skBmp);
+					using var enc = skImg.Encode(SKEncodedImageFormat.Png, 100);
+					enc.SaveTo(ms);
+				}
 				byte[] data = ms.ToArray();
 				writer.Write(data.Length);
 				writer.Write(data);

@@ -86,8 +86,8 @@ namespace SimPe
 			}
 		}
 
-		/// <summary>Update the wait bar image from a System.Drawing.Image (WinForms-origin callers).</summary>
-		public static void UpdateImage(System.Drawing.Image? img)
+		/// <summary>Update the wait bar image from an SKBitmap.</summary>
+		public static void UpdateImage(SkiaSharp.SKBitmap? img)
 		{
 			// No-op on Mac: Wait bar image display is not implemented.
 			// Thumbnail display is handled elsewhere; this call is safe to ignore.

@@ -27,6 +27,7 @@ using System.Collections;
 using Avalonia.Controls;
 using SimPe.PackedFiles.Wrapper.Supporting;
 using SimPe.Data;
+using SkiaSharp;
 using static SimPe.Data.LocalizedNeighbourhoodEP;
 
 namespace SimPe.PackedFiles.UserInterface
@@ -535,7 +536,13 @@ namespace SimPe.PackedFiles.UserInterface
 				try
 				{
 					string path = file.Path.LocalPath;
-					wrp.Image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+					if (wrp.Image is SKBitmap skBmp)
+					{
+						using var skImg = SKImage.FromBitmap(skBmp);
+						using var data = skImg.Encode(SKEncodedImageFormat.Png, 100);
+						using var fs = System.IO.File.Create(path);
+						data.SaveTo(fs);
+					}
 				}
 				catch (Exception ex)
 				{

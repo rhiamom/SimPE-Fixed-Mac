@@ -627,7 +627,7 @@ namespace pj
         #region IToolExt Member
 
 
-        public override System.Drawing.Image Icon
+        public override object Icon
         {
             get
             {

@@ -98,7 +98,7 @@ namespace SimPe.Plugin.Tool.Dockable
 			if (pb.Image==null) 
 			{
 				if (oci.Thumbnail == null) pb.Image = defimg;
-				else pb.Image = GenerateImage(pb.Size, oci.Thumbnail, true);
+				else pb.Image = GenerateImage(pb.Size, oci.Thumbnail as Image, true);
 			}
 			lbName.Text = oci.Name;				
 		}
@@ -154,7 +154,7 @@ namespace SimPe.Plugin.Tool.Dockable
             SetupCategories(SimPe.Cache.ObjectCacheItem.GetCategory(SimPe.Cache.ObjectCacheItemVersions.DockableOW, (SimPe.Data.ObjFunctionSubSort)GetFunctionSort(cpf), Data.ObjectTypes.Normal, SimPe.Cache.ObjectClass.XObject));
 
 			pb.Image = null;
-			pb.Image =  GenerateImage(pb.Size, GetXThumbnail(cpf) , true);
+			pb.Image =  GenerateImage(pb.Size, GetXThumbnail(cpf) as Image, true);
 		
 			SimPe.PackedFiles.Wrapper.StrItemList strs = GetCtssItems();
 			if (strs!=null) 
@@ -254,9 +254,9 @@ namespace SimPe.Plugin.Tool.Dockable
 
 		#region Thumbnails
 		static SimPe.Packages.File xthumbs, nthumbs;
-		public static Image GetXThumbnail(SimPe.PackedFiles.Wrapper.Cpf cpf)
+		public static object GetXThumbnail(SimPe.PackedFiles.Wrapper.Cpf cpf)
 		{
-            if (xthumbs == null) xthumbs = SimPe.Packages.File.LoadFromFile(System.IO.Path.Combine(PathProvider.SimSavegameFolder, "Thumbnails\\BuildModeThumbnails.package"));			
+            if (xthumbs == null) xthumbs = SimPe.Packages.File.LoadFromFile(System.IO.Path.Combine(PathProvider.SimSavegameFolder, "Thumbnails/BuildModeThumbnails.package"));			
             SimPe.Packages.File tmbs = xthumbs;
             Data.XObjFunctionSubSort fss = ObjectPreview.GetFunctionSort(cpf);
 			uint inst = cpf.GetSaveItem("guid").UIntegerValue;
@@ -281,7 +281,7 @@ namespace SimPe.Plugin.Tool.Dockable
 			else if (cpf.FileDescriptor.Type==Data.MetaData.XNGB) 
 			{
 				types = new uint[] {0x4D533EDD};
-                if (nthumbs == null) nthumbs = SimPe.Packages.File.LoadFromFile(System.IO.Path.Combine(PathProvider.SimSavegameFolder, "Thumbnails\\CANHObjectsThumbnails.package"));
+                if (nthumbs == null) nthumbs = SimPe.Packages.File.LoadFromFile(System.IO.Path.Combine(PathProvider.SimSavegameFolder, "Thumbnails/CANHObjectsThumbnails.package"));
 				tmbs = nthumbs;
 			}			
 			

@@ -850,15 +850,44 @@ void main() {
     {
         if (!_glReady) return null;
         _context?.MakeCurrent();
-        var bmp = new System.Drawing.Bitmap((int)Bounds.Width, (int)Bounds.Height);
-        var data = bmp.LockBits(new Rectangle(0, 0, (int)Bounds.Width, (int)Bounds.Height),
-            System.Drawing.Imaging.ImageLockMode.WriteOnly,
-            System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-        GL.ReadPixels(0, 0, (int)Bounds.Width, (int)Bounds.Height,
-            OpenTK.Graphics.OpenGL4.PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
-        bmp.UnlockBits(data);
-        bmp.RotateFlip(System.Drawing.RotateFlipType.RotateNoneFlipY);
-        return bmp;
+        int w = (int)Bounds.Width, h = (int)Bounds.Height;
+        if (w <= 0 || h <= 0) return null;
+
+        // Read GL pixels into SKBitmap
+        var skBmp = new SkiaSharp.SKBitmap(w, h, SkiaSharp.SKColorType.Bgra8888, SkiaSharp.SKAlphaType.Premul);
+        IntPtr pixels = skBmp.GetPixels();
+        GL.ReadPixels(0, 0, w, h,
+            OpenTK.Graphics.OpenGL4.PixelFormat.Bgra, PixelType.UnsignedByte, pixels);
+
+        // Flip vertically (OpenGL reads bottom-up)
+        int rowBytes = skBmp.RowBytes;
+        byte[] rowBuf = new byte[rowBytes];
+        unsafe
+        {
+            byte* ptr = (byte*)pixels;
+            for (int y = 0; y < h / 2; y++)
+            {
+                int topOff = y * rowBytes;
+                int botOff = (h - 1 - y) * rowBytes;
+                System.Runtime.InteropServices.Marshal.Copy((IntPtr)(ptr + topOff), rowBuf, 0, rowBytes);
+                // Swap rows
+                byte[] topRow = new byte[rowBytes];
+                System.Runtime.InteropServices.Marshal.Copy((IntPtr)(ptr + topOff), topRow, 0, rowBytes);
+                byte[] botRow = new byte[rowBytes];
+                System.Runtime.InteropServices.Marshal.Copy((IntPtr)(ptr + botOff), botRow, 0, rowBytes);
+                System.Runtime.InteropServices.Marshal.Copy(botRow, 0, (IntPtr)(ptr + topOff), rowBytes);
+                System.Runtime.InteropServices.Marshal.Copy(topRow, 0, (IntPtr)(ptr + botOff), rowBytes);
+            }
+        }
+
+        // Convert to System.Drawing.Image
+        using var skImage = SkiaSharp.SKImage.FromBitmap(skBmp);
+        using var encoded = skImage.Encode(SkiaSharp.SKEncodedImageFormat.Png, 100);
+        skBmp.Dispose();
+        var ms = new System.IO.MemoryStream();
+        encoded.SaveTo(ms);
+        ms.Position = 0;
+        return System.Drawing.Image.FromStream(ms);
     }
 
     // -----------------------------------------------------------------------
@@ -970,21 +999,41 @@ void main() {
     {
         if (double.IsNaN(textsz)) textsz = 1.0;
         float sz = (float)textsz;
-        // Render text to bitmap and create a billboard quad
-        var font = new System.Drawing.Font("Tahoma", sz);
-        SizeF textSize;
-        using (var tmp = new System.Drawing.Bitmap(1, 1))
-        using (var g = System.Drawing.Graphics.FromImage(tmp))
-            textSize = g.MeasureString(text, font);
 
-        int bw = Math.Max(1, (int)textSize.Width), bh = Math.Max(1, (int)textSize.Height);
-        var bmp = new System.Drawing.Bitmap(bw, bh, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-        using (var g = System.Drawing.Graphics.FromImage(bmp))
+        // Measure text using SKPaint
+        var textPaint = new SkiaSharp.SKPaint
         {
-            g.Clear(System.Drawing.Color.Transparent);
-            g.DrawString(text, font, new System.Drawing.SolidBrush(cl), 0f, 0f);
+            TextSize = sz * 1.33f,
+            IsAntialias = true,
+            Typeface = SkiaSharp.SKTypeface.FromFamilyName("Tahoma"),
+            Color = new SkiaSharp.SKColor(cl.R, cl.G, cl.B, cl.A)
+        };
+        var textBounds = new SkiaSharp.SKRect();
+        textPaint.MeasureText(text, ref textBounds);
+
+        int bw = Math.Max(1, (int)Math.Ceiling(textBounds.Width + 2));
+        int bh = Math.Max(1, (int)Math.Ceiling(textPaint.TextSize + 4));
+
+        // Render text to SKBitmap
+        var skBmp = new SkiaSharp.SKBitmap(bw, bh, SkiaSharp.SKColorType.Bgra8888, SkiaSharp.SKAlphaType.Premul);
+        using (var canvas = new SkiaSharp.SKCanvas(skBmp))
+        {
+            canvas.Clear(SkiaSharp.SKColors.Transparent);
+            canvas.DrawText(text, -textBounds.Left + 1, -textBounds.Top + 1, textPaint);
         }
-        font.Dispose();
+        textPaint.Dispose();
+
+        // Convert to System.Drawing.Image for SetTexture
+        System.Drawing.Image bmp;
+        using (var skImage = SkiaSharp.SKImage.FromBitmap(skBmp))
+        using (var encoded = skImage.Encode(SkiaSharp.SKEncodedImageFormat.Png, 100))
+        {
+            var ms = new System.IO.MemoryStream();
+            encoded.SaveTo(ms);
+            ms.Position = 0;
+            bmp = System.Drawing.Image.FromStream(ms);
+        }
+        skBmp.Dispose();
 
         float qw = bw * sz * 0.01f, qh = bh * sz * 0.01f;
         GlMesh mesh = GlMesh.CreateBillboard(qw, qh);

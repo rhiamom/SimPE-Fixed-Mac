@@ -1741,7 +1741,7 @@ namespace SimPe.PackedFiles.Wrapper
         /// <summary>
         /// Returns the Image stored for a specific Sim
         /// </summary>
-        public System.Drawing.Image Image
+        public object Image
         {
             get
             {
@@ -1751,8 +1751,8 @@ namespace SimPe.PackedFiles.Wrapper
                     if (o!=null)
                     {
                         object[] tags = (object[])o;
-                        if ((System.Drawing.Image)tags[1]!=null)
-                            return (System.Drawing.Image)tags[1];
+                        if (tags[1]!=null)
+                            return tags[1];
                     }
                 }
 

@@ -263,11 +263,11 @@ namespace SimPe.Plugin
 			}
 		}
 
-		public System.Drawing.Image Icon
+		public object Icon
 		{
 			get 
 			{
-				return Ambertation.Drawing.GraphicRoutines.ScaleImage(MemoryCacheItem.Image, ICON_SIZE, ICON_SIZE, true);
+				return Ambertation.Drawing.GraphicRoutines.ScaleImage(MemoryCacheItem.Image as System.Drawing.Image, ICON_SIZE, ICON_SIZE, true);
 			}
 		}
 

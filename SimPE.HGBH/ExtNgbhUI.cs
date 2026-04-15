@@ -256,7 +256,7 @@ namespace SimPe.Plugin
 			else if (pnBadge.IsVisible) pnBadge.Children.Add(this.spc);
 		}
 
-        private void spc_SelectedSimChanged(object sender, System.Drawing.Image thumb, SimPe.PackedFiles.Wrapper.SDesc sdesc)
+        private void spc_SelectedSimChanged(object sender, object thumb, SimPe.PackedFiles.Wrapper.SDesc sdesc)
         {
             if (spc.SelectedSim != null)
             {

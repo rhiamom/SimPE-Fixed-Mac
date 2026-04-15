@@ -103,6 +103,9 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="SkiaSharp" Version="2.88.9" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Update="System">
       <Name>System</Name>
     </Reference>

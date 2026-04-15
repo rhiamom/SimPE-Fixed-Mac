@@ -30,6 +30,7 @@ using System.Drawing;
 using System.Text;
 using System.Xml;
 using Avalonia.Controls;
+using SkiaSharp;
 using SimPe.Scenegraph.Compat;
 using SimPe.Interfaces.Plugin;
 using SimPe.PackedFiles.Wrapper;
@@ -465,15 +466,12 @@ namespace SimPe.Wants
             }
             else
             {
-                Image img = null;
-                if (sdsc.Image != null)
-                    if (sdsc.Image.Width > 8)
-                        img = sdsc.Image;
+                object img = null;
+                if (sdsc.Image is SKBitmap skb2 && skb2.Width > 8)
+                    img = skb2;
                 if (img == null)
-                {
                     img = SimPe.GetImage.NoOne;
-                }
-                btnSim2.Image = img.GetThumbnailImage(64, 64, null, System.IntPtr.Zero);
+                btnSim2.Image = img;
                 llSimName2.Text = sdsc.SimName + " " + sdsc.SimFamilyName; llSREL.Visible = true;
             }
         }
@@ -991,18 +989,15 @@ namespace SimPe.Wants
                     lbXWNTIntOp.Visible = label13.Visible = tbSIArg2.Visible = lbTimes.Visible = lbXWNTIntMult.Visible = (i.Arg2 != 0);
                     tbSISimID.Text = "0x" + Helper.HexString(i.SimID);
                     sdsc = FileTable.ProviderRegistry.SimDescriptionProvider.FindSim(i.SimID) as ExtSDesc;
-                    if (sdsc == null) { btnSim.Image = SimPe.GetImage.NoOne.GetThumbnailImage(64, 64, null, System.IntPtr.Zero); llSimName.Text = ""; }
+                    if (sdsc == null) { btnSim.Image = SimPe.GetImage.NoOne; llSimName.Text = ""; }
                     else
                     {
-                        Image img = null;
-                        if (sdsc.Image!=null)
-                            if (sdsc.Image.Width>8)
-                                img = sdsc.Image;
+                        object img = null;
+                        if (sdsc.Image is SKBitmap skb && skb.Width > 8)
+                            img = skb;
                         if (img == null)
-                        {
-                           img = SimPe.GetImage.NoOne;
-                        }
-                        btnSim.Image = img.GetThumbnailImage(64, 64, null, System.IntPtr.Zero);
+                            img = SimPe.GetImage.NoOne;
+                        btnSim.Image = img;
                         llSimName.Text = sdsc.SimName + " " + sdsc.SimFamilyName;
                     }
 

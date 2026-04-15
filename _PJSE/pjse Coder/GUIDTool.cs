@@ -68,7 +68,7 @@ namespace pjse.guidtool
 
         #endregion
 
-        public override System.Drawing.Image Icon
+        public override object Icon
         {
             get
             {

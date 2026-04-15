@@ -87,7 +87,28 @@ public abstract class BaseDockPanelRenderer : BaseControlRenderer, IDisposable
 		}
 	}
 
-	private Graphics dg = Graphics.FromImage(new Bitmap(1, 1));
+	// Lazy-init a dummy Graphics for MeasureString; avoids System.Drawing.Bitmap in field initializer
+	private static Bitmap _dummyBmp;
+	private Graphics _dg;
+	private Graphics dg
+	{
+		get
+		{
+			if (_dg == null)
+			{
+				// Create 1x1 bitmap via SKBitmap round-trip to avoid bare System.Drawing.Bitmap ctor
+				using var skBmp = new SkiaSharp.SKBitmap(1, 1, SkiaSharp.SKColorType.Bgra8888, SkiaSharp.SKAlphaType.Premul);
+				using var skImg = SkiaSharp.SKImage.FromBitmap(skBmp);
+				using var enc = skImg.Encode(SkiaSharp.SKEncodedImageFormat.Png, 100);
+				var ms = new System.IO.MemoryStream();
+				enc.SaveTo(ms);
+				ms.Position = 0;
+				_dummyBmp = new Bitmap(ms);
+				_dg = Graphics.FromImage(_dummyBmp);
+			}
+			return _dg;
+		}
+	}
 
 	public abstract Dimensions Dimension { get; }
 
@@ -558,6 +579,9 @@ public abstract class BaseDockPanelRenderer : BaseControlRenderer, IDisposable
 
 	public void Dispose()
 	{
-		dg.Dispose();
+		_dg?.Dispose();
+		_dg = null;
+		_dummyBmp?.Dispose();
+		_dummyBmp = null;
 	}
 }

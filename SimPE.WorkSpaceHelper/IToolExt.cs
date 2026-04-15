@@ -35,7 +35,7 @@ namespace SimPe.Interfaces
 		/// Returns null or the Icon that should be dispalyed for this Menu Item (can be null)
 		/// </summary>
 		/// <returns></returns>
-		System.Drawing.Image Icon
+		object Icon
 		{
 			get;
 		}

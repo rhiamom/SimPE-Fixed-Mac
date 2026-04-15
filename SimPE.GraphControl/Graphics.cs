@@ -27,6 +27,7 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Collections;
 using System.Runtime.InteropServices;
+using SkiaSharp;
 
 namespace Ambertation.Drawing
 {
@@ -302,19 +303,48 @@ namespace Ambertation.Drawing
 
 		public static Image MakeTransparent(Image img, Color cl, float tolerance, bool quality)
 		{
-			Bitmap bm = new Bitmap(img.Width, img.Height);
-			
-			// Set the image attribute's color mappings
-			ColorMap[] colorMap = CloseColors(cl, tolerance, Color.Transparent);
+			// Convert source image to SKBitmap for pixel manipulation
+			SKBitmap skSrc;
+			using (var srcMs = new System.IO.MemoryStream())
+			{
+				((Bitmap)img).Save(srcMs, ImageFormat.Png);
+				srcMs.Position = 0;
+				skSrc = SKBitmap.Decode(srcMs);
+			}
 
-			ImageAttributes attr = new ImageAttributes();
-			attr.SetRemapTable(colorMap);	 
- 
-			System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(bm);
-			Ambertation.Windows.Forms.Graph.GraphPanelElement.SetGraphicsMode(g, !quality);
-			Rectangle rect = new Rectangle(0, 0, img.Width, img.Height);
-			g.DrawImage(img, rect, rect.Left, rect.Top, rect.Width, rect.Height, GraphicsUnit.Pixel, attr);
-			g.Dispose();
+			var skResult = new SKBitmap(img.Width, img.Height);
+			int sub = (int)Math.Floor(0xff * tolerance);
+
+			for (int y = 0; y < skSrc.Height; y++)
+			{
+				for (int x = 0; x < skSrc.Width; x++)
+				{
+					SKColor pixel = skSrc.GetPixel(x, y);
+					if (Math.Abs(pixel.Red - cl.R) < sub &&
+						Math.Abs(pixel.Green - cl.G) < sub &&
+						Math.Abs(pixel.Blue - cl.B) < sub)
+					{
+						skResult.SetPixel(x, y, SKColors.Transparent);
+					}
+					else
+					{
+						skResult.SetPixel(x, y, pixel);
+					}
+				}
+			}
+
+			// Convert back to GDI+ Bitmap
+			Bitmap bm;
+			using (var outMs = new System.IO.MemoryStream())
+			{
+				using var skImg = SKImage.FromBitmap(skResult);
+				using var encoded = skImg.Encode(SKEncodedImageFormat.Png, 100);
+				encoded.SaveTo(outMs);
+				outMs.Position = 0;
+				bm = new Bitmap(outMs);
+			}
+			skSrc.Dispose();
+			skResult.Dispose();
 
 			return bm;
 		}
@@ -347,6 +377,32 @@ namespace Ambertation.Drawing
 			g.ReleaseHdc(p);
 		}
 
+		/// <summary>
+		/// Converts an SKBitmap to a System.Drawing.Image (GDI+).
+		/// </summary>
+		public static Image SKBitmapToGdiImage(SKBitmap skBmp)
+		{
+			if (skBmp == null) return null;
+			using var skImg = SKImage.FromBitmap(skBmp);
+			using var encoded = skImg.Encode(SKEncodedImageFormat.Png, 100);
+			var ms = new System.IO.MemoryStream();
+			encoded.SaveTo(ms);
+			ms.Position = 0;
+			return Image.FromStream(ms);
+		}
+
+		/// <summary>
+		/// Converts a System.Drawing.Image (GDI+) to an SKBitmap.
+		/// </summary>
+		public static SKBitmap GdiImageToSKBitmap(Image img)
+		{
+			if (img == null) return null;
+			using var ms = new System.IO.MemoryStream();
+			((Bitmap)img).Save(ms, ImageFormat.Png);
+			ms.Position = 0;
+			return SKBitmap.Decode(ms);
+		}
+
 		public static Image KnockoutImage(Image img, Point pos, Color fillcl)
 		{
 			return KnockoutImage(img, pos, fillcl, true);
@@ -354,23 +410,48 @@ namespace Ambertation.Drawing
 
 		public static Image KnockoutImage(Image img, Point pos, Color fillcl, bool save)
 		{
-            Bitmap bm = null;
-			if (!save) 
-				bm = new Bitmap(img.Width, img.Height);
-			else 			
-				bm = new Bitmap(img.Width+2, img.Height+2);							
+			int w = save ? img.Width + 2 : img.Width;
+			int h = save ? img.Height + 2 : img.Height;
 
-			System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(bm);						
-			if (save) 
+			// Convert source to SKBitmap
+			SKBitmap skSrc;
+			using (var srcMs = new System.IO.MemoryStream())
 			{
-				g.FillRectangle(new SolidBrush(((Bitmap)img).GetPixel(pos.X, pos.Y)), 0, 0, bm.Width, bm.Height);
-				g.DrawImage(img, new Rectangle(1, 1, img.Width, img.Height), new Rectangle(0, 0, img.Width, img.Height), GraphicsUnit.Pixel);
-			} else g.DrawImageUnscaled(img, 0, 0);
-			
-			g.Dispose();
+				((Bitmap)img).Save(srcMs, ImageFormat.Png);
+				srcMs.Position = 0;
+				skSrc = SKBitmap.Decode(srcMs);
+			}
+
+			var skBm = new SKBitmap(w, h);
+			using (var skCanvas = new SKCanvas(skBm))
+			{
+				if (save)
+				{
+					SKColor bgPixel = skSrc.GetPixel(pos.X, pos.Y);
+					skCanvas.Clear(bgPixel);
+					skCanvas.DrawBitmap(skSrc, new SKRect(0, 0, img.Width, img.Height), new SKRect(1, 1, img.Width + 1, img.Height + 1));
+				}
+				else
+				{
+					skCanvas.DrawBitmap(skSrc, 0, 0);
+				}
+			}
+			skSrc.Dispose();
+
+			// Convert to GDI+ Bitmap for FloodFiller (which expects Bitmap)
+			Bitmap bm;
+			using (var outMs = new System.IO.MemoryStream())
+			{
+				using var skImg = SKImage.FromBitmap(skBm);
+				using var encoded = skImg.Encode(SKEncodedImageFormat.Png, 100);
+				encoded.SaveTo(outMs);
+				outMs.Position = 0;
+				bm = new Bitmap(outMs);
+			}
+			skBm.Dispose();
 
 			FloodFiller ff = new FloodFiller();
-			ff.FillColor = fillcl;			
+			ff.FillColor = fillcl;
 			ff.FloodFill(bm, pos);
 			((Bitmap)img).MakeTransparent(fillcl);
 
@@ -386,13 +467,39 @@ namespace Ambertation.Drawing
 		{
 			if (img==null) return img;
 
-			Bitmap bm = new Bitmap(width, height);
-			
-			System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(bm);						
-			Ambertation.Windows.Forms.Graph.GraphPanelElement.SetGraphicsMode(g, !quality);
-			g.DrawImage(img, new Rectangle(0, 0, width, height), new Rectangle(0, 0, img.Width, img.Height), GraphicsUnit.Pixel);
-			g.Dispose();
-			
+			// Convert source to SKBitmap, scale, convert back
+			SKBitmap skSrc;
+			using (var srcMs = new System.IO.MemoryStream())
+			{
+				((Bitmap)img).Save(srcMs, ImageFormat.Png);
+				srcMs.Position = 0;
+				skSrc = SKBitmap.Decode(srcMs);
+			}
+
+			var skResult = new SKBitmap(width, height);
+			using (var skCanvas = new SKCanvas(skResult))
+			{
+				using var paint = new SKPaint
+				{
+					FilterQuality = quality ? SKFilterQuality.High : SKFilterQuality.Low,
+					IsAntialias = quality
+				};
+				skCanvas.DrawBitmap(skSrc, new SKRect(0, 0, skSrc.Width, skSrc.Height), new SKRect(0, 0, width, height), paint);
+			}
+			skSrc.Dispose();
+
+			// Convert back to GDI+ Bitmap
+			Bitmap bm;
+			using (var outMs = new System.IO.MemoryStream())
+			{
+				using var skImg = SKImage.FromBitmap(skResult);
+				using var encoded = skImg.Encode(SKEncodedImageFormat.Png, 100);
+				encoded.SaveTo(outMs);
+				outMs.Position = 0;
+				bm = new Bitmap(outMs);
+			}
+			skResult.Dispose();
+
 			return bm;
 		}		
 

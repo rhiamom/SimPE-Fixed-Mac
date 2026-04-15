@@ -58,7 +58,7 @@ namespace SimPe.Actions.Default
             return Localization.GetString("GroupFilterSet");
         }
 
-        /*public override System.Drawing.Image Icon
+        /*public override object Icon
         {
             get
             {

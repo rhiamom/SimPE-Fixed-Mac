@@ -147,7 +147,7 @@ namespace SimPe.Plugin.Tool.Dockable
 			}
 		}
 
-		public System.Drawing.Image Icon
+		public object Icon
 		{
 			get
 			{

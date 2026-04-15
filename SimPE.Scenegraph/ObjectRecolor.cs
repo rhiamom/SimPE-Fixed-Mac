@@ -404,7 +404,7 @@ namespace SimPe.Plugin
 		/// <param name="mmat">A valid MMAT file</param>
 		protected void AddMATD(SimPe.PackedFiles.Wrapper.Cpf mmat)
 		{
-			SimPe.Packages.File pkg = SimPe.Packages.File.LoadFromFile( System.IO.Path.Combine(PathProvider.Global.GetExpansion(Expansions.BaseGame).InstallFolder, "TSData\\Res\\Sims3D\\Objects02.package"));
+			SimPe.Packages.File pkg = SimPe.Packages.File.LoadFromFile( System.IO.Path.Combine(PathProvider.Global.GetExpansion(Expansions.BaseGame).InstallFolder, "TSData/Res/Sims3D/Objects02.package"));
 			ArrayList list = new ArrayList();
 			string flname = Hashes.StripHashFromName(mmat.GetSaveItem("name").StringValue) + "_txmt";
 			Interfaces.Files.IPackedFileDescriptor[] pfds = pkg.FindFile(flname, 0x49596978);

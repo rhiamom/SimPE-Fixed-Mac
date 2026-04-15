@@ -220,7 +220,7 @@ namespace SimPe.Plugin
             lvfam.Refresh();
 		}
 
-		private void pc_SelectedSimChanged(object sender, System.Drawing.Image thumb, SimPe.PackedFiles.Wrapper.SDesc sdesc)
+		private void pc_SelectedSimChanged(object sender, object thumb, SimPe.PackedFiles.Wrapper.SDesc sdesc)
 		{
 			if (ngbh!=null && pc!=null) 
 			{

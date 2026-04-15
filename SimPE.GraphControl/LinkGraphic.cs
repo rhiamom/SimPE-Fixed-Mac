@@ -26,6 +26,7 @@ using System.Collections;
 using System.ComponentModel;
 using System.Drawing;
 using System.Data;
+using SkiaSharp;
 
 namespace Ambertation.Windows.Forms.Graph
 {
@@ -488,13 +489,13 @@ namespace Ambertation.Windows.Forms.Graph
 			int left = min.X;
 			int top = min.Y;
 			
-			if (Text!="") 
+			if (Text!="")
 			{
-				Bitmap b = new Bitmap(1, 1);
-				System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(b);
-				SizeF sz = g.MeasureString(Text, Font);
-				g.Dispose();
-				b.Dispose();
+				using var measurePaint = new SKPaint { Typeface = SKTypeface.FromFamilyName(Font.FontFamily.Name), TextSize = Font.Size, IsAntialias = true };
+				float textWidth = measurePaint.MeasureText(Text);
+				SKFontMetrics metrics;
+				measurePaint.GetFontMetrics(out metrics);
+				SizeF sz = new SizeF(textWidth, metrics.Descent - metrics.Ascent);
 				int nwd = (int)Math.Max(sz.Width+5, wd);
 				int nhg = (int)Math.Max(sz.Height+5, hg);
 

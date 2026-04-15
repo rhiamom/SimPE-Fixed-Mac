@@ -202,7 +202,7 @@ namespace SimPe.Plugin
         private void getpbpicture()
         {
             gtpbimage.Image = null;
-            SimPe.Packages.File pkg = SimPe.Packages.File.LoadFromFile(System.IO.Path.Combine(PathProvider.Global.Latest.InstallFolder, "TSData\\Res\\UI\\ui.package"));
+            SimPe.Packages.File pkg = SimPe.Packages.File.LoadFromFile(System.IO.Path.Combine(PathProvider.Global.Latest.InstallFolder, "TSData/Res/UI/ui.package"));
             if (pkg != null)
             {
                 SimPe.Interfaces.Files.IPackedFileDescriptor pfd = pkg.FindFile(0x856DDBAC, 0, 0x499DB772, Wrapper.Tipicon);
@@ -222,7 +222,7 @@ namespace SimPe.Plugin
             uint gtnm = Convert.ToUInt32(Wrapper.Tipname) - 1;
             uint gthd = Convert.ToUInt32(Wrapper.Tipheader) - 1;
             uint gtby = Convert.ToUInt32(Wrapper.Tipbody) - 1;
-            SimPe.Packages.File package = SimPe.Packages.File.LoadFromFile(System.IO.Path.Combine(PathProvider.Global.Latest.InstallFolder, "TSData\\Res\\Objects\\objects.package"));
+            SimPe.Packages.File package = SimPe.Packages.File.LoadFromFile(System.IO.Path.Combine(PathProvider.Global.Latest.InstallFolder, "TSData/Res/Objects/objects.package"));
             if (package != null)
             {
                 SimPe.Interfaces.Files.IPackedFileDescriptor pfd = package.FindFile(0x53545223, 0, 0x7FE066DD, 0x0000012D);

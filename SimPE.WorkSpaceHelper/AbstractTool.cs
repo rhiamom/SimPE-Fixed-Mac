@@ -33,7 +33,7 @@ namespace SimPe.Interfaces
 
 		#region IToolExt Member
 
-		public virtual System.Drawing.Image Icon
+		public virtual object Icon
 		{
 			get {return null;}
 		}

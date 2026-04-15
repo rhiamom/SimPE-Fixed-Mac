@@ -57,12 +57,12 @@ namespace SimPe.PackedFiles.Wrapper
 
         public Image GetSimIcon(SimPe.PackedFiles.Wrapper.ExtSDesc sdesc, Color bgcol)
         {
-            return BuildSimPreviewImage(bgcol, sdesc.Image, sdesc.SimId, sdesc);
+            return BuildSimPreviewImage(bgcol, sdesc.Image as Image, sdesc.SimId, sdesc);
         }
 
 		public XPListViewItem Add(SimPe.PackedFiles.Wrapper.ExtSDesc sdesc, Color bgcol)
 		{
-            Image imgbig = BuildSimPreviewImage(bgcol, sdesc.Image, sdesc.SimId, sdesc);
+            Image imgbig = BuildSimPreviewImage(bgcol, sdesc.Image as Image, sdesc.SimId, sdesc);
             return Add(sdesc, imgbig);
         }
 
@@ -87,7 +87,7 @@ namespace SimPe.PackedFiles.Wrapper
 
         public static Image BuildSimPreviewImage(SimPe.PackedFiles.Wrapper.ExtSDesc sdesc, Color bgcol)
         {
-            return BuildSimPreviewImage(bgcol, sdesc.Image, sdesc.SimId, sdesc);
+            return BuildSimPreviewImage(bgcol, sdesc.Image as Image, sdesc.SimId, sdesc);
         }
         protected static Image BuildSimPreviewImage(Color bgcol, Image imgbig, uint guid, SimPe.PackedFiles.Wrapper.ExtSDesc sdesc)
         {
@@ -105,7 +105,8 @@ namespace SimPe.PackedFiles.Wrapper
 			else
 			{
 				var asm = typeof(SimPe.Helper).Assembly;
-				imgbig = Helper.LoadImage(asm.GetManifestResourceStream("SimPe.IconXmlResources.noone.png"));
+				imgbig = Ambertation.Drawing.GraphicRoutines.SKBitmapToGdiImage(
+					Helper.LoadImage(asm.GetManifestResourceStream("SimPe.IconXmlResources.noone.png")));
 			}
             imgbig = Ambertation.Windows.Forms.Graph.ImagePanel.CreateThumbnail(
                 imgbig,

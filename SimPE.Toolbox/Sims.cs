@@ -28,6 +28,7 @@ using System.ComponentModel;
 using Avalonia.Controls;
 using Image = System.Drawing.Image;
 using Avalonia.Layout;
+using SkiaSharp;
 using SimPe.Scenegraph.Compat;
 using ListView  = SimPe.Scenegraph.Compat.ListView;
 using ColumnHeader = SimPe.Scenegraph.Compat.ColumnHeader;
@@ -260,43 +261,49 @@ namespace SimPe.Plugin
 
                 if (sdesc.Unlinked != 0x00 || !sdesc.AvailableCharacterData || sdesc.IsNPC)
                 {
-                if (sdesc.HasImage)
-                    img = sdesc.Image; // ImageLoader.Preview returns SKBitmap; img is System.Drawing.Image — use original
+                SKBitmap skBmp;
+                if (sdesc.HasImage && sdesc.Image is SKBitmap existingBmp)
+                    skBmp = existingBmp;
                 else
-                    img = new Bitmap(SimPe.GetImage.NoOne); // same
-                System.Drawing.Graphics g = Graphics.FromImage(img);
-                    g.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
-                    g.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
-                    //Pen pen = new Pen(Data.MetaData.SpecialSimColor, 3);
-                    //g.FillRectangle(pen.Brush, 0, 0, img.Width, img.Height); // what for??  makes these dark
+                    skBmp = new SKBitmap(1, 1);
+                using (var canvas = new SKCanvas(skBmp))
+                {
+                    //canvas.Clear() not needed — we draw on the existing image
                     int pos = 2;
                     if (sdesc.Unlinked != 0x00)
                     {
-                        g.FillRectangle(new SolidBrush(Data.MetaData.UnlinkedSim), pos, 2, 20, 20);
+                        var c = Data.MetaData.UnlinkedSim;
+                        using (var paint = new SKPaint { Color = new SKColor(c.R, c.G, c.B, c.A), Style = SKPaintStyle.Fill })
+                            canvas.DrawRect(new SKRect(pos, 2, pos + 20, 22), paint);
                         pos += 22;
                     }
                     if (!sdesc.AvailableCharacterData)
                     {
-                        g.FillRectangle(new SolidBrush(Data.MetaData.InactiveSim), pos, 2, 20, 20);
+                        var c = Data.MetaData.InactiveSim;
+                        using (var paint = new SKPaint { Color = new SKColor(c.R, c.G, c.B, c.A), Style = SKPaintStyle.Fill })
+                            canvas.DrawRect(new SKRect(pos, 2, pos + 20, 22), paint);
                         pos += 22;
                     }
                     if (sdesc.IsNPC)
                     {
-                        g.FillRectangle(new SolidBrush(Data.MetaData.NPCSim), pos, 2, 20, 20);
+                        var c = Data.MetaData.NPCSim;
+                        using (var paint = new SKPaint { Color = new SKColor(c.R, c.G, c.B, c.A), Style = SKPaintStyle.Fill })
+                            canvas.DrawRect(new SKRect(pos, 2, pos + 20, 22), paint);
                         pos += 22;
                     }
-                    this.ilist.Images.Add(img);
-                    this.iListSmall.Images.Add(img); // Preview returns SKBitmap — use original
+                }
+                    this.ilist.Images.Add(skBmp);
+                    this.iListSmall.Images.Add(skBmp);
                 }
                 else if (sdesc.HasImage) // if (sdesc.Image != null) -Chris H
                 {
-                    this.ilist.Images.Add(sdesc.Image);
-                    this.iListSmall.Images.Add(sdesc.Image); // Preview returns SKBitmap — use original
+                    this.ilist.Images.Add(sdesc.Image as SkiaSharp.SKBitmap);
+                    this.iListSmall.Images.Add(sdesc.Image as SkiaSharp.SKBitmap);
                 }
                 else
                 {
-                    this.ilist.Images.Add(new Bitmap(SimPe.GetImage.NoOne));
-                    this.iListSmall.Images.Add(new Bitmap(SimPe.GetImage.NoOne)); // Preview returns SKBitmap — use original
+                    this.ilist.Images.Add(new SKBitmap(1, 1));
+                    this.iListSmall.Images.Add(new SKBitmap(1, 1));
                 }
             }
 

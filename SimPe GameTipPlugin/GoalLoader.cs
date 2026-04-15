@@ -74,8 +74,8 @@ namespace SimPe.Plugin
 			return ret;
 		}
 
-		System.Drawing.Image icon;
-		public override System.Drawing.Image Icon
+		object icon;
+		public override object Icon
 		{
 			get
 			{
@@ -214,7 +214,7 @@ namespace SimPe.Plugin
 		/// <summary>
         /// Returns Icon for this Goal or null
 		/// </summary>
-		public virtual System.Drawing.Image Icon
+		public virtual object Icon
 		{
 			get 
 			{
@@ -263,8 +263,8 @@ namespace SimPe.Plugin
 		/// </summary>
 		static void LoadTextPackage() // fuck
 		{
-            txtpkg = SimPe.Packages.File.LoadFromFile(System.IO.Path.Combine(PathProvider.Global.GetExpansion(SimPe.Expansions.IslandStories).InstallFolder, "TSData\\Res\\Text\\Wants.package"));
-            if (txtpkg == null) txtpkg = SimPe.Packages.File.LoadFromFile(System.IO.Path.Combine(SimPe.PathProvider.Global.Latest.InstallFolder, "TSData\\Res\\Text\\Wants.package"));
+            txtpkg = SimPe.Packages.File.LoadFromFile(System.IO.Path.Combine(PathProvider.Global.GetExpansion(SimPe.Expansions.IslandStories).InstallFolder, "TSData/Res/Text/Wants.package"));
+            if (txtpkg == null) txtpkg = SimPe.Packages.File.LoadFromFile(System.IO.Path.Combine(SimPe.PathProvider.Global.Latest.InstallFolder, "TSData/Res/Text/Wants.package"));
 		}
 
 		/// <summary>
@@ -274,9 +274,9 @@ namespace SimPe.Plugin
         {
             if (PathProvider.Global.GetExpansion(SimPe.Expansions.IslandStories).Exists && Helper.XmlRegistry.LoadOnlySimsStory != 28)
             {
-                string gly = (System.IO.Path.Combine(PathProvider.Global.GetExpansion(SimPe.Expansions.IslandStories).InstallFolder, "TSData\\Res\\Wants\\Goals.package"));
+                string gly = (System.IO.Path.Combine(PathProvider.Global.GetExpansion(SimPe.Expansions.IslandStories).InstallFolder, "TSData/Res/Wants/Goals.package"));
                 FileTable.FileIndex.AddIndexFromPackage(gly);
-                gly = (System.IO.Path.Combine(PathProvider.Global.GetExpansion(SimPe.Expansions.IslandStories).InstallFolder, "TSData\\Res\\UI\\ui.package"));
+                gly = (System.IO.Path.Combine(PathProvider.Global.GetExpansion(SimPe.Expansions.IslandStories).InstallFolder, "TSData/Res/UI/ui.package"));
                 FileTable.FileIndex.AddIndexFromPackage(gly);
             }
 			goals = new Hashtable();

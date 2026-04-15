@@ -155,9 +155,20 @@ namespace SimPe.Plugin
 		/// <param name="mmats"></param>
 		/// <param name="sz">Size of the Thumbnail</param>
 		/// <returns>a valid Image</returns>
+		private static System.Drawing.Image SkiaToGdiEmpty(int w, int h)
+		{
+			using var skBmp = new SkiaSharp.SKBitmap(w, h, SkiaSharp.SKColorType.Bgra8888, SkiaSharp.SKAlphaType.Premul);
+			using var skImage = SkiaSharp.SKImage.FromBitmap(skBmp);
+			using var encoded = skImage.Encode(SkiaSharp.SKEncodedImageFormat.Png, 100);
+			var ms = new System.IO.MemoryStream();
+			encoded.SaveTo(ms);
+			ms.Position = 0;
+			return Image.FromStream(ms);
+		}
+
 		protected System.Drawing.Image GetItemThumb(int index, ArrayList mmats, Size sz)
 		{
-			if ((index<0) || (index>=mmats.Count)) return new Bitmap(sz.Width, sz.Height);
+			if ((index<0) || (index>=mmats.Count)) return SkiaToGdiEmpty(sz.Width, sz.Height);
 
 			SimPe.Plugin.MmatWrapper mmat = (SimPe.Plugin.MmatWrapper)mmats[index];
 			GenericRcol txtr = mmat.TXTR;
@@ -173,15 +184,15 @@ namespace SimPe.Plugin
 					{
 						using var skImage = SkiaSharp.SKImage.FromBitmap(skBmp);
 						using var encoded = skImage.Encode(SkiaSharp.SKEncodedImageFormat.Png, 100);
-						using var ms = new System.IO.MemoryStream();
+						var ms = new System.IO.MemoryStream();
 						encoded.SaveTo(ms);
 						ms.Position = 0;
-						return new Bitmap(ms);
+						return Image.FromStream(ms);
 					}
 				}
 			}
 
-			return new Bitmap(sz.Width, sz.Height);
+			return SkiaToGdiEmpty(sz.Width, sz.Height);
 		}
 
 		/// <summary>

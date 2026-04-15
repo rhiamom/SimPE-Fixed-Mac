@@ -25,6 +25,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using SkiaSharp;
 using SimPe;
 
 namespace SimPe
@@ -59,14 +60,14 @@ namespace SimPe
             catch { return null; }
         }
 
-        public static Image load(string fileName)
+        public static SKBitmap load(string fileName)
         {
             if (string.IsNullOrEmpty(fileName))
             {
                 fileName = defaultIconFileName;
             }
 
-            Image img = loadInternal(fileName);
+            SKBitmap img = loadInternal(fileName);
 
             if (img != null)
             {
@@ -83,14 +84,11 @@ namespace SimPe
                 }
             }
 
-            // Last resort: return null on non-Windows (GDI+ not supported on macOS)
-            if (!System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(
-                    System.Runtime.InteropServices.OSPlatform.Windows))
-                return null;
-            return new Bitmap(16, 16);
+            // Last resort: return a blank 16x16 SKBitmap
+            return new SKBitmap(16, 16);
         }
 
-        static Image loadInternal(string fileName)
+        static SKBitmap loadInternal(string fileName)
         {
             string key = fileName.ToLowerInvariant();
             string resourceName;

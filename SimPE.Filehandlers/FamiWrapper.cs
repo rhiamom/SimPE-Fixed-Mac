@@ -27,6 +27,7 @@ using SimPe.Interfaces.Plugin.Internal;
 using SimPe.Interfaces;
 using SimPe.Interfaces.Files;
 using System.Drawing;
+using SkiaSharp;
 
 namespace SimPe.PackedFiles.Wrapper
 {
@@ -331,7 +332,14 @@ namespace SimPe.PackedFiles.Wrapper
                         {
                             SimPe.PackedFiles.Wrapper.Picture pic = new SimPe.PackedFiles.Wrapper.Picture();
                             pic.ProcessData(pfc, package);
-                            return Ambertation.Drawing.GraphicRoutines.MakeTransparent(pic.Image, Color.Black, 0.05f, true);
+                            if (pic.Image == null) return null;
+                            using var _skImg = SKImage.FromBitmap(pic.Image);
+                            using var _enc = _skImg.Encode(SKEncodedImageFormat.Png, 100);
+                            using var _ms = new System.IO.MemoryStream();
+                            _enc.SaveTo(_ms);
+                            _ms.Position = 0;
+                            Image _gdiImg = Image.FromStream(_ms);
+                            return Ambertation.Drawing.GraphicRoutines.MakeTransparent(_gdiImg, Color.Black, 0.05f, true);
                         }
                         catch (Exception) { return null; }
                     }
@@ -341,7 +349,7 @@ namespace SimPe.PackedFiles.Wrapper
                     if (Helper.StartedGui == Executable.Classic || this.FileDescriptor.Instance > 32511 || package.FileName == null) return null;
                     int inxy = System.IO.Path.GetFileNameWithoutExtension(package.FileName).IndexOf("_") + 1;
                     string suyt = System.IO.Path.GetFileNameWithoutExtension(package.FileName).Substring(0, inxy);
-                    SimPe.Packages.File fumbs = SimPe.Packages.File.LoadFromFile(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(package.FileName), "Thumbnails\\" + suyt + "FamilyThumbnails.package"));
+                    SimPe.Packages.File fumbs = SimPe.Packages.File.LoadFromFile(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(package.FileName), "Thumbnails/" + suyt + "FamilyThumbnails.package"));
                     Interfaces.Files.IPackedFileDescriptor pfd = fumbs.FindFileAnyGroup(0x8C3CE95A, 0, this.FileDescriptor.Instance);
                     if (pfd != null)
                     {
@@ -349,7 +357,14 @@ namespace SimPe.PackedFiles.Wrapper
                         {
                             SimPe.PackedFiles.Wrapper.Picture pic = new SimPe.PackedFiles.Wrapper.Picture();
                             pic.ProcessData(pfd, fumbs);
-                            return Ambertation.Drawing.GraphicRoutines.MakeTransparent(pic.Image, Color.Black, 0.05f, true);
+                            if (pic.Image == null) return null;
+                            using var _skImg = SKImage.FromBitmap(pic.Image);
+                            using var _enc = _skImg.Encode(SKEncodedImageFormat.Png, 100);
+                            using var _ms = new System.IO.MemoryStream();
+                            _enc.SaveTo(_ms);
+                            _ms.Position = 0;
+                            Image _gdiImg = Image.FromStream(_ms);
+                            return Ambertation.Drawing.GraphicRoutines.MakeTransparent(_gdiImg, Color.Black, 0.05f, true);
                         }
                         catch (Exception) { return null; }
                     }

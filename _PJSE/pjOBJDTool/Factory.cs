@@ -73,7 +73,7 @@ namespace pjOBJDTool
 
         class hOBJDHelp : IHelp
         {
-            public System.Drawing.Image Icon { get { return null; } }
+            public object Icon { get { return null; } }
             public override string ToString() { return "PJ OBJD Tool"; }
             public void ShowHelp(SimPe.ShowHelpEventArgs e) { SimPe.RemoteControl.ShowHelp("file://" + SimPe.Helper.SimPePluginPath + "/pjOBJDTool.plugin/pjOBJDTool_Help" + "/Contents.htm"); }
         }

@@ -28,6 +28,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Data;
 using System.Windows.Forms;
+using SkiaSharp;
 
 namespace Ambertation.Windows.Forms.Graph
 {
@@ -122,17 +123,26 @@ namespace Ambertation.Windows.Forms.Graph
 		#endregion
 
 		#region Event Override		
-		protected override void OnPaint(System.Drawing.Graphics g, Image canvas, Rectangle dst, Rectangle src)
-		{			
+		protected override void OnPaint(System.Drawing.Graphics g, SKBitmap canvas, Rectangle dst, Rectangle src)
+		{
+			if (canvas == null) return;
+			// Convert SKBitmap to GDI+ Image for drawing with ImageAttributes
+			using var ms = new System.IO.MemoryStream();
+			using var skImg = SKImage.FromBitmap(canvas);
+			using var encoded = skImg.Encode(SKEncodedImageFormat.Png, 100);
+			encoded.SaveTo(ms);
+			ms.Position = 0;
+			using var gdiImg = System.Drawing.Image.FromStream(ms);
+
 			if (!Focused && fade<1)
 			{
 				System.Drawing.Imaging.ImageAttributes imgAttributes = SetupImageAttr(fade);
-				g.DrawImage(canvas, dst, src.Left, src.Top, src.Width, src.Height, System.Drawing.GraphicsUnit.Pixel, imgAttributes);
-			} 
-			else 
+				g.DrawImage(gdiImg, dst, src.Left, src.Top, src.Width, src.Height, System.Drawing.GraphicsUnit.Pixel, imgAttributes);
+			}
+			else
 			{
-				g.DrawImage(canvas, dst, src, System.Drawing.GraphicsUnit.Pixel);
-			}			
+				g.DrawImage(gdiImg, dst, src, System.Drawing.GraphicsUnit.Pixel);
+			}
 		}		
 
 		internal override void OnLostFocus(EventArgs e)

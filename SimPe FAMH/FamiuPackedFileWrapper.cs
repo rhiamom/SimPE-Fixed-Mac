@@ -132,7 +132,7 @@ namespace SimPe.Plugin
                 if (!Helper.IsNeighborhoodFile(package.FileName)) return null;
                 int inxy = System.IO.Path.GetFileNameWithoutExtension(package.FileName).IndexOf("_") + 1;
                 string suyt = System.IO.Path.GetFileNameWithoutExtension(package.FileName).Substring(0, inxy);
-                SimPe.Packages.File fumbs = SimPe.Packages.File.LoadFromFile(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(package.FileName), "Thumbnails\\" + suyt + "FamilyThumbnails.package"));
+                SimPe.Packages.File fumbs = SimPe.Packages.File.LoadFromFile(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(package.FileName), "Thumbnails/" + suyt + "FamilyThumbnails.package"));
                 Interfaces.Files.IPackedFileDescriptor pfd = fumbs.FindFileAnyGroup(0x8C3CE95A, 0, this.FileDescriptor.Instance);
                 if (pfd != null)
                 {

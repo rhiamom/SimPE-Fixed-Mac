@@ -58,7 +58,7 @@ namespace SimPe.Actions.Default
 			}
 		}
 
-		public virtual System.Drawing.Image Icon
+		public virtual object Icon
 		{
 			get
 			{

@@ -66,7 +66,7 @@ namespace SimPe.Custom
         public override string ToString() { return "SimPE"; }
 
         [System.ComponentModel.Browsable(false)]
-        public System.Drawing.Image Icon { get { return null; } }
+        public object Icon { get { return null; } }
 
         object ISettings.GetSettingsObject() { return this; }
 

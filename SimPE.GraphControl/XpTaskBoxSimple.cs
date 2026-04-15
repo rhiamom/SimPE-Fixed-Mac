@@ -20,6 +20,7 @@ using System.IO;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
+using SkiaSharp;
 using GdiSize                = System.Drawing.Size;
 using GdiPoint               = System.Drawing.Point;
 using AvSize                 = Avalonia.Size;
@@ -94,7 +95,7 @@ namespace Ambertation.Windows.Forms
             set { if (font != value) { font = value; InvalidateCanvas(); } }
         }
 
-        System.Drawing.Bitmap canvas;
+        SKBitmap canvas;
         int canvasW, canvasH;
 
         void InvalidateCanvas() { canvas = null; InvalidateVisual(); }
@@ -108,8 +109,10 @@ namespace Ambertation.Windows.Forms
 
             if (w <= 7 || h <= headerh + 21) return;
 
-            canvas = new System.Drawing.Bitmap(w, h);
-            System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(canvas);
+            // Build via GDI+ (GraphicsPath / LinearGradientBrush still need it),
+            // then convert the result to SKBitmap for Avalonia compositing.
+            using var gdiBmp = new System.Drawing.Bitmap(w, h);
+            System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(gdiBmp);
             Rectangle ef3  = new Rectangle(0, 16, w - 1, headerh);
             Rectangle ef3b = new Rectangle(3, ef3.Bottom, w - 7, h - ef3.Bottom - 4);
             Rectangle ef1  = new Rectangle(0, 16, w - 1, h - 0x11);
@@ -136,11 +139,11 @@ namespace Ambertation.Windows.Forms
             g.DrawPath(borderpen, path);
 
             Rectangle ef4;
-            if (mIcon != null)
+            if (mIcon is System.Drawing.Image gdiIcon)
             {
-                GdiSize isize = mIcon.Size;
-                g.DrawImage(mIcon, new Rectangle(IconLocation, isize),
-                            new Rectangle(0, 0, mIcon.Width, mIcon.Height), GraphicsUnit.Pixel);
+                GdiSize isize = gdiIcon.Size;
+                g.DrawImage(gdiIcon, new Rectangle(IconLocation, isize),
+                            new Rectangle(0, 0, gdiIcon.Width, gdiIcon.Height), GraphicsUnit.Pixel);
                 ef4 = new Rectangle(8 + isize.Width + IconLocation.X, 16, w - (isize.Width + IconLocation.X), headerh);
             }
             else
@@ -154,6 +157,12 @@ namespace Ambertation.Windows.Forms
             borderpen.Dispose();
             format1.Dispose();
             g.Dispose();
+
+            // Convert GDI+ bitmap to SKBitmap
+            using var convMs = new MemoryStream();
+            gdiBmp.Save(convMs, System.Drawing.Imaging.ImageFormat.Png);
+            convMs.Position = 0;
+            canvas = SKBitmap.Decode(convMs);
         }
 
         public override void Render(DrawingContext context)
@@ -165,7 +174,9 @@ namespace Ambertation.Windows.Forms
             if (canvas == null) { base.Render(context); return; }
 
             using var ms = new MemoryStream();
-            canvas.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+            using var skImage = SKImage.FromBitmap(canvas);
+            using var encoded = skImage.Encode(SKEncodedImageFormat.Png, 100);
+            encoded.SaveTo(ms);
             ms.Position = 0;
             using var avBmp = new Avalonia.Media.Imaging.Bitmap(ms);
             context.DrawImage(avBmp, new Rect(0, 0, w, h));
@@ -188,7 +199,7 @@ namespace Ambertation.Windows.Forms
         }
 
         [Localizable(true), Description("Icon"), Category("Appearance")]
-        public System.Drawing.Image Icon
+        public object Icon
         {
             get => mIcon;
             set { mIcon = value; InvalidateCanvas(); }
@@ -219,7 +230,7 @@ namespace Ambertation.Windows.Forms
         [Browsable(false)]
         internal Rectangle WorkspaceRect => new Rectangle(3, 0x29, (int)Bounds.Width - 7, (int)Bounds.Height - 40 - 4);
 
-        private System.Drawing.Image mIcon;
+        private object mIcon;
         private string mstrHeaderText;
 
         // ── WinForms-compat stubs used by Wizards of SimPe/Option.cs ──────────

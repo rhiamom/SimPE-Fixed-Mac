@@ -24,6 +24,7 @@
 using System;
 using System.Drawing;
 using SimPe.Interfaces;
+using SkiaSharp;
 
 namespace SimPe.Plugin
 {
@@ -105,26 +106,26 @@ namespace SimPe.Plugin
 		/// <summary>
 		/// Returns the Image of the stored Texture
 		/// </summary>
-		public Image Texture
+		public object Texture
 		{
-			get 
+			get
 			{
-				try 
+				try
 				{
 					SimPe.Plugin.Txtr txtr = new Txtr(null, false);
 
 					//load TXTR
 					Interfaces.Files.IPackedFileDescriptor[] pfd = package.FindFile(TxtrFile+"_txtr", 0x1C4A276C);
-					if (pfd.Length>0) 
+					if (pfd.Length>0)
 					{
 						txtr.ProcessData(pfd[0], package);
 					}
 
 					SimPe.Plugin.ImageData id = (SimPe.Plugin.ImageData)txtr.Blocks[0];
-					return null; // MipMap.Texture is now SKBitmap; Texture property returns System.Drawing.Image — skip
-				} 
+					return null; // MipMap.Texture is now SKBitmap; Texture property returns object — skip
+				}
 				catch (Exception) {
-					return new Bitmap(1, 1);
+					return new SKBitmap(1, 1);
 				}
 			}
 		}

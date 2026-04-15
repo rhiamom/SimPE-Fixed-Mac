@@ -398,37 +398,35 @@ namespace SimPe.PackedFiles.UserInterface
 			return i;
 		}
 
-		private Bitmap DrawConnectors()
+		private object DrawConnectors()
 		{
 			if (flowitems == null || flowitems.Length == 0)
 				return null;
 			if (this.ClientRectangle.Width < pnflow.Width)
 				return null;
 
-			Bitmap img = new Bitmap(pnflow.Width, flowitems.Length * (BhavInstListItemUI.rowHeight + 4));
-			Graphics gr = Graphics.FromImage(img);
-			gr.SmoothingMode =  System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-			gr.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
-			gr.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
+			int imgW = Math.Max(pnflow.Width, 1);
+			int imgH = Math.Max(flowitems.Length * (BhavInstListItemUI.rowHeight + 4), 1);
+			var skBmp = new SkiaSharp.SKBitmap(imgW, imgH, SkiaSharp.SKColorType.Bgra8888, SkiaSharp.SKAlphaType.Premul);
+			using var canvas = new SkiaSharp.SKCanvas(skBmp);
+			canvas.Clear(SkiaSharp.SKColors.Transparent);
 
-			Pen tpen = new Pen(Color.FromArgb(0, 128, 0), 1);
-			Pen fpen = new Pen(Color.FromArgb(128, 0, 0), 1);
-			Pen tpeni = new Pen(Color.FromArgb(0, 220, 0), 3);
-			Pen fpeni = new Pen(Color.FromArgb(220, 0, 0), 3);
-			Pen tpeno = tpen, fpeno = fpen, pen;
-			Point[] points;
+			var tpaint = new SkiaSharp.SKPaint { Color = new SkiaSharp.SKColor(0, 128, 0), StrokeWidth = 1, IsAntialias = true, Style = SkiaSharp.SKPaintStyle.Stroke };
+			var fpaint = new SkiaSharp.SKPaint { Color = new SkiaSharp.SKColor(128, 0, 0), StrokeWidth = 1, IsAntialias = true, Style = SkiaSharp.SKPaintStyle.Stroke };
+			var tipaint = new SkiaSharp.SKPaint { Color = new SkiaSharp.SKColor(0, 220, 0), StrokeWidth = 3, IsAntialias = true, Style = SkiaSharp.SKPaintStyle.Stroke };
+			var fipaint = new SkiaSharp.SKPaint { Color = new SkiaSharp.SKColor(220, 0, 0), StrokeWidth = 3, IsAntialias = true, Style = SkiaSharp.SKPaintStyle.Stroke };
+			SkiaSharp.SKPaint tpaintO = tpaint, fpaintO = fpaint, paint;
 
 			int yUnit = BhavInstListItemUI.rowHeight / 8;
 
 			foreach (Connector c in Connector.Connectors(wrapper))
 			{
 				if (c==null) continue;
-				//if (c.start == c.stop) continue; // skip go to self
 				if (c.start >= flowitems.Length) continue;
 
-				if (c.truerule) pen = tpen; else pen = fpen;
-				if (c.stop == csel)  if (c.truerule) pen = tpeni; else pen = fpeni;
-				if (c.start == csel) if (c.truerule) pen = tpeno; else pen = fpeno;
+				if (c.truerule) paint = tpaint; else paint = fpaint;
+				if (c.stop == csel)  if (c.truerule) paint = tipaint; else paint = fipaint;
+				if (c.start == csel) if (c.truerule) paint = tpaintO; else paint = fpaintO;
 
 				int yPosStart = (BhavInstListItemUI.rowHeight + 4) * c.start + (yUnit * 4) + (yUnit * (c.truerule ? 3 : 1));
 				int xPosLeft = 0;
@@ -441,21 +439,23 @@ namespace SimPe.PackedFiles.UserInterface
 
 					int yPosStop = (BhavInstListItemUI.rowHeight + 4) * c.stop + (yUnit * (c.truerule ? 1 : 3));
 
-					gr.DrawLine( pen, xPosLeft,  yPosStart, xPosRight, yPosStart );
-					gr.DrawLine( pen, xPosRight, yPosStart, xPosRight, yPosStop );
-					gr.DrawLine( pen, xPosRight, yPosStop,  xPosLeft,  yPosStop );
+					canvas.DrawLine(xPosLeft, yPosStart, xPosRight, yPosStart, paint);
+					canvas.DrawLine(xPosRight, yPosStart, xPosRight, yPosStop, paint);
+					canvas.DrawLine(xPosRight, yPosStop, xPosLeft, yPosStop, paint);
 
-					points = new Point[3];
-					points[0] = new Point(xPosLeft, yPosStop);
-					points[1] = new Point(points[0].X + 4, points[0].Y - 4);
-					points[2] = new Point(points[0].X + 4, points[0].Y + 4);
-					gr.FillPolygon(pen.Brush, points);
+					// Arrow head
+					var arrowPath = new SkiaSharp.SKPath();
+					arrowPath.MoveTo(xPosLeft, yPosStop);
+					arrowPath.LineTo(xPosLeft + 4, yPosStop - 4);
+					arrowPath.LineTo(xPosLeft + 4, yPosStop + 4);
+					arrowPath.Close();
+					using var fillPaint = new SkiaSharp.SKPaint { Color = paint.Color, Style = SkiaSharp.SKPaintStyle.Fill, IsAntialias = true };
+					canvas.DrawPath(arrowPath, fillPaint);
 				}
 				else
 				{
-					xPosRight = img.Width - (c.truerule ? 20 : 10);
+					xPosRight = imgW - (c.truerule ? 20 : 10);
 					string glyph;
-					string font = "Verdana";
 					float pts = 8.25F;
 
 					switch (c.stop)
@@ -466,18 +466,28 @@ namespace SimPe.PackedFiles.UserInterface
 						default:     glyph = "?"; break; // Off the end
 					}
 
-					gr.DrawLine( pen, xPosLeft, yPosStart, xPosRight, yPosStart );
-					gr.DrawString( glyph, new System.Drawing.Font(font, pts), pen.Brush, xPosRight, yPosStart - 8 );
+					canvas.DrawLine(xPosLeft, yPosStart, xPosRight, yPosStart, paint);
+					using var textPaint = new SkiaSharp.SKPaint
+					{
+						Color = paint.Color,
+						TextSize = pts * 1.33f,
+						IsAntialias = true,
+						Typeface = SkiaSharp.SKTypeface.FromFamilyName("Verdana")
+					};
+					canvas.DrawText(glyph, xPosRight, yPosStart - 8 + pts * 1.33f, textPaint);
 				}
 			}
-			AddUnlinked(gr);
-			return img;
+			AddUnlinked(canvas, imgW);
+
+			canvas.Flush();
+
+			return skBmp;
 		}
 
-		private void AddUnlinked(Graphics gr)
+		private void AddUnlinked(SkiaSharp.SKCanvas canvas, int canvasWidth)
 		{
-			Pen pen = new Pen(Color.FromArgb(64, 64, 64), 1);
-			Pen penc = new Pen(pen.Color, 3);
+			var paint = new SkiaSharp.SKPaint { Color = new SkiaSharp.SKColor(64, 64, 64), StrokeWidth = 1, IsAntialias = true, Style = SkiaSharp.SKPaintStyle.Stroke };
+			var paintC = new SkiaSharp.SKPaint { Color = new SkiaSharp.SKColor(64, 64, 64), StrokeWidth = 3, IsAntialias = true, Style = SkiaSharp.SKPaintStyle.Stroke };
 			for (int ct = 1; ct < flowitems.Length; ct++)
 			{
 				if (isTarget(ct)) continue;
@@ -486,16 +496,18 @@ namespace SimPe.PackedFiles.UserInterface
 				int xPosRight = pnflow.Width - 1;
 				int yPos = (BhavInstListItemUI.rowHeight + 4) * ct + (BhavInstListItemUI.rowHeight / 4);
 
-				gr.DrawLine(
-					(ct == csel) ? penc : pen,
+				canvas.DrawLine(
 					xPosLeft, yPos,
-					xPosRight, yPos
-					);
-				Point[] points = new Point[3];
-				points[0] = new Point(xPosLeft, yPos);
-				points[1] = new Point(points[0].X + 4, points[0].Y - 4);
-				points[2] = new Point(points[0].X + 4, points[0].Y + 4);
-				gr.FillPolygon(pen.Brush, points);
+					xPosRight, yPos,
+					(ct == csel) ? paintC : paint);
+
+				var arrowPath = new SkiaSharp.SKPath();
+				arrowPath.MoveTo(xPosLeft, yPos);
+				arrowPath.LineTo(xPosLeft + 4, yPos - 4);
+				arrowPath.LineTo(xPosLeft + 4, yPos + 4);
+				arrowPath.Close();
+				using var fillPaint = new SkiaSharp.SKPaint { Color = paint.Color, Style = SkiaSharp.SKPaintStyle.Fill, IsAntialias = true };
+				canvas.DrawPath(arrowPath, fillPaint);
 			}
 		}
 

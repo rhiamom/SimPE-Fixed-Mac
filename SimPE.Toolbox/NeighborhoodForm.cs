@@ -31,6 +31,7 @@ using System.Data;
 using SimPe.Interfaces.Plugin;
 using Avalonia.Controls.Templates;
 using Avalonia.Media;
+using SkiaSharp;
 
 namespace SimPe.Plugin
 {
@@ -262,20 +263,10 @@ namespace SimPe.Plugin
         Interfaces.IProviderRegistry prov;
         bool changed;
 
-        // ── Helper: convert System.Drawing.Image to Avalonia Bitmap ──────────
-        private static Avalonia.Media.Imaging.Bitmap ToAvaloniaBitmap(System.Drawing.Image img)
+        // ── Helper: convert SKBitmap to Avalonia Bitmap ──────────
+        private static Avalonia.Media.Imaging.Bitmap ToAvaloniaBitmap(SkiaSharp.SKBitmap img)
         {
-            if (img == null) return null;
-            try
-            {
-                using (var ms = new System.IO.MemoryStream())
-                {
-                    img.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-                    ms.Position = 0;
-                    return new Avalonia.Media.Imaging.Bitmap(ms);
-                }
-            }
-            catch { return null; }
+            return SimPe.Helper.ToAvaloniaBitmap(img);
         }
 
         protected Avalonia.Media.Imaging.Bitmap AddImage(string path)
@@ -289,13 +280,13 @@ namespace SimPe.Plugin
                 try
                 {
                     System.IO.Stream st = System.IO.File.OpenRead(name);
-                    System.Drawing.Image img = Helper.LoadImage(st);
+                    SkiaSharp.SKBitmap img = Helper.LoadImage(st);
                     st.Close();
                     st.Dispose();
                     st = null;
                     if (WaitingScreen.Running)
                     {
-                        ImageLoader.Preview(img, WaitingScreen.ImageSize); // returns SKBitmap; UpdateImage takes System.Drawing.Image — skip
+                        ImageLoader.Preview(img, WaitingScreen.ImageSize);
                         WaitingScreen.UpdateImage(null);
                     }
                     var bmp = ToAvaloniaBitmap(img);
@@ -305,7 +296,7 @@ namespace SimPe.Plugin
                 catch (System.ArgumentException) { }
             }
 
-            using (var fallback = new System.Drawing.Bitmap(SimPe.GetImage.Network))
+            using (var fallback = new SKBitmap(1, 1))
                 return ToAvaloniaBitmap(fallback);
         }
 
@@ -577,7 +568,7 @@ namespace SimPe.Plugin
 
                 string backuppath = System.IO.Path.Combine(PathProvider.Global.BackupFolder, name);
                 string subname    = DateTime.Now.ToString();
-                backuppath        = System.IO.Path.Combine(backuppath, subname.Replace("\\", "-").Replace("/", "-").Replace(":", "-"));
+                backuppath        = System.IO.Path.Combine(backuppath, subname.Replace("/", "-").Replace("/", "-").Replace(":", "-"));
                 if (!System.IO.Directory.Exists(backuppath)) System.IO.Directory.CreateDirectory(backuppath);
 
                 Helper.CopyDirectory(path, backuppath, true);
@@ -617,7 +608,7 @@ namespace SimPe.Plugin
             if (!lodesubs)
                 return;
 
-            System.Drawing.Image newImg = null;
+            SKBitmap newImg = null;
 
             if (cbtypes.SelectedItem != null)
             {
@@ -639,14 +630,14 @@ namespace SimPe.Plugin
                                 throw new Exception("Preview PNG is unexpectedly large: " + fi.Length);
 
                             using (System.IO.Stream st = System.IO.File.OpenRead(name))
-                            using (System.Drawing.Image tmp = Helper.LoadImage(st, true, true))
-                            using (System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(tmp))
                             {
-                                // Sanity check on dimensions
-                                if (bmp.Width > 4096 || bmp.Height > 4096 || bmp.Width <= 0 || bmp.Height <= 0)
-                                    throw new Exception($"Preview PNG has invalid size {bmp.Width}x{bmp.Height}");
-
-                                newImg = new System.Drawing.Bitmap(bmp);
+                                var bmp = SKBitmap.Decode(st);
+                                if (bmp == null || bmp.Width > 4096 || bmp.Height > 4096 || bmp.Width <= 0 || bmp.Height <= 0)
+                                {
+                                    bmp?.Dispose();
+                                    throw new Exception($"Preview PNG has invalid size");
+                                }
+                                newImg = bmp;
                             }
                         }
                         catch
@@ -669,7 +660,7 @@ namespace SimPe.Plugin
             else if (hapy == "sad")   inst = 0xABBA2591;
 
             SimPe.Packages.File pkg = SimPe.Packages.File.LoadFromFile(
-                System.IO.Path.Combine(PathProvider.Global.Latest.InstallFolder, "TSData\\Res\\UI\\ui.package"));
+                System.IO.Path.Combine(PathProvider.Global.Latest.InstallFolder, "TSData", "Res", "UI/ui.package"));
             if (pkg != null)
             {
                 SimPe.Interfaces.Files.IPackedFileDescriptor pfd = pkg.FindFile(0x856DDBAC, 0, 0x499DB772, inst);

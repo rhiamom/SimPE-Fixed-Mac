@@ -97,7 +97,7 @@ namespace SimPe.Plugin.Tool.Action
 			}
 		}
 
-		public System.Drawing.Image Icon
+		public object Icon
 		{
 			get
 			{

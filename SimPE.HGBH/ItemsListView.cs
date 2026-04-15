@@ -68,14 +68,14 @@ namespace SimPe.Plugin
 
 			if (parent.SmallImageList!=null) 
 			{
-				Image i = item.Icon;
-				if (i!=null) 
+				var i = item.Icon as SkiaSharp.SKBitmap;
+				if (i!=null)
 				{
 					if (this.ImageIndex>=0)
 						parent.SmallImageList.Images[this.ImageIndex] = i;
-					else 
+					else
 					{
-						parent.SmallImageList.Images.Add(i);					
+						parent.SmallImageList.Images.Add(i);
 						this.ImageIndex = parent.SmallImageList.Images.Count-1;
 					}
 				}

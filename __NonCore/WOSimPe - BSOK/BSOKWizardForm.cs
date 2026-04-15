@@ -82,7 +82,7 @@ namespace SimPe.Wizards
                 foreach (KeyValuePair<uint, string> kvp in BodyShapeIds)
                     cbShapes.Items.Add(kvp.Value);
 
-                pak = SimPe.Packages.File.LoadFromFile(System.IO.Path.Combine(PathProvider.Global.Latest.InstallFolder, "TSData\\Res\\UI\\ui.package"));
+                pak = SimPe.Packages.File.LoadFromFile(System.IO.Path.Combine(PathProvider.Global.Latest.InstallFolder, "TSData/Res/UI/ui.package"));
                 if (System.IO.Directory.Exists(System.IO.Path.Combine(PathProvider.SimSavegameFolder, "Downloads")))
                 {
                     string[] files = System.IO.Directory.GetFiles(System.IO.Path.Combine(PathProvider.SimSavegameFolder, "Downloads"), "Bodyshape Icons.package", SearchOption.AllDirectories);
@@ -343,7 +343,7 @@ namespace SimPe.Wizards
             }
         }
 
-        System.Drawing.Image GetBodyIcon(byte bs)
+        object GetBodyIcon(byte bs)
         {
             if (SimPe.Helper.SimPeVersionLong >= 330717003790)
                 return SimPe.GetImage.GetExpansionIcon(bs);

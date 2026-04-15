@@ -45,7 +45,7 @@ namespace SimPe.Interfaces
 		/// a 16x16 Image, that is displayed as an Icon for the Help Topic (by defualt this is a questionmark)
 		/// </summary>
 		/// <returns>null for the derfault, or a custom Image</returns>
-		System.Drawing.Image Icon
+		object Icon
 		{
 			get;
 		}

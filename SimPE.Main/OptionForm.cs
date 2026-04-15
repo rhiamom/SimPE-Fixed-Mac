@@ -308,7 +308,7 @@ namespace SimPe
         #endregion
 
         #region Plugins
-        public Image GetImage(SimPe.Interfaces.IWrapper wrapper)
+        public object GetImage(SimPe.Interfaces.IWrapper wrapper)
         {
             if (uids.Contains(wrapper.WrapperDescription.UID))
                 return Helper.LoadImage(typeof(SimPe.Helper).Assembly.GetManifestResourceStream("SimPe.IconXmlResources.error.png"));
@@ -337,7 +337,7 @@ namespace SimPe
 
         }
 
-        internal Image GetShrinkImage(PluginPanel pn)
+        internal object GetShrinkImage(PluginPanel pn)
         {
             if (pn.Height == PluginPanel.HeaderHeight + 1)
             {

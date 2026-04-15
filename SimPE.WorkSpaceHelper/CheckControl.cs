@@ -29,7 +29,8 @@
 
 using System;
 using System.Windows.Forms;
-using GdiImage = System.Drawing.Image;  // disambiguate from Avalonia.Controls.Image
+using SkiaSharp;
+using GdiImage = SkiaSharp.SKBitmap;  // was System.Drawing.Image — now SkiaSharp
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
@@ -57,7 +58,10 @@ namespace SimPe
         {
             name = "SimPe." + name + ".png";
             System.IO.Stream s = typeof(CheckControl).Assembly.GetManifestResourceStream(name);
-            if (s == null) return new System.Drawing.Bitmap(1, 1);
+            if (s == null)
+            {
+                return new SKBitmap(1, 1);
+            }
             return Helper.LoadImage(s);
         }
 

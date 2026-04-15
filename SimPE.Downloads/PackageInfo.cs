@@ -74,7 +74,7 @@ namespace SimPe.Plugin.Downloads
         /// <returns>The Type of the Package</returns>
         public static SimPe.Cache.PackageType ClassifyPackage(IPackageFile pkg)
         {
-            // Optional: keep Chris’s DLL-exists guard if you like
+            // Optional: keep Chrisï¿½s DLL-exists guard if you like
             string scanDll = System.IO.Path.Combine(
                 SimPe.Helper.SimPePluginPath,
                 "simpe.scanfolder.plugin.dll"
@@ -175,9 +175,9 @@ namespace SimPe.Plugin.Downloads
 			set { cat = value;}
 		}
 
-		Image img;
-		Image myrender;
-		public Image Image
+		object img;
+		object myrender;
+		public object Image
 		{
 			get { 				
 				if (img==null)
@@ -197,7 +197,7 @@ namespace SimPe.Plugin.Downloads
         {
             get { return img != null; }
         }
-		public Image RenderedImage
+		public object RenderedImage
 		{
 			get { return myrender;}
 			set { myrender = value;	}
@@ -279,26 +279,28 @@ namespace SimPe.Plugin.Downloads
 			ClearGuidList();
 		}
 
-		public static Image GeneratePreviewImage(Size sz, Image img, bool knockout, bool aspect)
+		public static object GeneratePreviewImage(Size sz, object img, bool knockout, bool aspect)
 		{
 			if (img==null) return null;
+			Image gdiImg = img as Image;
+			if (gdiImg == null) return img; // SKBitmap or unsupported type â€” pass through
 
 			if (aspect)
 			{
-				double a = (double)img.Width / (double)img.Height;
-				if (img.Height>img.Width)
+				double a = (double)gdiImg.Width / (double)gdiImg.Height;
+				if (gdiImg.Height>gdiImg.Width)
 					sz = new Size((int)(a * sz.Height), sz.Height);
 				else
 					sz = new Size(sz.Width, (int)(sz.Width / a));
 			}
-			if (knockout) 
+			if (knockout)
 			{
-				img = Ambertation.Drawing.GraphicRoutines.KnockoutImage(img, new Point(0,0), Color.Magenta);
-				return Ambertation.Windows.Forms.Graph.ImagePanel.CreateThumbnail(img, sz, 8, Color.FromArgb(90, Color.Black), Color.FromArgb(10, 10, 40), Color.White, Color.FromArgb(80, Color.White), true, 3, 3);
-			} 
-			else 
+				gdiImg = Ambertation.Drawing.GraphicRoutines.KnockoutImage(gdiImg, new Point(0,0), Color.Magenta);
+				return Ambertation.Windows.Forms.Graph.ImagePanel.CreateThumbnail(gdiImg, sz, 8, Color.FromArgb(90, Color.Black), Color.FromArgb(10, 10, 40), Color.White, Color.FromArgb(80, Color.White), true, 3, 3);
+			}
+			else
 			{
-				return Ambertation.Windows.Forms.Graph.ImagePanel.CreateThumbnail(img, sz, 8, Color.FromArgb(90, Color.Black), ThemeManager.Global.ThemeColorDark, Color.White, Color.FromArgb(80, Color.White), true, 3, 3);
+				return Ambertation.Windows.Forms.Graph.ImagePanel.CreateThumbnail(gdiImg, sz, 8, Color.FromArgb(90, Color.Black), ThemeManager.Global.ThemeColorDark, Color.White, Color.FromArgb(80, Color.White), true, 3, 3);
 			}
 		}
 
@@ -312,12 +314,12 @@ namespace SimPe.Plugin.Downloads
 			set {knockout = value;}
 		}
 
-		public Image GetThumbnail()
+		public object GetThumbnail()
 		{
 			return GetThumbnail(new Size(IMAGESIZE, IMAGESIZE));
 		}
 
-		public Image GetThumbnail(Size sz)
+		public object GetThumbnail(Size sz)
 		{
 			if (Image==null) return null;
 			return GeneratePreviewImage(sz, Image, KnockoutThumbnail, true);

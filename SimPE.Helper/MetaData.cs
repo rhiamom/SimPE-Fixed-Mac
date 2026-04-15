@@ -598,10 +598,10 @@ namespace SimPe.Data
 
         #region CEP Strings
 
-        public static string GMND_PACKAGE = System.IO.Path.Combine(PathProvider.SimSavegameFolder, "Downloads\\_EnableColorOptionsGMND.package");
-        public static string MMAT_PACKAGE = System.IO.Path.Combine(PathProvider.Global.GetExpansion(Expansions.BaseGame).InstallFolder, "TSData\\Res\\Sims3D\\_EnableColorOptionsMMAT.package");
+        public static string GMND_PACKAGE = System.IO.Path.Combine(PathProvider.SimSavegameFolder, "Downloads/_EnableColorOptionsGMND.package");
+        public static string MMAT_PACKAGE = System.IO.Path.Combine(PathProvider.Global.GetExpansion(Expansions.BaseGame).InstallFolder, "TSData/Res/Sims3D/_EnableColorOptionsMMAT.package");
         public static string ZCEP_FOLDER  = System.IO.Path.Combine(PathProvider.SimSavegameFolder, "zCEP-EXTRA");
-        public static string CTLG_FOLDER  = System.IO.Path.Combine(PathProvider.Global.GetExpansion(Expansions.BaseGame).InstallFolder, "TSData\\Res\\Catalog\\zCEP-EXTRA");
+        public static string CTLG_FOLDER  = System.IO.Path.Combine(PathProvider.Global.GetExpansion(Expansions.BaseGame).InstallFolder, "TSData/Res/Catalog/zCEP-EXTRA");
 
         #endregion
 
@@ -777,7 +777,7 @@ namespace SimPe.Data
             Virgo = 0x06,		 //de: Jungfrau
             Libra = 0x07,		 //de: Waage
             Scorpio = 0x08,
-            Sagittarius = 0x09,  //de: Schütze
+            Sagittarius = 0x09,  //de: Schï¿½tze
             Capricorn = 0x0A,	 //de: Steinbock
             Aquarius = 0x0B,
             Pisces = 0x0C		 //de: Fische
@@ -1254,7 +1254,7 @@ namespace SimPe.Data
                 KnownFences.Add(0x8F83EA15, "Quaint Half Wall in Rose");
             }
 
-            // Chic Fence – Nightlife and packs that include it
+            // Chic Fence ï¿½ Nightlife and packs that include it
             if (PathProvider.Global.GetExpansion(SimPe.Expansions.Nightlife).Exists
                 || PathProvider.Global.GetExpansion(SimPe.Expansions.PetStories).Exists
                 || PathProvider.Global.GetExpansion(SimPe.Expansions.LifeStories).Exists

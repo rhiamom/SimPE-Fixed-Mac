@@ -27,6 +27,7 @@ using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using Pfim;
 using SimPe.Interfaces.Plugin;
+using SkiaSharp;
 
 namespace SimPe.PackedFiles.Wrapper
 {
@@ -38,12 +39,12 @@ namespace SimPe.PackedFiles.Wrapper
         /// <summary>
         /// Stores the Image
         /// </summary>
-        protected System.Drawing.Image image;
+        protected SKBitmap image;
 
         /// <summary>
         /// Returns the Stored Image
         /// </summary>
-        public System.Drawing.Image Image
+        public SKBitmap Image
         {
             get
             {
@@ -66,22 +67,40 @@ namespace SimPe.PackedFiles.Wrapper
 
         public static Image SetAlpha(Image img)
         {
-            Bitmap bmp = new Bitmap(img.Size.Width, img.Size.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-
-            for (int y = 0; y<bmp.Size.Height; y++)
+            // Convert System.Drawing.Image to SKBitmap for pixel manipulation
+            SKBitmap srcBmp;
+            using (var ms = new System.IO.MemoryStream())
             {
-                for (int x = 0; x<bmp.Size.Width; x++)
-                {
-                    Color basecol = ((Bitmap)img).GetPixel(x, y);
-                    int a = 0xFF - ((basecol.R + basecol.G + basecol.B) / 3);
-                    if (a>0x10) a=0xff;
+                img.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                ms.Position = 0;
+                srcBmp = SKBitmap.Decode(ms);
+            }
+            if (srcBmp == null) return img;
 
-                    Color col = Color.FromArgb(a, basecol);
-                    bmp.SetPixel(x, y, col);
+            int w = srcBmp.Width, h = srcBmp.Height;
+            var bmp = new SKBitmap(w, h, SKColorType.Bgra8888, SKAlphaType.Premul);
+
+            for (int y = 0; y < h; y++)
+            {
+                for (int x = 0; x < w; x++)
+                {
+                    SKColor basecol = srcBmp.GetPixel(x, y);
+                    int a = 0xFF - ((basecol.Red + basecol.Green + basecol.Blue) / 3);
+                    if (a > 0x10) a = 0xff;
+
+                    bmp.SetPixel(x, y, new SKColor(basecol.Red, basecol.Green, basecol.Blue, (byte)a));
                 }
             }
+            srcBmp.Dispose();
 
-            return bmp;
+            // Convert back to System.Drawing.Image
+            using var skImage = SKImage.FromBitmap(bmp);
+            using var encoded = skImage.Encode(SKEncodedImageFormat.Png, 100);
+            bmp.Dispose();
+            var resultMs = new System.IO.MemoryStream();
+            encoded.SaveTo(resultMs);
+            resultMs.Position = 0;
+            return System.Drawing.Image.FromStream(resultMs);
         }
         private static bool IsDdsHeader(byte[] bytes)
         {
@@ -276,7 +295,7 @@ namespace SimPe.PackedFiles.Wrapper
             }
         }
 
-        private static Image TryLoadWithPfim(byte[] bytes)
+        private static SKBitmap TryLoadWithPfim(byte[] bytes)
         {
             int sig = GetPfimFailSig(bytes);
             lock (pfimFailLock)
@@ -291,7 +310,7 @@ namespace SimPe.PackedFiles.Wrapper
                     ? (IImage)Dds.Create(ms, new PfimConfig())
                     : (IImage)Targa.Create(ms, new PfimConfig());
                 using (pfimImage)
-                    return PfimToBitmap(pfimImage);
+                    return PfimToSKBitmap(pfimImage);
             }
             catch
             {
@@ -300,7 +319,7 @@ namespace SimPe.PackedFiles.Wrapper
             }
         }
 
-        private static Bitmap PfimToBitmap(IImage pfimImage)
+        private static SKBitmap PfimToSKBitmap(IImage pfimImage)
         {
             if (pfimImage == null || pfimImage.Width <= 0 || pfimImage.Height <= 0) return null;
             if (pfimImage.Width > 4096 || pfimImage.Height > 4096) return null;
@@ -310,46 +329,39 @@ namespace SimPe.PackedFiles.Wrapper
             byte[] src = pfimImage.Data;
             int srcStride = pfimImage.Stride;
 
-            Bitmap bmp = new Bitmap(w, h, PixelFormat.Format32bppArgb);
-            BitmapData bmpData = bmp.LockBits(new Rectangle(0, 0, w, h),
-                ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-            try
-            {
-                int dstStride = Math.Abs(bmpData.Stride);
-                byte[] dst = new byte[dstStride * h];
+            var skBmp = new SKBitmap(w, h, SKColorType.Bgra8888, SKAlphaType.Premul);
+            IntPtr pixelsPtr = skBmp.GetPixels();
+            int dstStride = skBmp.RowBytes;
+            byte[] dst = new byte[dstStride * h];
 
-                for (int y = 0; y < h; y++)
+            for (int y = 0; y < h; y++)
+            {
+                int srcRow = y * srcStride;
+                int dstRow = y * dstStride;
+                for (int x = 0; x < w; x++)
                 {
-                    int srcRow = y * srcStride;
-                    int dstRow = y * dstStride;
-                    for (int x = 0; x < w; x++)
+                    int si = srcRow + x * 4;
+                    int di = dstRow + x * 4;
+                    if (pfimImage.Format == Pfim.ImageFormat.Rgba32)
                     {
-                        int si = srcRow + x * 4;
-                        int di = dstRow + x * 4;
-                        if (pfimImage.Format == Pfim.ImageFormat.Rgba32)
-                        {
-                            dst[di]     = src[si + 2]; // B
-                            dst[di + 1] = src[si + 1]; // G
-                            dst[di + 2] = src[si];     // R
-                            dst[di + 3] = src[si + 3]; // A
-                        }
-                        else // Bgra32 and similar
-                        {
-                            dst[di]     = src[si];     // B
-                            dst[di + 1] = src[si + 1]; // G
-                            dst[di + 2] = src[si + 2]; // R
-                            dst[di + 3] = src[si + 3]; // A
-                        }
+                        // Pfim Rgba32: R G B A -> SKBitmap Bgra: B G R A
+                        dst[di]     = src[si + 2]; // B
+                        dst[di + 1] = src[si + 1]; // G
+                        dst[di + 2] = src[si];     // R
+                        dst[di + 3] = src[si + 3]; // A
+                    }
+                    else // Bgra32 and similar - already in BGRA order
+                    {
+                        dst[di]     = src[si];     // B
+                        dst[di + 1] = src[si + 1]; // G
+                        dst[di + 2] = src[si + 2]; // R
+                        dst[di + 3] = src[si + 3]; // A
                     }
                 }
+            }
 
-                Marshal.Copy(dst, 0, bmpData.Scan0, dst.Length);
-            }
-            finally
-            {
-                bmp.UnlockBits(bmpData);
-            }
-            return bmp;
+            Marshal.Copy(dst, 0, pixelsPtr, dst.Length);
+            return skBmp;
         }
     }
 }

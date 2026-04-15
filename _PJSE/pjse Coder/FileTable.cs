@@ -147,17 +147,17 @@ namespace pjse
                 if (SimPe.Wait.Running) SimPe.Wait.MaxProgress = 0;
             }
 
-            this.Add(Path.Combine(SimPe.Helper.SimPePluginPath, "pjse.coder.plugin\\GlobalStrings.package"), false, SimPe.Expansions.Custom, true);
+            this.Add(Path.Combine(SimPe.Helper.SimPePluginPath, "pjse.coder.plugin/GlobalStrings.package"), false, SimPe.Expansions.Custom, true);
 
             if (loadEverything)
             {
-                this.Add(Path.Combine(SimPe.Helper.SimPePluginDataPath, "pjse.coder.plugin\\Includes\\GLOBALS.package"), false, SimPe.Expansions.Custom, true);
-                this.Add(Path.Combine(SimPe.Helper.SimPePluginDataPath, "pjse.coder.plugin\\Includes\\SemiGlobals.package"), false, SimPe.Expansions.Custom, true);
-                this.Add(Path.Combine(SimPe.Helper.SimPePluginDataPath, "pjse.coder.plugin\\Includes\\Private.package"), false, SimPe.Expansions.Custom, true);
-                this.Add(Path.Combine(SimPe.Helper.SimPePluginDataPath, "pjse.coder.plugin\\Includes\\RelLabels.package"), false, SimPe.Expansions.Custom, true);
+                this.Add(Path.Combine(SimPe.Helper.SimPePluginDataPath, "pjse.coder.plugin/Includes/GLOBALS.package"), false, SimPe.Expansions.Custom, true);
+                this.Add(Path.Combine(SimPe.Helper.SimPePluginDataPath, "pjse.coder.plugin/Includes/SemiGlobals.package"), false, SimPe.Expansions.Custom, true);
+                this.Add(Path.Combine(SimPe.Helper.SimPePluginDataPath, "pjse.coder.plugin/Includes/Private.package"), false, SimPe.Expansions.Custom, true);
+                this.Add(Path.Combine(SimPe.Helper.SimPePluginDataPath, "pjse.coder.plugin/Includes/RelLabels.package"), false, SimPe.Expansions.Custom, true);
             }
 
-            string packages_txt = Path.Combine(SimPe.Helper.SimPePluginDataPath, "pjse.coder.plugin\\packages.txt");
+            string packages_txt = Path.Combine(SimPe.Helper.SimPePluginDataPath, "pjse.coder.plugin/packages.txt");
             if (loadEverything)
                 if (File.Exists(packages_txt))
                 {
@@ -717,7 +717,7 @@ namespace pjse
         public override string ToString() { return pjse.Localization.GetString("ft_Settings"); }
 
         [System.ComponentModel.Browsable(false)]
-        public System.Drawing.Image Icon { get { return null; } }
+        public object Icon { get { return null; } }
 
         #endregion
     }

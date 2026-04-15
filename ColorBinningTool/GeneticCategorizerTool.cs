@@ -47,7 +47,7 @@ namespace SimPe.Plugin
 
 		#endregion
 
-		public override System.Drawing.Image Icon
+		public override object Icon
 		{
 			get
 			{

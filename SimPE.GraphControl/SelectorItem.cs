@@ -18,6 +18,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using Avalonia;
 using Avalonia.Controls;
+using SkiaSharp;
 
 namespace Ambertation.Windows.Forms
 {
@@ -60,11 +61,10 @@ namespace Ambertation.Windows.Forms
                     txt = value;
                     parent.UpdateSelection(this);
 
-                    // Measure text width using a 1×1 offscreen GDI+ bitmap.
-                    using var bmp1 = new System.Drawing.Bitmap(1, 1);
-                    using var g = System.Drawing.Graphics.FromImage(bmp1);
-                    SizeF sz = g.MeasureString(Text, parent.HeaderFont);
-                    wd = (int)Math.Ceiling(sz.Width);
+                    // Measure text width using SkiaSharp.
+                    using var measurePaint = new SKPaint { Typeface = SKTypeface.FromFamilyName(parent.HeaderFont.FontFamily.Name), TextSize = parent.HeaderFont.Size, IsAntialias = true };
+                    float textWidth = measurePaint.MeasureText(Text);
+                    wd = (int)Math.Ceiling(textWidth);
                 }
             }
         }

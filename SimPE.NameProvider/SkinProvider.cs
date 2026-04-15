@@ -249,7 +249,7 @@ namespace SimPe.Providers
 			if (BasePackage==null) 
 			{
 				Registry reg = Helper.XmlRegistry;
-				string file = System.IO.Path.Combine(PathProvider.Global.GetExpansion(Expansions.BaseGame).InstallFolder, "TSData\\Res\\Catalog\\Skins\\Skins.package");				
+				string file = System.IO.Path.Combine(PathProvider.Global.GetExpansion(Expansions.BaseGame).InstallFolder, "TSData/Res/Catalog/Skins/Skins.package");				
 				if (System.IO.File.Exists(file)) 
 				{
 					BasePackage = SimPe.Packages.File.LoadFromFile(file);
@@ -317,7 +317,7 @@ namespace SimPe.Providers
 		public string FindTxtrName(string matdname)
 		{
 			if (matdname==null) return null;
-			string file = System.IO.Path.Combine(SimPe.PathProvider.Global[Expansions.BaseGame].InstallFolder, "TSData\\Res\\Sims3D\\Sims02.package");				
+			string file = System.IO.Path.Combine(SimPe.PathProvider.Global[Expansions.BaseGame].InstallFolder, "TSData", "Res", "Sims3D/Sims02.package");				
 			
 			if (System.IO.File.Exists(file)) 
 			{
@@ -386,7 +386,7 @@ namespace SimPe.Providers
 		public object FindTxtr(string name) 
 		{
 			if (name==null) return null;
-            string file = System.IO.Path.Combine(SimPe.PathProvider.Global[Expansions.BaseGame].InstallFolder, "TSData\\Res\\Sims3D\\Sims07.package");				
+            string file = System.IO.Path.Combine(SimPe.PathProvider.Global[Expansions.BaseGame].InstallFolder, "TSData", "Res", "Sims3D/Sims07.package");				
 			if (System.IO.File.Exists(file)) 
 			{
 				SimPe.Interfaces.Files.IPackageFile package = SimPe.Packages.File.LoadFromFile(file);

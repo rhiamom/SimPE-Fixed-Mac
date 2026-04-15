@@ -25,6 +25,7 @@ using System;
 using Avalonia.Controls;
 using SimPe.Interfaces.Plugin;
 using SimPe.Interfaces;
+using SkiaSharp;
 
 namespace SimPe.PackedFiles.UserInterface
 {
@@ -46,14 +47,16 @@ namespace SimPe.PackedFiles.UserInterface
 		{
 			form.picwrapper = wrapper;
 			Image pb = form.pb;
-			System.Drawing.Image img = ((SimPe.PackedFiles.Wrapper.Picture)wrapper).Image;
-			// Convert System.Drawing.Image to Avalonia IImage via stream
+			SKBitmap img = ((SimPe.PackedFiles.Wrapper.Picture)wrapper).Image;
+			// Convert SKBitmap to Avalonia IImage via stream
 			if (img != null)
 			{
 				try
 				{
+					using var skImg = SKImage.FromBitmap(img);
+					using var enc = skImg.Encode(SKEncodedImageFormat.Png, 100);
 					using var ms = new System.IO.MemoryStream();
-					img.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+					enc.SaveTo(ms);
 					ms.Seek(0, System.IO.SeekOrigin.Begin);
 					pb.Source = new Avalonia.Media.Imaging.Bitmap(ms);
 				}

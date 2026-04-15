@@ -420,7 +420,7 @@ namespace System.Windows.Forms
         public object Tag    { get; set; }
         public AnchorStyles Anchor { get; set; }
         public System.Drawing.Color BackColor { get; set; }
-        public System.Drawing.Image Image    { get; set; }
+        public object Image    { get; set; }
         public PictureBoxSizeMode SizeMode   { get; set; }
         public event EventHandler Click;
         protected virtual void OnClick(EventArgs e) => Click?.Invoke(this, e);

@@ -25,6 +25,7 @@ using System;
 using System.Collections;
 using System.Drawing;
 using System.ComponentModel;
+using SkiaSharp;
 using SimPe.Scenegraph.Compat;
 using Control        = System.Object;
 using Panel          = SimPe.Scenegraph.Compat.PanelCompat;
@@ -135,8 +136,9 @@ namespace SimPe.Wizards
 		/// <param name="img"></param>
 		/// <param name="select"></param>
 		/// <returns></returns>
-		Image ShowImage(Image img, State select)
+		object ShowImage(object imgObj, State select)
 		{
+			if (imgObj is not Image img) return null;
 			int wd = img.Width;
 
 			Bitmap bm = new Bitmap(img.Width / 4, img.Height);
@@ -159,7 +161,7 @@ namespace SimPe.Wizards
 		/// </summary>
 		/// <param name="top"></param>
 		/// <returns></returns>
-		public PictureBox BuildImage(int left, ref int top, Image img, int index)
+		public PictureBox BuildImage(int left, ref int top, object img, int index)
 		{
 			PictureBox pb = new PictureBox();
 			pb.Parent = this.pnSelect;
@@ -223,22 +225,22 @@ namespace SimPe.Wizards
 		private void SelectButtonEnter(object sender, EventArgs e)
 		{
 			PictureBox pb = (PictureBox)sender;
-			if (selected!=pb) pb.Image = this.ShowImage((Image)pb.Tag, State.over);
+			if (selected!=pb) pb.Image = this.ShowImage(pb.Tag, State.over);
 		}
 
 		private void SelectButtonLeave(object sender, EventArgs e)
 		{
 			PictureBox pb = (PictureBox)sender;
-			if (selected!=pb) pb.Image = this.ShowImage((Image)pb.Tag, State.off);
-			else pb.Image = this.ShowImage((Image)pb.Tag, State.on);
+			if (selected!=pb) pb.Image = this.ShowImage(pb.Tag, State.off);
+			else pb.Image = this.ShowImage(pb.Tag, State.on);
 		}
 
 		private void SelectButtonClick(object sender, EventArgs e)
 		{
-			if (selected!=null) selected.Image = ShowImage((Image)selected.Tag, State.off);
+			if (selected!=null) selected.Image = ShowImage(selected.Tag, State.off);
 
 			PictureBox pb = (PictureBox)sender;
-			pb.Image = this.ShowImage((Image)pb.Tag, State.on);
+			pb.Image = this.ShowImage(pb.Tag, State.on);
 
 			selected = pb;
 			selectedlv = null;
@@ -263,16 +265,14 @@ namespace SimPe.Wizards
 		}
 		#endregion
 
-		ListViewItem CreateItem(string modelname, Image img, SimPe.PackedFiles.Wrapper.ExtObjd objd, string name)
+		ListViewItem CreateItem(string modelname, object img, SimPe.PackedFiles.Wrapper.ExtObjd objd, string name)
 		{
 			ListViewItem lvi = new ListViewItem(name);
 			lvi.Tag = objd;
-			if (img!=null)
+			if (img is SKBitmap skbImg)
 			{
 				lvi.ImageIndex = iObjects.Images.Count;
-				// ImageLoader.Preview returns SKBitmap; Images.Add expects System.Drawing.Image — skip preview
-				iObjects.Images.Add(img);
-				//iObjects.Images.Add(img);
+				iObjects.Images.Add(skbImg);
 			}
 
 			lvi.SubItems.Add(modelname);
@@ -308,7 +308,7 @@ namespace SimPe.Wizards
 			ol.LoadData();
 		}
 
-		protected Image GetImageFile(SimPe.Plugin.Rcol txtr)
+		protected SKBitmap GetImageFile(SimPe.Plugin.Rcol txtr)
 		{
 			SimPe.Plugin.ImageData id = (SimPe.Plugin.ImageData)txtr.Blocks[0];
 			SimPe.Plugin.MipMap mipmap = null;
@@ -320,7 +320,7 @@ namespace SimPe.Wizards
 				}
 			}
 
-			if (mipmap!=null) return null; // mipmap.Texture is now SKBitmap; caller expects System.Drawing.Image
+			if (mipmap!=null) return mipmap.Texture;
 
 			return null;
 		}
@@ -337,12 +337,12 @@ namespace SimPe.Wizards
 				ListViewItem lvi = new ListViewItem(Hashes.StripHashFromName(txtr.FileName));
 				lvi.Tag = txtr;
 
-				Image img = this.GetImageFile(txtr);
+				SKBitmap img = this.GetImageFile(txtr);
 
 				if (img!=null)
 				{
 					lvi.ImageIndex = iTxtrs.Images.Count;
-					iTxtrs.Images.Add(img); // ImageLoader.Preview returns SKBitmap; Images.Add takes System.Drawing.Image — use original
+					iTxtrs.Images.Add(img);
 				}
 
 				lv.Items.Add(lvi);
@@ -466,12 +466,17 @@ namespace SimPe.Wizards
 			if (sfd.ShowDialog() == DialogResult.OK)
 			{
 				SimPe.Plugin.Rcol txtr = (SimPe.Plugin.Rcol)lv.SelectedItems[0].Tag;
-				Image img = this.GetImageFile(txtr);
-				img.Save(sfd.FileName, SimPe.Plugin.ImageLoader.GetImageFormat(sfd.FileName));
-
-				if (cbalpha.Checked)
+				SKBitmap img = this.GetImageFile(txtr);
+				if (img != null)
 				{
-					Bitmap bm = new Bitmap(img.Width, img.Height);
+					using (var fs = System.IO.File.OpenWrite(sfd.FileName))
+					using (var data = img.Encode(SKEncodedImageFormat.Png, 100))
+						data.SaveTo(fs);
+				}
+
+				if (cbalpha.Checked && img != null)
+				{
+					SKBitmap bm = new SKBitmap(img.Width, img.Height);
 					for (int y=0; y<img.Height; y++)
 					{
 						for (int x=0; x<img.Width; x++)
@@ -479,8 +484,9 @@ namespace SimPe.Wizards
 							int a = 0xff;
 							try
 							{
-								a = ((Bitmap)img).GetPixel(x, y).A;
-								bm.SetPixel(x, y, Color.FromArgb(a, a, a));
+								SKColor pixel = img.GetPixel(x, y);
+								a = pixel.Alpha;
+								bm.SetPixel(x, y, new SKColor((byte)a, (byte)a, (byte)a, 255));
 							}
 #if DEBUG
 							catch (Exception ex)
@@ -493,7 +499,10 @@ namespace SimPe.Wizards
 							}
 						}
 					}
-					bm.Save(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(sfd.FileName), System.IO.Path.GetFileNameWithoutExtension(sfd.FileName))+"_alpha"+System.IO.Path.GetExtension(sfd.FileName), SimPe.Plugin.ImageLoader.GetImageFormat(sfd.FileName));
+					string alphaPath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(sfd.FileName), System.IO.Path.GetFileNameWithoutExtension(sfd.FileName))+"_alpha"+System.IO.Path.GetExtension(sfd.FileName);
+					using (var fs = System.IO.File.OpenWrite(alphaPath))
+					using (var data = bm.Encode(SKEncodedImageFormat.Png, 100))
+						data.SaveTo(fs);
 				}
 			}
 		}
@@ -534,7 +543,7 @@ namespace SimPe.Wizards
 				//Update the Image
 				if ((lv.SelectedItems[0].ImageIndex>=0) && (lv.SelectedItems[0].ImageIndex<iTxtrs.Images.Count))
 				{
-					this.iTxtrs.Images[lv.SelectedItems[0].ImageIndex] = this.GetImageFile(txtr); // Preview returns SKBitmap; Images[i] takes System.Drawing.Image — use original
+					this.iTxtrs.Images[lv.SelectedItems[0].ImageIndex] = this.GetImageFile(txtr);
 				}
 			}
 		}
@@ -621,14 +630,14 @@ namespace SimPe.Wizards
 			//WaitingScreen.UpdateMessage(a.Name);
 			SimPe.PackedFiles.Wrapper.ExtObjd objd = new SimPe.PackedFiles.Wrapper.ExtObjd();
 			objd.ProcessData(fii);
-			Image img = oci.Thumbnail;
-			if (img!=null)
+			object imgObj = oci.Thumbnail;
+			if (imgObj is Image sdi)
 			{
-				img = Ambertation.Drawing.GraphicRoutines.KnockoutImage(img, new Point(0,0), Color.Magenta);
-				img = Ambertation.Windows.Forms.Graph.ImagePanel.CreateThumbnail(img, this.iObjects.ImageSize, 8, Color.FromArgb(90, Color.Black), Color.FromArgb(10, 10, 40), Color.White, Color.FromArgb(80, Color.White), true, 3, 3);
-
+				sdi = Ambertation.Drawing.GraphicRoutines.KnockoutImage(sdi, new Point(0,0), Color.Magenta);
+				sdi = Ambertation.Windows.Forms.Graph.ImagePanel.CreateThumbnail(sdi, this.iObjects.ImageSize, 8, Color.FromArgb(90, Color.Black), Color.FromArgb(10, 10, 40), Color.White, Color.FromArgb(80, Color.White), true, 3, 3);
+				imgObj = sdi;
 			}
-			ListViewItem item = this.CreateItem(a.Tag[2].ToString(), img, objd, a.Name);
+			ListViewItem item = this.CreateItem(a.Tag[2].ToString(), imgObj, objd, a.Name);
 
 			bool added = false;
 			if (objd.FunctionSort.InAppliances) { lvobjs[(int)Data.ObjFunctionSortBits.Appliances].Items.Add((ListViewItem)item.Clone()); added=true;}

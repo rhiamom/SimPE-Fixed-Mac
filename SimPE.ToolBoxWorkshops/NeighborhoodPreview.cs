@@ -26,6 +26,7 @@ using System.Collections;
 using System.ComponentModel;
 using System.Drawing;
 using System.Data;
+using SkiaSharp;
 using Avalonia.Controls;
 using SimPe.Scenegraph.Compat;
 using Image = System.Drawing.Image;
@@ -275,10 +276,10 @@ namespace SimPe.Plugin.Tool.Dockable
 			return null;
 		}
 
-		Image defimg;
+		object defimg;
 		protected void BuildDefaultImage()
 		{
-            defimg = SimPe.GetImage.Demo;
+            defimg = new SKBitmap(1, 1);
 		}
 
 

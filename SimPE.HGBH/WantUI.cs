@@ -22,6 +22,7 @@
  ***************************************************************************/
 
 using System;
+using SkiaSharp;
 using SimPe.Interfaces.Plugin;
 
 namespace SimPe.Plugin
@@ -134,7 +135,7 @@ namespace SimPe.Plugin
 
 				form.tvhist.Nodes.Clear();
 				form.ihist.Images.Clear();			
-				form.ihist.Images.Add(new System.Drawing.Bitmap(this.GetType().Assembly.GetManifestResourceStream("SimPe.Plugin.nothumb.png")));			
+				form.ihist.Images.Add(SKBitmap.Decode(this.GetType().Assembly.GetManifestResourceStream("SimPe.Plugin.nothumb.png")));			
 
 				if (wrp.Version >= 0x06)
 				{

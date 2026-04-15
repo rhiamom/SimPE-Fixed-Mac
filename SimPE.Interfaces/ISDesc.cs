@@ -52,7 +52,7 @@ namespace SimPe.Interfaces.Wrapper
 		/// <summary>
 		/// Returns the Image stored for a specific Sim
 		/// </summary>
-		System.Drawing.Image Image 
+		object Image
 		{
 			get;
 		}

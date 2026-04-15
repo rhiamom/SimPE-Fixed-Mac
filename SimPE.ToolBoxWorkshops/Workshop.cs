@@ -23,6 +23,7 @@
 
 using System;
 using System.Drawing;
+using SkiaSharp;
 using SimPe.Scenegraph.Compat;
 using SelectionMode = Avalonia.Controls.SelectionMode;
 using System.Collections;
@@ -164,9 +165,9 @@ namespace SimPe.Plugin
             this.tvigarden.Nodes.Clear();
 
 			this.ilist.Images.Clear();
-            this.ilist.Images.Add(new Avalonia.Media.Imaging.Bitmap(this.GetType().Assembly.GetManifestResourceStream("SimPe.Plugin.Tool.Dockable.subitems.png")));
-            this.ilist.Images.Add(new Avalonia.Media.Imaging.Bitmap(this.GetType().Assembly.GetManifestResourceStream("SimPe.Plugin.Tool.Dockable.nothumb.png")));
-            this.ilist.Images.Add(new Avalonia.Media.Imaging.Bitmap(this.GetType().Assembly.GetManifestResourceStream("SimPe.Plugin.Tool.Dockable.custom.png")));
+            this.ilist.Images.Add(SKBitmap.Decode(this.GetType().Assembly.GetManifestResourceStream("SimPe.Plugin.Tool.Dockable.subitems.png")));
+            this.ilist.Images.Add(SKBitmap.Decode(this.GetType().Assembly.GetManifestResourceStream("SimPe.Plugin.Tool.Dockable.nothumb.png")));
+            this.ilist.Images.Add(SKBitmap.Decode(this.GetType().Assembly.GetManifestResourceStream("SimPe.Plugin.Tool.Dockable.custom.png")));
 		}
 
 		/// <summary>
@@ -178,7 +179,7 @@ namespace SimPe.Plugin
 		/// <param name="functionsort">The function SOrt Value</param>
 		/// <param name="name">The name of the package where this Object was found in</param>
 		/// <param name="group">The group for this Object</param>
-        void PutItemToTree(Data.Alias a, Image img, SimPe.Data.ObjectTypes type, SimPe.PackedFiles.Wrapper.ObjFunctionSort functionsort, SimPe.PackedFiles.Wrapper.ObjBuildType buildtype, string name, uint group)
+        void PutItemToTree(Data.Alias a, object img, SimPe.Data.ObjectTypes type, SimPe.PackedFiles.Wrapper.ObjFunctionSort functionsort, SimPe.PackedFiles.Wrapper.ObjBuildType buildtype, string name, uint group)
         {
             TreeNode node = new SimPe.Scenegraph.Compat.TreeNode(a.Name + " (0x" + Helper.HexString(group) + ")");
 			node.Tag = a;
@@ -186,7 +187,7 @@ namespace SimPe.Plugin
 			{
 				node.ImageIndex = ilist.Images.Count;
 				node.SelectedImageIndex = ilist.Images.Count;
-				ilist.Images.Add(img); // ImageLoader.Preview returns SKBitmap; Images.Add expects System.Drawing.Image — use original
+				ilist.Images.Add(img as SkiaSharp.SKBitmap); // ImageLoader.Preview returns SKBitmap; Images.Add expects SKBitmap
 			} 
 			else 
 			{
@@ -732,7 +733,7 @@ namespace SimPe.Plugin
 		/// <param name="group"></param>
 		/// <param name="modelname"></param>
 		/// <returns>The Thumbnail</returns>
-		public static Image GetThumbnail(uint group, string modelname) 
+		public static object GetThumbnail(uint group, string modelname) 
 		{
 			return GetThumbnail(group, modelname, null);
 		}
@@ -742,12 +743,12 @@ namespace SimPe.Plugin
 		/// <param name="group"></param>
 		/// <param name="modelname"></param>
 		/// <returns>The Thumbnail</returns>
-		public static Image GetThumbnail(uint group, string modelname, string message) 
+		public static object GetThumbnail(uint group, string modelname, string message) 
 		{
 			uint inst = ThumbnailHash(group, modelname);
 			if (thumbs==null) 
 			{
-                thumbs = SimPe.Packages.File.LoadFromFile(System.IO.Path.Combine(PathProvider.SimSavegameFolder, "Thumbnails\\ObjectThumbnails.package"));
+                thumbs = SimPe.Packages.File.LoadFromFile(System.IO.Path.Combine(PathProvider.SimSavegameFolder, "Thumbnails/ObjectThumbnails.package"));
 				thumbs.Persistent = true;
 			}
 
@@ -761,7 +762,7 @@ namespace SimPe.Plugin
 					SimPe.PackedFiles.Wrapper.Picture pic = new SimPe.PackedFiles.Wrapper.Picture();
 					pic.ProcessData(pfd, thumbs);
 					SkiaSharp.SKBitmap bm = ImageLoader.Preview(pic.Image, WaitingScreen.ImageSize);
-					if (WaitingScreen.Running) WaitingScreen.Update((System.Drawing.Bitmap)null, message);
+					if (WaitingScreen.Running) WaitingScreen.Update((SkiaSharp.SKBitmap)null, message);
 					return pic.Image;
 				}
 				catch(Exception){}

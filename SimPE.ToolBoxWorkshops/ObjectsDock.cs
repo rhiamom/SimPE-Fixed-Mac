@@ -30,6 +30,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
+using SkiaSharp;
 using System.Windows.Forms;
 using SimPe.Scenegraph.Compat;
 using Image = System.Drawing.Image;
@@ -717,25 +718,13 @@ namespace SimPe.Plugin.Tool.Dockable
 
 		private void button1_Click(object sender, System.EventArgs e)
 		{
-			try
-			{
-				System.Diagnostics.Debug.WriteLine($"[OW] button1_Click: wizard1.Children.Count={wizard1.Children.Count}, CurrentStepNumber={wizard1.CurrentStepNumber}");
-				onlybase = false;
-				bool advanced = wizard1.GoNext();
-				System.Diagnostics.Debug.WriteLine($"[OW] button1_Click: GoNext returned {advanced}, now on step {wizard1.CurrentStepNumber}");
-			}
-			catch (Exception ex)
-			{
-				System.Diagnostics.Debug.WriteLine($"[OW] button1_Click EXCEPTION: {ex}");
-				throw;
-			}
+			onlybase = false;
+			Activate_biNext(biNext, e);
 		}
 
         delegate void TreeViewSetUpdateHandler(TreeView tv, bool begin);
 
         protected TreeNode RootNode;
-        // Collects aliases from the background loader thread; batch-added to lb on UI thread in invoke_ol_Finished.
-        private System.Collections.Concurrent.ConcurrentBag<SimPe.Data.Alias> _pendingListBoxItems = new System.Collections.Concurrent.ConcurrentBag<SimPe.Data.Alias>();
 		private void wizardStepPanel2_Prepare(SimPe.Wizards.Wizard sender, SimPe.Wizards.WizardStepPanel step, int target)
 		{
 			if (target==step.Index) 
@@ -748,12 +737,11 @@ namespace SimPe.Plugin.Tool.Dockable
 					lb.IsEnabled = false;
 					lastselected = null;
 					this.ilist.Images.Clear();
-					this.ilist.Images.Add(new Avalonia.Media.Imaging.Bitmap(this.GetType().Assembly.GetManifestResourceStream("SimPe.Plugin.Tool.Dockable.subitems.png")));
-					this.ilist.Images.Add(new Avalonia.Media.Imaging.Bitmap(this.GetType().Assembly.GetManifestResourceStream("SimPe.Plugin.Tool.Dockable.nothumb.png")));
-					this.ilist.Images.Add(new Avalonia.Media.Imaging.Bitmap(this.GetType().Assembly.GetManifestResourceStream("SimPe.Plugin.Tool.Dockable.custom.png")));
+					this.ilist.Images.Add(SKBitmap.Decode(this.GetType().Assembly.GetManifestResourceStream("SimPe.Plugin.Tool.Dockable.subitems.png")));
+					this.ilist.Images.Add(SKBitmap.Decode(this.GetType().Assembly.GetManifestResourceStream("SimPe.Plugin.Tool.Dockable.nothumb.png")));
+					this.ilist.Images.Add(SKBitmap.Decode(this.GetType().Assembly.GetManifestResourceStream("SimPe.Plugin.Tool.Dockable.custom.png")));
 
 					lb.Items.Clear();
-                    _pendingListBoxItems = new System.Collections.Concurrent.ConcurrentBag<SimPe.Data.Alias>();
                     RootNode.Nodes.Clear();
 					tv.Nodes.Clear();
 					tv.Sorted = true;
@@ -771,35 +759,33 @@ namespace SimPe.Plugin.Tool.Dockable
 		delegate SimPe.Scenegraph.Compat.TreeNode GetParentNodeHandler(TreeNodeCollection nodes, string[] names, int id, SimPe.Cache.ObjectCacheItem oci, SimPe.Data.Alias a, ImageList ilist);
 		
 
-		private int _loadedItemCount = 0;
 		private void ol_LoadedItem(SimPe.Cache.ObjectCacheItem oci, SimPe.Interfaces.Scenegraph.IScenegraphFileIndexItem fii, SimPe.Data.Alias a)
 		{
 			if (a==null) return;
 
             //if (oci.Class == SimPe.Cache.ObjectClass.XObject && !Helper.XmlRegistry.OWincludewalls) return;
 
-			string[][] cats = oci.ObjectCategory;
-			foreach (string[] ss in cats)
-			{
+			string[][] cats = oci.ObjectCategory;			
+			foreach (string[] ss in cats)				
+			{			
 				ObjectLoader.GetParentNode(RootNode.Nodes, ss, 0, oci, a, ilist);
 			}
 
-            // Accumulate on the background thread; lb.Items is updated on the UI thread in invoke_ol_Finished.
-            _pendingListBoxItems.Add(a);
-			int n = System.Threading.Interlocked.Increment(ref _loadedItemCount);
-			if (n == 1 || n % 100 == 0)
-				System.Diagnostics.Debug.WriteLine($"[OW] ol_LoadedItem #{n}: {a.Name}");
+            AddItemToListBox( a , EventArgs.Empty);			
 		}
+
+        private void AddItemToListBox(object obj, EventArgs e)
+        {
+            lb.Items.Add(obj);
+        }
 
         private void ol_Finished(object sender, EventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine($"[OW] ol_Finished: {_loadedItemCount} items loaded, posting to UI thread");
             Avalonia.Threading.Dispatcher.UIThread.Post(() => invoke_ol_Finished(sender, e));
         }
 
         private void invoke_ol_Finished(object sender, EventArgs e)
 		{
-			System.Diagnostics.Debug.WriteLine($"[OW] invoke_ol_Finished: RootNode.Nodes.Count={RootNode.Nodes.Count}, pending lb items={_pendingListBoxItems.Count}");
 			tv.IsEnabled = true;
 
             Wait.SubStart(RootNode.Nodes.Count);
@@ -812,10 +798,6 @@ namespace SimPe.Plugin.Tool.Dockable
             }
 
             tv.EndUpdate();
-
-            // Batch-fill lb on the UI thread from items accumulated by the background loader.
-            foreach (SimPe.Data.Alias a in _pendingListBoxItems)
-                lb.Items.Add(a);
 
             // Populate the Avalonia TreeView from the compat tree data
             Wait.Message = "Building Catalog View";

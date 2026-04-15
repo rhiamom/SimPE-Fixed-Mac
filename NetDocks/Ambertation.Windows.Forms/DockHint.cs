@@ -174,7 +174,17 @@ public class DockHint : ManagedLayeredForm
 
 	private Bitmap BuildHints(SelectedHint sel)
 	{
-		Bitmap bitmap = new Bitmap(base.Width, base.Height);
+		// Dock hint rendering is a no-op on Avalonia (SelectBitmap discards the result).
+		// Use SKBitmap to avoid System.Drawing.Bitmap constructor; RenderHint still
+		// requires Graphics, so we create a minimal GDI Bitmap from the SKBitmap data.
+		int w = Math.Max(1, base.Width), h = Math.Max(1, base.Height);
+		using var skBmp = new SkiaSharp.SKBitmap(w, h, SkiaSharp.SKColorType.Bgra8888, SkiaSharp.SKAlphaType.Premul);
+		using var skImg = SkiaSharp.SKImage.FromBitmap(skBmp);
+		using var enc = skImg.Encode(SkiaSharp.SKEncodedImageFormat.Png, 100);
+		var ms = new System.IO.MemoryStream();
+		enc.SaveTo(ms);
+		ms.Position = 0;
+		Bitmap bitmap = new Bitmap(ms);
 		Graphics graphics = Graphics.FromImage(bitmap);
 		base.Manager.Renderer.DockRenderer.RenderHint(graphics, LeftIndicator, TopIndicator, RightIndicator, BottomIndicator, CenterIndicator, sel);
 		if (sel == SelectedHint.None && this.HoverNone != null)

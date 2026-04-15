@@ -69,7 +69,7 @@ namespace SimPe.Plugin.Tool.Dockable
 			get { return 0; }
 		}
 
-		public System.Drawing.Image Icon
+		public object Icon
 		{
 			get
 			{

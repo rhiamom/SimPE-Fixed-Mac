@@ -165,15 +165,17 @@ namespace SimPe.Providers
                         if (iitems.Length > 0)
                         {
                             pic.ProcessData(iitems[0]);
-                            System.Drawing.Image img = pic.Image;
+                            SkiaSharp.SKBitmap img = pic.Image;
                             o[2] = img;
 
-                            // Convert GDI Image to Avalonia Bitmap for WaitingScreen
+                            // Convert SKBitmap to Avalonia Bitmap for WaitingScreen
                             Avalonia.Media.Imaging.Bitmap? avBmp = null;
                             if (img != null)
                             {
+                                using var skImg = SkiaSharp.SKImage.FromBitmap(img);
+                                using var enc = skImg.Encode(SkiaSharp.SKEncodedImageFormat.Png, 100);
                                 using var ms = new System.IO.MemoryStream();
-                                img.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                                enc.SaveTo(ms);
                                 ms.Seek(0, System.IO.SeekOrigin.Begin);
                                 avBmp = new Avalonia.Media.Imaging.Bitmap(ms);
                             }
@@ -276,7 +278,7 @@ namespace SimPe.Providers
 			if (BasePackage==null) 
 			{
 				Registry reg = Helper.XmlRegistry;
-				string file = System.IO.Path.Combine(SimPe.PathProvider.Global.GetExpansion(Expansions.BaseGame).InstallFolder, "TSData\\Res\\Objects\\objects.package");				
+				string file = System.IO.Path.Combine(SimPe.PathProvider.Global.GetExpansion(Expansions.BaseGame).InstallFolder, "TSData/Res/Objects/objects.package");				
 				if (System.IO.File.Exists(file)) 
 				{
 					BasePackage = SimPe.Packages.File.LoadFromFile(file);

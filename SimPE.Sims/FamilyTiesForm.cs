@@ -65,7 +65,7 @@ namespace SimPe.PackedFiles.UserInterface
         internal Wrapper.ExtFamilyTies wrapper;
 
         SimPe.PackedFiles.Wrapper.SDesc lastsdsc, currentsdsc;
-        System.Drawing.Image thumb;
+        object thumb;
 
         public FamilyTiesForm()
         {
@@ -85,7 +85,7 @@ namespace SimPe.PackedFiles.UserInterface
 
         public void Dispose() { }
 
-        internal void pool_SelectedSimChanged(object sender, System.Drawing.Image thumb, SimPe.PackedFiles.Wrapper.SDesc sdesc)
+        internal void pool_SelectedSimChanged(object sender, object thumb, SimPe.PackedFiles.Wrapper.SDesc sdesc)
         {
             if (cbLock.IsChecked == true) return;
 
@@ -95,7 +95,7 @@ namespace SimPe.PackedFiles.UserInterface
             ties.UpdateGraph(sdesc, wrapper);
         }
 
-        private void pool_ClickOverSim(object sender, System.Drawing.Image thumb, SimPe.PackedFiles.Wrapper.SDesc sdesc)
+        private void pool_ClickOverSim(object sender, object thumb, SimPe.PackedFiles.Wrapper.SDesc sdesc)
         {
             lastsdsc = sdesc;
             this.thumb = thumb;
@@ -116,7 +116,7 @@ namespace SimPe.PackedFiles.UserInterface
             wrapper.Changed = true;
         }
 
-        private void ties_SelectedSimChanged(object sender, System.Drawing.Image thumb, SimPe.PackedFiles.Wrapper.SDesc sdesc)
+        private void ties_SelectedSimChanged(object sender, object thumb, SimPe.PackedFiles.Wrapper.SDesc sdesc)
         {
             if (sdesc != null)
             {
@@ -154,7 +154,7 @@ namespace SimPe.PackedFiles.UserInterface
             llrem.IsEnabled = cbrel.IsEnabled;
         }
 
-        private void ties_DoubleClickSim(object sender, System.Drawing.Image thumb, SimPe.PackedFiles.Wrapper.SDesc sdesc)
+        private void ties_DoubleClickSim(object sender, object thumb, SimPe.PackedFiles.Wrapper.SDesc sdesc)
         {
             if (sdesc != null && sdesc != currentsdsc)
             {

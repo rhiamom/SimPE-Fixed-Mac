@@ -76,26 +76,25 @@ namespace SimPe
                     foreach (var pack in scan.Packs)
                     {
                         string tsData = System.IO.Path.Combine(pack.FullPath, "TSData");
-                        string res    = System.IO.Path.Combine(tsData, "Res");
 
-                        folders.Add(new FileTableItem(System.IO.Path.Combine(res, "Objects"), false, false));
-                        folders.Add(new FileTableItem(System.IO.Path.Combine(res, "Overrides"), false, false));
-                        folders.Add(new FileTableItem(System.IO.Path.Combine(res, "StuffPack", "Objects"), false, false));
+                        folders.Add(new FileTableItem(System.IO.Path.Combine(tsData, "Res", "Objects"), false, false));
+                        folders.Add(new FileTableItem(System.IO.Path.Combine(tsData, "Res", "Overrides"), false, false));
+                        folders.Add(new FileTableItem(System.IO.Path.Combine(tsData, "Res", "StuffPack", "Objects"), false, false));
 
                         // Materials may be under both Catalog and Res
-                        folders.Add(new FileTableItem(System.IO.Path.Combine(res, "Materials"), false, false));
-                        folders.Add(new FileTableItem(System.IO.Path.Combine(res, "Catalog", "Materials"), false, false));
+                        folders.Add(new FileTableItem(System.IO.Path.Combine(tsData, "Res", "Materials"), false, false));
+                        folders.Add(new FileTableItem(System.IO.Path.Combine(tsData, "Res", "Catalog", "Materials"), false, false));
 
                         // Base game uses Sims3D; EPs/SPs use 3D
-                        folders.Add(new FileTableItem(System.IO.Path.Combine(res, pack.IsBaseGame ? "Sims3D" : "3D"), false, false));
+                        folders.Add(new FileTableItem(System.IO.Path.Combine(tsData, "Res", pack.IsBaseGame ? "Sims3D" : "3D"), false, false));
 
-                        folders.Add(new FileTableItem(System.IO.Path.Combine(res, "UI"), false, false));
+                        folders.Add(new FileTableItem(System.IO.Path.Combine(tsData, "Res", "UI"), false, false));
 
                         // Catalog contains buy/build entries � recurse here
-                        folders.Add(new FileTableItem(System.IO.Path.Combine(res, "Catalog"), true, false));
+                        folders.Add(new FileTableItem(System.IO.Path.Combine(tsData, "Res", "Catalog"), true, false));
 
-                        // Needed for the Extended Sdesc form popup window labels
-                        folders.Add(new FileTableItem(System.IO.Path.Combine(res, "Wants"), false, false));
+                        //Needed for the Extended Sdesc form popup window labels
+                        folders.Add(new FileTableItem(System.IO.Path.Combine(tsData, "Res", "Wants"), false, false));
                     }
 
                     return folders;

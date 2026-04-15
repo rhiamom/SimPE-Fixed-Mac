@@ -168,7 +168,7 @@ namespace SimPe.Plugin
                             a.Tag = o;
                             if (Helper.XmlRegistry.ShowObjdNames) a.Name = oci.ObjectFileName;
                             else a.Name = oci.Name;
-                            Image img = oci.Thumbnail;
+                            object img = oci.Thumbnail;
                             lbobj.Items.Add(a);
                         }
                         else //not found in chache 
@@ -436,7 +436,7 @@ namespace SimPe.Plugin
             return (uint)Hashes.ToLong(Hashes.Crc32.ComputeHash(Helper.ToBytes(name.Trim().ToLower())));
         }
 
-        static SimPe.Packages.File fumbs = SimPe.Packages.File.LoadFromFile(System.IO.Path.Combine(PathProvider.SimSavegameFolder, "Thumbnails\\CASThumbnails.package"));
+        static SimPe.Packages.File fumbs = SimPe.Packages.File.LoadFromFile(System.IO.Path.Combine(PathProvider.SimSavegameFolder, "Thumbnails/CASThumbnails.package"));
         */
 
         /*
@@ -475,7 +475,7 @@ namespace SimPe.Plugin
 			uint inst = ThumbnailHash(group, modelname);
 			if (thumbs==null) 
 			{
-                thumbs = SimPe.Packages.File.LoadFromFile(System.IO.Path.Combine(PathProvider.SimSavegameFolder, "Thumbnails\\CASThumbnails.package"));
+                thumbs = SimPe.Packages.File.LoadFromFile(System.IO.Path.Combine(PathProvider.SimSavegameFolder, "Thumbnails/CASThumbnails.package"));
 				thumbs.Persistent = true;
 			}
 

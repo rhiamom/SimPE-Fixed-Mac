@@ -337,99 +337,21 @@ namespace SimPe
         {
             string suggested = null;
 
-            // On non-Windows, all C:\ paths are meaningless — leave blank so the user browses.
-            if (!System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(
-                    System.Runtime.InteropServices.OSPlatform.Windows))
+            // Mac: The Sims 2 (Aspyr App Store) has a fixed install location
+            string macPath = "/Applications/The Sims 2.app/Contents/Assets";
+
+            if (rbCustom.IsChecked == true)
             {
-                txtGameRoot.Text = string.Empty;
-                return;
-            }
-
-            if (rbLegacy.IsChecked == true)
-            {
-                // Legacy can end up in Program Files or Program Files (x86),
-                // with or without the "EA GAMES" folder.
-                string l1 = @"C:\Program Files\EA GAMES\The Sims 2 Legacy";
-                string l2 = @"C:\Program Files (x86)\EA GAMES\The Sims 2 Legacy";
-
-                // Newer / custom EA App layouts without "EA GAMES"
-                string l3 = @"C:\Program Files\The Sims 2 Legacy";
-                string l4 = @"C:\Program Files (x86)\The Sims 2 Legacy";
-
-                if (Directory.Exists(l1))
-                    suggested = l1;
-                else if (Directory.Exists(l2))
-                    suggested = l2;
-                else if (Directory.Exists(l3))
-                    suggested = l3;
-                else if (Directory.Exists(l4))
-                    suggested = l4;
-                else
-                    suggested = string.Empty;   //act like custom was checked
-            }
-
-            else if (rbUC.IsChecked == true)
-            {
-                // Classic EA App / Origin installs
-                string p1 = @"C:\Program Files (x86)\EA GAMES\The Sims 2 Ultimate Collection";
-                string p2 = @"C:\Program Files\EA GAMES\The Sims 2 Ultimate Collection";
-
-                // Newer EA App installs (no EA GAMES folder)
-                string p3 = @"C:\Program Files\The Sims 2 Ultimate Collection";
-                string p4 = @"C:\Program Files (x86)\The Sims 2 Ultimate Collection";
-
-                if (Directory.Exists(p1)) suggested = p1;
-                else if (Directory.Exists(p2)) suggested = p2;
-                else if (Directory.Exists(p3)) suggested = p3;
-                else if (Directory.Exists(p4)) suggested = p4;
-                else
-                    suggested = string.Empty;   //act like custom was checked
-            }
-
-            else if (rbDisc.IsChecked == true)
-            {
-                // Classic disc installs also usually live here
-                suggested = @"C:\Program Files (x86)\EA GAMES\The Sims 2";
-            }
-
-            else if (rbSteam.IsChecked == true)
-            {
-                // Hypothetical Steam default – user can edit if wrong
-                suggested = @"C:\Program Files (x86)\Steam\steamapps\common\The Sims 2";
-            }
-
-            else if (rbEpic.IsChecked == true)
-            {
-                // Epic hands off to EA App; it may install with or without "EA GAMES".
-                string p1 = @"C:\Program Files (x86)\EA GAMES\The Sims 2 Legacy";
-                string p2 = @"C:\Program Files\EA GAMES\The Sims 2 Legacy";
-
-                string p3 = @"C:\Program Files\The Sims 2 Legacy";
-                string p4 = @"C:\Program Files (x86)\The Sims 2 Legacy";
-
-                if (Directory.Exists(p1))
-                    suggested = p1;
-                else if (Directory.Exists(p2))
-                    suggested = p2;
-                else if (Directory.Exists(p3))
-                    suggested = p3;
-                else if (Directory.Exists(p4))
-                    suggested = p4;
-                else
-                    suggested = string.Empty;   //act like custom was checked
-            }
-
-            else if (rbCustom.IsChecked == true)
-            {
-                // Custom: leave it blank so the user *must* choose
                 suggested = string.Empty;
             }
-            // If you have a Mac radio button (rbMac), you can either leave this blank
-            // or later set something like "/Applications/The Sims 2.app" in the Mac build.
-            // else if (rbMac.Checked)
-            // {
-            //     suggested = string.Empty;
-            // }
+            else if (Directory.Exists(macPath))
+            {
+                suggested = macPath;
+            }
+            else
+            {
+                suggested = string.Empty;
+            }
 
             if (suggested != null)
             {
@@ -441,26 +363,19 @@ namespace SimPe
         {
             string suggested = null;
 
-            string documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            string eaGames = Path.Combine(documents, "EA Games");
-
-            if (rbLegacy.IsChecked == true || rbSteam.IsChecked == true || rbEpic.IsChecked == true)
+            if (rbCustom.IsChecked == true)
             {
-                // Steam uses the same Documents folder name as Legacy
-                suggested = Path.Combine(eaGames, "The Sims 2 Legacy", "Downloads");
-            }
-            else if (rbUC.IsChecked == true)
-            {
-                suggested = Path.Combine(eaGames, "The Sims™ 2 Ultimate Collection", "Downloads");
-            }
-            else if (rbDisc.IsChecked == true)
-            {
-                suggested = Path.Combine(eaGames, "The Sims 2", "Downloads");
-            }
-            else if (rbCustom.IsChecked == true)
-            {
-                // Custom: leave blank so user must choose if needed
                 suggested = string.Empty;
+            }
+            else
+            {
+                // Mac: Downloads lives inside the Aspyr sandbox savegame folder
+                string savegame = PathProvider.SimSavegameFolder;
+                string downloads = Path.Combine(savegame, "Downloads");
+                if (Directory.Exists(downloads))
+                    suggested = downloads;
+                else
+                    suggested = downloads; // still suggest it even if not yet created
             }
 
             if (suggested != null)
@@ -539,7 +454,7 @@ namespace SimPe
         {
             using (var dlg = new FolderBrowserDialog())
             {
-                dlg.Description = "Select your Sims 2 Downloads folder (in Documents\\EA Games\\...).";
+                dlg.Description = "Select your Sims 2 Downloads folder.";
                 dlg.ShowNewFolderButton = true;
 
                 if (Directory.Exists(txtDownloads.Text))

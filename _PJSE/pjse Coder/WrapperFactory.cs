@@ -122,7 +122,7 @@ namespace SimPe.Plugin
         class helpContents : IHelp
         {
             #region IHelp Members
-            public System.Drawing.Image Icon { get { return null; } }
+            public object Icon { get { return null; } }
             public override string ToString() { return pjse.Localization.GetString("helpPJSE"); }
             public void ShowHelp(ShowHelpEventArgs e) { pjse.HelpHelper.Help("Contents"); }
             #endregion

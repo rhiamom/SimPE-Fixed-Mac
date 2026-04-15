@@ -34,6 +34,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
+using SkiaSharp;
 
 namespace Ambertation.Windows.Forms
 {
@@ -155,17 +156,34 @@ namespace Ambertation.Windows.Forms
             int h = (int)Bounds.Height;
             if (w <= 0 || h <= 0) return;
 
-            // Draw all graph elements into an offscreen GDI+ bitmap.
+            // Draw all graph elements into an offscreen SKBitmap.
+            using var skBmp = new SKBitmap(w, h, SKColorType.Bgra8888, SKAlphaType.Premul);
+            using var skCanvas = new SKCanvas(skBmp);
+            var bgColor = System.Drawing.SystemColors.ControlLightLight;
+            skCanvas.Clear(new SKColor(bgColor.R, bgColor.G, bgColor.B, bgColor.A));
+
+            // Each GraphPanelElement still draws via GDI+ internally (UserDraw),
+            // but the cached images are composited here via their OnPaint.
+            // We need a GDI+ Graphics wrapping an intermediate bitmap for OnPaint calls.
             using var gdiBmp = new System.Drawing.Bitmap(w, h, System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
             using var g = System.Drawing.Graphics.FromImage(gdiBmp);
-            g.FillRectangle(new System.Drawing.SolidBrush(System.Drawing.SystemColors.ControlLightLight), 0, 0, w, h);
+            g.Clear(System.Drawing.Color.Transparent);
             GraphPanelElement.SetGraphicsMode(g, true);
             var clipRect = new System.Drawing.Rectangle(0, 0, w, h);
             foreach (GraphPanelElement c in li) c.OnPaint(g, clipRect);
 
+            // Convert GDI+ result to SKBitmap and composite
+            using var gdiMs = new MemoryStream();
+            gdiBmp.Save(gdiMs, System.Drawing.Imaging.ImageFormat.Png);
+            gdiMs.Position = 0;
+            using var gdiSkBmp = SKBitmap.Decode(gdiMs);
+            skCanvas.DrawBitmap(gdiSkBmp, 0, 0);
+
             // Convert to Avalonia Bitmap and draw.
             using var ms = new MemoryStream();
-            gdiBmp.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+            using var skImage = SKImage.FromBitmap(skBmp);
+            using var encoded = skImage.Encode(SKEncodedImageFormat.Png, 100);
+            encoded.SaveTo(ms);
             ms.Position = 0;
             using var avBmp = new Avalonia.Media.Imaging.Bitmap(ms);
             context.DrawImage(avBmp, new Rect(0, 0, w, h));

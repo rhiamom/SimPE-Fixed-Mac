@@ -116,7 +116,7 @@ namespace SimPe.Plugin
 				//Add the Thumbnail if available
 				if (si.PackageCacheItem.Thumbnail!=null) 
 				{
-					ListView.SmallImageList.Images.Add(si.PackageCacheItem.Thumbnail);
+					ListView.SmallImageList.Images.Add(si.PackageCacheItem.Thumbnail as SkiaSharp.SKBitmap);
 					lvi.ImageIndex = ListView.SmallImageList.Images.Count-1;
 				} 
 

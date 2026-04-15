@@ -29,6 +29,7 @@
     <ProjectReference Include="..\SimPE.Interfaces\SimPE.Interfaces.csproj" />
     <ProjectReference Include="..\SimPE.Packages\SimPE.Packages.csproj" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="SkiaSharp" Version="2.88.9" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
   </ItemGroup>
 </Project>

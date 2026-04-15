@@ -458,24 +458,12 @@ namespace SimPe.Scenegraph.Compat
     {
         public class ImageCollection
         {
-            // Store Avalonia bitmaps — GDI+ (System.Drawing) is unavailable on Linux/macOS.
-            private readonly List<Avalonia.Media.Imaging.Bitmap> _images = new List<Avalonia.Media.Imaging.Bitmap>();
+            private readonly List<SkiaSharp.SKBitmap> _images = new List<SkiaSharp.SKBitmap>();
             public int Count => _images.Count;
-
-            /// <summary>Legacy overload: System.Drawing.Image callers compile, but no image is stored (GDI+ unavailable).</summary>
-            public void Add(System.Drawing.Image img) => _images.Add(null);
-
-            /// <summary>Cross-platform overload: stores the Avalonia bitmap directly.</summary>
-            public void Add(Avalonia.Media.Imaging.Bitmap bmp) => _images.Add(bmp);
-
+            public void Add(SkiaSharp.SKBitmap img) => _images.Add(img);
+            public void Add(System.Drawing.Image img) { /* legacy no-op: System.Drawing.Image not usable on Mac */ }
             public void Clear() => _images.Clear();
-
-            /// <summary>Legacy indexer — always returns null; use <see cref="GetAvaloniaBitmap"/> instead.</summary>
-            public System.Drawing.Image this[int index] { get => null; set { /* no-op: GDI+ unavailable */ } }
-
-            /// <summary>Returns the cross-platform Avalonia bitmap at the given index, or null.</summary>
-            public Avalonia.Media.Imaging.Bitmap GetAvaloniaBitmap(int index)
-                => (index >= 0 && index < _images.Count) ? _images[index] : null;
+            public SkiaSharp.SKBitmap this[int index] { get => _images[index]; set => _images[index] = value; }
         }
 
         public System.Drawing.Size ImageSize { get; set; } = new System.Drawing.Size(16, 16);
@@ -815,8 +803,8 @@ namespace SimPe.Scenegraph.Compat
     /// <summary>Minimal PictureBox — replaces System.Windows.Forms.PictureBox.</summary>
     public class PictureBox : Avalonia.Controls.Control
     {
-        private System.Drawing.Image _image;
-        public System.Drawing.Image Image
+        private object _image;
+        public object Image
         {
             get => _image;
             set { _image = value; ImageChanged?.Invoke(this, EventArgs.Empty); }
@@ -1301,7 +1289,7 @@ namespace SimPe.Scenegraph.Compat
         public bool Enabled { get => IsEnabled; set => IsEnabled = value; }
         public bool Visible { get => IsVisible; set => IsVisible = value; }
         public string Text { get => Content?.ToString() ?? ""; set => Content = value; }
-        public System.Drawing.Image Image { get; set; }
+        public object Image { get; set; }
         public System.Drawing.Point Location { get; set; }
         public System.Drawing.Size Size { get; set; }
         public int Left { get; set; }

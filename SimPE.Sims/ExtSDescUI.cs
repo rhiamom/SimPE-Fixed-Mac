@@ -510,16 +510,17 @@ namespace SimPe.PackedFiles.UserInterface
 			
 			System.Drawing.Image img = null;
 			
-			if (sdesc.Image!=null) 
-				if (sdesc.Image.Width>5) 
-					img = Ambertation.Drawing.GraphicRoutines.KnockoutImage(sdesc.Image, new Point(0,0), Color.Magenta);
+			if (sdesc.Image is System.Drawing.Image sdescImg)
+				if (sdescImg.Width>5)
+					img = Ambertation.Drawing.GraphicRoutines.KnockoutImage(sdescImg, new Point(0,0), Color.Magenta);
 
 			if (img == null)
-                img = Helper.LoadImage(typeof(SimPe.Helper).Assembly.GetManifestResourceStream("SimPe.IconXmlResources.noone.png"));
+                img = Ambertation.Drawing.GraphicRoutines.SKBitmapToGdiImage(
+                    Helper.LoadImage(typeof(SimPe.Helper).Assembly.GetManifestResourceStream("SimPe.IconXmlResources.noone.png")));
 
             var iconSize = new System.Drawing.Size((int)pbImage.Bounds.Width, (int)pbImage.Bounds.Height);
             img = Ambertation.Windows.Forms.Graph.ImagePanel.CreateThumbnail(img, iconSize, 12, Color.FromArgb(90, Color.Black), SimPe.PackedFiles.Wrapper.SimPoolControl.GetImagePanelColor(Sdesc), Color.White, Color.FromArgb(80, Color.White), true, 4, 0);
-			this.pbImage.Source = Helper.ToAvaloniaBitmap(img);
+			this.pbImage.Source = Helper.ToAvaloniaBitmap(Ambertation.Drawing.GraphicRoutines.GdiImageToSKBitmap(img));
 
 			//Lifesection
 			this.cblifesection.SelectedIndex = 0;

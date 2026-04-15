@@ -27,6 +27,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Data;
+using SkiaSharp;
 
 namespace Ambertation.Windows.Forms.Graph
 {
@@ -133,16 +134,17 @@ namespace Ambertation.Windows.Forms.Graph
 
 		public static Image CreateThumbnail(Image img, Size sz, int rad, Color borderColor, Color imagePanelColor, Color gradientColor, Color fadeColor, bool focused, int tborderx, int tbordery)
 		{
-			Bitmap b = new Bitmap(sz.Width, sz.Height);
+			// Use GDI+ for drawing (GraphicsPath etc.), then the result is a GDI+ Bitmap
+			var gdiBmp = new System.Drawing.Bitmap(sz.Width, sz.Height);
 			Rectangle trec = new Rectangle(new Point(tborderx+2, tbordery+2), new Size(sz.Width-2*tborderx-4, sz.Height-2*tbordery-4));
 			img = Ambertation.Drawing.GraphicRoutines.ScaleImage(img, trec.Width, trec.Height, true);
-			System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(b);
+			System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(gdiBmp);
 			SetGraphicsMode(g, false);
 
 			DrawThumbnail(g, trec, rad, img, borderColor, imagePanelColor, gradientColor, fadeColor, focused, tborderx, tbordery);
 
 			g.Dispose();
-			return b;
+			return gdiBmp;
 		}
 
 		protected void DrawCaption(System.Drawing.Graphics gr, Rectangle r, Font f, bool center)

@@ -26,6 +26,7 @@ using System.Collections;
 using System.ComponentModel;
 using System.Drawing;
 using System.Data;
+using SkiaSharp;
 
 namespace Ambertation.Windows.Forms.Graph
 {
@@ -42,7 +43,7 @@ namespace Ambertation.Windows.Forms.Graph
 			quality = true;	
 			savebound = true;
 			update = false;
-			cachedimage = new System.Drawing.Bitmap(1, 1);
+			cachedimage = new SKBitmap(1, 1);
 			this.width = 48;
 			this.height = 48;
 		}
@@ -225,9 +226,17 @@ namespace Ambertation.Windows.Forms.Graph
 
 
 
-		protected virtual void OnPaint(System.Drawing.Graphics g, Image canvas, Rectangle dst, Rectangle src)
+		protected virtual void OnPaint(System.Drawing.Graphics g, SKBitmap canvas, Rectangle dst, Rectangle src)
 		{
-			g.DrawImage(canvas, dst, src, System.Drawing.GraphicsUnit.Pixel);	
+			if (canvas == null) return;
+			// Convert SKBitmap to GDI+ Image for drawing
+			using var ms = new System.IO.MemoryStream();
+			using var skImg = SKImage.FromBitmap(canvas);
+			using var encoded = skImg.Encode(SKEncodedImageFormat.Png, 100);
+			encoded.SaveTo(ms);
+			ms.Position = 0;
+			using var gdiImg = System.Drawing.Image.FromStream(ms);
+			g.DrawImage(gdiImg, dst, src, System.Drawing.GraphicsUnit.Pixel);
 		}
 
 		public void Refresh()
@@ -308,29 +317,44 @@ namespace Ambertation.Windows.Forms.Graph
 		#region Basic Draw Methods
 		
 
-		Image cachedimage;
+		SKBitmap cachedimage;
+		/// <summary>Intermediate GDI+ bitmap used only during CompleteRedraw to support
+		/// UserDraw methods that still rely on System.Drawing.Graphics.</summary>
+		System.Drawing.Bitmap _gdiCache;
+
 		protected void CompleteRedraw()
 		{
 			if (update) return;
 			if (Width<=0) return;
-			if (Height<=0) return;		
-			if (cachedimage!=null) cachedimage.Dispose();			
+			if (Height<=0) return;
+			if (cachedimage!=null) cachedimage.Dispose();
+			if (_gdiCache!=null) { _gdiCache.Dispose(); _gdiCache = null; }
 
-			try 
+			try
 			{
-				cachedimage = new Bitmap(Width, Height);
+				_gdiCache = new System.Drawing.Bitmap(Width, Height);
 			}
-			catch 
+			catch
 			{
-				cachedimage = new Bitmap(1, 1);
+				cachedimage = new SKBitmap(1, 1);
 				return;
 			}
-			System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(cachedimage);
+			System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(_gdiCache);
 			CompleteRedraw(g);
 			g.Dispose();
+
+			// Convert GDI+ result to SKBitmap
+			using (var convMs = new System.IO.MemoryStream())
+			{
+				_gdiCache.Save(convMs, System.Drawing.Imaging.ImageFormat.Png);
+				convMs.Position = 0;
+				cachedimage = SKBitmap.Decode(convMs);
+			}
+			_gdiCache.Dispose();
+			_gdiCache = null;
 		}
 
-		public Image SourceImage
+		public SKBitmap SourceImage
 		{
 			get {return cachedimage;}
 		}

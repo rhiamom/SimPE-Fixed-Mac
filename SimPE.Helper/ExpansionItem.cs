@@ -386,12 +386,12 @@ namespace SimPe
         }
 
         internal string CensorFile{
-            get { return System.IO.Path.Combine(PathProvider.SimSavegameFolder, "Config\\"+censor); }
+            get { return System.IO.Path.Combine(PathProvider.SimSavegameFolder, "Config", censor); }
         }
 
         internal string SensorFile
         {
-            get { return System.IO.Path.Combine(PathProvider.SimSavegameFolder, "Downloads\\" + censor); }
+            get { return System.IO.Path.Combine(PathProvider.SimSavegameFolder, "Downloads", censor); }
         }
 
         internal string CensorFileName
@@ -465,10 +465,10 @@ namespace SimPe
             {
                 try
                 {
-                    if (System.IO.File.Exists(System.IO.Path.Combine(InstallFolder, "TSBin\\" + ExeName)))
-                        return System.IO.Path.Combine(InstallFolder, "TSBin\\" + ExeName);
+                    if (System.IO.File.Exists(System.IO.Path.Combine(InstallFolder, "TSBin", ExeName)))
+                        return System.IO.Path.Combine(InstallFolder, "TSBin", ExeName);
                     else
-                        return System.IO.Path.Combine(RealInstallFolder, "TSBin\\" + ExeName);
+                        return System.IO.Path.Combine(RealInstallFolder, "TSBin", ExeName);
                 }
                 catch (Exception)
                 {
@@ -610,7 +610,7 @@ namespace SimPe
             get
             {
                 if (Flag.Class == ExpansionItem.Classes.Story) return null;
-                string inifile = System.IO.Path.Combine(PathProvider.Global.Latest.RealInstallFolder, "TSBin\\Sims2.ini"); // Lock up, can't use here
+                string inifile = System.IO.Path.Combine(PathProvider.Global.Latest.RealInstallFolder, "TSBin/Sims2.ini"); // Lock up, can't use here
                 if (!System.IO.File.Exists(inifile)) return null;
                 IniRegistry directs = new IniRegistry(inifile, true);
                 if (!directs.ContainsSection("Directories")) return null;

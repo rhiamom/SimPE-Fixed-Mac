@@ -21,6 +21,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
+using SkiaSharp;
 using GdiPoint              = System.Drawing.Point;
 using AvSize                = Avalonia.Size;
 using GdiPen                = System.Drawing.Pen;
@@ -146,7 +147,7 @@ namespace Ambertation.Windows.Forms
             InvalidateVisual();
         }
 
-        System.Drawing.Bitmap cachedimg;
+        SKBitmap cachedimg;
         int cachedW, cachedH;
 
         protected virtual void DrawComplete()
@@ -156,11 +157,14 @@ namespace Ambertation.Windows.Forms
             if (w <= 0 || h <= 0) return;
 
             if (cachedimg != null) cachedimg.Dispose();
-            cachedimg = new System.Drawing.Bitmap(w, h);
+            cachedimg = null;
             cachedW = w;
             cachedH = h;
 
-            System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(cachedimg);
+            // Build via GDI+ (GraphicsPath / LinearGradientBrush still need it),
+            // then convert the result to SKBitmap.
+            using var gdiBmp = new System.Drawing.Bitmap(w, h);
+            System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(gdiBmp);
             Ambertation.Windows.Forms.Graph.GraphPanelElement.SetGraphicsMode(g, false);
 
             Rectangle ef3  = SelectionRect;
@@ -193,6 +197,12 @@ namespace Ambertation.Windows.Forms
             path.Dispose();
             Ambertation.Windows.Forms.Graph.GraphPanelElement.SetGraphicsMode(g, true);
             g.Dispose();
+
+            // Convert GDI+ bitmap to SKBitmap
+            using var convMs = new MemoryStream();
+            gdiBmp.Save(convMs, System.Drawing.Imaging.ImageFormat.Png);
+            convMs.Position = 0;
+            cachedimg = SKBitmap.Decode(convMs);
         }
 
         public override void Render(DrawingContext context)
@@ -205,7 +215,9 @@ namespace Ambertation.Windows.Forms
             if (cachedimg != null)
             {
                 using var ms = new MemoryStream();
-                cachedimg.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                using var skImage = SKImage.FromBitmap(cachedimg);
+                using var encoded = skImage.Encode(SKEncodedImageFormat.Png, 100);
+                encoded.SaveTo(ms);
                 ms.Position = 0;
                 using var avBmp = new Avalonia.Media.Imaging.Bitmap(ms);
                 context.DrawImage(avBmp, new Rect(0, 0, w, h));

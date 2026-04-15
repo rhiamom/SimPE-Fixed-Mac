@@ -42,7 +42,7 @@ namespace pjHoodTool
 
         public override string ToString() { return "Export Neighbourhood data"; }
 
-        public System.Drawing.Image Icon { get { return null; } }
+        public object Icon { get { return null; } }
 
         #endregion
     }

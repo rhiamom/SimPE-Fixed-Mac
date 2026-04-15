@@ -27,6 +27,7 @@ using System.Collections;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using SkiaSharp;
 using SimPe.PackedFiles.Wrapper;
 
 namespace SimPe.Plugin
@@ -182,8 +183,8 @@ namespace SimPe.Plugin
 
 			if (pc!=null) 
 			{
-				if (pc.SelectedSim!=null) SetImage(pc.SelectedSim.Image);
-				else SetImage(new Bitmap(1,1));
+				if (pc.SelectedSim!=null) SetImage(pc.SelectedSim.Image as Image);
+				else SetImage(new System.Drawing.Bitmap(1,1));
 			}
 		}
 
@@ -196,7 +197,7 @@ namespace SimPe.Plugin
 			this.xpSkills.Icon = img;			
 		}
 
-		private void pc_SelectedSimChanged(object sender, Image thumb, SimPe.PackedFiles.Wrapper.SDesc sdesc)
+		private void pc_SelectedSimChanged(object sender, object thumb, SimPe.PackedFiles.Wrapper.SDesc sdesc)
 		{
 			
 			if (ngbh!=null && pc!=null) 
@@ -204,7 +205,7 @@ namespace SimPe.Plugin
 				
 				if (pc.SelectedSim!=null) {
 					this.Slot = ngbh.GetSlots(Data.NeighborhoodSlots.SimsIntern).GetInstanceSlot(pc.SelectedSim.FileDescriptor.Instance);	
-					SetImage(pc.SelectedSim.Image);
+					SetImage(pc.SelectedSim.Image as Image);
 				}
 				else 
 				{

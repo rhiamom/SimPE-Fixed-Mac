@@ -156,9 +156,7 @@ namespace SimPe.Plugin.Tool.Dockable
 
 		protected override void Produce()
 		{
-			System.Diagnostics.Debug.WriteLine("[OW:Producer] Produce() starting");
 			FileTable.FileIndex.Load();
-			System.Diagnostics.Debug.WriteLine("[OW:Producer] FileIndex.Load() completed");
 			LoadCachIndex();
 			changedcache = false;
 
@@ -167,7 +165,6 @@ namespace SimPe.Plugin.Tool.Dockable
 			int ct = 0;
 			//this is the first part loading by objd Resources
 			Interfaces.Scenegraph.IScenegraphFileIndexItem[] nrefitems = FileTable.FileIndex.Sort(FileTable.FileIndex.FindFile(Data.MetaData.OBJD_FILE, true));
-			System.Diagnostics.Debug.WriteLine($"[OW:Producer] FindFile(OBJD_FILE) returned {nrefitems.Length} items");
 
 			string len = " / " + nrefitems.Length.ToString();
 
@@ -414,7 +411,7 @@ namespace SimPe.Plugin.Tool.Dockable
 				
 				if (oci.Thumbnail!=null) 
 				{
-					Wait.UpdateImage(oci.Thumbnail);
+					Wait.UpdateImage(oci.Thumbnail as SkiaSharp.SKBitmap);
 					ObjectReader.changedcache = true;
 				}
 			}
@@ -435,7 +432,7 @@ namespace SimPe.Plugin.Tool.Dockable
 			if (Helper.XmlRegistry.ShowObjdNames) a.Name = oci.ObjectFileName;	
 			else a.Name = oci.Name;
 			a.Name +=  " (cached)";
-			Image img = oci.Thumbnail;			
+			object img = oci.Thumbnail;
 				
 			if (LoadedItem!=null) LoadedItem(oci, nrefitem, a);
 			
@@ -582,8 +579,19 @@ namespace SimPe.Plugin.Tool.Dockable
 				{
 					tn.ImageIndex = 2;
 				}
+				else if (oci.Thumbnail!=null) 
+				{
+					Image img = oci.Thumbnail as Image;
+					//if (Helper.XmlRegistry.GraphQuality) img = Ambertation.Drawing.GraphicRoutines.KnockoutImage(img, new System.Drawing.Point(0,0), System.Drawing.Color.Magenta);
+					if (img != null)
+					{
+						img = Ambertation.Drawing.GraphicRoutines.ScaleImage(img, ilist.ImageSize.Width, ilist.ImageSize.Height, Helper.XmlRegistry.GraphQuality);
+						ilist.Images.Add(oci.Thumbnail as SkiaSharp.SKBitmap);
+						tn.ImageIndex = ilist.Images.Count-1;
+					}
+				}
 				else
-					tn.ImageIndex = 1; // thumbnails require GDI+ (unavailable on non-Windows)
+					tn.ImageIndex = 1;
 				tn.SelectedImageIndex = tn.ImageIndex;
 				ret.Nodes.Add(tn);
 			}

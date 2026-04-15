@@ -25,6 +25,7 @@ using System;
 using System.Drawing;
 using System.Collections;
 using System.ComponentModel;
+using SkiaSharp;
 using SimPe.Windows.Forms;
 using SimPe.Scenegraph.Compat;
 using Avalonia.Controls;
@@ -240,7 +241,7 @@ namespace SimPe.Plugin
 			if (wnt.Information.Icon!=null)
 			{
 				lvi.ImageIndex = il.Images.Count;
-				il.Images.Add(wnt.Information.Icon);
+				il.Images.Add(wnt.Information.Icon as SkiaSharp.SKBitmap);
                 Wait.Message = wnt.ToString();
 			}
 
@@ -265,7 +266,7 @@ namespace SimPe.Plugin
 			if (wc.Information.Icon!=null) {
 				parent.SelectedImageIndex = ihist.Images.Count;
 				parent.ImageIndex = ihist.Images.Count;
-				ihist.Images.Add(wc.Information.Icon);
+				ihist.Images.Add(wc.Information.Icon as SkiaSharp.SKBitmap);
 
                 Wait.Message = wc.ToString();
 			}
@@ -470,8 +471,8 @@ namespace SimPe.Plugin
 		{
 			if (tv.Nodes.Count>0) return;
 
-			itv.Images.Add(new System.Drawing.Bitmap(this.GetType().Assembly.GetManifestResourceStream("SimPe.Plugin.subitems.png")));
-			itv.Images.Add(new System.Drawing.Bitmap(this.GetType().Assembly.GetManifestResourceStream("SimPe.Plugin.nothumb.png")));
+			itv.Images.Add(SKBitmap.Decode(this.GetType().Assembly.GetManifestResourceStream("SimPe.Plugin.subitems.png")));
+			itv.Images.Add(SKBitmap.Decode(this.GetType().Assembly.GetManifestResourceStream("SimPe.Plugin.nothumb.png")));
             Wait.SubStart();
 			System.Collections.Hashtable ht = new Hashtable();
 			string max = " / "+WantLoader.Wants.Keys.Count.ToString();
@@ -510,7 +511,7 @@ namespace SimPe.Plugin
 					if (wi.Icon!=null)
 					{
 						node.ImageIndex = itv.Images.Count;
-						itv.Images.Add(wi.Icon);
+						itv.Images.Add(wi.Icon as SkiaSharp.SKBitmap);
 					}
 					else
 					{
@@ -541,7 +542,7 @@ namespace SimPe.Plugin
 			{
 				if (lastlvi.ImageIndex>=0)
 					// ImageLoader.Preview now returns SKBitmap; ImageList.Images expects System.Drawing.Image — skip preview
-				ImageLoader.Preview(wi.Icon, lastlvi.ListView.LargeImageList.ImageSize);
+				ImageLoader.Preview(wi.Icon as SkiaSharp.SKBitmap, lastlvi.ListView.LargeImageList.ImageSize);
 				lastlvi.Text = wi.Name;
 			}
 

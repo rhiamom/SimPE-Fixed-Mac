@@ -536,7 +536,7 @@ namespace SimPe.PackedFiles.UserInterface
             names = null;
             string objDefGLUAFile = System.IO.Path.Combine(
                 SimPe.PathProvider.Global.Latest.InstallFolder,
-                "TSData\\Res\\ObjectScripts\\ObjectScripts.package");
+                "TSData/Res/ObjectScripts/ObjectScripts.package");
             if (!System.IO.File.Exists(objDefGLUAFile)) return;
             IPackageFile glua = SimPe.Packages.File.LoadFromFile(objDefGLUAFile);
             if (glua == null) return;
@@ -570,7 +570,7 @@ namespace SimPe.PackedFiles.UserInterface
         private static void readPJSEGlobalStringObjDef()
         {
             names = null;
-            string pjseGlobalStringFile = System.IO.Path.Combine(SimPe.Helper.SimPePluginPath, "pjse.coder.plugin\\GlobalStrings.package");
+            string pjseGlobalStringFile = System.IO.Path.Combine(SimPe.Helper.SimPePluginPath, "pjse.coder.plugin/GlobalStrings.package");
             if (!System.IO.File.Exists(pjseGlobalStringFile)) return;
             IPackageFile gs = SimPe.Packages.File.LoadFromFile(pjseGlobalStringFile);
             if (gs == null) return;

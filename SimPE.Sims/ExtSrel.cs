@@ -26,6 +26,7 @@ using SimPe.Interfaces;
 using SimPe.PackedFiles.Wrapper.Supporting;
 using SimPe.Data;
 using System.Drawing;
+using SkiaSharp;
 
 namespace SimPe.PackedFiles.Wrapper
 {
@@ -136,31 +137,51 @@ namespace SimPe.PackedFiles.Wrapper
 			}
 		}
 
+        private static SKBitmap GdiImageToSkBitmap(Image img)
+        {
+            if (img == null) return null;
+            using var ms = new System.IO.MemoryStream();
+            img.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+            ms.Position = 0;
+            return SKBitmap.Decode(ms);
+        }
+
+        private static Image SkBitmapToGdiImage(SKBitmap skBmp)
+        {
+            using var skImage = SKImage.FromBitmap(skBmp);
+            using var encoded = skImage.Encode(SKEncodedImageFormat.Png, 100);
+            var ms = new System.IO.MemoryStream();
+            encoded.SaveTo(ms);
+            ms.Position = 0;
+            return Image.FromStream(ms);
+        }
+
         public Image Image
         {
             get
             {
-                Bitmap b = new Bitmap(356, 256);
-                Graphics g = Graphics.FromImage(b);
+                var skBmp = new SKBitmap(356, 256, SKColorType.Bgra8888, SKAlphaType.Premul);
+                using var canvas = new SKCanvas(skBmp);
+                canvas.Clear(SKColors.Transparent);
 
                 // ---- Source Sim image ----
                 Image isrc = null;
                 if (SourceSim != null)
                 {
-                    if (SourceSim.Image != null)
+                    if (SourceSim.Image is Image srcImg)
                     {
-                        if (SourceSim.Image.Width > 8)
-                            isrc = SourceSim.Image;
+                        if (srcImg.Width > 8)
+                            isrc = srcImg;
                     }
                 }
 
                 if (isrc == null)
                 {
-                    isrc = Helper.LoadImage(
+                    isrc = SkBitmapToGdiImage(Helper.LoadImage(
                         this.GetType().Assembly.GetManifestResourceStream(
                             "SimPe.PackedFiles.Wrapper.noone.png"
                         )
-                    );
+                    ));
                 }
                 else
                 {
@@ -175,20 +196,20 @@ namespace SimPe.PackedFiles.Wrapper
                 Image idst = null;
                 if (TargetSim != null)
                 {
-                    if (TargetSim.Image != null)
+                    if (TargetSim.Image is Image dstImg)
                     {
-                        if (TargetSim.Image.Width > 8)
-                            idst = TargetSim.Image;
+                        if (dstImg.Width > 8)
+                            idst = dstImg;
                     }
                 }
 
                 if (idst == null)
                 {
-                    idst = Helper.LoadImage(
+                    idst = SkBitmapToGdiImage(Helper.LoadImage(
                         this.GetType().Assembly.GetManifestResourceStream(
                             "SimPe.PackedFiles.Wrapper.noone.png"
                         )
-                    );
+                    ));
                 }
                 else
                 {
@@ -202,23 +223,31 @@ namespace SimPe.PackedFiles.Wrapper
                 const int offsety = 32;
 
                 // Draw source sim on the left
-                g.DrawImage(
-                    isrc,
-                    new Rectangle(0, offsety, 256, 256 - offsety),
-                    new Rectangle(0, 0, isrc.Width, isrc.Height - offsety),
-                    GraphicsUnit.Pixel
-                );
+                using (var skSrc = GdiImageToSkBitmap(isrc))
+                {
+                    if (skSrc != null)
+                    {
+                        canvas.DrawBitmap(skSrc,
+                            new SKRect(0, 0, skSrc.Width, skSrc.Height - offsety),
+                            new SKRect(0, offsety, 256, 256));
+                    }
+                }
 
                 // Draw target sim on the right
-                g.DrawImage(
-                    idst,
-                    new Rectangle(100, 0, 256, 256),
-                    new Rectangle(0, 0, idst.Width, idst.Height),
-                    GraphicsUnit.Pixel
-                );
+                using (var skDst = GdiImageToSkBitmap(idst))
+                {
+                    if (skDst != null)
+                    {
+                        canvas.DrawBitmap(skDst,
+                            new SKRect(0, 0, skDst.Width, skDst.Height),
+                            new SKRect(100, 0, 356, 256));
+                    }
+                }
 
-                g.Dispose();
-                return b;
+                canvas.Flush();
+                var result = SkBitmapToGdiImage(skBmp);
+                skBmp.Dispose();
+                return result;
             }
         }
 

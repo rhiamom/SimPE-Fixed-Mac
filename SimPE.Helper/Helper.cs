@@ -26,6 +26,7 @@ using System.IO;
 using System.Text;
 using System.Runtime.InteropServices;
 using System.Xml;
+using SkiaSharp;
 // using System.Windows.Forms; -- removed: ToKeys/SetKey deferred to menu system port
 
 namespace SimPe
@@ -62,7 +63,7 @@ namespace SimPe
 		/// <summary>
 		/// Character used to Seperate Folders in a Path
 		/// </summary>
-		public const string PATH_SEP = "\\";
+		public const string PATH_SEP = "/";
 
 		/// <summary>
 		/// Contains a Link to the Registry Object
@@ -480,28 +481,28 @@ namespace SimPe
 		/// Returns the Path SimPe is located in
 		/// </summary>
 		/// <summary>
-		/// Cross-platform safe image loader. Returns null (legacy System.Drawing.Image callers remain safe).
+		/// Cross-platform safe image loader using SkiaSharp. Returns null on failure.
 		/// </summary>
-		public static System.Drawing.Image LoadImage(System.IO.Stream stream)
+		public static SKBitmap LoadImage(System.IO.Stream stream)
 		{
 			if (stream == null || !stream.CanRead) return null;
 			try
 			{
-				return new System.Drawing.Bitmap(stream);
+				return SKBitmap.Decode(stream);
 			}
 			catch { return null; }
 		}
 
-		public static System.Drawing.Image LoadImage(System.IO.Stream stream, bool useEmbeddedColorManagement, bool validateImageData)
+		public static SKBitmap LoadImage(System.IO.Stream stream, bool useEmbeddedColorManagement, bool validateImageData)
 		{
 			return LoadImage(stream);
 		}
 
 		/// <summary>
-		/// Cross-platform image loader returning SkiaSharp.SKBitmap.
+		/// Cross-platform image loader returning SkiaSharp.SKBitmap (alias for LoadImage).
 		/// </summary>
-		public static SkiaSharp.SKBitmap LoadSKBitmap(System.IO.Stream stream)
-			=> SkiaSharp.SKBitmap.Decode(stream);
+		public static SKBitmap LoadSKBitmap(System.IO.Stream stream)
+			=> LoadImage(stream);
 
 				public static string SimPePath 
 		{
@@ -1495,8 +1496,7 @@ namespace SimPe
         {
             if (path == null) return false;
             path = path.Trim();
-			if (path.IndexOf(":")==1) return true;
-            return false;
+            return path.StartsWith("/");
         }
 
 		/// <summary>
@@ -1506,7 +1506,7 @@ namespace SimPe
 		/// <returns></returns>
 		public static string CompareableFileName(string fl)
 		{
-			return fl.Trim().TrimEnd('\\').ToLower();
+			return fl.Trim().TrimEnd('/').ToLower();
 		}
 
 		#region Folders
@@ -1610,45 +1610,13 @@ namespace SimPe
         // }
 
         /// <summary>
-        /// Converts a System.Drawing.Image to an Avalonia Bitmap via SkiaSharp (avoids GDI+ issues).
+        /// Converts an SKBitmap to an Avalonia Bitmap for use in Avalonia Image controls.
         /// </summary>
-        public static Avalonia.Media.Imaging.Bitmap ToAvaloniaBitmap(System.Drawing.Image img)
-        {
-            if (img == null) return null;
-            try
-            {
-                var bmp = (System.Drawing.Bitmap)img;
-                int w = bmp.Width, h = bmp.Height;
-                using var skBmp = new SkiaSharp.SKBitmap(w, h, SkiaSharp.SKColorType.Bgra8888, SkiaSharp.SKAlphaType.Premul);
-                var lockBits = bmp.LockBits(
-                    new System.Drawing.Rectangle(0, 0, w, h),
-                    System.Drawing.Imaging.ImageLockMode.ReadOnly,
-                    System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-                try
-                {
-                    int byteCount = Math.Min(lockBits.Stride * h, skBmp.ByteCount);
-                    byte[] pixels = new byte[byteCount];
-                    System.Runtime.InteropServices.Marshal.Copy(lockBits.Scan0, pixels, 0, byteCount);
-                    System.Runtime.InteropServices.Marshal.Copy(pixels, 0, skBmp.GetPixels(), byteCount);
-                }
-                finally { bmp.UnlockBits(lockBits); }
-
-                return ToAvaloniaBitmap(skBmp);
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Converts a SkiaSharp.SKBitmap to an Avalonia Bitmap for use in Avalonia Image controls.
-        /// </summary>
-        public static Avalonia.Media.Imaging.Bitmap ToAvaloniaBitmap(SkiaSharp.SKBitmap bm)
+        public static Avalonia.Media.Imaging.Bitmap ToAvaloniaBitmap(SKBitmap bm)
         {
             if (bm == null) return null;
-            using var image = SkiaSharp.SKImage.FromBitmap(bm);
-            using var encoded = image.Encode(SkiaSharp.SKEncodedImageFormat.Png, 100);
+            using var image = SKImage.FromBitmap(bm);
+            using var encoded = image.Encode(SKEncodedImageFormat.Png, 100);
             using var ms = new System.IO.MemoryStream();
             encoded.SaveTo(ms);
             ms.Position = 0;

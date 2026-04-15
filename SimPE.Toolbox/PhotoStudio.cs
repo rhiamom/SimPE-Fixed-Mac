@@ -28,6 +28,7 @@ using System.ComponentModel;
 using System.IO;
 using Avalonia.Controls;
 using Avalonia.Layout;
+using SkiaSharp;
 using SimPe.Scenegraph.Compat;
 using ImageList   = SimPe.Scenegraph.Compat.ImageList;
 using ToolTip     = SimPe.Scenegraph.Compat.ToolTip;
@@ -110,7 +111,7 @@ namespace SimPe.Plugin
                         lvi.Tag = pst;
                         // pst.Texture is System.Drawing.Image; Preview returns SKBitmap — skip preview
                         SimPe.WaitingScreen.UpdateImage(null);
-                        ibase.Images.Add((System.Drawing.Image)null);
+                        ibase.Images.Add((SkiaSharp.SKBitmap)null);
                         lvbase.Items.Add(lvi);
                     }
                 }
@@ -255,11 +256,11 @@ namespace SimPe.Plugin
 
             if (sdesc.HasImage)
 			{
-                this.ilist.Images.Add(sdesc.Image);
+                this.ilist.Images.Add(sdesc.Image as SkiaSharp.SKBitmap);
 			}
 			else
 			{
-                this.ilist.Images.Add(new Bitmap(SimPe.GetImage.NoOne));
+                this.ilist.Images.Add(new SKBitmap(1, 1));
 			}
 		}
 
@@ -336,9 +337,9 @@ namespace SimPe.Plugin
 		/// </summary>
 		/// <param name="img">The Image you want to use for the build process</param>
 		/// <returns>Preview Image </returns>
-		Image ShowPreview(Image img)
+		object ShowPreview(Image img)
 		{
-			if ((cbprev.IsChecked != true) || (img==null) || (lvbase.SelectedItems.Count==0)) return new Bitmap(1, 1);
+			if ((cbprev.IsChecked != true) || (img==null) || (lvbase.SelectedItems.Count==0)) return new SKBitmap(1, 1);
 
 
 			SimPe.Interfaces.Files.IPackageFile pkg = BuildPicture("dummy.package", img, (PhotoStudioTemplate)lvbase.SelectedItems[0].Tag, ImageLoader.TxtrFormats.Raw32Bit, false, false, cbflip.IsChecked == true);
@@ -358,7 +359,7 @@ namespace SimPe.Plugin
 			}
 			catch (Exception)
 			{
-				return new Bitmap(1, 1);
+				return new SKBitmap(1, 1);
 			}
 
 		}
@@ -513,7 +514,7 @@ namespace SimPe.Plugin
 				if (lv.SelectedItems.Count<1) return;
 
 				PackedFiles.Wrapper.SDesc sdesc = (PackedFiles.Wrapper.SDesc)lv.SelectedItems[0].Tag;
-				img = sdesc.Image;
+				img = sdesc.Image as Image;
 			}
 
 			if (img == null) return;
@@ -546,7 +547,7 @@ namespace SimPe.Plugin
 			}
 		}
 
-		Image preview;
+		object preview;
 		private void lvbase_SelectedIndexChanged(object sender, System.EventArgs e)
 		{
 			this.Cursor = new Avalonia.Input.Cursor(Avalonia.Input.StandardCursorType.Wait);
@@ -559,7 +560,7 @@ namespace SimPe.Plugin
 				if (lv.SelectedItems.Count>0)
 				{
 					PackedFiles.Wrapper.SDesc sdesc = (PackedFiles.Wrapper.SDesc)lv.SelectedItems[0].Tag;
-					preview = this.ShowPreview(sdesc.Image);
+					preview = this.ShowPreview(sdesc.Image as Image);
 				}
 				else
 				{
@@ -576,13 +577,16 @@ namespace SimPe.Plugin
 		{
 			if (preview==null) return;
 
+			int pw = 256, ph = 256;
+			if (preview is SkiaSharp.SKBitmap skPrev) { pw = skPrev.Width; ph = skPrev.Height; }
+
 			var win = new Avalonia.Controls.Window();
-			win.Width  = preview.Width;
-			win.Height = preview.Height;
+			win.Width  = pw;
+			win.Height = ph;
 			win.Title  = "Preview";
 
 			var previewBox = new PictureBox();
-			previewBox.Size  = new System.Drawing.Size(preview.Width, preview.Height);
+			previewBox.Size  = new System.Drawing.Size(pw, ph);
 			previewBox.Image = preview;
 
 			win.Content = previewBox;

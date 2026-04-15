@@ -25,6 +25,7 @@ using System;
 using System.Drawing;
 using System.IO;
 using SimPe;
+using SkiaSharp;
 
 namespace SimPe.Cache
 {
@@ -105,20 +106,23 @@ namespace SimPe.Cache
 			set { objdname = value; }
 		}
 
-		Image thumb;
-		static Image emptyimg;
+		object thumb;
+		static object emptyimg;
 		/// <summary>
 		/// Returns the loaded Icon, or an Empty Image if no Icon was found
 		/// </summary>
-		public Image Image
+		public object Image
 		{
-			get { 
-				if (Icon==null) 
+			get {
+				if (Icon==null)
 				{
-					if (emptyimg==null) emptyimg = new Bitmap(1, 1);
+					if (emptyimg==null)
+					{
+						emptyimg = new SKBitmap(1, 1, SKColorType.Bgra8888, SKAlphaType.Premul);
+					}
 					return emptyimg;
 				}
-				return Icon; 
+				return Icon;
 			}
 			set { Icon = value; }
 		}
@@ -126,7 +130,7 @@ namespace SimPe.Cache
         // Add this field alongside the existing thumb field
         byte[] thumbData;
 
-        public Image Icon
+        public object Icon
         {
             get
             {
@@ -276,7 +280,12 @@ namespace SimPe.Cache
 				{
 					using (MemoryStream ms = new MemoryStream())
 					{
-						thumb.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+						if (thumb is SKBitmap skBmp)
+						{
+							using var skImg = SKImage.FromBitmap(skBmp);
+							using var enc = skImg.Encode(SKEncodedImageFormat.Png, 100);
+							enc.SaveTo(ms);
+						}
 						byte[] data = ms.ToArray();
 						writer.Write(data.Length);
 						writer.Write(data);

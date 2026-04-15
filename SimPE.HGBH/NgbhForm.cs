@@ -25,6 +25,7 @@ using System;
 using System.Drawing;
 using System.Collections;
 using System.ComponentModel;
+using SkiaSharp;
 using SimPe.Interfaces.Plugin;
 using SimPe.PackedFiles.Wrapper;
 using SimPe.Scenegraph.Compat;
@@ -231,7 +232,7 @@ namespace SimPe.Plugin
 			{
 				lvi.ImageIndex = memilist.Images.Count;
 
-				memilist.Images.Add(item.MemoryCacheItem.Icon);
+				memilist.Images.Add(item.MemoryCacheItem.Icon as SkiaSharp.SKBitmap);
 			}
 
 			lbmem.Items.Add(lvi);
@@ -333,17 +334,16 @@ namespace SimPe.Plugin
 				{
 					int id = lbmem.SelectedItems[0].ImageIndex;
 					lbmem.SelectedItems[0].ImageIndex = -1;
-					System.Drawing.Image simg = item.MemoryCacheItem.Icon;
-					Bitmap img = new Bitmap(memilist.ImageSize.Width, memilist.ImageSize.Height);
-					Graphics gr = Graphics.FromImage(img);
-					gr.DrawImage(
-						simg,
-						0,
-						0,
-						memilist.ImageSize.Width,
-						memilist.ImageSize.Height
-						);
-
+					object simg = item.MemoryCacheItem.Icon;
+					var img = new SKBitmap(memilist.ImageSize.Width, memilist.ImageSize.Height);
+					using (var canvas = new SKCanvas(img))
+					{
+						canvas.Clear(SKColors.Transparent);
+						if (simg is SKBitmap skSrc)
+						{
+							canvas.DrawBitmap(skSrc, new SKRect(0, 0, memilist.ImageSize.Width, memilist.ImageSize.Height));
+						}
+					}
 
 					memilist.Images[id] = img;
 					pb.Image = simg;

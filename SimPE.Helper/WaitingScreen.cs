@@ -28,6 +28,7 @@ using System;
 using System.Drawing;       // Size is a cross-platform value type — safe
 using System.Threading;
 using Avalonia.Controls;
+using SkiaSharp;
 using AvBitmap = Avalonia.Media.Imaging.Bitmap;
 
 #nullable enable
@@ -36,13 +37,14 @@ namespace SimPe
 {
     public class WaitingScreen
     {
-        /// <summary>Display a new WaitingScreen image from a System.Drawing.Image or null.</summary>
-        public static void UpdateImage(System.Drawing.Image? img)
+        /// <summary>Display a new WaitingScreen image from an SKBitmap or null.</summary>
+        public static void UpdateImage(SKBitmap? img)
         {
             if (img == null) { Screen.doUpdate((AvBitmap?)null); return; }
-            var bm = img as System.Drawing.Bitmap ?? new System.Drawing.Bitmap(img);
+            using var skImage = SKImage.FromBitmap(img);
+            using var data = skImage.Encode(SKEncodedImageFormat.Png, 100);
             using var ms = new System.IO.MemoryStream();
-            bm.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+            data.SaveTo(ms);
             ms.Position = 0;
             Screen.doUpdate(new AvBitmap(ms));
         }
@@ -54,20 +56,16 @@ namespace SimPe
         public static string Message { get { return scr == null ? "" : scr.prevMessage; } set { Screen.doUpdate(value); } }
         /// <summary>Display a new WaitingScreen image and message.</summary>
         public static void Update(AvBitmap? image, string msg) { Screen.doUpdate(image, msg); }
-        /// <summary>Overload accepting System.Drawing.Bitmap for WinForms-origin callers.</summary>
-        public static void Update(System.Drawing.Bitmap? bm, string msg)
+        /// <summary>Overload accepting SKBitmap for callers with SkiaSharp images.</summary>
+        public static void Update(SKBitmap? bm, string msg)
         {
             if (bm == null) { Screen.doUpdate((AvBitmap?)null, msg); return; }
+            using var skImage = SKImage.FromBitmap(bm);
+            using var data = skImage.Encode(SKEncodedImageFormat.Png, 100);
             using var ms = new System.IO.MemoryStream();
-            bm.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+            data.SaveTo(ms);
             ms.Position = 0;
             Screen.doUpdate(new AvBitmap(ms), msg);
-        }
-        /// <summary>Overload accepting System.Drawing.Image for WinForms-origin callers.</summary>
-        public static void Update(System.Drawing.Image? img, string msg)
-        {
-            if (img == null) { Screen.doUpdate((AvBitmap?)null, msg); return; }
-            Update(img as System.Drawing.Bitmap ?? new System.Drawing.Bitmap(img), msg);
         }
         /// <summary>Show the WaitingScreen for a specific window.</summary>
         public static void Wait(Window form) { Screen.doWait(form); }

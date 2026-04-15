@@ -99,7 +99,7 @@ namespace SimPe.Plugin.Tool.Dockable
             // Update the Avalonia Image when pb.Image changes
             pb.ImageChanged += (s, e) =>
             {
-                var avBmp = SimPe.Helper.ToAvaloniaBitmap(pb.Image);
+                var avBmp = SimPe.Helper.ToAvaloniaBitmap(pb.Image as SkiaSharp.SKBitmap);
                 Avalonia.Threading.Dispatcher.UIThread.Post(() => thumbImage.Source = avBmp);
             };
 

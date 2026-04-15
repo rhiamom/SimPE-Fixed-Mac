@@ -75,7 +75,7 @@ namespace SimPe.PackedFiles.UserInterface
             if (img != null)
             {
                 img = Ambertation.Drawing.GraphicRoutines.ScaleImage(img, 64, 64, true);
-                pb.Source = SimPe.Helper.ToAvaloniaBitmap(img);
+                pb.Source = SimPe.Helper.ToAvaloniaBitmap(Ambertation.Drawing.GraphicRoutines.GdiImageToSKBitmap(img));
             }
             else
             {

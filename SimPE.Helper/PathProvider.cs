@@ -124,8 +124,8 @@ namespace SimPe
         void Load()
         {
             // Load Maxis censor files (SimPE original behavior)
-            censorfiles.Add(System.IO.Path.Combine(SimSavegameFolder, @"Downloads\quaxi_nl_censor_v1.package"));
-            censorfiles.Add(System.IO.Path.Combine(SimSavegameFolder, @"Downloads\quaxi_nl_censor.package"));
+            censorfiles.Add(System.IO.Path.Combine(SimSavegameFolder, "Downloads", "quaxi_nl_censor_v1.package"));
+            censorfiles.Add(System.IO.Path.Combine(SimSavegameFolder, "Downloads", "quaxi_nl_censor.package"));
 
             string[] names = xrk.GetSubKeyNames();
             int ver = -1;
@@ -148,11 +148,11 @@ namespace SimPe
                     // Add censor files if present
                     if (!string.IsNullOrEmpty(i.CensorFile))
                     {
-                        string fl = System.IO.Path.Combine(SimSavegameFolder, @"Downloads\" + i.CensorFileName);
+                        string fl = System.IO.Path.Combine(SimSavegameFolder, "Downloads", i.CensorFileName);
                         if (!censorfiles.Contains(fl))
                             censorfiles.Add(fl);
 
-                        fl = System.IO.Path.Combine(SimSavegameFolder, @"Config\" + i.CensorFileName);
+                        fl = System.IO.Path.Combine(SimSavegameFolder, "Config", i.CensorFileName);
                         if (!censorfiles.Contains(fl))
                             censorfiles.Add(fl);
                     }
@@ -690,13 +690,11 @@ namespace SimPe
             {
                 try
                 {
-                    string path;
-                    if (Helper.XmlRegistry.LoadOnlySimsStory == 0)
-                        path = System.IO.Path.Combine(PersonalFolder, "EA Games");
-                    else
-                        path = System.IO.Path.Combine(PersonalFolder, "Electronic Arts"); // For Sim Stories
-                    path = System.IO.Path.Combine(path, DisplayedName);
-                    return Helper.ToLongPathName(path);
+                    // Mac Sims 2 (Aspyr App Store) saves to the app sandbox
+                    string home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                    return System.IO.Path.Combine(home,
+                        "Library", "Containers", "com.aspyr.sims2.appstore",
+                        "Data", "Library", "Application Support", "Aspyr", "The Sims 2");
                 }
                 catch (Exception)
                 {
@@ -767,7 +765,12 @@ namespace SimPe
         {
             get
             {
-                return Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+                // On macOS, SpecialFolder.Personal returns HOME, not ~/Documents.
+                // Use UserProfile + Documents to match NSDocumentDirectory behavior.
+                string home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                string docs = System.IO.Path.Combine(home, "Documents");
+                if (System.IO.Directory.Exists(docs)) return docs;
+                return home; // fallback
             }
         }
 
@@ -815,7 +818,7 @@ namespace SimPe
         {
             get
             {
-                return System.IO.Path.Combine(SimSavegameFolder, "Config\\userStartup.cheat");
+                return System.IO.Path.Combine(SimSavegameFolder, "Config", "userStartup.cheat");
             }
         }
 
@@ -856,7 +859,7 @@ namespace SimPe
             {
                 try
                 {
-                    return System.IO.Path.Combine(System.IO.Path.Combine(PersonalFolder, "EA Games"), "SimPE Backup");
+                    return System.IO.Path.Combine(PersonalFolder, "SimPE Backup");
                 }
                 catch (Exception)
                 {

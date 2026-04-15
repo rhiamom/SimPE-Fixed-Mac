@@ -56,7 +56,7 @@ namespace SimPe.Plugin
         /// <returns>Human Readable Description</returns>
         protected override IWrapperInfo CreateWrapperInfo()
         {
-            System.Drawing.Image icon = null;
+            object icon = null;
             var asm = this.GetType().Assembly;
 
             try

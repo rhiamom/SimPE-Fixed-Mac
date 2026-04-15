@@ -41,7 +41,7 @@ namespace SimPe.PackedFiles.Wrapper.Factory
 			return "Test\\My Custom Help";
 		}
 
-		public System.Drawing.Image Icon
+		public object Icon
 		{
 			get
 			{
@@ -67,7 +67,7 @@ namespace SimPe.PackedFiles.Wrapper.Factory
 			return "Test\\My Custom Help2";
 		}
 
-		public System.Drawing.Image Icon
+		public object Icon
 		{
 			get
 			{

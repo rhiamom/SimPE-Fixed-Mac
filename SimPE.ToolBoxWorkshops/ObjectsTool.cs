@@ -73,7 +73,7 @@ namespace SimPe.Plugin.Tool
 			get { return 0; }
 		}
 
-		public System.Drawing.Image Icon
+		public object Icon
 		{
 			get
 			{

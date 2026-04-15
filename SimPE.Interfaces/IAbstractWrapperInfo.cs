@@ -35,7 +35,7 @@ namespace SimPe.Interfaces.Plugin
         string author;
         string description;
         int version;
-        System.Drawing.Image img;
+        object img;
 
         /// <summary>
         /// Constructor
@@ -45,7 +45,7 @@ namespace SimPe.Interfaces.Plugin
         /// <param name="description">Description of the Wrapper</param>
         /// <param name="version">Version of the Wrapper</param>
         /// <param name="icon">Icon that represents this Resource</param>
-        public AbstractWrapperInfo(string name, string author, string description, int version, System.Drawing.Image icon)
+        public AbstractWrapperInfo(string name, string author, string description, int version, object icon)
         {
             this.name = name;
             this.author = author;
@@ -104,7 +104,7 @@ namespace SimPe.Interfaces.Plugin
         /// <summary>
         /// Returns a Icon that should be presented for that resource
         /// </summary>
-        public System.Drawing.Image Icon
+        public object Icon
         {
             get { return img; }
             set { img = value; }
@@ -152,7 +152,7 @@ namespace SimPe.Interfaces.Plugin
         #region IDisposable Member
         public virtual void Dispose()
         {
-            if (this.img != null) img.Dispose();
+            if (this.img is IDisposable d) d.Dispose();
             this.img = null;
             this.name = null;
             this.author = null;

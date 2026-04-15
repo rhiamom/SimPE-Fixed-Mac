@@ -173,7 +173,7 @@ namespace pjse
         public override string ToString() { return pjse.Localization.GetString("pjse_Settings"); }
 
         [System.ComponentModel.Browsable(false)]
-        public System.Drawing.Image Icon { get { return null; } }
+        public object Icon { get { return null; } }
 
         #endregion
     }

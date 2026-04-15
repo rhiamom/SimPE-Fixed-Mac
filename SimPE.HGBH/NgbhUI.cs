@@ -163,7 +163,7 @@ namespace SimPe.Plugin
 				{				
 					/*if (sdesc.Unlinked!=0x00) 
 					{
-						Image img = (Image)sdesc.Image.Clone();
+						Image img = sdesc.Image is Image gdiImg ? (Image)gdiImg.Clone() : null;
 						System.Drawing.Graphics g = Graphics.FromImage(img);
 						g.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
 						g.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
@@ -176,7 +176,7 @@ namespace SimPe.Plugin
 					} */
 					if ((sdesc.Unlinked!=0x00) || (!sdesc.AvailableCharacterData))
 					{
-						Image img = (Image)sdesc.Image.Clone();
+						Image img = sdesc.Image is Image gdiImg ? (Image)gdiImg.Clone() : null;
 						System.Drawing.Graphics g = Graphics.FromImage(img);
 						g.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
 						g.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
@@ -197,11 +197,11 @@ namespace SimPe.Plugin
 							pos += 28;
 						}
 
-						form.ilist.Images.Add(img);
-					} 
-					else 
+						form.ilist.Images.Add(sdesc.Image as SkiaSharp.SKBitmap);
+					}
+					else
 					{
-						form.ilist.Images.Add( sdesc.Image);
+						form.ilist.Images.Add(sdesc.Image as SkiaSharp.SKBitmap);
 					}
 					
 					lvi.ImageIndex = form.ilist.Images.Count-1;

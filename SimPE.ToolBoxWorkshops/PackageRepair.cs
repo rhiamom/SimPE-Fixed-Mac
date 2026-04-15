@@ -75,7 +75,7 @@ namespace SimPe.Plugin.Tool.Window
 			}
 		}
 
-		public Image Icon
+		public object Icon
 		{
 			get
 			{

@@ -115,7 +115,7 @@ namespace SimPe.Plugin.Downloads
 		/// <param name="group"></param>
 		/// <param name="modelname"></param>
 		/// <returns>The Thumbnail</returns>
-		public static Image GetThumbnail(uint group, string modelname) 
+		public static object GetThumbnail(uint group, string modelname) 
 		{
 			return GetThumbnail(group, modelname, null);
 		}
@@ -126,16 +126,16 @@ namespace SimPe.Plugin.Downloads
 		/// <param name="group"></param>
 		/// <param name="modelname"></param>
 		/// <returns>The Thumbnail</returns>
-		public static Image GetThumbnail(uint group, string modelname, string message) 
+		public static object GetThumbnail(uint group, string modelname, string message) 
 		{
 			
 			if (thumbs==null) 
 			{
-                thumbs = SimPe.Packages.File.LoadFromFile(System.IO.Path.Combine(PathProvider.SimSavegameFolder, "Thumbnails\\ObjectThumbnails.package"));
+                thumbs = SimPe.Packages.File.LoadFromFile(System.IO.Path.Combine(PathProvider.SimSavegameFolder, "Thumbnails/ObjectThumbnails.package"));
 				thumbs.Persistent = true;
 			}
 
-			Image img = GetThumbnail(group, modelname, message, thumbs);	
+			object img = GetThumbnail(group, modelname, message, thumbs);	
 			return img;
 		}
 		/// <summary>
@@ -144,10 +144,10 @@ namespace SimPe.Plugin.Downloads
 		/// <param name="group"></param>
 		/// <param name="modelname"></param>
 		/// <returns>The Thumbnail</returns>
-		public static Image GetThumbnail(uint group, string modelname, string message, SimPe.Packages.File thumbs) 
+		public static object GetThumbnail(uint group, string modelname, string message, SimPe.Packages.File thumbs) 
 		{
 			uint inst = ThumbnailHash(group, modelname);
-			Image img = GetThumbnail(message, new uint[] { 0xAC2950C1}, group, inst, thumbs);
+			object img = GetThumbnail(message, new uint[] { 0xAC2950C1}, group, inst, thumbs);
  	
 			
 			return img;
@@ -159,7 +159,7 @@ namespace SimPe.Plugin.Downloads
 		/// <param name="group"></param>
 		/// <param name="modelname"></param>
 		/// <returns>The Thumbnail</returns>
-		public static Image GetThumbnail(string message, uint type, uint group, uint inst, SimPe.Packages.File thumbs) 
+		public static object GetThumbnail(string message, uint type, uint group, uint inst, SimPe.Packages.File thumbs) 
 		{
 			return GetThumbnail(message, new uint[] { type }, group, inst, thumbs);
 		}
@@ -170,7 +170,7 @@ namespace SimPe.Plugin.Downloads
 		/// <param name="group"></param>
 		/// <param name="modelname"></param>
 		/// <returns>The Thumbnail</returns>
-		public static Image GetThumbnail(string message, uint[] types, uint group, uint inst, SimPe.Packages.File thumbs) 
+		public static object GetThumbnail(string message, uint[] types, uint group, uint inst, SimPe.Packages.File thumbs) 
 		{			
 			foreach (uint type in types)
 			{
@@ -185,7 +185,7 @@ namespace SimPe.Plugin.Downloads
 						SimPe.PackedFiles.Wrapper.Picture pic = new SimPe.PackedFiles.Wrapper.Picture();
 						pic.ProcessData(pfd, thumbs);
 						SkiaSharp.SKBitmap bm = ImageLoader.Preview(pic.Image, WaitingScreen.ImageSize);
-						if (WaitingScreen.Running) WaitingScreen.Update((System.Drawing.Bitmap)null, message);
+						if (WaitingScreen.Running) WaitingScreen.Update((SkiaSharp.SKBitmap)null, message);
 						return pic.Image;
 					}
 					catch(Exception){}

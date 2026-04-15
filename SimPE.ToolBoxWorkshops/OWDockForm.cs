@@ -22,6 +22,7 @@
  ***************************************************************************/
 using System;
 using System.Drawing;
+using SkiaSharp;
 using SimPe.Scenegraph.Compat;
 using System.Collections;
 using System.ComponentModel;
@@ -267,9 +268,9 @@ namespace SimPe.Plugin.Tool.Dockable
 				{			
 					lastselected = null;
 					this.ilist.Images.Clear();
-					this.ilist.Images.Add(new Avalonia.Media.Imaging.Bitmap(this.GetType().Assembly.GetManifestResourceStream("SimPe.Plugin.Tool.Dockable.subitems.png")));
-					this.ilist.Images.Add(new Avalonia.Media.Imaging.Bitmap(this.GetType().Assembly.GetManifestResourceStream("SimPe.Plugin.Tool.Dockable.nothumb.png")));
-					this.ilist.Images.Add(new Avalonia.Media.Imaging.Bitmap(this.GetType().Assembly.GetManifestResourceStream("SimPe.Plugin.Tool.Dockable.custom.png")));
+					this.ilist.Images.Add(SKBitmap.Decode(this.GetType().Assembly.GetManifestResourceStream("SimPe.Plugin.Tool.Dockable.subitems.png")));
+					this.ilist.Images.Add(SKBitmap.Decode(this.GetType().Assembly.GetManifestResourceStream("SimPe.Plugin.Tool.Dockable.nothumb.png")));
+					this.ilist.Images.Add(SKBitmap.Decode(this.GetType().Assembly.GetManifestResourceStream("SimPe.Plugin.Tool.Dockable.custom.png")));
 
 					lb.Items.Clear();
 					tv.Nodes.Clear();
@@ -329,8 +330,23 @@ namespace SimPe.Plugin.Tool.Dockable
 				{
 					tn.ImageIndex = 2;
 				}
+				else if (oci.Thumbnail!=null)
+				{
+					// Thumbnail may be SKBitmap (from cache) or System.Drawing.Image
+					if (oci.Thumbnail is SKBitmap skThumb)
+					{
+						var resized = skThumb.Resize(new SkiaSharp.SKImageInfo(ilist.ImageSize.Width, ilist.ImageSize.Height), SkiaSharp.SKFilterQuality.Medium);
+						ilist.Images.Add(resized ?? skThumb);
+					}
+					else if (oci.Thumbnail is Image img)
+					{
+						img = Ambertation.Drawing.GraphicRoutines.ScaleImage(img, ilist.ImageSize.Width, ilist.ImageSize.Height, Helper.XmlRegistry.GraphQuality);
+						ilist.Images.Add(img);
+					}
+					tn.ImageIndex = ilist.Images.Count-1;
+				}
 				else
-					tn.ImageIndex = 1; // thumbnails require GDI+ (unavailable on non-Windows)
+					tn.ImageIndex = 1;
 				tn.SelectedImageIndex = tn.ImageIndex;
 				ret.Nodes.Add(tn);
 			}

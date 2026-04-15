@@ -86,7 +86,7 @@ namespace SimPe.Plugin
 
         class easHelp : IHelp
         {
-            public System.Drawing.Image Icon { get { return null; } }
+            public object Icon { get { return null; } }
 
             public override string ToString()
             {

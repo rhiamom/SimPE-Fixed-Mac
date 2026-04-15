@@ -30,6 +30,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using SkiaSharp;
 using System.Text;
 using static SimPe.Data.MetaData;
 
@@ -713,14 +714,25 @@ namespace pjHoodTool
         }
 
 
-        void AddImage(Image img, string f)
+        void AddImage(object img, string f)
         {
-            if (img != null)
+            if (img is SKBitmap skb)
             {
-                if (img.Size.Width > 16 && img.Size.Height > 16)
-                    img.Save(f);
+                if (skb.Width > 16 && skb.Height > 16)
+                {
+                    using (var stream = System.IO.File.OpenWrite(f))
+                    using (var data = skb.Encode(SKEncodedImageFormat.Png, 100))
+                        data.SaveTo(stream);
+                }
                 else
-                    System.Diagnostics.Trace.WriteLine("img too small: " + Path.GetFileNameWithoutExtension(f) + ";w=" + img.Width + ";h=" + img.Height);
+                    System.Diagnostics.Trace.WriteLine("img too small: " + Path.GetFileNameWithoutExtension(f) + ";w=" + skb.Width + ";h=" + skb.Height);
+            }
+            else if (img is Image sdi)
+            {
+                if (sdi.Size.Width > 16 && sdi.Size.Height > 16)
+                    sdi.Save(f);
+                else
+                    System.Diagnostics.Trace.WriteLine("img too small: " + Path.GetFileNameWithoutExtension(f) + ";w=" + sdi.Width + ";h=" + sdi.Height);
             }
         }
 
@@ -788,7 +800,7 @@ namespace pjHoodTool
         #endregion
 
         #region IToolExt Member
-        public override System.Drawing.Image Icon
+        public override object Icon
         {
             get
             {
