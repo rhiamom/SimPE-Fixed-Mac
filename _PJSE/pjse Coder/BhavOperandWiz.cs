@@ -42,7 +42,8 @@ namespace pjse
 	public class BhavOperandWiz : Window
 	{
 		#region Form variables
-		private StackPanel panel1;
+		private DockPanel rootPanel;
+		private ContentControl wizHost;
 		private ButtonCompat OK;
 		private ButtonCompat Cancel;
 		#endregion
@@ -61,19 +62,34 @@ namespace pjse
 
 		public Instruction Execute(BhavWiz i, int wizType)
 		{
+			return ExecuteAsync(i, wizType).GetAwaiter().GetResult();
+		}
+
+		public async System.Threading.Tasks.Task<Instruction> ExecuteAsync(BhavWiz i, int wizType)
+		{
 			pjse.ABhavOperandWiz wiz = null;
+			string title = "Operand Wizard";
 			switch(wizType)
 			{
-				case 0: wiz = new pjse.BhavOperandWizards.BhavOperandWizRaw(i); break;
-				case 1: wiz = i.Wizard(); break;
+				case 0: wiz = new pjse.BhavOperandWizards.BhavOperandWizRaw(i); title = "Raw Operand Entry"; break;
+				case 1: wiz = i.Wizard(); title = "Operand Wizard"; break;
 				default: wiz = new pjse.BhavOperandWizards.BhavOperandWizDefault(i); break;
 			}
 			if (wiz == null) return null;
 
 			StackPanel pn = wiz.bhavPrimWizPanel;
+			this.wizHost.Content = pn;   // attach the wizard's own UI panel above the OK/Cancel row
+
+			this.Title = title;
 			wiz.Execute();
 
-			this.ShowDialog(null).GetAwaiter().GetResult();
+			// Avalonia 11 requires a non-null owner for ShowDialog; use the main window.
+			var owner = (Avalonia.Application.Current?.ApplicationLifetime
+				as Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+			if (owner != null)
+				await this.ShowDialog(owner);
+			else
+				this.Show();
 
 			if (_dialogResult)
 				return wiz.Write();
@@ -82,14 +98,31 @@ namespace pjse
 
 		private void InitializeComponent()
 		{
-			this.panel1 = new StackPanel();
-			this.OK = new ButtonCompat { Content = "OK" };
-			this.Cancel = new ButtonCompat { Content = "Cancel" };
-			this.OK.Click += (s, e) => { _dialogResult = true; Close(); };
+			this.Title = "Operand Wizard";
+			this.SizeToContent = SizeToContent.WidthAndHeight;
+
+			this.wizHost = new ContentControl();
+
+			this.OK     = new ButtonCompat { Content = "OK",     MinWidth = 72, MinHeight = 24 };
+			this.Cancel = new ButtonCompat { Content = "Cancel", MinWidth = 72, MinHeight = 24, Margin = new Avalonia.Thickness(8, 0, 0, 0) };
+			this.OK.Click     += (s, e) => { _dialogResult = true;  Close(); };
 			this.Cancel.Click += (s, e) => { _dialogResult = false; Close(); };
-			this.panel1.Children.Add(this.OK);
-			this.panel1.Children.Add(this.Cancel);
-			this.Content = this.panel1;
+
+			var buttonRow = new StackPanel
+			{
+				Orientation = Avalonia.Layout.Orientation.Horizontal,
+				HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right,
+				Margin = new Avalonia.Thickness(12, 4, 12, 10),
+			};
+			buttonRow.Children.Add(this.OK);
+			buttonRow.Children.Add(this.Cancel);
+
+			this.rootPanel = new DockPanel();
+			DockPanel.SetDock(buttonRow, Dock.Bottom);
+			this.rootPanel.Children.Add(buttonRow);
+			this.rootPanel.Children.Add(this.wizHost); // fills remaining
+
+			this.Content = this.rootPanel;
 		}
 
 	}

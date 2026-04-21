@@ -497,7 +497,7 @@ namespace SimPe.PackedFiles.UserInterface
             return wrapper.ResourceByInstance(SimPe.Data.MetaData.BHAV_FILE, currentInst.Instruction.OpCode) != null;
         }
 
-        private void OperandWiz(int type)
+        private async System.Threading.Tasks.Task OperandWiz(int type)
         {
             internalchg = true;
             bool changed = false;
@@ -505,7 +505,9 @@ namespace SimPe.PackedFiles.UserInterface
             currentInst = null;
             try
             {
-                changed = ((new BhavOperandWiz()).Execute(btnCommit.IsVisible ? inst : inst.Clone(), type) != null);
+                // Must await the dialog — .GetResult() on the UI thread freezes the dispatcher,
+                // so the dialog renders but all input (textbox editing, button clicks, the X) is dead.
+                changed = ((await new BhavOperandWiz().ExecuteAsync(btnCommit.IsVisible ? inst : inst.Clone(), type)) != null);
             }
             finally
             {
@@ -1795,9 +1797,9 @@ namespace SimPe.PackedFiles.UserInterface
 				this.tbInst_OpCode.Text = "0x" + SimPe.Helper.HexString((ushort)item.Instance);
 		}
 
-        private void btnOperandWiz_Clicked(object sender, System.EventArgs e) { OperandWiz(1); }
-		
-		private void btnOperandRaw_Click(object sender, System.EventArgs e) { OperandWiz(0); }
+        private async void btnOperandWiz_Clicked(object sender, System.EventArgs e) { await OperandWiz(1); }
+
+		private async void btnOperandRaw_Click(object sender, System.EventArgs e) { await OperandWiz(0); }
 
         private void btnZero_Click(object sender, EventArgs e)
         {

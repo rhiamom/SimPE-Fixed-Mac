@@ -85,12 +85,19 @@ namespace pjse.BhavOperandWizards.WizRaw
 
 		private void InitializeComponent()
 		{
-            this.pnWizRaw = new StackPanel();
-            this.tbRaw = new TextBoxCompat();
-            this.pnWizRaw.Name = "pnWizRaw";
-            this.tbRaw.Name = "tbRaw";
+            this.pnWizRaw = new StackPanel { Name = "pnWizRaw", Margin = new Avalonia.Thickness(12, 8) };
+            this.tbRaw = new TextBoxCompat
+            {
+                Name = "tbRaw",
+                FontFamily = new Avalonia.Media.FontFamily("Consolas,Courier New,monospace"),
+                MinWidth = 380,
+                MinHeight = 24,
+            };
             this.pnWizRaw.Children.Add(this.tbRaw);
-            this.Content = this.pnWizRaw;
+
+            // NOTE: deliberately NOT setting `this.Content = pnWizRaw`.
+            // The outer BhavOperandWiz dialog reparents pnWizRaw into its own layout,
+            // and Avalonia throws if a control already has a parent.
 		}
 
 	}

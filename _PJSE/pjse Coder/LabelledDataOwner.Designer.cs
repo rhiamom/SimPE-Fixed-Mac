@@ -1,116 +1,100 @@
+using Avalonia.Controls;
+using Avalonia.Layout;
+using SimPe.Scenegraph.Compat;
+
 namespace pjse
 {
     partial class LabelledDataOwner
     {
-        /// <summary> 
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
         #region Component Designer generated code
 
-        /// <summary> 
-        /// Required method for Designer support - do not modify 
-        /// the contents of this method with the code editor.
+        /// <summary>
+        /// Builds the Avalonia visual tree for LabelledDataOwner.
+        ///
+        /// Original WinForms used a 3×3 TableLayoutPanel:
+        ///   (0,0)=lbLabel   (1,0)=cbDataOwner   (2,0)=flpValue(cbPicker|tbVal)
+        ///                   (1,1)=lbInstance
+        ///                   (1,2..2,2)=flpCheckBoxes(ckbDecimal, ckbUseInstancePicker)
         /// </summary>
         private void InitializeComponent()
         {
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.lbLabel = new System.Windows.Forms.Label();
-            this.flpValue = new System.Windows.Forms.FlowLayoutPanel();
-            this.cbPicker = new System.Windows.Forms.ComboBox();
-            this.tbVal = new System.Windows.Forms.TextBox();
-            this.lbInstance = new System.Windows.Forms.Label();
-            this.cbDataOwner = new System.Windows.Forms.ComboBox();
-            this.flpCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
-            this.ckbDecimal = new System.Windows.Forms.CheckBox();
-            this.ckbUseInstancePicker = new System.Windows.Forms.CheckBox();
-            // 
-            // tableLayoutPanel1
-            // 
-            this.tableLayoutPanel1.ColumnCount = 3;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.Controls.Add(this.lbLabel, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.flpValue, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lbInstance, 1, 1);
-            this.tableLayoutPanel1.Controls.Add(this.cbDataOwner, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.flpCheckBoxes, 1, 2);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 3;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            // 
-            // lbLabel
-            // 
-            this.lbLabel.Name = "lbLabel";
-            this.lbLabel.Text = "label1";
-            // 
-            // flpValue
-            // 
-            this.flpValue.Controls.Add(this.cbPicker);
-            this.flpValue.Controls.Add(this.tbVal);
-            this.flpValue.Name = "flpValue";
-            // 
-            // cbPicker
-            // 
-            this.cbPicker.Name = "cbPicker";
-            this.cbPicker.Visible = false;
-            // 
-            // tbVal
-            // 
-            this.tbVal.Name = "tbVal";
-            this.tbVal.Text = "0x0000";
-            // 
-            // lbConst
-            // 
-            this.lbInstance.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.lbInstance.Name = "lbConst";
-            this.lbInstance.Text = "Const value";
-            // 
-            // cbDataOwner
-            // 
-            this.cbDataOwner.Name = "cbDataOwner";
-            // 
-            // flpCheckBoxes
-            // 
-            this.tableLayoutPanel1.SetColumnSpan(this.flpCheckBoxes, 2);
-            this.flpCheckBoxes.Controls.Add(this.ckbDecimal);
-            this.flpCheckBoxes.Controls.Add(this.ckbUseInstancePicker);
-            this.flpCheckBoxes.Name = "flpCheckBoxes";
-            // 
-            // ckbDecimal
-            // 
-            this.ckbDecimal.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.ckbDecimal.Name = "ckbDecimal";
-            this.ckbDecimal.Text = "Decimal (except Consts)";
-            // 
-            // ckbUseAttrPicker
-            // 
-            this.ckbUseInstancePicker.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.ckbUseInstancePicker.Name = "ckbUseAttrPicker";
-            this.ckbUseInstancePicker.Text = "use Instance Picker";
-            // 
-            // LabelledDataOwner
-            // 
-            this.Controls.Add(this.tableLayoutPanel1);
+            this.lbLabel              = new LabelCompat     { Name = "lbLabel",              Content = "label1",            VerticalAlignment = VerticalAlignment.Center, Margin = new Avalonia.Thickness(0, 0, 6, 0) };
+            this.cbDataOwner          = new ComboBoxCompat  { Name = "cbDataOwner",          MinWidth = 150, MinHeight = 22 };
+            this.cbPicker             = new ComboBoxCompat  { Name = "cbPicker",             MinWidth = 150, MinHeight = 22, IsVisible = false };
+            this.tbVal                = new TextBoxCompat   { Name = "tbVal",                MinWidth = 90,  MinHeight = 22, Text = "0x0000" };
+            this.lbInstance           = new LabelCompat     { Name = "lbInstance",           Content = "Const value",       VerticalAlignment = VerticalAlignment.Center };
+            this.ckbDecimal           = new CheckBoxCompat2 { Name = "ckbDecimal",           Content = "Decimal (except Consts)" };
+            this.ckbUseInstancePicker = new CheckBoxCompat2 { Name = "ckbUseInstancePicker", Content = "use Instance Picker",  Margin = new Avalonia.Thickness(12, 0, 0, 0) };
+
+            // Row 0 col 2: cbPicker and tbVal share the same slot (one visible at a time).
+            // Use a Grid rather than bare Panel — Avalonia's base Panel is abstract.
+            var valueCell = new Grid();
+            valueCell.Children.Add(this.cbPicker);
+            valueCell.Children.Add(this.tbVal);
+
+            // Row 2 cols 1-2: horizontal checkbox row.
+            var checkBoxes = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                Margin = new Avalonia.Thickness(0, 2, 0, 0),
+            };
+            checkBoxes.Children.Add(this.ckbDecimal);
+            checkBoxes.Children.Add(this.ckbUseInstancePicker);
+
+            this.tableLayoutPanel1 = new Grid
+            {
+                ColumnDefinitions = new ColumnDefinitions("Auto,Auto,Auto"),
+                RowDefinitions    = new RowDefinitions("Auto,Auto,Auto"),
+                Margin            = new Avalonia.Thickness(4),
+            };
+
+            Grid.SetColumn(this.lbLabel,     0); Grid.SetRow(this.lbLabel,     0);
+            Grid.SetColumn(this.cbDataOwner, 1); Grid.SetRow(this.cbDataOwner, 0);
+            Grid.SetColumn(valueCell,        2); Grid.SetRow(valueCell,        0);
+            this.cbDataOwner.Margin = new Avalonia.Thickness(0, 0, 6, 0);
+
+            Grid.SetColumn(this.lbInstance,  1); Grid.SetRow(this.lbInstance,  1);
+            Grid.SetColumnSpan(this.lbInstance, 2);
+
+            Grid.SetColumn(checkBoxes,       1); Grid.SetRow(checkBoxes,       2);
+            Grid.SetColumnSpan(checkBoxes,   2);
+
+            this.tableLayoutPanel1.Children.Add(this.lbLabel);
+            this.tableLayoutPanel1.Children.Add(this.cbDataOwner);
+            this.tableLayoutPanel1.Children.Add(valueCell);
+            this.tableLayoutPanel1.Children.Add(this.lbInstance);
+            this.tableLayoutPanel1.Children.Add(checkBoxes);
+
+            // Minimum size so the compound control is actually visible when hosted in a
+            // horizontal StackPanel (which passes infinite width to children).
+            this.MinWidth  = 260;
+            this.MinHeight = 72;
             this.Name = "LabelledDataOwner";
 
+            // DIAGNOSTIC: absolute-minimum content — a plain coloured Border.
+            // If this doesn't render, the UserControl itself isn't being drawn.
+            this.Content = new Border
+            {
+                Background = Avalonia.Media.Brushes.Yellow,
+                Width      = 200,
+                Height     = 50,
+                Child      = new TextBlock { Text = "LabelledDataOwner", Foreground = Avalonia.Media.Brushes.Black },
+            };
         }
 
         #endregion
 
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.Label lbLabel;
-        private System.Windows.Forms.Label lbInstance;
-        private System.Windows.Forms.ComboBox cbPicker;
-        private System.Windows.Forms.TextBox tbVal;
-        private System.Windows.Forms.ComboBox cbDataOwner;
-        private System.Windows.Forms.CheckBox ckbDecimal;
-        private System.Windows.Forms.CheckBox ckbUseInstancePicker;
-        private System.Windows.Forms.FlowLayoutPanel flpValue;
-        private System.Windows.Forms.FlowLayoutPanel flpCheckBoxes;
+        // NOTE: kept the original field name `tableLayoutPanel1` so nothing else needs to change,
+        // but it's really a Grid now.
+        private Grid              tableLayoutPanel1;
+        private LabelCompat       lbLabel;
+        private LabelCompat       lbInstance;
+        private ComboBoxCompat    cbPicker;
+        private TextBoxCompat     tbVal;
+        private ComboBoxCompat    cbDataOwner;
+        private CheckBoxCompat2   ckbDecimal;
+        private CheckBoxCompat2   ckbUseInstancePicker;
     }
 }
