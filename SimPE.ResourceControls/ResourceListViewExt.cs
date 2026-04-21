@@ -75,8 +75,7 @@ namespace SimPe.Windows.Forms
             if (!Helper.XmlRegistry.ResourceListShowExtensions)
                 lv.Columns.Remove(clTypeCol);
 
-            if (Helper.XmlRegistry.UseBigIcons)
-                lv.FontSize = FontSize + 3;
+            // Font size inherits from the app-wide default; don't bump it for UseBigIcons.
 
             lv.SelectionChanged += lv_SelectionChanged;
             lv.DoubleTapped     += lv_DoubleTapped;

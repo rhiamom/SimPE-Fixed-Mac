@@ -339,9 +339,9 @@ namespace SimPe.PackedFiles.UserInterface
             BhavForm ui = (BhavForm)b.UIHandler;
             ui.Tag = "Popup"
                 + ";callerID=+" + wrapper.FileDescriptor.ExportFileName + "+";
-            ui.Title = pjse.Localization.GetString("viewbhav") + ": " + b.FileName + " [" + b.Package.SaveFileName + "]";
+            string bhavTitle = pjse.Localization.GetString("viewbhav") + ": " + b.FileName + " [" + b.Package.SaveFileName + "]";
             b.RefreshUI();
-            ui.Show();
+            new Avalonia.Controls.Window { Title = bhavTitle, Content = ui }.Show();
         }
 
         private void btnCommit_Click(object sender, System.EventArgs e)

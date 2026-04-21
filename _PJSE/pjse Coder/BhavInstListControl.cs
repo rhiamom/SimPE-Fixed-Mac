@@ -44,13 +44,22 @@ namespace SimPe.PackedFiles.UserInterface
 	public class BhavInstListControl : Avalonia.Controls.UserControl
 	{
         // WinForms compat shims
-        private Avalonia.Controls.Panel _panel = new StackPanel();
-        public Avalonia.Controls.Controls Controls => _panel.Children;
+        //   _panel: outer DockPanel so pnflow can live on the right edge where WinForms put it.
+        //   _items: vertical StackPanel that holds the BhavInstListItemUI rows.
+        //   Controls routes to _items so makeBhavInstListItemUI's `this.Controls.Add(i)` keeps working.
+        private readonly Avalonia.Controls.StackPanel _items = new StackPanel();
+        private readonly Avalonia.Controls.DockPanel _panel = new DockPanel();
+        public Avalonia.Controls.Controls Controls => _items.Children;
         public System.Drawing.Point AutoScrollPosition { get; set; } = new System.Drawing.Point(0, 0);
         public System.Drawing.Rectangle ClientRectangle => new System.Drawing.Rectangle(0, 0, (int)Bounds.Width, (int)Bounds.Height);
 
 		#region Form variables
-		private PictureBox pnflow;
+		// pnflow is the vertical strip on the right that DrawConnectors() paints into,
+		// showing green/red arrows between true/false jump targets.
+		// Compat PictureBox (bare Control with an Image object) doesn't actually render,
+		// so this is an Avalonia.Controls.Image.
+		private Avalonia.Controls.Image pnflow;
+		private const int pnflowWidth = 32;
 		#endregion
 
 		public BhavInstListControl()
@@ -123,7 +132,7 @@ namespace SimPe.PackedFiles.UserInterface
 			// if any instruction updated, redraw the connectors
 			if (sender is Instruction && wrapper.IndexOf((Instruction)sender) >= 0)
 			{
-				pnflow.Image = DrawConnectors();
+				{ var skBmp = DrawConnectors() as SkiaSharp.SKBitmap; pnflow.Source = skBmp != null ? SimPe.Helper.ToAvaloniaBitmap(skBmp) : null; }
 			}
 		}
 
@@ -138,12 +147,13 @@ namespace SimPe.PackedFiles.UserInterface
 			{
 				if (value != -1 && (flowitems == null || value < -1 || value >= flowitems.Length))
 					throw new Exception("Internal failure: SelectedIndex out of range: " + value.ToString());
+				// (redraw handled below; helper inlined in the two sites that currently call DrawConnectors)
 
 				if (csel != value)
 				{
 					if (csel >= 0) flowitems[csel].MakeUnselected();
 					csel = value;
-					pnflow.Image = DrawConnectors();
+					{ var skBmp = DrawConnectors() as SkiaSharp.SKBitmap; pnflow.Source = skBmp != null ? SimPe.Helper.ToAvaloniaBitmap(skBmp) : null; }
 					OnSelectedInstChanged(new EventArgs());
 				}
 			}
@@ -354,8 +364,9 @@ namespace SimPe.PackedFiles.UserInterface
 
 				if (csel >= 0) flowitems[csel].MakeSelected();
 
-				pnflow.Image = DrawConnectors();
-				this.Controls.Add(pnflow);
+				// pnflow is already parented to _panel in InitializeComponent — just refresh its image
+				var skBmp = DrawConnectors() as SkiaSharp.SKBitmap;
+				pnflow.Source = skBmp != null ? SimPe.Helper.ToAvaloniaBitmap(skBmp) : null;
 
 				this.IsVisible = true;
 			}
@@ -380,8 +391,13 @@ namespace SimPe.PackedFiles.UserInterface
 			// i.Anchor removed (AnchorStyles not used in Avalonia)
 			i.Left = this.AutoScrollPosition.X;
 			i.Top = ct*(i.Height+4) + this.AutoScrollPosition.Y;
-			i.Width = this.ClientRectangle.Width - pnflow.Width;
+			i.Width = this.ClientRectangle.Width - (int)pnflow.Width;
 			i.Index = ct;
+
+			// DrawConnectors paints arrows assuming rowHeight=32 with +4 gap.
+			// Force the actual Avalonia layout to match so arrows align with rows.
+			i.MinHeight = BhavInstListItemUI.rowHeight;
+			i.Margin = new Avalonia.Thickness(0, 0, 0, 4);
 
 			i.MoveUp += new EventHandler(bhavInst_MoveUp);
 			i.MoveDown += new EventHandler(bhavInst_MoveDown);
@@ -402,10 +418,13 @@ namespace SimPe.PackedFiles.UserInterface
 		{
 			if (flowitems == null || flowitems.Length == 0)
 				return null;
-			if (this.ClientRectangle.Width < pnflow.Width)
-				return null;
+			// NOTE: the original WinForms version guarded on
+			//   `this.ClientRectangle.Width < pnflow.Width` — but Bounds.Width is 0
+			//   until layout completes, and myrepaint runs inside UpdateGUI which fires
+			//   before first layout. That check was aborting every initial draw.
+			//   pnflow.Width is a fixed constant so the guard served no real purpose.
 
-			int imgW = Math.Max(pnflow.Width, 1);
+			int imgW = Math.Max((int)pnflow.Width, 1);
 			int imgH = Math.Max(flowitems.Length * (BhavInstListItemUI.rowHeight + 4), 1);
 			var skBmp = new SkiaSharp.SKBitmap(imgW, imgH, SkiaSharp.SKColorType.Bgra8888, SkiaSharp.SKAlphaType.Premul);
 			using var canvas = new SkiaSharp.SKCanvas(skBmp);
@@ -493,7 +512,7 @@ namespace SimPe.PackedFiles.UserInterface
 				if (isTarget(ct)) continue;
 
 				int xPosLeft = 0;
-				int xPosRight = pnflow.Width - 1;
+				int xPosRight = (int)pnflow.Width - 1;
 				int yPos = (BhavInstListItemUI.rowHeight + 4) * ct + (BhavInstListItemUI.rowHeight / 4);
 
 				canvas.DrawLine(
@@ -528,9 +547,23 @@ namespace SimPe.PackedFiles.UserInterface
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.pnflow = new PictureBox();
-			this.pnflow.Name = "pnflow";
-			this.pnflow.IsVisible = true;
+			this.pnflow = new Avalonia.Controls.Image
+			{
+				Name = "pnflow",
+				IsVisible = true,
+				Width = pnflowWidth,
+				Stretch = Avalonia.Media.Stretch.None,
+				HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
+				VerticalAlignment   = Avalonia.Layout.VerticalAlignment.Top,
+			};
+
+			// _items (vertical stack of row UIs) fills; pnflow docks to the right as a fixed strip
+			// that DrawConnectors() paints into for true/false target arrows.
+			Avalonia.Controls.DockPanel.SetDock(this.pnflow, Avalonia.Controls.Dock.Right);
+			_panel.Children.Add(this.pnflow);
+			_panel.Children.Add(_items); // last child fills remaining space
+
+			this.Content = _panel;
 		}
 
 		#endregion

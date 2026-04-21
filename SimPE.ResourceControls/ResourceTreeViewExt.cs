@@ -71,8 +71,7 @@ namespace SimPe.Windows.Forms
             };
             tv.SelectionChanged += tv_AfterSelect;
 
-            if (Helper.XmlRegistry.UseBigIcons)
-                tv.FontSize = FontSize + 5;
+            // Font size inherits from the app-wide default; don't bump it for UseBigIcons.
 
             tbType  = new Avalonia.Controls.Primitives.ToggleButton { Content = "T", Width = 22, Height = 22, Padding = new Avalonia.Thickness(0), HorizontalContentAlignment = Avalonia.Layout.HorizontalAlignment.Center, VerticalContentAlignment = Avalonia.Layout.VerticalAlignment.Center };
             tbGroup = new Avalonia.Controls.Primitives.ToggleButton { Content = "G", Width = 22, Height = 22, Padding = new Avalonia.Thickness(0), HorizontalContentAlignment = Avalonia.Layout.HorizontalAlignment.Center, VerticalContentAlignment = Avalonia.Layout.VerticalAlignment.Center };

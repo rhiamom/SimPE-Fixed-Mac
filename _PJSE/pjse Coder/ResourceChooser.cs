@@ -401,9 +401,9 @@ namespace pjse
 
             SimPe.PackedFiles.UserInterface.BhavForm ui = (SimPe.PackedFiles.UserInterface.BhavForm)b.UIHandler;
             ui.Tag = "Popup";
-            ui.Title = pjse.Localization.GetString("viewbhav") + ": " + b.FileName + " [" + b.Package.SaveFileName + "]";
+            string bhavTitle = pjse.Localization.GetString("viewbhav") + ": " + b.FileName + " [" + b.Package.SaveFileName + "]";
             b.RefreshUI();
-            ui.Show();
+            new Avalonia.Controls.Window { Title = bhavTitle, Content = ui }.Show();
         }
 
     }

@@ -773,10 +773,10 @@ namespace pjse.BhavOperandWizards.WizAnimate
 
             SimPe.PackedFiles.UserInterface.BhavForm ui = (SimPe.PackedFiles.UserInterface.BhavForm)b.UIHandler;
             ui.Tag = "Popup"; // tells the SetReadOnly function it's in a popup - so everything locked down
-            ui.Title = pjse.Localization.GetString("viewbhav")
+            string bhavTitle = pjse.Localization.GetString("viewbhav")
                 + ": " + b.FileName + " [" + b.Package.SaveFileName + "]";
             b.RefreshUI();
-            ui.Show();
+            new Avalonia.Controls.Window { Title = bhavTitle, Content = ui }.Show();
         }
 
         private void btnEventTree_Click(object sender, EventArgs e)

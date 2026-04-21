@@ -225,6 +225,43 @@ namespace SimPe.PackedFiles.UserInterface
 
             this.GotFocus += (s, e) => bhavInstListItemUI_Enter(s, e);
             this.LostFocus += (s, e) => bhavInstListItemUI_Leave(s, e);
+
+            // ── Compose the visible row layout and attach as Content.
+            //    Without this the UserControl is empty and nothing renders. ──
+            this.instrText.VerticalAlignment   = Avalonia.Layout.VerticalAlignment.Center;
+            this.trueTarget.VerticalAlignment  = Avalonia.Layout.VerticalAlignment.Center;
+            this.falseTarget.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
+            this.trueTarget.Margin  = new Avalonia.Thickness(8, 0, 4, 0);
+            this.falseTarget.Margin = new Avalonia.Thickness(0, 0, 8, 0);
+
+            var targetsPanel = new Avalonia.Controls.StackPanel
+            {
+                Orientation = Avalonia.Layout.Orientation.Horizontal,
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+            };
+            targetsPanel.Children.Add(this.trueTarget);
+            targetsPanel.Children.Add(this.falseTarget);
+
+            var rowContent = new Avalonia.Controls.DockPanel
+            {
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                Margin = new Avalonia.Thickness(4, 0),
+            };
+            Avalonia.Controls.DockPanel.SetDock(targetsPanel, Avalonia.Controls.Dock.Right);
+            rowContent.Children.Add(targetsPanel);
+            rowContent.Children.Add(this.instrText); // fills remaining space
+
+            var rowBorder = new Avalonia.Controls.Border
+            {
+                BorderBrush = Avalonia.Media.Brushes.LightGray,
+                BorderThickness = new Avalonia.Thickness(1),
+                Padding = new Avalonia.Thickness(2),
+                Child = rowContent,
+            };
+            // 'this.Content' resolves to the local static method Content(int, BhavWiz)
+            // because of the `new` shadow below. Use base.Content to reach Avalonia's property.
+            base.Content = rowBorder;
+            this.Focusable = true;
 		}
 		#endregion
 

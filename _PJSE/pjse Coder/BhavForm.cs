@@ -44,7 +44,7 @@ namespace SimPe.PackedFiles.UserInterface
 	/// <summary>
 	/// Summary description for BhavForm.
 	/// </summary>
-	public class BhavForm : Window, IPackedFileUI
+	public class BhavForm : UserControl, IPackedFileUI
 	{
 		#region Form variables
 
@@ -81,8 +81,8 @@ namespace SimPe.PackedFiles.UserInterface
 		private TextBoxCompat tbInst_Unk2;
 		private TextBoxCompat tbInst_Unk1;
 		private TextBoxCompat tbInst_Unk0;
-		private GroupBox gbInstruction;
-		private StackPanel bhavPanel;
+		private Canvas gbInstruction;
+		private DockPanel bhavPanel;
 		private ButtonCompat btnCommit;
 		private ButtonCompat btnOpCode;
 		private ButtonCompat btnOperandWiz;
@@ -95,9 +95,9 @@ namespace SimPe.PackedFiles.UserInterface
 		private ButtonCompat btnAdd;
 		private ButtonCompat btnCancel;
         private SimPe.PackedFiles.UserInterface.BhavInstListControl pnflowcontainer;
-		private GroupBox gbMove;
+		private Canvas gbMove;
 		private LabelCompat lbArgC;
-		private GroupBox gbSpecial;
+		private Canvas gbSpecial;
 		private ButtonCompat btnInsTrue;
 		private ButtonCompat btnInsFalse;
 		private ButtonCompat btnLinkInge;
@@ -374,7 +374,8 @@ namespace SimPe.PackedFiles.UserInterface
             ui.Tag = tag;
 
             bhav.RefreshUI();
-            ui.Show();
+            var win = new Window { Content = ui, Title = "BHAV Viewer" };
+            win.Show();
         }
 
         private string getValueFromTag(string key)
@@ -657,7 +658,7 @@ namespace SimPe.PackedFiles.UserInterface
 					+ "\r\n" + w.LongName + "\r\n\r\n");
 			}
 
-			_ = Clipboard?.SetTextAsync(listing);
+			_ = Avalonia.Controls.TopLevel.GetTopLevel(this)?.Clipboard?.SetTextAsync(listing);
 		}
 
         private void PasteListing()
@@ -665,7 +666,7 @@ namespace SimPe.PackedFiles.UserInterface
             int i = 0;
             int origlen = wrapper.Count;
 
-            string listing = Clipboard?.GetTextAsync().GetAwaiter().GetResult() ?? "";
+            string listing = Avalonia.Controls.TopLevel.GetTopLevel(this)?.Clipboard?.GetTextAsync().GetAwaiter().GetResult() ?? "";
             foreach (string line in listing.Split('\r', '\n'))
             {
                 if (line.Length == 0) continue;
@@ -915,7 +916,7 @@ namespace SimPe.PackedFiles.UserInterface
 		{
 			get
 			{
-				return bhavPanel;
+				return this;
 			}
 		}
 
@@ -962,7 +963,7 @@ namespace SimPe.PackedFiles.UserInterface
 
                 handleOverride();
 
-                this.Content = formTitle;
+                if (this.VisualRoot is Window __win0) __win0.Title = formTitle;
                 ttBhavForm.SetToolTip(tbFilename, null);
             }
             else
@@ -990,7 +991,9 @@ namespace SimPe.PackedFiles.UserInterface
         {
             pjse_banner1.SiblingEnabled = wrapper.SiblingResource(TPRP.TPRPtype) != null;
             if (isPopup)
-                this.Content = formTitle;
+            {
+                if (this.VisualRoot is Window __win1) __win1.Title = formTitle;
+            }
             else
             {
                 ttBhavForm.SetToolTip(tbFilename, expName + ": 0x" + SimPe.Helper.HexString((ushort)wrapper.FileDescriptor.Instance));
@@ -1044,572 +1047,588 @@ namespace SimPe.PackedFiles.UserInterface
 		/// </summary>
 		private void InitializeComponent()
 		{
-            this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BhavForm));
-            this.gbInstruction = new GroupBox();
-            this.btnZero = new ButtonCompat();
-            this.tbInst_Longname = new TextBoxCompat();
-            this.btnOperandRaw = new ButtonCompat();
-            this.btnCancel = new ButtonCompat();
-            this.btnOperandWiz = new ButtonCompat();
-            this.llopenbhav = new LinkLabel();
-            this.tba2 = new ComboBoxCompat();
-            this.tba1 = new ComboBoxCompat();
-            this.label13 = new LabelCompat();
-            this.tbInst_Unk7 = new TextBoxCompat();
-            this.tbInst_Unk6 = new TextBoxCompat();
-            this.tbInst_Unk5 = new TextBoxCompat();
-            this.tbInst_Unk4 = new TextBoxCompat();
-            this.tbInst_Unk3 = new TextBoxCompat();
-            this.tbInst_Unk2 = new TextBoxCompat();
-            this.tbInst_Unk1 = new TextBoxCompat();
-            this.tbInst_Unk0 = new TextBoxCompat();
-            this.tbInst_Op7 = new TextBoxCompat();
-            this.tbInst_Op6 = new TextBoxCompat();
-            this.tbInst_Op5 = new TextBoxCompat();
-            this.tbInst_Op4 = new TextBoxCompat();
-            this.tbInst_Op3 = new TextBoxCompat();
-            this.tbInst_Op2 = new TextBoxCompat();
-            this.tbInst_Op1 = new TextBoxCompat();
-            this.tbInst_Op0 = new TextBoxCompat();
-            this.tbInst_NodeVersion = new TextBoxCompat();
-            this.tbInst_OpCode = new TextBoxCompat();
-            this.label10 = new LabelCompat();
-            this.label9 = new LabelCompat();
-            this.label12 = new LabelCompat();
-            this.label11 = new LabelCompat();
-            this.btnOpCode = new ButtonCompat();
-            this.tbFilename = new TextBoxCompat();
-            this.lbFilename = new LabelCompat();
-            this.tbLocalC = new TextBoxCompat();
-            this.tbArgC = new TextBoxCompat();
-            this.tbType = new TextBoxCompat();
-            this.lbTreeVersion = new LabelCompat();
-            this.lbType = new LabelCompat();
-            this.lbLocalC = new LabelCompat();
-            this.lbArgC = new LabelCompat();
-            this.lbFormat = new LabelCompat();
-            this.bhavPanel = new StackPanel();
-            this.pjse_banner1 = new pjse.pjse_banner();
-            this.lbHidesOP = new LabelCompat();
-            this.gbSpecial = new GroupBox();
-            this.button1 = new ButtonCompat();
-            this.cmpBHAV = new pjse.CompareButton();
-            this.btnPasteListing = new ButtonCompat();
-            this.btnAppend = new ButtonCompat();
-            this.btnInsTrue = new ButtonCompat();
-            this.btnInsFalse = new ButtonCompat();
-            this.btnDelPescado = new ButtonCompat();
-            this.btnLinkInge = new ButtonCompat();
-            this.btnGUIDIndex = new ButtonCompat();
-            this.btnInsUnlinked = new ButtonCompat();
-            this.btnDelMerola = new ButtonCompat();
-            this.btnCopyListing = new ButtonCompat();
-            this.btnTPRPMaker = new ButtonCompat();
-            this.llHidesOP = new LinkLabel();
-            this.tbHidesOP = new TextBoxCompat();
-            this.cbSpecial = new CheckBoxCompat2();
-            this.btnImportBHAV = new ButtonCompat();
-            this.btnCopyBHAV = new ButtonCompat();
-            this.btnClose = new ButtonCompat();
-            this.tbHeaderFlag = new TextBoxCompat();
-            this.lbHeaderFlag = new LabelCompat();
-            this.tbCacheFlags = new TextBoxCompat();
-            this.cbFormat = new ComboBoxCompat();
-            this.pnflowcontainer = new SimPe.PackedFiles.UserInterface.BhavInstListControl();
-            this.btnDel = new ButtonCompat();
-            this.gbMove = new GroupBox();
-            this.btnUp = new ButtonCompat();
-            this.btnDown = new ButtonCompat();
-            this.lbUpDown = new LabelCompat();
-            this.tbLines = new TextBoxCompat();
-            this.btnSort = new ButtonCompat();
-            this.btnCommit = new ButtonCompat();
-            this.tbTreeVersion = new TextBoxCompat();
-            this.btnAdd = new ButtonCompat();
-            this.lbCacheFlags = new LabelCompat();
-            this.cmenuGUIDIndex = new ContextMenuStrip();
-            this.createAllPackagesToolStripMenuItem = new ToolStripMenuItem();
-            this.createCurrentPackageToolStripMenuItem = new ToolStripMenuItem();
-            this.loadIndexToolStripMenuItem = new ToolStripMenuItem();
-            this.defaultFileToolStripMenuItem = new ToolStripMenuItem();
-            this.fromFileToolStripMenuItem = new ToolStripMenuItem();
-            this.saveIndexToolStripMenuItem = new ToolStripMenuItem();
-            this.defaultFileToolStripMenuItem1 = new ToolStripMenuItem();
-            this.toFileToolStripMenuItem = new ToolStripMenuItem();
-            this.ttBhavForm = new SimPe.Scenegraph.Compat.ToolTip();
-            //
-            // gbInstruction
-            //            this.gbInstruction.Children.Add(this.btnZero);
-            this.gbInstruction.Children.Add(this.tbInst_Longname);
-            this.gbInstruction.Children.Add(this.btnOperandRaw);
-            this.gbInstruction.Children.Add(this.btnCancel);
-            this.gbInstruction.Children.Add(this.btnOperandWiz);
-            this.gbInstruction.Children.Add(this.llopenbhav);
-            this.gbInstruction.Children.Add(this.tba2);
-            this.gbInstruction.Children.Add(this.tba1);
-            this.gbInstruction.Children.Add(this.label13);
-            this.gbInstruction.Children.Add(this.tbInst_Unk7);
-            this.gbInstruction.Children.Add(this.tbInst_Unk6);
-            this.gbInstruction.Children.Add(this.tbInst_Unk5);
-            this.gbInstruction.Children.Add(this.tbInst_Unk4);
-            this.gbInstruction.Children.Add(this.tbInst_Unk3);
-            this.gbInstruction.Children.Add(this.tbInst_Unk2);
-            this.gbInstruction.Children.Add(this.tbInst_Unk1);
-            this.gbInstruction.Children.Add(this.tbInst_Unk0);
-            this.gbInstruction.Children.Add(this.tbInst_Op7);
-            this.gbInstruction.Children.Add(this.tbInst_Op6);
-            this.gbInstruction.Children.Add(this.tbInst_Op5);
-            this.gbInstruction.Children.Add(this.tbInst_Op4);
-            this.gbInstruction.Children.Add(this.tbInst_Op3);
-            this.gbInstruction.Children.Add(this.tbInst_Op2);
-            this.gbInstruction.Children.Add(this.tbInst_Op1);
-            this.gbInstruction.Children.Add(this.tbInst_Op0);
-            this.gbInstruction.Children.Add(this.tbInst_NodeVersion);
-            this.gbInstruction.Children.Add(this.tbInst_OpCode);
-            this.gbInstruction.Children.Add(this.label10);
-            this.gbInstruction.Children.Add(this.label9);
-            this.gbInstruction.Children.Add(this.label12);
-            this.gbInstruction.Children.Add(this.label11);
-            this.gbInstruction.Children.Add(this.btnOpCode);
-            this.gbInstruction.Name = "gbInstruction";
-            // btnZero
-            // 
-            this.btnZero.Click += (s, e) => this.btnZero_Click(s, e);
-            // 
-            // tbInst_Longname
-            //            this.tbInst_Longname.BorderStyle = 
-            this.tbInst_Longname.Name = "tbInst_Longname";
-            this.tbInst_Longname.IsReadOnly = true;
-            // 
-            // btnOperandRaw
-            // 
-            this.btnOperandRaw.Click += (s, e) => this.btnOperandRaw_Click(s, e);
-            // 
-            // btnCancel
-            //            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Click += (s, e) => this.btnCancel_Clicked(s, e);
-            // 
-            // btnOperandWiz
-            // 
-            this.btnOperandWiz.Click += (s, e) => this.btnOperandWiz_Clicked(s, e);
-            // 
-            // llopenbhav
-            //            this.llopenbhav.Name = "llopenbhav";
-            this.llopenbhav.LinkClicked += new LinkLabelLinkClickedEventHandler(this.llopenbhav_LinkClicked);
-            // 
-            // tba2
+			this.components = new System.ComponentModel.Container();
 
-            this.tba2.Name = "tba2";
-            this.tba2.QueryContinueDrag += (s, e) => this.ItemQueryContinueDragTarget(s, e as SimPe.Scenegraph.Compat.QueryContinueDragEventArgs ?? new SimPe.Scenegraph.Compat.QueryContinueDragEventArgs());
-            this.tba2.DragOver += (s, e) => this.ItemDragEnter(s, e as SimPe.Scenegraph.Compat.DragEventArgs ?? new SimPe.Scenegraph.Compat.DragEventArgs());
-            this.tba2.SelectionChanged += (s, e) => this.cbHex16_SelectedIndexChanged(s, e);
-            this.tba2.GotFocus += (s, e) => this.cbHex16_Enter(s, e);
-            this.tba2.DragDrop += (s, e) => this.ItemDrop(s, e as SimPe.Scenegraph.Compat.DragEventArgs ?? new SimPe.Scenegraph.Compat.DragEventArgs());
-            this.tba2.DragEnter += (s, e) => this.ItemDragEnter(s, e as SimPe.Scenegraph.Compat.DragEventArgs ?? new SimPe.Scenegraph.Compat.DragEventArgs());
-            this.tba2.LostFocus += (s, e) => this.cbHex16_Validated(s, e);
-            this.tba2.TextChanged += (s, e) => this.cbHex16_TextChanged(s, e);
-            // 
-            // tba1
+			// ── Create controls ──
+			this.gbInstruction = new Canvas();
+			this.btnZero = new ButtonCompat();
+			this.tbInst_Longname = new TextBoxCompat();
+			this.btnOperandRaw = new ButtonCompat();
+			this.btnCancel = new ButtonCompat();
+			this.btnOperandWiz = new ButtonCompat();
+			this.llopenbhav = new LinkLabel();
+			this.tba2 = new ComboBoxCompat();
+			this.tba1 = new ComboBoxCompat();
+			this.label13 = new LabelCompat();
+			this.tbInst_Unk7 = new TextBoxCompat();
+			this.tbInst_Unk6 = new TextBoxCompat();
+			this.tbInst_Unk5 = new TextBoxCompat();
+			this.tbInst_Unk4 = new TextBoxCompat();
+			this.tbInst_Unk3 = new TextBoxCompat();
+			this.tbInst_Unk2 = new TextBoxCompat();
+			this.tbInst_Unk1 = new TextBoxCompat();
+			this.tbInst_Unk0 = new TextBoxCompat();
+			this.tbInst_Op7 = new TextBoxCompat();
+			this.tbInst_Op6 = new TextBoxCompat();
+			this.tbInst_Op5 = new TextBoxCompat();
+			this.tbInst_Op4 = new TextBoxCompat();
+			this.tbInst_Op3 = new TextBoxCompat();
+			this.tbInst_Op2 = new TextBoxCompat();
+			this.tbInst_Op1 = new TextBoxCompat();
+			this.tbInst_Op0 = new TextBoxCompat();
+			this.tbInst_NodeVersion = new TextBoxCompat();
+			this.tbInst_OpCode = new TextBoxCompat();
+			this.label10 = new LabelCompat();
+			this.label9 = new LabelCompat();
+			this.label12 = new LabelCompat();
+			this.label11 = new LabelCompat();
+			this.btnOpCode = new ButtonCompat();
+			this.tbFilename = new TextBoxCompat();
+			this.lbFilename = new LabelCompat();
+			this.tbLocalC = new TextBoxCompat();
+			this.tbArgC = new TextBoxCompat();
+			this.tbType = new TextBoxCompat();
+			this.lbTreeVersion = new LabelCompat();
+			this.lbType = new LabelCompat();
+			this.lbLocalC = new LabelCompat();
+			this.lbArgC = new LabelCompat();
+			this.lbFormat = new LabelCompat();
+			this.bhavPanel = new DockPanel { LastChildFill = true };
+			this.pjse_banner1 = new pjse.pjse_banner();
+			this.lbHidesOP = new LabelCompat();
+			this.gbSpecial = new Canvas();
+			this.button1 = new ButtonCompat();
+			this.cmpBHAV = new pjse.CompareButton();
+			this.btnPasteListing = new ButtonCompat();
+			this.btnAppend = new ButtonCompat();
+			this.btnInsTrue = new ButtonCompat();
+			this.btnInsFalse = new ButtonCompat();
+			this.btnDelPescado = new ButtonCompat();
+			this.btnLinkInge = new ButtonCompat();
+			this.btnGUIDIndex = new ButtonCompat();
+			this.btnInsUnlinked = new ButtonCompat();
+			this.btnDelMerola = new ButtonCompat();
+			this.btnCopyListing = new ButtonCompat();
+			this.btnTPRPMaker = new ButtonCompat();
+			this.llHidesOP = new LinkLabel();
+			this.tbHidesOP = new TextBoxCompat();
+			this.cbSpecial = new CheckBoxCompat2();
+			this.btnImportBHAV = new ButtonCompat();
+			this.btnCopyBHAV = new ButtonCompat();
+			this.btnClose = new ButtonCompat();
+			this.tbHeaderFlag = new TextBoxCompat();
+			this.lbHeaderFlag = new LabelCompat();
+			this.tbCacheFlags = new TextBoxCompat();
+			this.cbFormat = new ComboBoxCompat();
+			this.pnflowcontainer = new SimPe.PackedFiles.UserInterface.BhavInstListControl();
+			this.btnDel = new ButtonCompat();
+			this.gbMove = new Canvas();
+			this.btnUp = new ButtonCompat();
+			this.btnDown = new ButtonCompat();
+			this.lbUpDown = new LabelCompat();
+			this.tbLines = new TextBoxCompat();
+			this.btnSort = new ButtonCompat();
+			this.btnCommit = new ButtonCompat();
+			this.tbTreeVersion = new TextBoxCompat();
+			this.btnAdd = new ButtonCompat();
+			this.lbCacheFlags = new LabelCompat();
+			this.cmenuGUIDIndex = new ContextMenuStrip();
+			this.createAllPackagesToolStripMenuItem = new ToolStripMenuItem();
+			this.createCurrentPackageToolStripMenuItem = new ToolStripMenuItem();
+			this.loadIndexToolStripMenuItem = new ToolStripMenuItem();
+			this.defaultFileToolStripMenuItem = new ToolStripMenuItem();
+			this.fromFileToolStripMenuItem = new ToolStripMenuItem();
+			this.saveIndexToolStripMenuItem = new ToolStripMenuItem();
+			this.defaultFileToolStripMenuItem1 = new ToolStripMenuItem();
+			this.toFileToolStripMenuItem = new ToolStripMenuItem();
+			this.ttBhavForm = new SimPe.Scenegraph.Compat.ToolTip();
 
-            this.tba1.Name = "tba1";
-            this.tba1.QueryContinueDrag += (s, e) => this.ItemQueryContinueDragTarget(s, e as SimPe.Scenegraph.Compat.QueryContinueDragEventArgs ?? new SimPe.Scenegraph.Compat.QueryContinueDragEventArgs());
-            this.tba1.DragOver += (s, e) => this.ItemDragEnter(s, e as SimPe.Scenegraph.Compat.DragEventArgs ?? new SimPe.Scenegraph.Compat.DragEventArgs());
-            this.tba1.SelectionChanged += (s, e) => this.cbHex16_SelectedIndexChanged(s, e);
-            this.tba1.GotFocus += (s, e) => this.cbHex16_Enter(s, e);
-            this.tba1.DragDrop += (s, e) => this.ItemDrop(s, e as SimPe.Scenegraph.Compat.DragEventArgs ?? new SimPe.Scenegraph.Compat.DragEventArgs());
-            this.tba1.DragEnter += (s, e) => this.ItemDragEnter(s, e as SimPe.Scenegraph.Compat.DragEventArgs ?? new SimPe.Scenegraph.Compat.DragEventArgs());
-            this.tba1.LostFocus += (s, e) => this.cbHex16_Validated(s, e);
-            this.tba1.TextChanged += (s, e) => this.cbHex16_TextChanged(s, e);
-            // 
-            // label13
-            //            this.label13.Name = "label13";
-            // 
-            // tbInst_Unk7
-            //            this.tbInst_Unk7.Name = "tbInst_Unk7";
-            this.tbInst_Unk7.TextChanged += (s, e) => this.hex8_TextChanged(s, e);
-            this.tbInst_Unk7.LostFocus += (s, e) => this.hex8_Validated(s, e);
-            // tbInst_Unk6
-            //            this.tbInst_Unk6.Name = "tbInst_Unk6";
-            this.tbInst_Unk6.TextChanged += (s, e) => this.hex8_TextChanged(s, e);
-            this.tbInst_Unk6.LostFocus += (s, e) => this.hex8_Validated(s, e);
-            // tbInst_Unk5
-            //            this.tbInst_Unk5.Name = "tbInst_Unk5";
-            this.tbInst_Unk5.TextChanged += (s, e) => this.hex8_TextChanged(s, e);
-            this.tbInst_Unk5.LostFocus += (s, e) => this.hex8_Validated(s, e);
-            // tbInst_Unk4
-            //            this.tbInst_Unk4.Name = "tbInst_Unk4";
-            this.tbInst_Unk4.TextChanged += (s, e) => this.hex8_TextChanged(s, e);
-            this.tbInst_Unk4.LostFocus += (s, e) => this.hex8_Validated(s, e);
-            // tbInst_Unk3
-            //            this.tbInst_Unk3.Name = "tbInst_Unk3";
-            this.tbInst_Unk3.TextChanged += (s, e) => this.hex8_TextChanged(s, e);
-            this.tbInst_Unk3.LostFocus += (s, e) => this.hex8_Validated(s, e);
-            // tbInst_Unk2
-            //            this.tbInst_Unk2.Name = "tbInst_Unk2";
-            this.tbInst_Unk2.TextChanged += (s, e) => this.hex8_TextChanged(s, e);
-            this.tbInst_Unk2.LostFocus += (s, e) => this.hex8_Validated(s, e);
-            // tbInst_Unk1
-            //            this.tbInst_Unk1.Name = "tbInst_Unk1";
-            this.tbInst_Unk1.TextChanged += (s, e) => this.hex8_TextChanged(s, e);
-            this.tbInst_Unk1.LostFocus += (s, e) => this.hex8_Validated(s, e);
-            // tbInst_Unk0
-            //            this.tbInst_Unk0.Name = "tbInst_Unk0";
-            this.tbInst_Unk0.TextChanged += (s, e) => this.hex8_TextChanged(s, e);
-            this.tbInst_Unk0.LostFocus += (s, e) => this.hex8_Validated(s, e);
-            // tbInst_Op7
-            //            this.tbInst_Op7.Name = "tbInst_Op7";
-            this.tbInst_Op7.TextChanged += (s, e) => this.hex8_TextChanged(s, e);
-            this.tbInst_Op7.LostFocus += (s, e) => this.hex8_Validated(s, e);
-            // tbInst_Op6
-            //            this.tbInst_Op6.Name = "tbInst_Op6";
-            this.tbInst_Op6.TextChanged += (s, e) => this.hex8_TextChanged(s, e);
-            this.tbInst_Op6.LostFocus += (s, e) => this.hex8_Validated(s, e);
-            // tbInst_Op5
-            //            this.tbInst_Op5.Name = "tbInst_Op5";
-            this.tbInst_Op5.TextChanged += (s, e) => this.hex8_TextChanged(s, e);
-            this.tbInst_Op5.LostFocus += (s, e) => this.hex8_Validated(s, e);
-            // tbInst_Op4
-            //            this.tbInst_Op4.Name = "tbInst_Op4";
-            this.tbInst_Op4.TextChanged += (s, e) => this.hex8_TextChanged(s, e);
-            this.tbInst_Op4.LostFocus += (s, e) => this.hex8_Validated(s, e);
-            // tbInst_Op3
-            //            this.tbInst_Op3.Name = "tbInst_Op3";
-            this.tbInst_Op3.TextChanged += (s, e) => this.hex8_TextChanged(s, e);
-            this.tbInst_Op3.LostFocus += (s, e) => this.hex8_Validated(s, e);
-            // tbInst_Op2
-            //            this.tbInst_Op2.Name = "tbInst_Op2";
-            this.tbInst_Op2.TextChanged += (s, e) => this.hex8_TextChanged(s, e);
-            this.tbInst_Op2.LostFocus += (s, e) => this.hex8_Validated(s, e);
-            // tbInst_Op1
-            //            this.tbInst_Op1.Name = "tbInst_Op1";
-            this.tbInst_Op1.TextChanged += (s, e) => this.hex8_TextChanged(s, e);
-            this.tbInst_Op1.LostFocus += (s, e) => this.hex8_Validated(s, e);
-            // tbInst_Op0
-            //            this.tbInst_Op0.Name = "tbInst_Op0";
-            this.tbInst_Op0.TextChanged += (s, e) => this.hex8_TextChanged(s, e);
-            this.tbInst_Op0.LostFocus += (s, e) => this.hex8_Validated(s, e);
-            // tbInst_NodeVersion
-            //            this.tbInst_NodeVersion.Name = "tbInst_NodeVersion";
-            this.tbInst_NodeVersion.TextChanged += (s, e) => this.hex8_TextChanged(s, e);
-            this.tbInst_NodeVersion.LostFocus += (s, e) => this.hex8_Validated(s, e);
-            // tbInst_OpCode
-            //            this.tbInst_OpCode.Name = "tbInst_OpCode";
-            this.tbInst_OpCode.TextChanged += (s, e) => this.hex16_TextChanged(s, e);
-            this.tbInst_OpCode.LostFocus += (s, e) => this.hex16_Validated(s, e);
-            // label10
-            //            this.label10.Name = "label10";
-            // 
-            // label9
-            //            this.label9.Name = "label9";
-            // 
-            // label12
-            //            this.label12.Name = "label12";
-            // 
-            // label11
-            //            this.label11.Name = "label11";
-            // 
-            // btnOpCode
-            //            this.btnOpCode.Name = "btnOpCode";
-            this.btnOpCode.Click += (s, e) => this.btnOpCode_Clicked(s, e);
-            // 
-            // tbFilename
-            //            this.tbFilename.Name = "tbFilename";
-            this.tbFilename.TextChanged += (s, e) => this.tbFilename_TextChanged(s, e);
-            this.tbFilename.LostFocus += (s, e) => this.tbFilename_Validated(s, e);
-            // 
-            // lbFilename
-            //            this.lbFilename.Name = "lbFilename";
-            // 
-            // tbLocalC
-            //            this.tbLocalC.Name = "tbLocalC";
-            this.tbLocalC.TextChanged += (s, e) => this.hex8_TextChanged(s, e);
-            this.tbLocalC.LostFocus += (s, e) => this.hex8_Validated(s, e);
-            // tbArgC
-            //            this.tbArgC.Name = "tbArgC";
-            this.tbArgC.TextChanged += (s, e) => this.hex8_TextChanged(s, e);
-            this.tbArgC.LostFocus += (s, e) => this.hex8_Validated(s, e);
-            // tbType
-            //            this.tbType.Name = "tbType";
-            this.tbType.TextChanged += (s, e) => this.hex8_TextChanged(s, e);
-            this.tbType.LostFocus += (s, e) => this.hex8_Validated(s, e);
-            // lbTreeVersion
-            //            this.lbTreeVersion.Name = "lbTreeVersion";
-            // 
-            // lbType
-            //            this.lbType.Name = "lbType";
-            // 
-            // lbLocalC
-            //            this.lbLocalC.Name = "lbLocalC";
-            // 
-            // lbArgC
-            //            this.lbArgC.Name = "lbArgC";
-            // 
-            // lbFormat
-            //            this.lbFormat.Name = "lbFormat";
-            // 
-            // bhavPanel
-            //            this.bhavPanel.Children.Add(this.pjse_banner1);
-            this.bhavPanel.Children.Add(this.lbHidesOP);
-            this.bhavPanel.Children.Add(this.gbSpecial);
-            this.bhavPanel.Children.Add(this.llHidesOP);
-            this.bhavPanel.Children.Add(this.tbHidesOP);
-            this.bhavPanel.Children.Add(this.cbSpecial);
-            this.bhavPanel.Children.Add(this.btnImportBHAV);
-            this.bhavPanel.Children.Add(this.btnCopyBHAV);
-            this.bhavPanel.Children.Add(this.btnClose);
-            this.bhavPanel.Children.Add(this.tbHeaderFlag);
-            this.bhavPanel.Children.Add(this.lbHeaderFlag);
-            this.bhavPanel.Children.Add(this.tbCacheFlags);
-            this.bhavPanel.Children.Add(this.cbFormat);
-            this.bhavPanel.Children.Add(this.pnflowcontainer);
-            this.bhavPanel.Children.Add(this.btnDel);
-            this.bhavPanel.Children.Add(this.gbMove);
-            this.bhavPanel.Children.Add(this.btnSort);
-            this.bhavPanel.Children.Add(this.btnCommit);
-            this.bhavPanel.Children.Add(this.lbFilename);
-            this.bhavPanel.Children.Add(this.tbFilename);
-            this.bhavPanel.Children.Add(this.gbInstruction);
-            this.bhavPanel.Children.Add(this.tbLocalC);
-            this.bhavPanel.Children.Add(this.tbTreeVersion);
-            this.bhavPanel.Children.Add(this.tbArgC);
-            this.bhavPanel.Children.Add(this.tbType);
-            this.bhavPanel.Children.Add(this.lbTreeVersion);
-            this.bhavPanel.Children.Add(this.lbType);
-            this.bhavPanel.Children.Add(this.lbLocalC);
-            this.bhavPanel.Children.Add(this.lbArgC);
-            this.bhavPanel.Children.Add(this.lbFormat);
-            this.bhavPanel.Children.Add(this.btnAdd);
-            this.bhavPanel.Children.Add(this.lbCacheFlags);
-            this.bhavPanel.Name = "bhavPanel";
-            // 
-            // pjse_banner1
-            //            this.pjse_banner1.ExtractVisible = true;
-            this.pjse_banner1.FloatVisible = true;
-            this.pjse_banner1.Name = "pjse_banner1";
-            this.pjse_banner1.SiblingVisible = true;
-            this.pjse_banner1.ViewVisible = true;
-            this.pjse_banner1.ExtractClick += (s, e) => this.pjse_banner1_ExtractClick(s, e);
-            this.pjse_banner1.TreeClick += (s, e) => this.pjse_banner1_TreeClick(s, e);
-            this.pjse_banner1.SiblingClick += (s, e) => this.pjse_banner1_SiblingClick(s, e);
-            this.pjse_banner1.ViewClick += (s, e) => this.pjse_banner1_ViewClick(s, e);
-            this.pjse_banner1.FloatClick += (s, e) => this.btnFloat_Click(s, e);
-            // 
-            // lbHidesOP
-            //            this.lbHidesOP.Name = "lbHidesOP";
-            // 
-            // gbSpecial
-            //            this.gbSpecial.Children.Add(this.button1);
-            this.gbSpecial.Children.Add(this.cmpBHAV);
-            this.gbSpecial.Children.Add(this.btnPasteListing);
-            this.gbSpecial.Children.Add(this.btnAppend);
-            this.gbSpecial.Children.Add(this.btnInsTrue);
-            this.gbSpecial.Children.Add(this.btnInsFalse);
-            this.gbSpecial.Children.Add(this.btnDelPescado);
-            this.gbSpecial.Children.Add(this.btnLinkInge);
-            this.gbSpecial.Children.Add(this.btnGUIDIndex);
-            this.gbSpecial.Children.Add(this.btnInsUnlinked);
-            this.gbSpecial.Children.Add(this.btnDelMerola);
-            this.gbSpecial.Children.Add(this.btnCopyListing);
-            this.gbSpecial.Children.Add(this.btnTPRPMaker);
-            this.gbSpecial.Name = "gbSpecial";
-            // button1
-            //            this.button1.Name = "button1";
-            this.button1.Click += (s, e) => this.button1_Click(s, e);
-            // 
-            // cmpBHAV
-            //            this.cmpBHAV.Name = "cmpBHAV";
-            this.cmpBHAV.Wrapper = null;
-            this.cmpBHAV.WrapperName = null;
-            this.cmpBHAV.CompareWith += new pjse.CompareButton.CompareWithEventHandler(this.cmpBHAV_CompareWith);
-            // 
-            // btnPasteListing
-            //            this.btnPasteListing.Name = "btnPasteListing";
-            this.btnPasteListing.Click += (s, e) => this.btnPasteListing_Click(s, e);
-            // 
-            // btnAppend
-            //            this.btnAppend.Name = "btnAppend";
-            this.btnAppend.Click += (s, e) => this.btnAppend_Click(s, e);
-            // 
-            // btnInsTrue
-            //            this.btnInsTrue.Name = "btnInsTrue";
-            this.btnInsTrue.Click += (s, e) => this.btnInsVia_Click(s, e);
-            // 
-            // btnInsFalse
-            //            this.btnInsFalse.Name = "btnInsFalse";
-            this.btnInsFalse.Click += (s, e) => this.btnInsVia_Click(s, e);
-            // 
-            // btnDelPescado
-            //            this.btnDelPescado.Name = "btnDelPescado";
-            this.btnDelPescado.Click += (s, e) => this.btnDelPescado_Click(s, e);
-            // 
-            // btnLinkInge
-            //            this.btnLinkInge.Name = "btnLinkInge";
-            this.btnLinkInge.Click += (s, e) => this.btnLinkInge_Click(s, e);
-            // 
-            // btnGUIDIndex
-            //            this.btnGUIDIndex.Name = "btnGUIDIndex";
-            this.btnGUIDIndex.Click += (s, e) => this.btnGUIDIndex_Click(s, e);
-            // 
-            // btnInsUnlinked
-            //            this.btnInsUnlinked.Name = "btnInsUnlinked";
-            this.btnInsUnlinked.Click += (s, e) => this.btnInsUnlinked_Click(s, e);
-            // 
-            // btnDelMerola
-            //            this.btnDelMerola.Name = "btnDelMerola";
-            this.btnDelMerola.Click += (s, e) => this.btnDelMerola_Click(s, e);
-            // 
-            // btnCopyListing
-            //            this.btnCopyListing.Name = "btnCopyListing";
-            this.btnCopyListing.Click += (s, e) => this.btnCopyListing_Click(s, e);
-            // 
-            // btnTPRPMaker
-            //            this.btnTPRPMaker.Name = "btnTPRPMaker";
-            this.btnTPRPMaker.Click += (s, e) => this.btnTPRPMaker_Click(s, e);
-            // 
-            // llHidesOP
-            //            this.llHidesOP.Name = "llHidesOP";
-            this.llHidesOP.LinkClicked += new LinkLabelLinkClickedEventHandler(this.llHidesOP_LinkClicked);
-            // 
-            // tbHidesOP
-            //            this.tbHidesOP.BorderStyle = 
-            this.tbHidesOP.Name = "tbHidesOP";
-            this.tbHidesOP.IsReadOnly = true;
-            // 
-            // cbSpecial
-            //            this.cbSpecial.Name = "cbSpecial";
-            this.cbSpecial.CheckedChanged += (s, e) => this.cbSpecial_CheckStateChanged(s, e);
-            // 
-            // btnImportBHAV
-            //            this.btnImportBHAV.Name = "btnImportBHAV";
-            this.btnImportBHAV.Click += (s, e) => this.btnImportBHAV_Click(s, e);
-            // 
-            // btnCopyBHAV
-            //            this.btnCopyBHAV.Name = "btnCopyBHAV";
-            this.btnCopyBHAV.Click += (s, e) => this.btnCopyBHAV_Click(s, e);
-            // 
-            // btnClose
-            //            this.btnClose
-            this.btnClose.Name = "btnClose";
-            this.btnClose.Click += (s, e) => this.btnClose_Click(s, e);
-            // 
-            // tbHeaderFlag
-            //            this.tbHeaderFlag.Name = "tbHeaderFlag";
-            this.tbHeaderFlag.TextChanged += (s, e) => this.hex8_TextChanged(s, e);
-            this.tbHeaderFlag.LostFocus += (s, e) => this.hex8_Validated(s, e);
-            // lbHeaderFlag
-            //            this.lbHeaderFlag.Name = "lbHeaderFlag";
-            // 
-            // tbCacheFlags
-            //            this.tbCacheFlags.Name = "tbCacheFlags";
-            this.tbCacheFlags.TextChanged += (s, e) => this.hex8_TextChanged(s, e);
-            this.tbCacheFlags.LostFocus += (s, e) => this.hex8_Validated(s, e);
-            // cbFormat
+			// ── Set text, items, read-only flags ──
+			this.lbFilename.Content = "Filename";
+			this.lbFormat.Content = "Format";
+			this.lbType.Content = "Tree Type";
+			this.lbArgC.Content = "Arg Count";
+			this.lbLocalC.Content = "Local Var Count";
+			this.lbTreeVersion.Content = "Tree Version";
+			this.lbHeaderFlag.Content = "Header Flag";
+			this.lbCacheFlags.Content = "Cache flags";
+			this.lbHidesOP.Content = "Displayed BHAV is from:";
+			this.label9.Content = "OpCode:";
+			this.label10.Content = "Node Version:";
+			this.label11.Content = "True Target:";
+			this.label12.Content = "False Target:";
+			this.label13.Content = "Operands:";
+			this.lbUpDown.Content = "lines";
 
-            this.cbFormat.Name = "cbFormat";
-            this.cbFormat.SelectionChanged += (s, e) => this.cbHex16_SelectedIndexChanged(s, e);
-            this.cbFormat.GotFocus += (s, e) => this.cbHex16_Enter(s, e);
-            this.cbFormat.LostFocus += (s, e) => this.cbHex16_Validated(s, e);
-            this.cbFormat.TextChanged += (s, e) => this.cbHex16_TextChanged(s, e);
-            // 
-            // pnflowcontainer
-            //            this.pnflowcontainer.Name = "pnflowcontainer";
-            this.pnflowcontainer.SelectedIndex = -1;
-            this.pnflowcontainer.SelectedInstChanged += (s, e) => this.pnflowcontainer_SelectedInstChanged(s, e);
-            // 
-            // btnDel
-            //            this.btnDel.Name = "btnDel";
-            this.btnDel.Click += (s, e) => this.btnDel_Clicked(s, e);
-            // 
-            // gbMove
-            //            this.gbMove.Children.Add(this.btnUp);
-            this.gbMove.Children.Add(this.btnDown);
-            this.gbMove.Children.Add(this.lbUpDown);
-            this.gbMove.Children.Add(this.tbLines);
-            this.gbMove.Name = "gbMove";
-            // btnUp
-            // 
-            this.btnUp.Click += (s, e) => this.btnMove_Clicked(s, e);
-            // 
-            // btnDown
-            // 
-            this.btnDown.Click += (s, e) => this.btnMove_Clicked(s, e);
-            // 
-            // lbUpDown
-            //            this.lbUpDown.Name = "lbUpDown";
-            // 
-            // tbLines
-            //            this.tbLines.Name = "tbLines";
-            this.tbLines.TextChanged += (s, e) => this.hex16_TextChanged(s, e);
-            this.tbLines.LostFocus += (s, e) => this.hex16_Validated(s, e);
-            // btnSort
-            //            this.btnSort.Name = "btnSort";
-            this.btnSort.Click += (s, e) => this.btnSort_Clicked(s, e);
-            // 
-            // btnCommit
-            //            this.btnCommit.Name = "btnCommit";
-            this.btnCommit.Click += (s, e) => this.btnCommit_Clicked(s, e);
-            // 
-            // tbTreeVersion
-            //            this.tbTreeVersion.Name = "tbTreeVersion";
-            this.tbTreeVersion.TextChanged += (s, e) => this.hex32_TextChanged(s, e);
-            this.tbTreeVersion.LostFocus += (s, e) => this.hex32_Validated(s, e);
-            // btnAdd
-            //            this.btnAdd.Name = "btnAdd";
-            this.btnAdd.Click += (s, e) => this.btnAdd_Clicked(s, e);
-            // 
-            // lbCacheFlags
-            //            this.lbCacheFlags.Name = "lbCacheFlags";
-            // 
-            // cmenuGUIDIndex
-            // 
-            this.cmenuGUIDIndex.Name = "cmenuGUIDIndex";            this.cmenuGUIDIndex.Opening += new System.EventHandler(this.cmenuGUIDIndex_Opening);
-            // 
-            // createAllPackagesToolStripMenuItem
-            // 
-            this.createAllPackagesToolStripMenuItem.Name = "createAllPackagesToolStripMenuItem";            this.createAllPackagesToolStripMenuItem.Click += (s, e) => this.createToolStripMenuItem_Click(s, e);
-            // 
-            // createCurrentPackageToolStripMenuItem
-            // 
-            this.createCurrentPackageToolStripMenuItem.Name = "createCurrentPackageToolStripMenuItem";            this.createCurrentPackageToolStripMenuItem.Click += (s, e) => this.createToolStripMenuItem_Click(s, e);
-            // 
-            // loadIndexToolStripMenuItem
-            // 
-            this.loadIndexToolStripMenuItem.DropDownItems.AddRange(new object[] {
-            this.defaultFileToolStripMenuItem,
-            this.fromFileToolStripMenuItem});
-            this.loadIndexToolStripMenuItem.Name = "loadIndexToolStripMenuItem";            // 
-            // defaultFileToolStripMenuItem
-            // 
-            this.defaultFileToolStripMenuItem.Name = "defaultFileToolStripMenuItem";            this.defaultFileToolStripMenuItem.Click += (s, e) => this.defaultFileToolStripMenuItem_Click(s, e);
-            // 
-            // fromFileToolStripMenuItem
-            // 
-            this.fromFileToolStripMenuItem.Name = "fromFileToolStripMenuItem";            this.fromFileToolStripMenuItem.Click += (s, e) => this.fileToolStripMenuItem_Click(s, e);
-            // 
-            // saveIndexToolStripMenuItem
-            // 
-            this.saveIndexToolStripMenuItem.DropDownItems.AddRange(new object[] {
-            this.defaultFileToolStripMenuItem1,
-            this.toFileToolStripMenuItem});
-            this.saveIndexToolStripMenuItem.Name = "saveIndexToolStripMenuItem";            // 
-            // defaultFileToolStripMenuItem1
-            // 
-            this.defaultFileToolStripMenuItem1.Name = "defaultFileToolStripMenuItem1";            this.defaultFileToolStripMenuItem1.Click += (s, e) => this.defaultFileToolStripMenuItem_Click(s, e);
-            // 
-            // toFileToolStripMenuItem
-            // 
-            this.toFileToolStripMenuItem.Name = "toFileToolStripMenuItem";            this.toFileToolStripMenuItem.Click += (s, e) => this.fileToolStripMenuItem_Click(s, e);
-            // 
-            // ttBhavForm
-            // 
-            this.ttBhavForm.ShowAlways = true;
-            // 
-            // BhavForm
-            // 
-            this.Name = "BhavForm";
-        }
+			this.btnCommit.Content = "Commit File";
+			this.btnSort.Content = "Sort";
+			this.btnAdd.Content = "Add";
+			this.btnDel.Content = "Delete";
+			// '^' is shorter than 'v'; wrap in a TextBlock with explicit FontSize/LineHeight
+			// so just this button gets bigger text to visually balance the two arrows.
+			this.btnUp.Content = new Avalonia.Controls.TextBlock
+			{
+				Text = "^",
+				FontSize = 16,
+				LineHeight = 18,
+				VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+				HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+			};
+			this.btnDown.Content = "v";
+			this.btnCancel.Content = "Cancel";
+			this.btnClose.Content = "Close";
+			this.btnImportBHAV.Content = "Import as Private";
+			this.btnCopyBHAV.Content = "Import unchanged";
+			this.btnOpCode.Content = "▶";
+			this.btnOperandWiz.Content = "Wiz";
+			this.btnOperandRaw.Content = "Raw";
+			this.btnZero.Content = "Zero";
 
+			this.button1.Content = "Comments";
+			this.cmpBHAV.Content = "Compare";
+			this.btnPasteListing.Content = "Paste";
+			this.btnAppend.Content = "Append BHAV";
+			this.btnInsTrue.Content = "Ins/true";
+			this.btnInsFalse.Content = "Ins/false";
+			this.btnDelPescado.Content = "Pescado's Delete";
+			this.btnLinkInge.Content = "Inge's InitLinker";
+			this.btnGUIDIndex.Content = "GUIDs";
+			this.btnInsUnlinked.Content = "Insert unlinked";
+			this.btnDelMerola.Content = "Delete to end";
+			this.btnCopyListing.Content = "Copy";
+			this.btnTPRPMaker.Content = "Labels";
+
+			this.cbSpecial.Content = "Special buttons";
+			this.llopenbhav.Content = "view BHAV";
+			this.llHidesOP.Content = "BHAV from {0} overridden. View original";
+
+			this.tba1.Items.Add("Error");
+			this.tba1.Items.Add("Return True");
+			this.tba1.Items.Add("Return False");
+			this.tba2.Items.Add("Error");
+			this.tba2.Items.Add("Return True");
+			this.tba2.Items.Add("Return False");
+			this.cbFormat.Items.Add("0x8000");
+			this.cbFormat.Items.Add("0x8001");
+			this.cbFormat.Items.Add("0x8002");
+			this.cbFormat.Items.Add("0x8003");
+			this.cbFormat.Items.Add("0x8004");
+			this.cbFormat.Items.Add("0x8005");
+			this.cbFormat.Items.Add("0x8006");
+			this.cbFormat.Items.Add("0x8007");
+			this.cbFormat.Items.Add("0x8008");
+			this.cbFormat.Items.Add("0x8009");
+
+			this.tbInst_Longname.AcceptsReturn = true;
+			this.tbInst_Longname.TextWrapping = Avalonia.Media.TextWrapping.Wrap;
+			this.tbInst_Longname.IsReadOnly = true;
+			this.tbHidesOP.IsReadOnly = true;
+
+			this.ttBhavForm.SetToolTip(this.btnZero, "Set all operands to zero");
+			this.ttBhavForm.SetToolTip(this.btnOperandWiz, "Pop-up Wizard");
+			this.ttBhavForm.SetToolTip(this.btnOperandRaw, "Pop-up raw entry box");
+			this.ttBhavForm.SetToolTip(this.tbInst_Longname, "Click and drag to select text for copying");
+
+			this.pjse_banner1.ExtractVisible = true;
+			this.pjse_banner1.FloatVisible = true;
+			this.pjse_banner1.SiblingVisible = true;
+			this.pjse_banner1.ViewVisible = true;
+			this.pjse_banner1.SiblingText = "TPRP";
+			this.pjse_banner1.TitleText = "Behaviour Function";
+
+			this.cmpBHAV.Wrapper = null;
+			this.cmpBHAV.WrapperName = null;
+			this.pnflowcontainer.SelectedIndex = -1;
+
+			// ── Helpers ──
+			static void Place(Avalonia.Controls.Canvas parent, Avalonia.Controls.Control c, double x, double y, double w, double h)
+			{
+				Avalonia.Controls.Canvas.SetLeft(c, x);
+				Avalonia.Controls.Canvas.SetTop(c, y);
+				c.Width = w;
+				c.Height = h;
+				parent.Children.Add(c);
+			}
+
+			static void SetSize(Avalonia.Controls.Control c, double w, double h)
+			{
+				c.Width = w;
+				c.Height = h;
+			}
+
+			static Avalonia.Controls.Canvas BuildGroupBox(Avalonia.Controls.Canvas wrapper, string header, double w, double h)
+			{
+				wrapper.Width = w;
+				wrapper.Height = h;
+
+				var inner = new Avalonia.Controls.Canvas { Width = w, Height = h };
+				var border = new Avalonia.Controls.Border
+				{
+					BorderBrush = Avalonia.Media.Brushes.Gray,
+					BorderThickness = new Avalonia.Thickness(1),
+					CornerRadius = new Avalonia.CornerRadius(3),
+					Child = inner,
+					Width = w,
+					Height = h - 6,
+				};
+				Avalonia.Controls.Canvas.SetLeft(border, 0);
+				Avalonia.Controls.Canvas.SetTop(border, 6);
+
+				var hdr = new Avalonia.Controls.Border
+				{
+					Background = Avalonia.Media.Brushes.White,
+					Padding = new Avalonia.Thickness(4, 0),
+					Child = new Avalonia.Controls.TextBlock { Text = header, FontSize = 11 },
+				};
+				Avalonia.Controls.Canvas.SetLeft(hdr, 8);
+				Avalonia.Controls.Canvas.SetTop(hdr, 0);
+
+				wrapper.Children.Add(border);
+				wrapper.Children.Add(hdr);
+				return inner;
+			}
+
+			// ── gbInstruction contents (420×190 — widened to fit 24-wide operand textboxes) ──
+			var gbInstCanvas = BuildGroupBox(this.gbInstruction, "Instruction Settings", 420, 190);
+			Place(gbInstCanvas, this.label9, 27, 25, 56, 13);
+			Place(gbInstCanvas, this.tbInst_OpCode, 83, 23, 48, 20);
+			Place(gbInstCanvas, this.btnOpCode, 130, 24, 17, 16);
+			Place(gbInstCanvas, this.llopenbhav, 149, 25, 75, 18);
+			Place(gbInstCanvas, this.label10, 232, 25, 74, 13);
+			Place(gbInstCanvas, this.tbInst_NodeVersion, 315, 23, 40, 20);
+			Place(gbInstCanvas, this.label11, 9, 48, 66, 13);
+			Place(gbInstCanvas, this.tba1, 83, 45, 84, 21);
+			Place(gbInstCanvas, this.label12, 174, 48, 69, 13);
+			Place(gbInstCanvas, this.tba2, 252, 45, 84, 21);
+			Place(gbInstCanvas, this.btnCancel, 276, 68, 54, 19);
+			Place(gbInstCanvas, this.label13, 19, 72, 56, 13);
+			Place(gbInstCanvas, this.tbInst_Op0,  83, 69, 24, 20);
+			Place(gbInstCanvas, this.tbInst_Op1, 107, 69, 24, 20);
+			Place(gbInstCanvas, this.tbInst_Op2, 131, 69, 24, 20);
+			Place(gbInstCanvas, this.tbInst_Op3, 155, 69, 24, 20);
+			Place(gbInstCanvas, this.tbInst_Op4, 179, 69, 24, 20);
+			Place(gbInstCanvas, this.tbInst_Op5, 203, 69, 24, 20);
+			Place(gbInstCanvas, this.tbInst_Op6, 227, 69, 24, 20);
+			Place(gbInstCanvas, this.tbInst_Op7, 251, 69, 24, 20);
+			Place(gbInstCanvas, this.tbInst_Unk0,  83, 88, 24, 20);
+			Place(gbInstCanvas, this.tbInst_Unk1, 107, 88, 24, 20);
+			Place(gbInstCanvas, this.tbInst_Unk2, 131, 88, 24, 20);
+			Place(gbInstCanvas, this.tbInst_Unk3, 155, 88, 24, 20);
+			Place(gbInstCanvas, this.tbInst_Unk4, 179, 88, 24, 20);
+			Place(gbInstCanvas, this.tbInst_Unk5, 203, 88, 24, 20);
+			Place(gbInstCanvas, this.tbInst_Unk6, 227, 88, 24, 20);
+			Place(gbInstCanvas, this.tbInst_Unk7, 251, 88, 24, 20);
+			Place(gbInstCanvas, this.btnOperandWiz, 278, 87, 40, 22);
+			Place(gbInstCanvas, this.btnOperandRaw, 322, 87, 40, 22);
+			Place(gbInstCanvas, this.btnZero,       366, 87, 40, 22);
+			Place(gbInstCanvas, this.tbInst_Longname, 8, 110, 348, 76);
+
+			// ── gbMove contents (widened to fit readable arrows) ──
+			var gbMoveCanvas = BuildGroupBox(this.gbMove, "Move", 125, 55);
+			Place(gbMoveCanvas, this.btnUp,    8, 11, 22, 20);
+			Place(gbMoveCanvas, this.btnDown,  8, 32, 22, 20);
+			Place(gbMoveCanvas, this.tbLines, 34, 21, 54, 20);
+			Place(gbMoveCanvas, this.lbUpDown, 92, 24, 28, 13);
+
+			// ── gbSpecial contents ──
+			var gbSpecialCanvas = BuildGroupBox(this.gbSpecial, "Special buttons", 341, 86);
+			Place(gbSpecialCanvas, this.btnCopyListing, 4, 17, 48, 18);
+			Place(gbSpecialCanvas, this.btnPasteListing, 56, 17, 48, 18);
+			Place(gbSpecialCanvas, this.btnInsTrue, 108, 17, 60, 18);
+			Place(gbSpecialCanvas, this.btnInsFalse, 172, 17, 60, 18);
+			Place(gbSpecialCanvas, this.btnTPRPMaker, 236, 17, 48, 18);
+			Place(gbSpecialCanvas, this.btnGUIDIndex, 288, 17, 48, 18);
+			Place(gbSpecialCanvas, this.btnLinkInge, 4, 39, 100, 18);
+			Place(gbSpecialCanvas, this.btnInsUnlinked, 108, 39, 124, 18);
+			Place(gbSpecialCanvas, this.btnAppend, 236, 39, 100, 18);
+			Place(gbSpecialCanvas, this.btnDelPescado, 4, 61, 100, 18);
+			Place(gbSpecialCanvas, this.btnDelMerola, 107, 61, 89, 18);
+			Place(gbSpecialCanvas, this.cmpBHAV, 199, 61, 73, 18);
+			Place(gbSpecialCanvas, this.button1, 275, 61, 60, 18);
+
+			// ── Right-side control strip: a vertical stack of self-sizing rows.
+			//    Each row flows naturally, so Avalonia's layout engine can compress/scroll
+			//    gracefully when vertical space is tight — no Canvas-overflow hazard. ──
+
+			// Row 1: Commit File | Arg Count | Local Var Count — all left-aligned
+			SetSize(this.btnCommit, 99, 22);
+			SetSize(this.tbArgC, 40, 20);
+			SetSize(this.tbLocalC, 40, 20);
+			this.lbArgC.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
+			this.lbLocalC.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
+			this.lbArgC.Margin = new Avalonia.Thickness(12, 0, 4, 0);
+			this.lbLocalC.Margin = new Avalonia.Thickness(8, 0, 4, 0);
+			var commitRow = new Avalonia.Controls.StackPanel
+			{
+				Orientation = Avalonia.Layout.Orientation.Horizontal,
+				VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+				Margin = new Avalonia.Thickness(0, 0, 0, 6),
+			};
+			commitRow.Children.Add(this.btnCommit);
+			commitRow.Children.Add(this.lbArgC);
+			commitRow.Children.Add(this.tbArgC);
+			commitRow.Children.Add(this.lbLocalC);
+			commitRow.Children.Add(this.tbLocalC);
+
+			// Row 3: Sort | Move groupbox | Add/Del stacked | Special-buttons checkbox
+			// Use MinWidth so Avalonia's button chrome doesn't truncate the text
+			this.btnSort.MinWidth = 52;
+			this.btnAdd.MinWidth = 60;
+			this.btnDel.MinWidth = 60;
+			this.btnAdd.MinHeight = 22;
+			this.btnDel.MinHeight = 22;
+			this.btnSort.Margin = new Avalonia.Thickness(0, 14, 8, 0);
+			this.btnAdd.Margin = new Avalonia.Thickness(0, 0, 0, 2);
+			this.cbSpecial.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
+			this.cbSpecial.Margin = new Avalonia.Thickness(8, 0, 0, 0);
+			var addDel = new Avalonia.Controls.StackPanel
+			{
+				Orientation = Avalonia.Layout.Orientation.Vertical,
+				VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+				Margin = new Avalonia.Thickness(8, 0, 0, 0),
+			};
+			addDel.Children.Add(this.btnAdd);
+			addDel.Children.Add(this.btnDel);
+			var moveRow = new Avalonia.Controls.StackPanel
+			{
+				Orientation = Avalonia.Layout.Orientation.Horizontal,
+				VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top,
+				Margin = new Avalonia.Thickness(0, 4, 0, 6),
+			};
+			moveRow.Children.Add(this.btnSort);
+			moveRow.Children.Add(this.gbMove);
+			moveRow.Children.Add(addDel);
+			moveRow.Children.Add(this.cbSpecial);
+
+			// Row 5: override display (llHidesOP / lbHidesOP / tbHidesOP stacked vertically)
+			var overrideBlock = new Avalonia.Controls.StackPanel
+			{
+				Orientation = Avalonia.Layout.Orientation.Vertical,
+				Margin = new Avalonia.Thickness(0, 6, 0, 0),
+			};
+			this.tbHidesOP.Height = 60;
+			overrideBlock.Children.Add(this.llHidesOP);
+			overrideBlock.Children.Add(this.lbHidesOP);
+			overrideBlock.Children.Add(this.tbHidesOP);
+
+			// Compose the stack
+			var rightStack = new Avalonia.Controls.StackPanel
+			{
+				Orientation = Avalonia.Layout.Orientation.Vertical,
+				Margin = new Avalonia.Thickness(4, 0, 4, 4),
+			};
+			rightStack.Children.Add(commitRow);
+			rightStack.Children.Add(this.gbInstruction);
+			rightStack.Children.Add(moveRow);
+			rightStack.Children.Add(this.gbSpecial);
+			rightStack.Children.Add(overrideBlock);
+
+			// Wrap in ScrollViewer so short tab heights scroll rather than overflow
+			var rightPanel = new Avalonia.Controls.ScrollViewer
+			{
+				Content = rightStack,
+				Width = 430,
+				HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Disabled,
+				VerticalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Auto,
+			};
+
+			// ── Popup-button row (docked bottom on bhavPanel, right-aligned) ──
+			SetSize(this.btnImportBHAV, 112, 21);
+			SetSize(this.btnCopyBHAV, 112, 21);
+			SetSize(this.btnClose, 71, 21);
+			var popupButtonRow = new Avalonia.Controls.StackPanel
+			{
+				Orientation = Avalonia.Layout.Orientation.Horizontal,
+				HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right,
+				Spacing = 4,
+				Margin = new Avalonia.Thickness(4, 2, 4, 4),
+			};
+			popupButtonRow.Children.Add(this.btnImportBHAV);
+			popupButtonRow.Children.Add(this.btnCopyBHAV);
+			popupButtonRow.Children.Add(this.btnClose);
+
+			// ── Banner (docked top, natural height) ──
+			DockPanel.SetDock(this.pjse_banner1, Dock.Top);
+			this.bhavPanel.Children.Add(this.pjse_banner1);
+
+			// ── Header row (docked top): Filename on left, rest right-aligned ──
+			this.lbFilename.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
+			this.lbFormat.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
+			this.lbType.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
+			this.lbHeaderFlag.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
+			this.lbTreeVersion.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
+			this.lbCacheFlags.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
+
+			SetSize(this.cbFormat, 66, 21);
+			SetSize(this.tbType, 40, 20);
+			SetSize(this.tbHeaderFlag, 40, 20);
+			SetSize(this.tbTreeVersion, 80, 20);
+			SetSize(this.tbCacheFlags, 40, 20);
+			this.tbFilename.MinWidth = 100;
+
+			this.lbFormat.Margin = new Avalonia.Thickness(8, 0, 2, 0);
+			this.lbType.Margin = new Avalonia.Thickness(8, 0, 2, 0);
+			this.lbHeaderFlag.Margin = new Avalonia.Thickness(8, 0, 2, 0);
+			this.lbTreeVersion.Margin = new Avalonia.Thickness(8, 0, 2, 0);
+			this.lbCacheFlags.Margin = new Avalonia.Thickness(8, 0, 2, 0);
+
+			var headerRight = new Avalonia.Controls.StackPanel
+			{
+				Orientation = Avalonia.Layout.Orientation.Horizontal,
+				VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+			};
+			headerRight.Children.Add(this.lbFormat);
+			headerRight.Children.Add(this.cbFormat);
+			headerRight.Children.Add(this.lbType);
+			headerRight.Children.Add(this.tbType);
+			headerRight.Children.Add(this.lbHeaderFlag);
+			headerRight.Children.Add(this.tbHeaderFlag);
+			headerRight.Children.Add(this.lbTreeVersion);
+			headerRight.Children.Add(this.tbTreeVersion);
+			headerRight.Children.Add(this.lbCacheFlags);
+			headerRight.Children.Add(this.tbCacheFlags);
+
+			var headerRow = new DockPanel { Margin = new Avalonia.Thickness(4, 4, 4, 2) };
+			DockPanel.SetDock(this.lbFilename, Dock.Left);
+			headerRow.Children.Add(this.lbFilename);
+			DockPanel.SetDock(headerRight, Dock.Right);
+			headerRow.Children.Add(headerRight);
+			this.tbFilename.Margin = new Avalonia.Thickness(4, 0);
+			headerRow.Children.Add(this.tbFilename);
+
+			DockPanel.SetDock(headerRow, Dock.Top);
+			this.bhavPanel.Children.Add(headerRow);
+
+			// ── Popup-button row docked bottom (before right panel so it spans full width at bottom) ──
+			DockPanel.SetDock(popupButtonRow, Dock.Bottom);
+			this.bhavPanel.Children.Add(popupButtonRow);
+
+			// ── Right control panel docked right ──
+			DockPanel.SetDock(rightPanel, Dock.Right);
+			this.bhavPanel.Children.Add(rightPanel);
+
+			// ── Instruction list fills remaining area ──
+			this.pnflowcontainer.Margin = new Avalonia.Thickness(4, 0, 4, 4);
+			this.bhavPanel.Children.Add(this.pnflowcontainer);
+
+			// ── Context menu wiring ──
+			this.loadIndexToolStripMenuItem.DropDownItems.AddRange(new object[]
+			{
+				this.defaultFileToolStripMenuItem,
+				this.fromFileToolStripMenuItem,
+			});
+			this.saveIndexToolStripMenuItem.DropDownItems.AddRange(new object[]
+			{
+				this.defaultFileToolStripMenuItem1,
+				this.toFileToolStripMenuItem,
+			});
+
+			// ── Event wiring ──
+			this.btnZero.Click += (s, e) => this.btnZero_Click(s, e);
+			this.btnOperandRaw.Click += (s, e) => this.btnOperandRaw_Click(s, e);
+			this.btnCancel.Click += (s, e) => this.btnCancel_Clicked(s, e);
+			this.btnOperandWiz.Click += (s, e) => this.btnOperandWiz_Clicked(s, e);
+			this.llopenbhav.LinkClicked += new LinkLabelLinkClickedEventHandler(this.llopenbhav_LinkClicked);
+
+			this.tba2.QueryContinueDrag += (s, e) => this.ItemQueryContinueDragTarget(s, e as SimPe.Scenegraph.Compat.QueryContinueDragEventArgs ?? new SimPe.Scenegraph.Compat.QueryContinueDragEventArgs());
+			this.tba2.DragOver += (s, e) => this.ItemDragEnter(s, e as SimPe.Scenegraph.Compat.DragEventArgs ?? new SimPe.Scenegraph.Compat.DragEventArgs());
+			this.tba2.SelectionChanged += (s, e) => this.cbHex16_SelectedIndexChanged(s, e);
+			this.tba2.GotFocus += (s, e) => this.cbHex16_Enter(s, e);
+			this.tba2.DragDrop += (s, e) => this.ItemDrop(s, e as SimPe.Scenegraph.Compat.DragEventArgs ?? new SimPe.Scenegraph.Compat.DragEventArgs());
+			this.tba2.DragEnter += (s, e) => this.ItemDragEnter(s, e as SimPe.Scenegraph.Compat.DragEventArgs ?? new SimPe.Scenegraph.Compat.DragEventArgs());
+			this.tba2.LostFocus += (s, e) => this.cbHex16_Validated(s, e);
+			this.tba2.TextChanged += (s, e) => this.cbHex16_TextChanged(s, e);
+
+			this.tba1.QueryContinueDrag += (s, e) => this.ItemQueryContinueDragTarget(s, e as SimPe.Scenegraph.Compat.QueryContinueDragEventArgs ?? new SimPe.Scenegraph.Compat.QueryContinueDragEventArgs());
+			this.tba1.DragOver += (s, e) => this.ItemDragEnter(s, e as SimPe.Scenegraph.Compat.DragEventArgs ?? new SimPe.Scenegraph.Compat.DragEventArgs());
+			this.tba1.SelectionChanged += (s, e) => this.cbHex16_SelectedIndexChanged(s, e);
+			this.tba1.GotFocus += (s, e) => this.cbHex16_Enter(s, e);
+			this.tba1.DragDrop += (s, e) => this.ItemDrop(s, e as SimPe.Scenegraph.Compat.DragEventArgs ?? new SimPe.Scenegraph.Compat.DragEventArgs());
+			this.tba1.DragEnter += (s, e) => this.ItemDragEnter(s, e as SimPe.Scenegraph.Compat.DragEventArgs ?? new SimPe.Scenegraph.Compat.DragEventArgs());
+			this.tba1.LostFocus += (s, e) => this.cbHex16_Validated(s, e);
+			this.tba1.TextChanged += (s, e) => this.cbHex16_TextChanged(s, e);
+
+			TextBoxCompat[] hex8Controls =
+			{
+				this.tbInst_Unk0, this.tbInst_Unk1, this.tbInst_Unk2, this.tbInst_Unk3,
+				this.tbInst_Unk4, this.tbInst_Unk5, this.tbInst_Unk6, this.tbInst_Unk7,
+				this.tbInst_Op0, this.tbInst_Op1, this.tbInst_Op2, this.tbInst_Op3,
+				this.tbInst_Op4, this.tbInst_Op5, this.tbInst_Op6, this.tbInst_Op7,
+				this.tbInst_NodeVersion, this.tbHeaderFlag, this.tbCacheFlags,
+				this.tbType, this.tbArgC, this.tbLocalC,
+			};
+			foreach (var tb in hex8Controls)
+			{
+				tb.TextChanged += (s, e) => this.hex8_TextChanged(s, e);
+				tb.LostFocus += (s, e) => this.hex8_Validated(s, e);
+			}
+
+			this.tbInst_OpCode.TextChanged += (s, e) => this.hex16_TextChanged(s, e);
+			this.tbInst_OpCode.LostFocus += (s, e) => this.hex16_Validated(s, e);
+			this.tbLines.TextChanged += (s, e) => this.hex16_TextChanged(s, e);
+			this.tbLines.LostFocus += (s, e) => this.hex16_Validated(s, e);
+			this.tbTreeVersion.TextChanged += (s, e) => this.hex32_TextChanged(s, e);
+			this.tbTreeVersion.LostFocus += (s, e) => this.hex32_Validated(s, e);
+
+			this.btnOpCode.Click += (s, e) => this.btnOpCode_Clicked(s, e);
+			this.tbFilename.TextChanged += (s, e) => this.tbFilename_TextChanged(s, e);
+			this.tbFilename.LostFocus += (s, e) => this.tbFilename_Validated(s, e);
+
+			this.pjse_banner1.ExtractClick += (s, e) => this.pjse_banner1_ExtractClick(s, e);
+			this.pjse_banner1.TreeClick += (s, e) => this.pjse_banner1_TreeClick(s, e);
+			this.pjse_banner1.SiblingClick += (s, e) => this.pjse_banner1_SiblingClick(s, e);
+			this.pjse_banner1.ViewClick += (s, e) => this.pjse_banner1_ViewClick(s, e);
+			this.pjse_banner1.FloatClick += (s, e) => this.btnFloat_Click(s, e);
+
+			this.button1.Click += (s, e) => this.button1_Click(s, e);
+			this.cmpBHAV.CompareWith += new pjse.CompareButton.CompareWithEventHandler(this.cmpBHAV_CompareWith);
+
+			this.btnPasteListing.Click += (s, e) => this.btnPasteListing_Click(s, e);
+			this.btnAppend.Click += (s, e) => this.btnAppend_Click(s, e);
+			this.btnInsTrue.Click += (s, e) => this.btnInsVia_Click(s, e);
+			this.btnInsFalse.Click += (s, e) => this.btnInsVia_Click(s, e);
+			this.btnDelPescado.Click += (s, e) => this.btnDelPescado_Click(s, e);
+			this.btnLinkInge.Click += (s, e) => this.btnLinkInge_Click(s, e);
+			this.btnGUIDIndex.Click += (s, e) => this.btnGUIDIndex_Click(s, e);
+			this.btnInsUnlinked.Click += (s, e) => this.btnInsUnlinked_Click(s, e);
+			this.btnDelMerola.Click += (s, e) => this.btnDelMerola_Click(s, e);
+			this.btnCopyListing.Click += (s, e) => this.btnCopyListing_Click(s, e);
+			this.btnTPRPMaker.Click += (s, e) => this.btnTPRPMaker_Click(s, e);
+
+			this.llHidesOP.LinkClicked += new LinkLabelLinkClickedEventHandler(this.llHidesOP_LinkClicked);
+
+			this.cbSpecial.CheckedChanged += (s, e) => this.cbSpecial_CheckStateChanged(s, e);
+			this.btnImportBHAV.Click += (s, e) => this.btnImportBHAV_Click(s, e);
+			this.btnCopyBHAV.Click += (s, e) => this.btnCopyBHAV_Click(s, e);
+			this.btnClose.Click += (s, e) => this.btnClose_Click(s, e);
+
+			this.cbFormat.SelectionChanged += (s, e) => this.cbHex16_SelectedIndexChanged(s, e);
+			this.cbFormat.GotFocus += (s, e) => this.cbHex16_Enter(s, e);
+			this.cbFormat.LostFocus += (s, e) => this.cbHex16_Validated(s, e);
+			this.cbFormat.TextChanged += (s, e) => this.cbHex16_TextChanged(s, e);
+
+			this.pnflowcontainer.SelectedInstChanged += (s, e) => this.pnflowcontainer_SelectedInstChanged(s, e);
+
+			this.btnDel.Click += (s, e) => this.btnDel_Clicked(s, e);
+			this.btnUp.Click += (s, e) => this.btnMove_Clicked(s, e);
+			this.btnDown.Click += (s, e) => this.btnMove_Clicked(s, e);
+			this.btnSort.Click += (s, e) => this.btnSort_Clicked(s, e);
+			this.btnCommit.Click += (s, e) => this.btnCommit_Clicked(s, e);
+			this.btnAdd.Click += (s, e) => this.btnAdd_Clicked(s, e);
+
+			this.cmenuGUIDIndex.Opening += new System.EventHandler(this.cmenuGUIDIndex_Opening);
+			this.createAllPackagesToolStripMenuItem.Click += (s, e) => this.createToolStripMenuItem_Click(s, e);
+			this.createCurrentPackageToolStripMenuItem.Click += (s, e) => this.createToolStripMenuItem_Click(s, e);
+			this.defaultFileToolStripMenuItem.Click += (s, e) => this.defaultFileToolStripMenuItem_Click(s, e);
+			this.fromFileToolStripMenuItem.Click += (s, e) => this.fileToolStripMenuItem_Click(s, e);
+			this.defaultFileToolStripMenuItem1.Click += (s, e) => this.defaultFileToolStripMenuItem_Click(s, e);
+			this.toFileToolStripMenuItem.Click += (s, e) => this.fileToolStripMenuItem_Click(s, e);
+
+			this.ttBhavForm.ShowAlways = true;
+
+			this.Name = "BhavForm";
+			this.Content = this.bhavPanel;
+		}
 		#endregion
 
 		private void pnflowcontainer_SelectedInstChanged(object sender, System.EventArgs e)
@@ -1749,7 +1768,7 @@ namespace SimPe.PackedFiles.UserInterface
 		private void btnClose_Click(object sender, System.EventArgs e)
 		{
             if (this.isPopup)
-                Close();
+                (this.VisualRoot as Window)?.Close();
 		}
 
         private void btnCopyBHAV_Click(object sender, EventArgs e)

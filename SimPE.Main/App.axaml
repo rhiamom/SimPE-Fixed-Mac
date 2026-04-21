@@ -6,11 +6,29 @@
         <SolidColorBrush x:Key="TreeViewItemBackgroundSelected"             Color="#5580C4" />
         <SolidColorBrush x:Key="TreeViewItemBackgroundSelectedPointerOver"  Color="#7099D4" />
         <SolidColorBrush x:Key="TreeViewItemBackgroundSelectedPressed"      Color="#4470B4" />
+
+        <!-- App-wide FluentTheme font sizes (defaults: Small=12, Normal=14, Large=18) -->
+        <x:Double x:Key="ControlContentThemeFontSize">10</x:Double>
+        <x:Double x:Key="FontSizeSmall">9</x:Double>
+        <x:Double x:Key="FontSizeNormal">10</x:Double>
+        <x:Double x:Key="FontSizeLarge">13</x:Double>
     </Application.Resources>
     <Application.Styles>
         <FluentTheme />
         <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
         <StyleInclude Source="avares://AvaloniaHex/Themes/Simple/AvaloniaHex.axaml"/>
+
+        <!-- Root cause fix for "WinForms pixel heights clip text" issue.
+             Segoe UI at 10pt has ~14-15px natural line height, so Label/Button content
+             rendered into a TextBlock with default metrics overflows a 13px Label or
+             20px TextBox slot. Pinning LineHeight forces the TextBlock to size to the
+             compact height regardless of font metrics. -->
+        <Style Selector="TextBlock">
+            <Setter Property="LineHeight" Value="12" />
+        </Style>
+        <Style Selector="AccessText">
+            <Setter Property="LineHeight" Value="12" />
+        </Style>
         <!-- Classic raised Windows-style tabs -->
         <Style Selector="TabControl">
             <Setter Property="FontSize" Value="11" />
@@ -89,14 +107,78 @@
                 </ControlTemplate>
             </Setter>
         </Style>
-        <!-- Compact input controls — Fluent default MinHeight is too tall -->
+        <!-- DataGrid & TreeView don't pick up ControlContentThemeFontSize — set explicitly,
+             and tighten the generous Fluent row heights / padding so rows aren't double-spaced. -->
+        <Style Selector="DataGrid">
+            <Setter Property="FontSize"     Value="10" />
+            <Setter Property="RowHeight"    Value="18" />
+        </Style>
+        <Style Selector="DataGridRow">
+            <Setter Property="MinHeight"    Value="18" />
+        </Style>
+        <Style Selector="DataGridCell">
+            <Setter Property="FontSize"     Value="10" />
+            <Setter Property="MinHeight"    Value="18" />
+            <Setter Property="Padding"      Value="6,0" />
+        </Style>
+        <Style Selector="DataGridColumnHeader">
+            <Setter Property="FontSize"     Value="10" />
+            <Setter Property="MinHeight"    Value="20" />
+            <Setter Property="Padding"      Value="6,2" />
+        </Style>
+        <Style Selector="TreeView">
+            <Setter Property="FontSize"     Value="10" />
+        </Style>
+        <Style Selector="TreeViewItem">
+            <Setter Property="FontSize"     Value="10" />
+            <Setter Property="MinHeight"    Value="18" />
+            <Setter Property="Padding"      Value="0" />
+        </Style>
+        <Style Selector="TreeViewItem /template/ Border#PART_LayoutRoot">
+            <Setter Property="MinHeight"    Value="18" />
+            <Setter Property="Padding"      Value="2,0" />
+        </Style>
+        <Style Selector="ListBox">
+            <Setter Property="FontSize"     Value="10" />
+        </Style>
+        <Style Selector="ListBoxItem">
+            <Setter Property="FontSize"     Value="10" />
+            <Setter Property="MinHeight"    Value="18" />
+            <Setter Property="Padding"      Value="6,1" />
+        </Style>
+
+        <!-- Compact input controls — Fluent default MinHeight/MinWidth/Padding is too large.
+             Explicit FontSize=10 because ControlContentThemeFontSize cascade doesn't reliably
+             reach these from Application.Resources. -->
         <Style Selector="TextBox">
+            <Setter Property="FontSize"  Value="10" />
             <Setter Property="MinHeight" Value="0" />
-            <Setter Property="Padding"   Value="6,2" />
+            <Setter Property="MinWidth"  Value="0" />
+            <Setter Property="Padding"   Value="4,1" />
         </Style>
         <Style Selector="ComboBox">
+            <Setter Property="FontSize"  Value="10" />
             <Setter Property="MinHeight" Value="0" />
-            <Setter Property="Padding"   Value="6,2" />
+            <Setter Property="MinWidth"  Value="0" />
+            <Setter Property="Padding"   Value="4,1" />
+        </Style>
+        <Style Selector="Label">
+            <Setter Property="FontSize"  Value="10" />
+            <Setter Property="MinHeight" Value="0" />
+            <Setter Property="Padding"   Value="0" />
+        </Style>
+        <Style Selector="Button">
+            <Setter Property="FontSize"                   Value="10" />
+            <Setter Property="MinHeight"                  Value="0" />
+            <Setter Property="MinWidth"                   Value="0" />
+            <Setter Property="Padding"                    Value="6,1" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment"   Value="Center" />
+        </Style>
+        <Style Selector="CheckBox">
+            <Setter Property="FontSize"  Value="10" />
+            <Setter Property="MinHeight" Value="0" />
+            <Setter Property="Padding"   Value="4,0" />
         </Style>
         <Style Selector="NumericUpDown">
             <Setter Property="MinHeight" Value="0" />
