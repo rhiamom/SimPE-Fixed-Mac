@@ -122,32 +122,13 @@ namespace pjse.BhavOperandWizards.Wiz0x0002
         private void InitializeComponent()
         {
             this.pnWiz0x0002 = new StackPanel { Name = "pnWiz0x0002", Margin = new Avalonia.Thickness(6) };
-            try
-            {
-                this.labelledDataOwner2 = new pjse.LabelledDataOwner();
-                this.labelledDataOwner1 = new pjse.LabelledDataOwner();
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine("LabelledDataOwner ctor threw: " + ex);
-                System.Console.WriteLine("LabelledDataOwner ctor threw: " + ex);
-                // Visible placeholder so we can see that construction failed.
-                var err = new TextBlock
-                {
-                    Text = "LabelledDataOwner failed: " + ex.GetType().Name + " - " + ex.Message,
-                    Foreground = Avalonia.Media.Brushes.Red,
-                    TextWrapping = Avalonia.Media.TextWrapping.Wrap,
-                    MinWidth = 400,
-                };
-                this.pnWiz0x0002.Children.Add(err);
-                this.labelledDataOwner1 = null;
-                this.labelledDataOwner2 = null;
-            }
+            this.labelledDataOwner2 = new pjse.LabelledDataOwner();
+            this.labelledDataOwner1 = new pjse.LabelledDataOwner();
             this.cbOperator = new ComboBoxCompat { Name = "cbOperator", MinWidth = 70, VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top, Margin = new Avalonia.Thickness(6, 0) };
             this.flowLayoutPanel1 = new FlowLayoutPanel
             {
                 Name = "flowLayoutPanel1",
-                Orientation = Avalonia.Layout.Orientation.Horizontal,
+                Orientation = Avalonia.Layout.Orientation.Vertical,
             };
 
             // labelledDataOwner2
@@ -171,20 +152,11 @@ namespace pjse.BhavOperandWizards.Wiz0x0002
             this.labelledDataOwner1.UseInstancePickerVisible = false;
             this.labelledDataOwner1.Value = ((ushort)(0));
 
-            // cbOperator
             this.cbOperator.SelectionChanged += (s, e) => this.cbOperator_SelectedIndexChanged(s, e);
 
-            // DIAGNOSTIC: insert a visible red rectangle on each side of the operator.
-            // If these show but the actual LabelledDataOwners don't, the problem is inside
-            // LabelledDataOwner's rendering. If even these don't show, it's the flow panel.
-            var leftProbe  = new Avalonia.Controls.Border { Background = Avalonia.Media.Brushes.Tomato, Width = 120, Height = 40, Child = new TextBlock { Text = "LEFT", Foreground = Avalonia.Media.Brushes.White } };
-            var rightProbe = new Avalonia.Controls.Border { Background = Avalonia.Media.Brushes.ForestGreen, Width = 120, Height = 40, Child = new TextBlock { Text = "RIGHT", Foreground = Avalonia.Media.Brushes.White } };
-
-            this.flowLayoutPanel1.Children.Add(leftProbe);
-            if (this.labelledDataOwner1 != null) this.flowLayoutPanel1.Children.Add(this.labelledDataOwner1);
+            this.flowLayoutPanel1.Children.Add(this.labelledDataOwner1);
             this.flowLayoutPanel1.Children.Add(this.cbOperator);
-            if (this.labelledDataOwner2 != null) this.flowLayoutPanel1.Children.Add(this.labelledDataOwner2);
-            this.flowLayoutPanel1.Children.Add(rightProbe);
+            this.flowLayoutPanel1.Children.Add(this.labelledDataOwner2);
 
             // pnWiz0x0002 holds flowLayoutPanel1 (outer BhavOperandWiz adopts pnWiz0x0002)
             this.pnWiz0x0002.Children.Add(this.flowLayoutPanel1);

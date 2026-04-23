@@ -45,9 +45,12 @@ namespace pjse
         public LabelledDataOwnerXX(BhavWiz inst, byte downer, byte value) : base(inst, downer, value) { ValueIsByte = true; Use0xPrefix = false; }
     }
 
-    public partial class LabelledDataOwner : Avalonia.Controls.UserControl, pjse.IDataOwner
+    // Inherits from Border (a Decorator) rather than UserControl. UserControl's default
+    // template wasn't being applied for this subclass — even StyleKeyOverride didn't
+    // help — so Content (even a trivial coloured Border) rendered nothing. Border
+    // renders its Child directly without any template lookup.
+    public partial class LabelledDataOwner : Avalonia.Controls.Border, pjse.IDataOwner
     {
-
         protected pjse.BhavOperandWizards.DataOwnerControl doc;
 
         public LabelledDataOwner() : this(null, 0, (ushort) 0) { }

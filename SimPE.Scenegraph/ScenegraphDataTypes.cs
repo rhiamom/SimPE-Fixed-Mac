@@ -1382,11 +1382,18 @@ namespace SimPe.Scenegraph.Compat
         public new string Name { get => base.Name; set => base.Name = value; }
         public void Select(int start, int length) { /* no-op in Avalonia ComboBox */ }
         public event EventHandler TextChanged;
+        // Shadows Avalonia's EventHandler<SelectionChangedEventArgs> with WinForms-style
+        // EventHandler. Bridge in the ctor raises this when the base event fires; without
+        // the bridge, subscribers attached via `+=` never hear Avalonia's event.
         public new event EventHandler SelectionChanged;
         public event EventHandler DragDrop;
         public event EventHandler DragEnter;
         public event EventHandler DragOver;
         public event EventHandler QueryContinueDrag;
+        public ComboBoxCompat()
+        {
+            base.SelectionChanged += (s, e) => SelectionChanged?.Invoke(this, EventArgs.Empty);
+        }
         public void SelectAll() { }
         public int FindStringExact(string s) { int i = 0; foreach (var item in Items) { if (item?.ToString() == s) return i; i++; } return -1; }
     }

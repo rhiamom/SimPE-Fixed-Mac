@@ -67,21 +67,14 @@ namespace pjse
             this.tableLayoutPanel1.Children.Add(this.lbInstance);
             this.tableLayoutPanel1.Children.Add(checkBoxes);
 
-            // Minimum size so the compound control is actually visible when hosted in a
-            // horizontal StackPanel (which passes infinite width to children).
+            // NOTE: this file is excluded from compilation by Directory.Build.targets
+            // (<Compile Remove="**\*.Designer.cs" />). The real InitializeComponent that
+            // actually runs lives in SimPe.pjsecoder.Stubs.cs. This file is kept for
+            // reference only.
             this.MinWidth  = 260;
             this.MinHeight = 72;
             this.Name = "LabelledDataOwner";
-
-            // DIAGNOSTIC: absolute-minimum content — a plain coloured Border.
-            // If this doesn't render, the UserControl itself isn't being drawn.
-            this.Content = new Border
-            {
-                Background = Avalonia.Media.Brushes.Yellow,
-                Width      = 200,
-                Height     = 50,
-                Child      = new TextBlock { Text = "LabelledDataOwner", Foreground = Avalonia.Media.Brushes.Black },
-            };
+            this.Child = this.tableLayoutPanel1;
         }
 
         #endregion

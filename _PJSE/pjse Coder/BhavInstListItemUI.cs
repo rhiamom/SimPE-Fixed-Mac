@@ -51,6 +51,12 @@ namespace SimPe.PackedFiles.UserInterface
 		private LinkLabel trueTarget;
 		private LinkLabel falseTarget;
         private TextBoxCompat bhavInstListItem;
+        private Avalonia.Controls.Border rowBorder;
+
+        // 0.75 highlighted the selected row with a light gray; pick a soft gray that
+        // reads as "selected" without fighting the rest of the editor chrome.
+        private static readonly Avalonia.Media.IBrush SelectedBrush   = new Avalonia.Media.SolidColorBrush(Avalonia.Media.Color.FromRgb(0xD8, 0xD8, 0xD8));
+        private static readonly Avalonia.Media.IBrush UnselectedBrush = Avalonia.Media.Brushes.Transparent;
         #endregion
 
         public BhavInstListItemUI()
@@ -142,12 +148,12 @@ namespace SimPe.PackedFiles.UserInterface
 
 		public void MakeSelected()
         {
-            // BackColor not applicable in Avalonia
+            if (rowBorder != null) rowBorder.Background = SelectedBrush;
 		}
 
 		public void MakeUnselected()
 		{
-            // BackColor not applicable in Avalonia
+            if (rowBorder != null) rowBorder.Background = UnselectedBrush;
 		}
 
         private static string fmt = "0x{0} ({1}): {2}";
@@ -251,17 +257,25 @@ namespace SimPe.PackedFiles.UserInterface
             rowContent.Children.Add(targetsPanel);
             rowContent.Children.Add(this.instrText); // fills remaining space
 
-            var rowBorder = new Avalonia.Controls.Border
+            this.rowBorder = new Avalonia.Controls.Border
             {
                 BorderBrush = Avalonia.Media.Brushes.LightGray,
                 BorderThickness = new Avalonia.Thickness(1),
                 Padding = new Avalonia.Thickness(2),
+                Background = UnselectedBrush,
                 Child = rowContent,
             };
             // 'this.Content' resolves to the local static method Content(int, BhavWiz)
             // because of the `new` shadow below. Use base.Content to reach Avalonia's property.
-            base.Content = rowBorder;
+            base.Content = this.rowBorder;
             this.Focusable = true;
+
+            // Focus on any click anywhere on the row — without this, only clicks that
+            // land directly on instrText or the link labels (which have their own Click
+            // handlers calling this.Focus()) select the row, so most of the row surface
+            // is dead to mouse input and selection feels unresponsive.
+            this.AddHandler(Avalonia.Input.InputElement.PointerPressedEvent, (s, e) => this.Focus(),
+                Avalonia.Interactivity.RoutingStrategies.Tunnel | Avalonia.Interactivity.RoutingStrategies.Bubble);
 		}
 		#endregion
 

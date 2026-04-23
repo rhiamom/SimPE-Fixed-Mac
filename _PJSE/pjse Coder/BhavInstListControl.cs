@@ -153,6 +153,7 @@ namespace SimPe.PackedFiles.UserInterface
 				{
 					if (csel >= 0) flowitems[csel].MakeUnselected();
 					csel = value;
+					if (csel >= 0) flowitems[csel].MakeSelected();
 					{ var skBmp = DrawConnectors() as SkiaSharp.SKBitmap; pnflow.Source = skBmp != null ? SimPe.Helper.ToAvaloniaBitmap(skBmp) : null; }
 					OnSelectedInstChanged(new EventArgs());
 				}
