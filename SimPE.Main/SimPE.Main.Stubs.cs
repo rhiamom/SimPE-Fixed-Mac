@@ -31,17 +31,6 @@ namespace SimPe
         private Button btnDownloadCep = new Button();
     }
 
-    partial class ProfileChooser
-    {
-        private System.ComponentModel.IContainer components = null;
-        private void InitializeComponent() { }
-        private WrapPanel flowLayoutPanel1 = new WrapPanel();
-        private Button btnCancel = new Button();
-        private Button btnOK = new Button();
-        private TextBlock label1 = new TextBlock();
-        private ComboBox cbProfiles = new ComboBox();
-    }
-
     partial class MainForm
     {
         // InitializeComponent() is generated from MainForm.axaml — do NOT declare it here.

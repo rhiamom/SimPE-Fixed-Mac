@@ -46,6 +46,15 @@ namespace Ambertation.Windows.Forms
         }
         private bool _checked;
 
+        // Avalonia parity: Avalonia.Controls.CheckBox exposes IsChecked as bool? (tri-state).
+        // Ported form code (e.g. SimPE.Sims/ExtSDescUI.cs) reads/writes .IsChecked on these
+        // compat checkboxes — treat null as false on get and on set.
+        public bool? IsChecked
+        {
+            get => _checked;
+            set { _checked = (value == true); }
+        }
+
         // CheckState stored as object so callers from assemblies with System.Windows.Forms
         // can assign System.Windows.Forms.CheckState values without type conflict.
         public object CheckState

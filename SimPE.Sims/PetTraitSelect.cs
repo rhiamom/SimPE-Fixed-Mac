@@ -79,5 +79,55 @@ namespace SimPe.PackedFiles.Wrapper
             else if (traits.GetTrait(low)) Level = Levels.Low;
             else Level = Levels.Normal;
         }
+
+        #region Avalonia layout (ported from WinForms Designer)
+        private void InitializeComponent()
+        {
+            // 1. Instantiate controls.
+            this.rb1 = new RadioButton();
+            this.rb2 = new RadioButton();
+            this.rb3 = new RadioButton();
+
+            // 2. Build container hierarchy: DockPanel root with a Canvas for absolute positions.
+            //    Mutual exclusion of rb1/rb2/rb3 comes for free from sharing the Canvas as
+            //    parent — do NOT set GroupName, as it would group ALL PetTraitSelect instances
+            //    together (GroupName is window-scoped in Avalonia, not parent-scoped).
+            //    Designer.cs uses pure Point-based Location; AutoSize=true on each RB so we omit
+            //    Width/Height and let Avalonia size to content.
+            var canvas = new Avalonia.Controls.Canvas();
+            Avalonia.Controls.Canvas.SetLeft(this.rb1, 3);
+            Avalonia.Controls.Canvas.SetTop(this.rb1, 3);
+            Avalonia.Controls.Canvas.SetLeft(this.rb2, 39);
+            Avalonia.Controls.Canvas.SetTop(this.rb2, 3);
+            Avalonia.Controls.Canvas.SetLeft(this.rb3, 75);
+            Avalonia.Controls.Canvas.SetTop(this.rb3, 3);
+            canvas.Children.Add(this.rb1);
+            canvas.Children.Add(this.rb2);
+            canvas.Children.Add(this.rb3);
+
+            var root = new Avalonia.Controls.DockPanel { LastChildFill = true };
+            root.Children.Add(canvas);
+
+            // 3. Wire up events (handler verified at PetTraitSelect.cs line 60).
+            //    Avalonia's IsCheckedChanged passes RoutedEventArgs; CheckedChanged expects
+            //    EventArgs, so adapt with lambdas.
+            this.rb1.IsCheckedChanged += (s, e) => this.CheckedChanged(s, EventArgs.Empty);
+            this.rb2.IsCheckedChanged += (s, e) => this.CheckedChanged(s, EventArgs.Empty);
+            this.rb3.IsCheckedChanged += (s, e) => this.CheckedChanged(s, EventArgs.Empty);
+
+            // 4. Mount root on the UserControl.
+            this.Content = root;
+
+            // 5. Form's own Size from Designer (this.Size = 93 x 20).
+            //    Use MinWidth/MinHeight so the control can grow if its host gives it more room.
+            this.MinWidth = 93;
+            this.MinHeight = 20;
+        }
+
+        // Field declarations — moved from the Stubs.cs shim.
+        private RadioButton rb1;
+        private RadioButton rb2;
+        private RadioButton rb3;
+        #endregion
     }
 }

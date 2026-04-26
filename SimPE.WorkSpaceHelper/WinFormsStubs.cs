@@ -190,7 +190,7 @@ namespace System.Windows.Forms
         public object ShortcutKeys { get; set; }
         public ToolStripItemCollection DropDownItems { get; } = new ToolStripItemCollection();
         public event EventHandler CheckedChanged;
-        public void PerformClick() { }
+        public void PerformClick() { OnClick(EventArgs.Empty); }
     }
 
     // Control and ControlCollection are defined in SimPE.GMDCExporterbase (ListViewEx.cs).
@@ -396,12 +396,109 @@ namespace System.Windows.Forms
     }
 
     /// <summary>Minimal stub for System.Windows.Forms.MessageBox.</summary>
+    /// <summary>
+    /// System.Windows.Forms.MessageBox replacement. Real Avalonia-backed modal dialog with
+    /// the same pump-and-yield bridge used by WindowExtensions.ShowDialog so callers in
+    /// synchronous WinForms-style code (try/catch chains, "if MessageBox.Show == Yes" patterns)
+    /// keep working unchanged. Falls back to console output if no MainWindow is available
+    /// (e.g. very early startup or off-UI-thread).
+    /// </summary>
     public static class MessageBox
     {
-        public static DialogResult Show(string text, string caption = "", SimPe.MessageBoxButtons buttons = SimPe.MessageBoxButtons.OK, SimPe.MessageBoxIcon icon = SimPe.MessageBoxIcon.None) => DialogResult.Cancel;
-        public static DialogResult Show(object owner, string text, string caption = "", SimPe.MessageBoxButtons buttons = SimPe.MessageBoxButtons.OK, SimPe.MessageBoxIcon icon = SimPe.MessageBoxIcon.None) => DialogResult.Cancel;
-        public static DialogResult Show(string text, string caption, SimPe.MessageBoxButtons buttons) => DialogResult.Cancel;
-        public static DialogResult Show(object owner, string text, string caption, SimPe.MessageBoxButtons buttons) => DialogResult.Cancel;
+        public static DialogResult Show(string text, string caption = "", SimPe.MessageBoxButtons buttons = SimPe.MessageBoxButtons.OK, SimPe.MessageBoxIcon icon = SimPe.MessageBoxIcon.None)
+            => ShowImpl(text, caption, buttons);
+        public static DialogResult Show(object owner, string text, string caption = "", SimPe.MessageBoxButtons buttons = SimPe.MessageBoxButtons.OK, SimPe.MessageBoxIcon icon = SimPe.MessageBoxIcon.None)
+            => ShowImpl(text, caption, buttons);
+        public static DialogResult Show(string text, string caption, SimPe.MessageBoxButtons buttons)
+            => ShowImpl(text, caption, buttons);
+        public static DialogResult Show(object owner, string text, string caption, SimPe.MessageBoxButtons buttons)
+            => ShowImpl(text, caption, buttons);
+
+        private static DialogResult ShowImpl(string text, string caption, SimPe.MessageBoxButtons buttons)
+        {
+            var owner = (Avalonia.Application.Current?.ApplicationLifetime
+                as Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+            if (owner == null || !Avalonia.Threading.Dispatcher.UIThread.CheckAccess())
+            {
+                System.Diagnostics.Debug.WriteLine($"[MessageBox skipped] {caption}: {text}");
+                return DialogResult.Cancel;
+            }
+
+            var result = DialogResult.Cancel;
+            var win = new Avalonia.Controls.Window
+            {
+                Title = caption ?? "",
+                SizeToContent = Avalonia.Controls.SizeToContent.WidthAndHeight,
+                WindowStartupLocation = Avalonia.Controls.WindowStartupLocation.CenterOwner,
+                CanResize = false,
+                MinWidth = 300,
+                ShowInTaskbar = false,
+            };
+
+            var stack = new Avalonia.Controls.StackPanel { Spacing = 16, Margin = new Avalonia.Thickness(20) };
+            stack.Children.Add(new Avalonia.Controls.TextBlock
+            {
+                Text = text ?? "",
+                TextWrapping = Avalonia.Media.TextWrapping.Wrap,
+                MaxWidth = 480,
+            });
+
+            var btnRow = new Avalonia.Controls.StackPanel
+            {
+                Orientation = Avalonia.Layout.Orientation.Horizontal,
+                Spacing = 8,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+            };
+
+            void AddBtn(string label, DialogResult res)
+            {
+                var btn = new Avalonia.Controls.Button { Content = label, MinWidth = 80 };
+                btn.Click += (s, e) => { result = res; win.Close(); };
+                btnRow.Children.Add(btn);
+            }
+
+            switch (buttons)
+            {
+                case SimPe.MessageBoxButtons.OK:
+                    AddBtn("OK", DialogResult.OK); break;
+                case SimPe.MessageBoxButtons.OKCancel:
+                    AddBtn("OK", DialogResult.OK);
+                    AddBtn("Cancel", DialogResult.Cancel); break;
+                case SimPe.MessageBoxButtons.YesNo:
+                    AddBtn("Yes", DialogResult.Yes);
+                    AddBtn("No", DialogResult.No); break;
+                case SimPe.MessageBoxButtons.YesNoCancel:
+                    AddBtn("Yes", DialogResult.Yes);
+                    AddBtn("No", DialogResult.No);
+                    AddBtn("Cancel", DialogResult.Cancel); break;
+                case SimPe.MessageBoxButtons.RetryCancel:
+                    AddBtn("Retry", DialogResult.Retry);
+                    AddBtn("Cancel", DialogResult.Cancel); break;
+                case SimPe.MessageBoxButtons.AbortRetryIgnore:
+                    AddBtn("Abort", DialogResult.Abort);
+                    AddBtn("Retry", DialogResult.Retry);
+                    AddBtn("Ignore", DialogResult.Ignore); break;
+                default:
+                    AddBtn("OK", DialogResult.OK); break;
+            }
+
+            stack.Children.Add(btnRow);
+            win.Content = stack;
+
+            var tcs = new System.Threading.Tasks.TaskCompletionSource<bool>();
+            async void RunDialog()
+            {
+                try { await win.ShowDialog(owner); tcs.SetResult(true); }
+                catch { tcs.SetResult(false); }
+            }
+            Avalonia.Threading.Dispatcher.UIThread.Post(RunDialog);
+            while (!tcs.Task.IsCompleted)
+            {
+                Avalonia.Threading.Dispatcher.UIThread.RunJobs(Avalonia.Threading.DispatcherPriority.Background);
+                if (!tcs.Task.IsCompleted) System.Threading.Thread.Yield();
+            }
+            return result;
+        }
     }
 
     public enum PictureBoxSizeMode { Normal, StretchImage, AutoSize, CenterImage, Zoom }
@@ -426,9 +523,38 @@ namespace System.Windows.Forms
         protected virtual void OnClick(EventArgs e) => Click?.Invoke(this, e);
     }
 
-    /// <summary>No-argument ShowDialog stub for Avalonia.Controls.Window — shows non-blocking.</summary>
+    /// <summary>
+    /// No-argument ShowDialog stub for Avalonia.Controls.Window. WinForms semantics: blocks
+    /// until the user closes the form. Avalonia's Window.ShowDialog requires an owner and
+    /// returns Task; callers using the no-arg form expect synchronous blocking, so we resolve
+    /// the MainWindow as owner and pump the dispatcher loop until close.
+    /// Falls back to non-blocking Show() if no owner can be resolved.
+    /// </summary>
     public static class WindowExtensions
     {
-        public static void ShowDialog(this Avalonia.Controls.Window w) => w.Show();
+        public static void ShowDialog(this Avalonia.Controls.Window w)
+        {
+            var owner = (Avalonia.Application.Current?.ApplicationLifetime
+                as Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+
+            if (owner == null || !Avalonia.Threading.Dispatcher.UIThread.CheckAccess())
+            {
+                w.Show();
+                return;
+            }
+
+            var tcs = new System.Threading.Tasks.TaskCompletionSource<bool>();
+            async void RunDialog()
+            {
+                try { await w.ShowDialog(owner); tcs.SetResult(true); }
+                catch { tcs.SetResult(false); }
+            }
+            Avalonia.Threading.Dispatcher.UIThread.Post(RunDialog);
+            while (!tcs.Task.IsCompleted)
+            {
+                Avalonia.Threading.Dispatcher.UIThread.RunJobs(Avalonia.Threading.DispatcherPriority.Background);
+                if (!tcs.Task.IsCompleted) System.Threading.Thread.Yield();
+            }
+        }
     }
 }

@@ -2042,18 +2042,725 @@ namespace SimPe.PackedFiles.UserInterface
             ChangedEP6(sender, e);
         }
 
-        
+        #region Avalonia layout (ported from WinForms Designer) — Chunk 1 of 6: skeleton only
+        // Form size 696x344 from resx; toolbar at (0,24) size 696x56;
+        // page area at (0,80) size 696x264 hosts 12 mode panels stacked at the same coord,
+        // mutually exclusive via IsVisible (toggled by SelectButton in this file).
+        // Future chunks will add children to each pn* mode panel (see CHUNK markers below).
+        private void InitializeComponent()
+        {
+            this.components = new System.ComponentModel.Container();
 
-        
+            // ── Toolbar: 14 Avalonia Buttons inside a horizontal StackPanel named toolBar1.
+            //    SelectButton iterates toolBar1.Children with `child is Button` (Button = Avalonia.Controls.Button);
+            //    do not change to ToolStrip. ButtonCompat would be ideal but lives in SimPE.Scenegraph
+            //    which SimPE.Sims does not reference; plain Avalonia.Controls.Button works because
+            //    the file's `using Button = Avalonia.Controls.Button;` already aliases it.
+            this.toolBar1 = new Avalonia.Controls.StackPanel
+            {
+                Orientation = Avalonia.Layout.Orientation.Horizontal,
+                Spacing = 2,
+                Height = 56,
+            };
 
-       
+            this.biId     = new Avalonia.Controls.Button { Content = "Overview" };
+            this.biCareer = new Avalonia.Controls.Button { Content = "Career" };
+            this.biRel    = new Avalonia.Controls.Button { Content = "Relations" };
+            this.biInt    = new Avalonia.Controls.Button { Content = "Interests" };
+            this.biChar   = new Avalonia.Controls.Button { Content = "Character" };
+            this.biSkill  = new Avalonia.Controls.Button { Content = "Skills" };
+            this.biMisc   = new Avalonia.Controls.Button { Content = "Other" };
+            this.biEP1    = new Avalonia.Controls.Button { Content = "University" };
+            this.biEP2    = new Avalonia.Controls.Button { Content = "Nightlife" };
+            this.biEP3    = new Avalonia.Controls.Button { Content = "Business" };
+            this.biEP6    = new Avalonia.Controls.Button { Content = "Voyage" };
+            this.biEP7    = new Avalonia.Controls.Button { Content = "Freetime" };
+            this.biMore   = new Avalonia.Controls.Button { Content = "More" };
+            this.biMax    = new Avalonia.Controls.Button
+            {
+                Content = "Max ALL",
+                Margin = new Avalonia.Thickness(52, 1, 0, 2),
+            };
 
-		
+            // Click handlers — all 12 mode buttons go through ChoosePage; biMore/biMax have own.
+            this.biId.Click     += this.ChoosePage;
+            this.biCareer.Click += this.ChoosePage;
+            this.biRel.Click    += this.ChoosePage;
+            this.biInt.Click    += this.ChoosePage;
+            this.biChar.Click   += this.ChoosePage;
+            this.biSkill.Click  += this.ChoosePage;
+            this.biMisc.Click   += this.ChoosePage;
+            this.biEP1.Click    += this.ChoosePage;
+            this.biEP2.Click    += this.ChoosePage;
+            this.biEP3.Click    += this.ChoosePage;
+            this.biEP6.Click    += this.ChoosePage;
+            this.biEP7.Click    += this.ChoosePage;
+            this.biMore.Click   += this.Activate_biMore;
+            this.biMax.Click    += this.Activate_biMax;
 
-		
+            this.toolBar1.Children.Add(this.biId);
+            this.toolBar1.Children.Add(this.biCareer);
+            this.toolBar1.Children.Add(this.biRel);
+            this.toolBar1.Children.Add(this.biInt);
+            this.toolBar1.Children.Add(this.biChar);
+            this.toolBar1.Children.Add(this.biSkill);
+            this.toolBar1.Children.Add(this.biMisc);
+            this.toolBar1.Children.Add(this.biEP1);
+            this.toolBar1.Children.Add(this.biEP2);
+            this.toolBar1.Children.Add(this.biEP3);
+            this.toolBar1.Children.Add(this.biEP6);
+            this.toolBar1.Children.Add(this.biEP7);
+            this.toolBar1.Children.Add(this.biMore);
+            this.toolBar1.Children.Add(this.biMax);
 
-		
+            // Tags: each toolbar button references the mode panel it switches to.
+            // (Also set in the constructor today; setting here too is harmless and
+            // documents the intent for future chunks.)
+            // (Done in constructor — see the Tag assignments after InitializeComponent.)
 
-		
+            // ── 12 mode panels — all at (0,80) size 696x264. Mutual exclusion via IsVisible.
+            // Use Canvas because most mode panel children use absolute positioning in WinForms.
+            // CHUNK 2-6: panel children populated panel-by-panel in later invocations.
+            var pageArea = new Avalonia.Controls.Canvas
+            {
+                Width = 696,
+                Height = 264,
+                ClipToBounds = true,
+            };
+
+            // CHUNK 2: pnId children go here — 17 controls from Designer.cs:626-642 / resx 1340-1819.
+            // pnId hosts the identity page: portrait, name/family/instance fields, gender RBs,
+            // species combo, life-section combo, age textbox, and a row of bold Tahoma labels.
+            // Coordinates and sizes are pnId-relative (taken straight from the resx — no offset).
+            this.pnId = new Avalonia.Controls.Canvas { Width = 696, Height = 264, IsVisible = true };
+            Avalonia.Controls.Canvas.SetLeft(this.pnId, 0);
+            Avalonia.Controls.Canvas.SetTop(this.pnId, 0);
+            pageArea.Children.Add(this.pnId);
+
+            // ── Labels (TextBlocks; theme handles padding & line-height; do NOT set Padding).
+            // All resx Text values were "TopRight"-aligned in WinForms → TextAlignment.Right.
+
+            // label13 — "Name:" (120,48 / 96x17)
+            this.label13.Text = "Name:";
+            this.label13.Width = 96;
+            this.label13.Height = 17;
+            this.label13.TextAlignment = Avalonia.Media.TextAlignment.Right;
+            Avalonia.Controls.Canvas.SetLeft(this.label13, 120);
+            Avalonia.Controls.Canvas.SetTop(this.label13, 48);
+            this.pnId.Children.Add(this.label13);
+
+            // label2 — "Sim ID:" (120,24 / 96x17)
+            this.label2.Text = "Sim ID:";
+            this.label2.Width = 96;
+            this.label2.Height = 17;
+            this.label2.TextAlignment = Avalonia.Media.TextAlignment.Right;
+            Avalonia.Controls.Canvas.SetLeft(this.label2, 120);
+            Avalonia.Controls.Canvas.SetTop(this.label2, 24);
+            this.pnId.Children.Add(this.label2);
+
+            // label1 — "Family Instance:" (112,72 / 104x17)
+            this.label1.Text = "Family Instance:";
+            this.label1.Width = 104;
+            this.label1.Height = 17;
+            this.label1.TextAlignment = Avalonia.Media.TextAlignment.Right;
+            Avalonia.Controls.Canvas.SetLeft(this.label1, 112);
+            Avalonia.Controls.Canvas.SetTop(this.label1, 72);
+            this.pnId.Children.Add(this.label1);
+
+            // label49 — "Treat as:" (144,96 / 72x17)
+            this.label49.Text = "Treat as:";
+            this.label49.Width = 72;
+            this.label49.Height = 17;
+            this.label49.TextAlignment = Avalonia.Media.TextAlignment.Right;
+            Avalonia.Controls.Canvas.SetLeft(this.label49, 144);
+            Avalonia.Controls.Canvas.SetTop(this.label49, 96);
+            this.pnId.Children.Add(this.label49);
+
+            // label48 — "Life Section:" (8,144 / 112x17)
+            this.label48.Text = "Life Section:";
+            this.label48.Width = 112;
+            this.label48.Height = 17;
+            this.label48.TextAlignment = Avalonia.Media.TextAlignment.Right;
+            Avalonia.Controls.Canvas.SetLeft(this.label48, 8);
+            Avalonia.Controls.Canvas.SetTop(this.label48, 144);
+            this.pnId.Children.Add(this.label48);
+
+            // label10 — "Remaining Days:" (8,168 / 112x17)
+            this.label10.Text = "Remaining Days:";
+            this.label10.Width = 112;
+            this.label10.Height = 17;
+            this.label10.TextAlignment = Avalonia.Media.TextAlignment.Right;
+            Avalonia.Controls.Canvas.SetLeft(this.label10, 8);
+            Avalonia.Controls.Canvas.SetTop(this.label10, 168);
+            this.pnId.Children.Add(this.label10);
+
+            // label16 — "Species:" (8,192 / 112x17)
+            this.label16.Text = "Species:";
+            this.label16.Width = 112;
+            this.label16.Height = 17;
+            this.label16.TextAlignment = Avalonia.Media.TextAlignment.Right;
+            Avalonia.Controls.Canvas.SetLeft(this.label16, 8);
+            Avalonia.Controls.Canvas.SetTop(this.label16, 192);
+            this.pnId.Children.Add(this.label16);
+
+            // ── TextBoxes — all wired to ChangedId; existed as `new TextBox()` at field decl.
+
+            // tbsim — Sim ID (224,16 / 104x24)
+            this.tbsim.Width = 104;
+            this.tbsim.Height = 24;
+            Avalonia.Controls.Canvas.SetLeft(this.tbsim, 224);
+            Avalonia.Controls.Canvas.SetTop(this.tbsim, 16);
+            this.tbsim.TextChanged += this.ChangedId;
+            this.pnId.Children.Add(this.tbsim);
+
+            // tbsimdescname — Name (224,40 / 216x24)
+            this.tbsimdescname.Width = 216;
+            this.tbsimdescname.Height = 24;
+            Avalonia.Controls.Canvas.SetLeft(this.tbsimdescname, 224);
+            Avalonia.Controls.Canvas.SetTop(this.tbsimdescname, 40);
+            this.tbsimdescname.TextChanged += this.ChangedId;
+            this.pnId.Children.Add(this.tbsimdescname);
+
+            // tbsimdescfamname — Family Name (448,40 / 216x24)
+            this.tbsimdescfamname.Width = 216;
+            this.tbsimdescfamname.Height = 24;
+            Avalonia.Controls.Canvas.SetLeft(this.tbsimdescfamname, 448);
+            Avalonia.Controls.Canvas.SetTop(this.tbsimdescfamname, 40);
+            this.tbsimdescfamname.TextChanged += this.ChangedId;
+            this.pnId.Children.Add(this.tbsimdescfamname);
+
+            // tbfaminst — Family Instance (224,64 / 56x24)
+            this.tbfaminst.Width = 56;
+            this.tbfaminst.Height = 24;
+            Avalonia.Controls.Canvas.SetLeft(this.tbfaminst, 224);
+            Avalonia.Controls.Canvas.SetTop(this.tbfaminst, 64);
+            this.tbfaminst.TextChanged += this.ChangedId;
+            this.pnId.Children.Add(this.tbfaminst);
+
+            // tbage — Remaining Days (128,160 / 56x24)
+            this.tbage.Width = 56;
+            this.tbage.Height = 24;
+            Avalonia.Controls.Canvas.SetLeft(this.tbage, 128);
+            Avalonia.Controls.Canvas.SetTop(this.tbage, 160);
+            this.tbage.TextChanged += this.ChangedId;
+            this.pnId.Children.Add(this.tbage);
+
+            // ── Gender RadioButtons — share pnId as parent (auto-exclusive).
+            // DO NOT set GroupName: it is window-scoped in Avalonia and would couple
+            // unrelated RBs across the form. Per feedback_radiobutton_groupname.md.
+
+            // rbfemale (224,96 / 64x16)
+            this.rbfemale.Content = "Female";
+            this.rbfemale.Width = 64;
+            this.rbfemale.Height = 16;
+            Avalonia.Controls.Canvas.SetLeft(this.rbfemale, 224);
+            Avalonia.Controls.Canvas.SetTop(this.rbfemale, 96);
+            this.rbfemale.IsCheckedChanged += this.ChangedId;
+            this.pnId.Children.Add(this.rbfemale);
+
+            // rbmale (296,96 / 48x16)
+            this.rbmale.Content = "Male";
+            this.rbmale.Width = 48;
+            this.rbmale.Height = 16;
+            Avalonia.Controls.Canvas.SetLeft(this.rbmale, 296);
+            Avalonia.Controls.Canvas.SetTop(this.rbmale, 96);
+            this.rbmale.IsCheckedChanged += this.ChangedId;
+            this.pnId.Children.Add(this.rbmale);
+
+            // ── ComboBoxes (both DropDownList in Designer → non-editable Avalonia ComboBox).
+
+            // cblifesection (128,136 / 160x25) — wired to ChangedId via SelectionChanged.
+            this.cblifesection.Width = 160;
+            this.cblifesection.Height = 25;
+            Avalonia.Controls.Canvas.SetLeft(this.cblifesection, 128);
+            Avalonia.Controls.Canvas.SetTop(this.cblifesection, 136);
+            this.cblifesection.SelectionChanged += this.ChangedId;
+            this.pnId.Children.Add(this.cblifesection);
+
+            // cbSpecies (128,184 / 160x25) — EnumComboBox; two events from Designer.
+            // NOTE: cbSpecies is the WinForms-derived Ambertation.Windows.Forms.EnumComboBox.
+            // Its WinForms event names (SelectionChangeCommitted, SelectedIndexChanged) do NOT
+            // exist on Avalonia.Controls.ComboBox; we route both through Avalonia's
+            // SelectionChanged so refresh logic still fires when the selected species changes.
+            this.cbSpecies.Width = 160;
+            this.cbSpecies.Height = 25;
+            Avalonia.Controls.Canvas.SetLeft(this.cbSpecies, 128);
+            Avalonia.Controls.Canvas.SetTop(this.cbSpecies, 184);
+            this.cbSpecies.SelectionChanged += this.ChangedEP2;
+            this.cbSpecies.SelectionChanged += this.cbSpecies_SelectedIndexChanged;
+            this.pnId.Children.Add(this.cbSpecies);
+
+            // ── Portrait — PictureBox → Image.
+            // SizeMode=StretchImage → Stretch.Fill (stretches without preserving aspect).
+            // BackColor=Transparent in Designer is the Avalonia default for Image, no setter needed.
+            // pbImage (8,8 / 104x96)
+            this.pbImage.Width = 104;
+            this.pbImage.Height = 96;
+            this.pbImage.Stretch = Avalonia.Media.Stretch.Fill;
+            Avalonia.Controls.Canvas.SetLeft(this.pbImage, 8);
+            Avalonia.Controls.Canvas.SetTop(this.pbImage, 8);
+            this.pnId.Children.Add(this.pbImage);
+
+            // CHUNK 3: pnCareer children go here
+            this.pnCareer = new Avalonia.Controls.Canvas { Width = 696, Height = 264, IsVisible = false };
+            Avalonia.Controls.Canvas.SetLeft(this.pnCareer, 0);
+            Avalonia.Controls.Canvas.SetTop(this.pnCareer, 0);
+            pageArea.Children.Add(this.pnCareer);
+
+            // CHUNK 3: pnSkill children go here
+            this.pnSkill = new Avalonia.Controls.Canvas { Width = 696, Height = 264, IsVisible = false };
+            Avalonia.Controls.Canvas.SetLeft(this.pnSkill, 0);
+            Avalonia.Controls.Canvas.SetTop(this.pnSkill, 0);
+            pageArea.Children.Add(this.pnSkill);
+
+            // CHUNK 4: pnChar children go here (also hosts pnHumanChar + pnPetChar internally)
+            this.pnChar = new Avalonia.Controls.Canvas { Width = 696, Height = 264, IsVisible = false };
+            Avalonia.Controls.Canvas.SetLeft(this.pnChar, 0);
+            Avalonia.Controls.Canvas.SetTop(this.pnChar, 0);
+            pageArea.Children.Add(this.pnChar);
+
+            // CHUNK 4: pnInt children go here (also hosts pnSimInt + pnPetInt internally)
+            this.pnInt = new Avalonia.Controls.Canvas { Width = 696, Height = 264, IsVisible = false };
+            Avalonia.Controls.Canvas.SetLeft(this.pnInt, 0);
+            Avalonia.Controls.Canvas.SetTop(this.pnInt, 0);
+            pageArea.Children.Add(this.pnInt);
+
+            // CHUNK 4: pnRel children go here
+            this.pnRel = new Avalonia.Controls.Canvas { Width = 696, Height = 264, IsVisible = false };
+            Avalonia.Controls.Canvas.SetLeft(this.pnRel, 0);
+            Avalonia.Controls.Canvas.SetTop(this.pnRel, 0);
+            pageArea.Children.Add(this.pnRel);
+
+            // CHUNK 5: pnMisc children go here
+            this.pnMisc = new Avalonia.Controls.Canvas { Width = 696, Height = 264, IsVisible = false };
+            Avalonia.Controls.Canvas.SetLeft(this.pnMisc, 0);
+            Avalonia.Controls.Canvas.SetTop(this.pnMisc, 0);
+            pageArea.Children.Add(this.pnMisc);
+
+            // CHUNK 5: pnEP1 (University) children go here
+            this.pnEP1 = new Avalonia.Controls.Canvas { Width = 696, Height = 264, IsVisible = false };
+            Avalonia.Controls.Canvas.SetLeft(this.pnEP1, 0);
+            Avalonia.Controls.Canvas.SetTop(this.pnEP1, 0);
+            pageArea.Children.Add(this.pnEP1);
+
+            // CHUNK 5: pnEP2 (Nightlife) children go here
+            this.pnEP2 = new Avalonia.Controls.Canvas { Width = 696, Height = 264, IsVisible = false };
+            Avalonia.Controls.Canvas.SetLeft(this.pnEP2, 0);
+            Avalonia.Controls.Canvas.SetTop(this.pnEP2, 0);
+            pageArea.Children.Add(this.pnEP2);
+
+            // CHUNK 6: pnEP3 (Business) children go here
+            this.pnEP3 = new Avalonia.Controls.Canvas { Width = 696, Height = 264, IsVisible = false };
+            Avalonia.Controls.Canvas.SetLeft(this.pnEP3, 0);
+            Avalonia.Controls.Canvas.SetTop(this.pnEP3, 0);
+            pageArea.Children.Add(this.pnEP3);
+
+            // CHUNK 6: pnEP7 (Freetime) children go here
+            this.pnEP7 = new Avalonia.Controls.Canvas { Width = 696, Height = 264, IsVisible = false };
+            Avalonia.Controls.Canvas.SetLeft(this.pnEP7, 0);
+            Avalonia.Controls.Canvas.SetTop(this.pnEP7, 0);
+            pageArea.Children.Add(this.pnEP7);
+
+            // CHUNK 6: pnVoyage (EP6) children go here
+            this.pnVoyage = new Avalonia.Controls.Canvas { Width = 696, Height = 264, IsVisible = false };
+            Avalonia.Controls.Canvas.SetLeft(this.pnVoyage, 0);
+            Avalonia.Controls.Canvas.SetTop(this.pnVoyage, 0);
+            pageArea.Children.Add(this.pnVoyage);
+
+            // ── ContextMenu 1 (mbiLink): the popup attached to biMore.
+            // Items per Designer.cs:1294-1308: mbiMax, miRand, sep, miOpenChar, miOpenWf,
+            // miOpenMem, miOpenBadge, miOpenDNA, miOpenSCOR, miOpenFamily, miOpenCloth,
+            // sep, miMore, miRelink.
+            this.mbiMax           = new Avalonia.Controls.MenuItem { Header = "Maximize" };
+            this.miRand           = new Avalonia.Controls.MenuItem { Header = "Randomize" };
+            this.miOpenChar       = new Avalonia.Controls.MenuItem { Header = "Open Character File" };
+            this.miOpenWf         = new Avalonia.Controls.MenuItem { Header = "Open Wants && Fears" };
+            this.miOpenMem        = new Avalonia.Controls.MenuItem { Header = "Open Memories" };
+            this.miOpenBadge      = new Avalonia.Controls.MenuItem { Header = "Open hidden Skills && Badges" };
+            this.miOpenDNA        = new Avalonia.Controls.MenuItem { Header = "Open Sim DNA" };
+            this.miOpenSCOR       = new Avalonia.Controls.MenuItem { Header = "Open Sim Score" };
+            this.miOpenFamily     = new Avalonia.Controls.MenuItem { Header = "Open Family" };
+            this.miOpenCloth      = new Avalonia.Controls.MenuItem { Header = "Open Clothing" };
+            this.miMore           = new Avalonia.Controls.MenuItem { Header = "Extended Browser..." };
+            this.miRelink         = new Avalonia.Controls.MenuItem { Header = "Relink Character" };
+
+            this.mbiMax.Click       += this.Activate_biMax;
+            this.miRand.Click       += this.Activate_biRand;
+            this.miOpenChar.Click   += this.Activate_miOpenCHar;
+            this.miOpenWf.Click     += this.Activate_miOpenWf;
+            this.miOpenMem.Click    += this.Activate_miOpenMem;
+            this.miOpenBadge.Click  += this.Activate_miOpenBadge;
+            this.miOpenDNA.Click    += this.Activate_miOpenDNA;
+            this.miOpenSCOR.Click   += this.activate_miOpenScore;
+            this.miOpenFamily.Click += this.Activate_miFamily;
+            this.miOpenCloth.Click  += this.Activate_miOpenCloth;
+            this.miMore.Click       += this.Activate_miMore;
+            this.miRelink.Click     += this.Activate_miRelink;
+
+            this.mbiLink = new Avalonia.Controls.ContextMenu();
+            this.mbiLink.Items.Add(this.mbiMax);
+            this.mbiLink.Items.Add(this.miRand);
+            this.mbiLink.Items.Add(new Avalonia.Controls.Separator());
+            this.mbiLink.Items.Add(this.miOpenChar);
+            this.mbiLink.Items.Add(this.miOpenWf);
+            this.mbiLink.Items.Add(this.miOpenMem);
+            this.mbiLink.Items.Add(this.miOpenBadge);
+            this.mbiLink.Items.Add(this.miOpenDNA);
+            this.mbiLink.Items.Add(this.miOpenSCOR);
+            this.mbiLink.Items.Add(this.miOpenFamily);
+            this.mbiLink.Items.Add(this.miOpenCloth);
+            this.mbiLink.Items.Add(new Avalonia.Controls.Separator());
+            this.mbiLink.Items.Add(this.miMore);
+            this.mbiLink.Items.Add(this.miRelink);
+
+            // ── ContextMenu 2 (miRel): the popup for the relations list.
+            // Items per Designer.cs:1391-1396: miAddRelation, miRemRelation, sep,
+            // mbiMaxThisRel, mbiMaxKnownRel.
+            this.miAddRelation  = new Avalonia.Controls.MenuItem { Header = "Add" };
+            this.miRemRelation  = new Avalonia.Controls.MenuItem { Header = "Remove" };
+            this.mbiMaxThisRel  = new Avalonia.Controls.MenuItem { Header = "Max this Relation" };
+            this.mbiMaxKnownRel = new Avalonia.Controls.MenuItem { Header = "Max Relations to known Sims" };
+
+            this.miAddRelation.Click  += this.Activate_miAddRelation;
+            this.miRemRelation.Click  += this.Activate_miRemRelation;
+            this.mbiMaxThisRel.Click  += this.Activate_mbiMaxThisRel;
+            this.mbiMaxKnownRel.Click += this.Activate_mbiMaxKnownRel;
+
+            this.miRel = new Avalonia.Controls.ContextMenu();
+            this.miRel.Items.Add(this.miAddRelation);
+            this.miRel.Items.Add(this.miRemRelation);
+            this.miRel.Items.Add(new Avalonia.Controls.Separator());
+            this.miRel.Items.Add(this.mbiMaxThisRel);
+            this.miRel.Items.Add(this.mbiMaxKnownRel);
+            // miRel_BeforePopup is hooked to the miRel (ContextMenu) Open event so it
+            // can configure Add/Remove enabled state before the popup is shown.
+            this.miRel.Opened += this.miRel_BeforePopup;
+
+            // ── Root layout: DockPanel with toolbar docked Top, page area filling rest.
+            // WrapperBaseControl provides a header band y=0..24 painted by its own render code;
+            // the toolbar sits at y=24..80 (size 696x56), pages at y=80..344 (size 696x264).
+            // We use DockPanel responsively rather than fixed-positioned Canvas at form root.
+            var root = new Avalonia.Controls.DockPanel { LastChildFill = true };
+
+            // Spacer to reserve the 24px header band that WrapperBaseControl paints over.
+            var headerSpacer = new Avalonia.Controls.Border { Height = 24, Background = Avalonia.Media.Brushes.Transparent };
+            Avalonia.Controls.DockPanel.SetDock(headerSpacer, Avalonia.Controls.Dock.Top);
+            root.Children.Add(headerSpacer);
+
+            Avalonia.Controls.DockPanel.SetDock(this.toolBar1, Avalonia.Controls.Dock.Top);
+            root.Children.Add(this.toolBar1);
+
+            // pageArea fills remaining space.
+            root.Children.Add(pageArea);
+
+            this.Content = root;
+
+            // Responsive sizing per memory: MinWidth/MinHeight, no fixed Width/Height on root.
+            this.MinWidth = 696;
+            this.MinHeight = 344;
+        }
+
+        // ──────────────────────────────────────────────────────────────────
+        // Field declarations — moved from SimPE.Sims.Stubs.cs partial-class block.
+        // Real types (XPTaskBoxSimple, LabeledProgressBar, EnumComboBox, TransparentCheckBox)
+        // restored from the prior Border/ProgressBar/ComboBox/CheckBox shims so Chunks 2-6
+        // can populate them with correct type-specific properties.
+        // ──────────────────────────────────────────────────────────────────
+        private System.ComponentModel.IContainer components;
+
+        // Toolbar StackPanel (was Panel shim) — SelectButton iterates its Children.
+        private Avalonia.Controls.StackPanel toolBar1;
+
+        // Toolbar buttons (14) — plain Avalonia.Controls.Button (SimPE.Sims doesn't ref Scenegraph).
+        private Avalonia.Controls.Button biId;
+        private Avalonia.Controls.Button biCareer;
+        private Avalonia.Controls.Button biRel;
+        private Avalonia.Controls.Button biInt;
+        private Avalonia.Controls.Button biChar;
+        private Avalonia.Controls.Button biSkill;
+        private Avalonia.Controls.Button biMisc;
+        private Avalonia.Controls.Button biEP1;
+        private Avalonia.Controls.Button biEP2;
+        private Avalonia.Controls.Button biEP3;
+        private Avalonia.Controls.Button biEP6;
+        private Avalonia.Controls.Button biEP7;
+        private Avalonia.Controls.Button biMore;
+        private Avalonia.Controls.Button biMax;
+
+        // 12 mode panels (Canvas because children use absolute positioning).
+        private Avalonia.Controls.Canvas pnId;
+        private Avalonia.Controls.Canvas pnSkill;
+        private Avalonia.Controls.Canvas pnChar;
+        private Avalonia.Controls.Canvas pnCareer;
+        private Avalonia.Controls.Canvas pnRel;
+        private Avalonia.Controls.Canvas pnInt;
+        private Avalonia.Controls.Canvas pnMisc;
+        private Avalonia.Controls.Canvas pnEP1;
+        private Avalonia.Controls.Canvas pnEP2;
+        private Avalonia.Controls.Canvas pnEP3;
+        private Avalonia.Controls.Canvas pnEP7;
+        private Avalonia.Controls.Canvas pnVoyage;
+
+        // Sub-panels inside pnChar/pnInt — Designer.cs has these as nested Panels.
+        // Declared but not yet placed; CHUNK 4 will add them inside their parents.
+        private Avalonia.Controls.Canvas pnHumanChar = new Avalonia.Controls.Canvas();
+        private Avalonia.Controls.Canvas pnPetChar  = new Avalonia.Controls.Canvas();
+        private Avalonia.Controls.Canvas pnSimInt   = new Avalonia.Controls.Canvas();
+        private Avalonia.Controls.Canvas pnPetInt   = new Avalonia.Controls.Canvas();
+        // Generic sub-panels used inside misc/relations panels — placement in later chunks.
+        private Avalonia.Controls.Canvas panel1 = new Avalonia.Controls.Canvas();
+        private Avalonia.Controls.Canvas panel2 = new Avalonia.Controls.Canvas();
+        private Avalonia.Controls.Canvas panel3 = new Avalonia.Controls.Canvas();
+
+        // Context menus and their items (ContextMenu1 = mbiLink, ContextMenu2 = miRel).
+        private Avalonia.Controls.ContextMenu mbiLink;
+        private Avalonia.Controls.ContextMenu miRel;
+        private Avalonia.Controls.MenuItem mbiMax;
+        private Avalonia.Controls.MenuItem miRand;
+        private Avalonia.Controls.MenuItem miOpenChar;
+        private Avalonia.Controls.MenuItem miOpenWf;
+        private Avalonia.Controls.MenuItem miOpenMem;
+        private Avalonia.Controls.MenuItem miOpenBadge;
+        private Avalonia.Controls.MenuItem miOpenDNA;
+        private Avalonia.Controls.MenuItem miOpenSCOR;
+        private Avalonia.Controls.MenuItem miOpenFamily;
+        private Avalonia.Controls.MenuItem miOpenCloth;
+        private Avalonia.Controls.MenuItem miMore;
+        private Avalonia.Controls.MenuItem miRelink;
+        private Avalonia.Controls.MenuItem miAddRelation;
+        private Avalonia.Controls.MenuItem miRemRelation;
+        private Avalonia.Controls.MenuItem mbiMaxThisRel;
+        private Avalonia.Controls.MenuItem mbiMaxKnownRel;
+
+        // ── XPTaskBoxSimple — REAL TYPE restored from Border shim.
+        // Theming code in the constructor calls themeManager.AddControl(srcTb/dstTb/xpTaskBoxSimpleN).
+        private Ambertation.Windows.Forms.XPTaskBoxSimple srcTb            = new Ambertation.Windows.Forms.XPTaskBoxSimple();
+        private Ambertation.Windows.Forms.XPTaskBoxSimple dstTb            = new Ambertation.Windows.Forms.XPTaskBoxSimple();
+        private Ambertation.Windows.Forms.XPTaskBoxSimple xpTaskBoxSimple1 = new Ambertation.Windows.Forms.XPTaskBoxSimple();
+        private Ambertation.Windows.Forms.XPTaskBoxSimple xpTaskBoxSimple2 = new Ambertation.Windows.Forms.XPTaskBoxSimple();
+        private Ambertation.Windows.Forms.XPTaskBoxSimple xpTaskBoxSimple3 = new Ambertation.Windows.Forms.XPTaskBoxSimple();
+        private Ambertation.Windows.Forms.XPTaskBoxSimple xpTaskBoxSimple4 = new Ambertation.Windows.Forms.XPTaskBoxSimple();
+
+        // ── LabeledProgressBar — REAL TYPE restored from ProgressBar shim.
+        // Activate_biMax/Activate_biRand cast pn*.Children to LabeledProgressBar.
+        private Ambertation.Windows.Forms.LabeledProgressBar pbActive             = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbAnimals            = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbAspBliz            = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbAspCur             = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbBody               = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbCareerLevel        = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbCareerPerformance  = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbCharisma           = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbClean              = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbCooking            = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbCreative           = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbCrime              = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbCulture            = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbEffort             = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbEntertainment      = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbEnvironment        = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbFashion            = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbFat                = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbFood               = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbGActive            = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbGNeat              = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbGNice              = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbGOutgoing          = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbGPlayful           = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbHealth             = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbLastGrade          = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbLogic              = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbMan                = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbMech               = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbMoney              = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbNeat               = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbNice               = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbOutgoing           = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbParanormal         = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbPlayful            = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbPolitics           = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbRomance            = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbSchool             = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbSciFi              = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbSports             = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbToys               = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbTravel             = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbUniTime            = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbWeather            = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbWoman              = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbWork               = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbPetAnimals         = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbPetEating          = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbPetOutside         = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbPetPets            = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbPetPlaying         = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbPetSleep           = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbPetSpooky          = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbPetToy             = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbPetWeather         = new Ambertation.Windows.Forms.LabeledProgressBar();
+        private Ambertation.Windows.Forms.LabeledProgressBar pbhbenth             = new Ambertation.Windows.Forms.LabeledProgressBar();
+
+        // ── EnumComboBox — REAL TYPE restored from ComboBox shim.
+        private Ambertation.Windows.Forms.EnumComboBox cbEp3Asgn = new Ambertation.Windows.Forms.EnumComboBox();
+        private Ambertation.Windows.Forms.EnumComboBox cbHobbyPre = new Ambertation.Windows.Forms.EnumComboBox();
+        internal Ambertation.Windows.Forms.EnumComboBox cbSpecies = new Ambertation.Windows.Forms.EnumComboBox();
+
+        // ── TransparentCheckBox — REAL TYPE restored from CheckBox shim.
+        private Ambertation.Windows.Forms.TransparentCheckBox cbfat              = new Ambertation.Windows.Forms.TransparentCheckBox();
+        private Ambertation.Windows.Forms.TransparentCheckBox cbfit              = new Ambertation.Windows.Forms.TransparentCheckBox();
+        private Ambertation.Windows.Forms.TransparentCheckBox cbignoretraversal  = new Ambertation.Windows.Forms.TransparentCheckBox();
+        private Ambertation.Windows.Forms.TransparentCheckBox cbisghost          = new Ambertation.Windows.Forms.TransparentCheckBox();
+        private Ambertation.Windows.Forms.TransparentCheckBox cbpassobject       = new Ambertation.Windows.Forms.TransparentCheckBox();
+        private Ambertation.Windows.Forms.TransparentCheckBox cbpasspeople       = new Ambertation.Windows.Forms.TransparentCheckBox();
+        private Ambertation.Windows.Forms.TransparentCheckBox cbpasswalls        = new Ambertation.Windows.Forms.TransparentCheckBox();
+        private Ambertation.Windows.Forms.TransparentCheckBox cbpregfull         = new Ambertation.Windows.Forms.TransparentCheckBox();
+        private Ambertation.Windows.Forms.TransparentCheckBox cbpreghalf         = new Ambertation.Windows.Forms.TransparentCheckBox();
+        private Ambertation.Windows.Forms.TransparentCheckBox cbpreginv          = new Ambertation.Windows.Forms.TransparentCheckBox();
+        internal Ambertation.Windows.Forms.TransparentCheckBox cboncampus        = new Ambertation.Windows.Forms.TransparentCheckBox();
+
+        // Standard ComboBoxes
+        private Avalonia.Controls.ComboBox cbHobbyEnth = new Avalonia.Controls.ComboBox();
+
+        // Labels — TextBlock for non-interactive text.
+        private Avalonia.Controls.TextBlock label1 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label2 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label3 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label4 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label5 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label6 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label7 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label8 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label9 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label10 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label11 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label12 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label13 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label14 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label15 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label16 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label17 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label18 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label19 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label20 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label21 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label22 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label23 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label24 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label25 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label26 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label27 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label28 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label29 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label30 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label31 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label32 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label33 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label34 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label35 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label36 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label37 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label38 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label39 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label40 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label41 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock labelcol = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label46 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label47 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label48 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label49 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label50 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label60 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label69 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label70 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label77 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label78 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label86 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label87 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label90 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label94 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label95 = new Avalonia.Controls.TextBlock();
+        private Avalonia.Controls.TextBlock label96 = new Avalonia.Controls.TextBlock();
+        internal Avalonia.Controls.TextBlock label98 = new Avalonia.Controls.TextBlock();
+        internal Avalonia.Controls.TextBlock label101 = new Avalonia.Controls.TextBlock();
+        internal Avalonia.Controls.TextBlock label103 = new Avalonia.Controls.TextBlock();
+
+        // ListView -> ListBox stand-in (CHUNK 6 will refine if proper ListView is needed).
+        private Avalonia.Controls.ListBox lvCollectibles = new Avalonia.Controls.ListBox();
+
+        // PictureBox -> Image
+        private Avalonia.Controls.Image pictureBox1 = new Avalonia.Controls.Image();
+
+        // CheckedListBox -> ListBox (Avalonia has none).
+        private Avalonia.Controls.ListBox lbTraits  = new Avalonia.Controls.ListBox();
+        private Avalonia.Controls.ListBox lbTurnOff = new Avalonia.Controls.ListBox();
+        private Avalonia.Controls.ListBox lbTurnOn  = new Avalonia.Controls.ListBox();
+
+        // LinkLabel -> Button styled as link (CHUNK 5 may swap to LinkLabel if available).
+        private Avalonia.Controls.Button llep3openinfo = new Avalonia.Controls.Button();
+
+        // TextBoxes — non-internal (private).
+        private Avalonia.Controls.TextBox tbEp3Flag      = new Avalonia.Controls.TextBox();
+        private Avalonia.Controls.TextBox tbEp3Lot       = new Avalonia.Controls.TextBox();
+        private Avalonia.Controls.TextBox tbEp3Salery    = new Avalonia.Controls.TextBox();
+        private Avalonia.Controls.TextBox tbNTLove       = new Avalonia.Controls.TextBox();
+        private Avalonia.Controls.TextBox tbNTPerfume    = new Avalonia.Controls.TextBox();
+        private Avalonia.Controls.TextBox tbBugColl      = new Avalonia.Controls.TextBox();
+        private Avalonia.Controls.TextBox tbHobbyPre     = new Avalonia.Controls.TextBox();
+        private Avalonia.Controls.TextBox tbLtAsp        = new Avalonia.Controls.TextBox();
+        private Avalonia.Controls.TextBox tbUnlockPts    = new Avalonia.Controls.TextBox();
+        private Avalonia.Controls.TextBox tbUnlocksUsed  = new Avalonia.Controls.TextBox();
+        private Avalonia.Controls.TextBox tbhdaysleft    = new Avalonia.Controls.TextBox();
+
+        // SimPe.PackedFiles.UserInterface types (same project).
+        private SimPe.PackedFiles.UserInterface.CommonSrel dstRel;
+        private SimPe.PackedFiles.UserInterface.CommonSrel srcRel;
+
+        // SimPe.PackedFiles.Wrapper types — real classes from the project.
+        private SimPe.PackedFiles.Wrapper.PetTraitSelect ptAggres = new SimPe.PackedFiles.Wrapper.PetTraitSelect();
+        private SimPe.PackedFiles.Wrapper.PetTraitSelect ptGifted = new SimPe.PackedFiles.Wrapper.PetTraitSelect();
+        private SimPe.PackedFiles.Wrapper.PetTraitSelect ptHyper  = new SimPe.PackedFiles.Wrapper.PetTraitSelect();
+        private SimPe.PackedFiles.Wrapper.PetTraitSelect ptIndep  = new SimPe.PackedFiles.Wrapper.PetTraitSelect();
+        private SimPe.PackedFiles.Wrapper.PetTraitSelect ptPigpen = new SimPe.PackedFiles.Wrapper.PetTraitSelect();
+        private SimPe.PackedFiles.Wrapper.SimBusinessList sblb;
+        private SimPe.PackedFiles.Wrapper.SimRelationPoolControl lv = new SimPe.PackedFiles.Wrapper.SimRelationPoolControl();
+
+        // Internal fields accessed from the constructor / refresh code — preserved verbatim.
+        internal Avalonia.Controls.TextBox    tbsimdescfamname = new Avalonia.Controls.TextBox();
+        internal Avalonia.Controls.TextBox    tbfaminst        = new Avalonia.Controls.TextBox();
+        internal Avalonia.Controls.RadioButton rbmale          = new Avalonia.Controls.RadioButton();
+        internal Avalonia.Controls.RadioButton rbfemale        = new Avalonia.Controls.RadioButton();
+        internal Avalonia.Controls.ComboBox    cblifesection   = new Avalonia.Controls.ComboBox();
+        internal Avalonia.Controls.Image       pbImage         = new Avalonia.Controls.Image();
+        internal Avalonia.Controls.TextBox    tbsimdescname    = new Avalonia.Controls.TextBox();
+        internal Avalonia.Controls.TextBox    tbsim            = new Avalonia.Controls.TextBox();
+        internal Avalonia.Controls.TextBox    tbage            = new Avalonia.Controls.TextBox();
+        internal Avalonia.Controls.ComboBox    cbzodiac        = new Avalonia.Controls.ComboBox();
+        internal Avalonia.Controls.TextBox    tbschooltype     = new Avalonia.Controls.TextBox();
+        internal Avalonia.Controls.ComboBox    cbgrade         = new Avalonia.Controls.ComboBox();
+        internal Avalonia.Controls.ComboBox    cbschooltype    = new Avalonia.Controls.ComboBox();
+        internal Avalonia.Controls.ComboBox    cbcareer        = new Avalonia.Controls.ComboBox();
+        internal Avalonia.Controls.TextBox    tbcareervalue    = new Avalonia.Controls.TextBox();
+        internal Avalonia.Controls.ComboBox    cbaspiration    = new Avalonia.Controls.ComboBox();
+        internal Avalonia.Controls.TextBox    tblifelinescore  = new Avalonia.Controls.TextBox();
+        internal Avalonia.Controls.TextBox    tbunlinked       = new Avalonia.Controls.TextBox();
+        internal Avalonia.Controls.TextBox    tbagedur         = new Avalonia.Controls.TextBox();
+        internal Avalonia.Controls.TextBox    tbprevdays       = new Avalonia.Controls.TextBox();
+        internal Avalonia.Controls.TextBox    tbvoice          = new Avalonia.Controls.TextBox();
+        internal Avalonia.Controls.TextBox    tbnpc            = new Avalonia.Controls.TextBox();
+        internal Avalonia.Controls.TextBox    tbautonomy       = new Avalonia.Controls.TextBox();
+        internal Avalonia.Controls.TextBox    tbinfluence      = new Avalonia.Controls.TextBox();
+        internal Avalonia.Controls.TextBox    tbsemester       = new Avalonia.Controls.TextBox();
+        internal Avalonia.Controls.ComboBox    cbmajor         = new Avalonia.Controls.ComboBox();
+        internal Avalonia.Controls.TextBox    tbmajor          = new Avalonia.Controls.TextBox();
+        internal Avalonia.Controls.TextBox    tbstatmot        = new Avalonia.Controls.TextBox();
+        internal Avalonia.Controls.TextBox    tb7social        = new Avalonia.Controls.TextBox();
+        internal Avalonia.Controls.TextBox    tb7fun           = new Avalonia.Controls.TextBox();
+        internal Avalonia.Controls.TextBox    tb7hygiene       = new Avalonia.Controls.TextBox();
+        internal Avalonia.Controls.TextBox    tb7energy        = new Avalonia.Controls.TextBox();
+        internal Avalonia.Controls.TextBox    tb7bladder       = new Avalonia.Controls.TextBox();
+        internal Avalonia.Controls.TextBox    tb7comfort       = new Avalonia.Controls.TextBox();
+        internal Avalonia.Controls.TextBox    tb7hunger        = new Avalonia.Controls.TextBox();
+        internal Avalonia.Controls.ComboBox    cbaspiration2   = new Avalonia.Controls.ComboBox();
+        #endregion
 	}
 }

@@ -153,7 +153,34 @@ namespace SimPe
 		{
 			bool hide = VisibleForm(form);
 			if (hide) HideApplicationForm();
-			form.Show();
+
+			// WinForms semantics: ShowDialog blocks until the user closes the form.
+			// Avalonia's Window.Show() is non-blocking and ShowDialog returns Task; callers
+			// here read form-state members (e.g. picked package) on the line after this call,
+			// so we must block. Pump the dispatcher loop (matches RunOnUIThread pattern).
+			var owner = ApplicationForm ?? (Avalonia.Application.Current?.ApplicationLifetime
+				as Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+
+			if (owner != null && Avalonia.Threading.Dispatcher.UIThread.CheckAccess())
+			{
+				var tcs = new System.Threading.Tasks.TaskCompletionSource<bool>();
+				async void RunDialog()
+				{
+					try { await form.ShowDialog(owner); tcs.SetResult(true); }
+					catch { tcs.SetResult(false); }
+				}
+				Avalonia.Threading.Dispatcher.UIThread.Post(RunDialog);
+				while (!tcs.Task.IsCompleted)
+				{
+					Avalonia.Threading.Dispatcher.UIThread.RunJobs(Avalonia.Threading.DispatcherPriority.Background);
+					if (!tcs.Task.IsCompleted) System.Threading.Thread.Yield();
+				}
+			}
+			else
+			{
+				form.Show();
+			}
+
 			if (hide) ShowApplicationForm();
 		}
 

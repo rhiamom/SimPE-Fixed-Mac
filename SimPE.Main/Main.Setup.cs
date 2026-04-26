@@ -103,6 +103,12 @@ namespace SimPe
 
             //MessageBox.Show("After PluginManager");
             SimPe.Splash.Screen.SetMessage(SimPe.Localization.GetString("Loaded Plugins"));
+
+            // PluginManager populates miTools (a WinForms ToolStripMenuItem stub) but the
+            // visible menu is the Avalonia avlnTools (declared empty in MainForm.axaml).
+            // Mirror the populated stub tree into avlnTools so plugin menu items are visible.
+            MirrorWinFormsMenuToAvalonia(miTools.DropDownItems, avlnTools.Items);
+
             plugger.ClosedToolPlugin += new ToolMenuItemExt.ExternalToolNotify(ClosedToolPlugin);
             remote.SetPlugger(plugger);
 
@@ -264,6 +270,38 @@ namespace SimPe
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
             });
             return sp;
+        }
+
+        // Walks a WinForms-stub ToolStripItemCollection (populated by PluginManager) and
+        // mirrors it into an Avalonia MenuItem.Items collection. Each Avalonia MenuItem.Click
+        // forwards to the stub's PerformClick(), which fires the underlying handler chain.
+        // One-shot: assumes plugin loading is finished before this runs.
+        private static void MirrorWinFormsMenuToAvalonia(
+            System.Windows.Forms.ToolStripItemCollection from,
+            Avalonia.Controls.ItemCollection to)
+        {
+            to.Clear();
+            for (int i = 0; i < from.Count; i++)
+            {
+                var fromItem = from[i];
+                var avItem = new Avalonia.Controls.MenuItem
+                {
+                    Header = fromItem.Text,
+                    IsEnabled = fromItem.Enabled,
+                };
+
+                if (fromItem is System.Windows.Forms.ToolStripMenuItem stub)
+                {
+                    var captured = stub;
+                    avItem.Click += (s, e) => captured.PerformClick();
+                    captured.EnabledChanged += (s, e) => avItem.IsEnabled = captured.Enabled;
+
+                    if (stub.DropDownItems.Count > 0)
+                        MirrorWinFormsMenuToAvalonia(stub.DropDownItems, avItem.Items);
+                }
+
+                to.Add(avItem);
+            }
         }
     }
 }
